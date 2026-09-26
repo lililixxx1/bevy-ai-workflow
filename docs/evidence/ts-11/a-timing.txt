@@ -1,0 +1,6 @@
+loop_start_epoch_ms=1790434491902
+a1_index=1
+a1_epoch_ms=1790434491980
+a1_offset_ms=78
+a2_epoch_ms=1790434493417
+a2_offset_ms=1515

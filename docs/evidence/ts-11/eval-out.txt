@@ -1,0 +1,40 @@
+{
+  "a1": {
+    "tick": 584,
+    "frame_count": 584,
+    "elapsed_secs": 9.873733390122652,
+    "fps_1s": 60.009967557234276,
+    "avg_fps": 60.00309884925726
+  },
+  "a2_attempt": "empty(post-exit attempt)",
+  "a2": null,
+  "bench": {
+    "n": 50000,
+    "seed": 20260926,
+    "bench_secs": 10,
+    "warmup_secs": 2,
+    "measure_secs": 8.016,
+    "measure_frames": 481,
+    "avg_fps": 60
+  },
+  "baseline": {
+    "group": "vsync(AutoVsync)",
+    "n": 50000,
+    "avg_fps": 60,
+    "threshold": 48
+  },
+  "checks": {
+    "a1_avg_fps_pos": true,
+    "a1_fps_1s_pos": true,
+    "a2_tick_pos_source": "a1(清单断言2请求=同上)",
+    "a2_tick_pos": true,
+    "stats_log_tick_growth_side": true,
+    "a3_n_is_50000": true,
+    "a3_warmup_is_2_0": true,
+    "a3_within_10pct": true,
+    "a3_rel_dev": 0.00005164482029583683,
+    "a4_bench_ge_threshold": true,
+    "a4_ratio_bench": 1,
+    "a4_ratio_a1": 1.000051647487621
+  }
+}
