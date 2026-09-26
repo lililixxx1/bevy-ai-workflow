@@ -1,0 +1,72 @@
+{
+  "calls": [
+    {
+      "label": "类型指南(Wanderer)",
+      "tool": "brp_type_guide",
+      "arguments": {
+        "port": 15702,
+        "types": [
+          "game::sim::Wanderer"
+        ]
+      },
+      "isError": false,
+      "text": "{\"status\":\"success\",\"message\":\"Discovered 1 type(s)\",\"call_info\":{\"mcp_tool\":\"brp_type_guide\"},\"metadata\":{\"type_count\":1},\"parameters\":{\"types\":[\"game::sim::Wanderer\"],\"port\":15702},\"result\":{\"discovered_count\":1,\"requested_types\":[\"game::sim::Wanderer\"],\"summary\":{\"failed_discoveries\":0,\"successful_discoveries\":1,\"total_requested\":1},\"type_guide\":{\"game::sim::Wanderer\":{\"type_name\":\"game::sim::Wanderer\",\"in_registry\":true,\"spawn\":{\"agent_guidance\":\"The 'example' below can be used to spawn this component on an entity.\",\"example\":{\"index\":1,\"origin\":[1.0,2.0,3.0],\"phase\":1.0}},\"agent_guidance\":\"The 'mutation_paths' field provides valid 'path' arguments for 'mcp__brp__world_mutate_components' and 'mcp__brp__world_mutate_resources' tools, with example values suitable for testing.\",\"mutation_paths\":[{\"path\":\"\",\"description\":\"Replace the entire Wanderer struct\",\"path_info\":{\"path_kind\":\"RootValue\",\"type\":\"game::sim::Wanderer\",\"type_kind\":\"Struct\",\"mutability\":\"mutable\"},\"example\":{\"index\":1,\"origin\":[1.0,2.0,3.0],\"phase\":1.0}},{\"path\":\".index\",\"description\":\"Mutate the index field of Wanderer\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"u32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1},{\"path\":\".origin\",\"description\":\"Mutate the origin field of Wanderer struct\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"glam::Vec3\",\"type_kind\":\"Struct\",\"mutability\":\"mutable\"},\"example\":[1.0,2.0,3.0]},{\"path\":\".origin.x\",\"description\":\"Mutate the x field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0},{\"path\":\".origin.y\",\"description\":\"Mutate the y field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0},{\"path\":\".origin.z\",\"description\":\"Mutate the z field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0},{\"path\":\".phase\",\"description\":\"Mutate the phase field of Wanderer\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0}],\"schema_info\":{\"type_kind\":\"Struct\",\"properties\":{\"index\":{\"type\":{\"$ref\":\"#/$defs/u32\"}},\"origin\":{\"type\":{\"$ref\":\"#/$defs/glam::Vec3\"}},\"phase\":{\"type\":{\"$ref\":\"#/$defs/f32\"}}},\"required\":[\"index\",\"origin\",\"phase\"],\"module_path\":\"game::sim\",\"crate_name\":\"game\",\"reflect_traits\":[\"Deserialize\",\"Component\",\"Serialize\"],\"component_info\":{\"isSendAndSync\":true,\"mutable\":true,\"storageType\":\"Table\"}}}}}}"
+    },
+    {
+      "label": "类型指南(Velocity)",
+      "tool": "brp_type_guide",
+      "arguments": {
+        "port": 15702,
+        "types": [
+          "game::sim::Velocity"
+        ]
+      },
+      "isError": false,
+      "text": "{\"status\":\"success\",\"message\":\"Discovered 1 type(s)\",\"call_info\":{\"mcp_tool\":\"brp_type_guide\"},\"metadata\":{\"type_count\":1},\"parameters\":{\"types\":[\"game::sim::Velocity\"],\"port\":15702},\"result\":{\"discovered_count\":1,\"requested_types\":[\"game::sim::Velocity\"],\"summary\":{\"failed_discoveries\":0,\"successful_discoveries\":1,\"total_requested\":1},\"type_guide\":{\"game::sim::Velocity\":{\"type_name\":\"game::sim::Velocity\",\"in_registry\":true,\"spawn\":{\"agent_guidance\":\"The 'example' below can be used to spawn this component on an entity.\",\"example\":{\"linear\":[1.0,2.0,3.0]}},\"agent_guidance\":\"The 'mutation_paths' field provides valid 'path' arguments for 'mcp__brp__world_mutate_components' and 'mcp__brp__world_mutate_resources' tools, with example values suitable for testing.\",\"mutation_paths\":[{\"path\":\"\",\"description\":\"Replace the entire Velocity struct\",\"path_info\":{\"path_kind\":\"RootValue\",\"type\":\"game::sim::Velocity\",\"type_kind\":\"Struct\",\"mutability\":\"mutable\"},\"example\":{\"linear\":[1.0,2.0,3.0]}},{\"path\":\".linear\",\"description\":\"Mutate the linear field of Velocity struct\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"glam::Vec3\",\"type_kind\":\"Struct\",\"mutability\":\"mutable\"},\"example\":[1.0,2.0,3.0]},{\"path\":\".linear.x\",\"description\":\"Mutate the x field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0},{\"path\":\".linear.y\",\"description\":\"Mutate the y field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0},{\"path\":\".linear.z\",\"description\":\"Mutate the z field of Vec3\",\"path_info\":{\"path_kind\":\"StructField\",\"type\":\"f32\",\"type_kind\":\"Value\",\"mutability\":\"mutable\"},\"example\":1.0}],\"schema_info\":{\"type_kind\":\"Struct\",\"properties\":{\"linear\":{\"type\":{\"$ref\":\"#/$defs/glam::Vec3\"}}},\"required\":[\"linear\"],\"module_path\":\"game::sim\",\"crate_name\":\"game\",\"reflect_traits\":[\"Deserialize\",\"Component\",\"Serialize\"],\"component_info\":{\"isSendAndSync\":true,\"mutable\":true,\"storageType\":\"Table\"}}}}}}"
+    },
+    {
+      "label": "全类型指南(game)",
+      "tool": "brp_all_type_guides",
+      "arguments": {
+        "port": 15702,
+        "crates": [
+          "game"
+        ]
+      },
+      "isError": false,
+      "textHead": "{\"status\":\"success\",\"message\":\"Discovered schemas for all 310 registered type(s)\",\"call_info\":{\"mcp_tool\":\"brp_all_type_guides\"},\"metadata\":{\"type_count\":310},\"parameters\":{\"port\":15702},\"result\":{\"saved_to_file\":true,\"filepath\":\"C:\\\\Users\\\\ADMINI~1\\\\AppData\\\\Local\\\\Temp\\\\mcp_response_brp_all_type_guides1790422285.json\",\"instructions\":\"Use Read tool to examine, Grep to search, or jq commands to fi",
+      "textLength": 447
+    },
+    {
+      "label": "应用工具清单",
+      "tool": "brp_list_agent_tools",
+      "arguments": {
+        "port": 15702
+      },
+      "isError": true,
+      "textHead": "{\"status\":\"error\",\"message\":\"Agent tool catalog request failed on port 15702: Method `brp_extras/agent_tools` not found. This method requires the bevy_brp_extras crate to be added to your Bevy app with the BrpExtrasPlugin\",\"call_info\":{\"mcp_tool\":\"brp_list_agent_tools\"},\"metadata\":{\"stage\":\"catalog_request\",\"method\":\"brp_extras/agent_tools\",\"port\":15702,\"code\":-32601}}",
+      "textLength": 371
+    },
+    {
+      "label": "资源清单",
+      "tool": "world_list_resources",
+      "arguments": {
+        "port": 15702
+      },
+      "isError": false,
+      "textHead": "{\"status\":\"success\",\"message\":\"Found 44 resources\",\"call_info\":{\"mcp_tool\":\"world_list_resources\",\"brp_method\":\"world.list_resources\"},\"metadata\":{\"resource_count\":44},\"parameters\":{\"port\":15702},\"result\":[\"bevy_a11y::AccessibilityRequested\",\"bevy_a11y::ManageAccessibilityUpdates\",\"bevy_audio::audio::DefaultSpatialScale\",\"bevy_audio::volume::GlobalVolume\",\"bevy_camera::clear_color::ClearColor\",\"be",
+      "textLength": 2170
+    },
+    {
+      "label": "读资源(SimConfig)",
+      "tool": "world_get_resources",
+      "arguments": {
+        "port": 15702,
+        "resource": "game::sim::SimConfig"
+      },
+      "isError": false,
+      "textHead": "{\"status\":\"success\",\"message\":\"Retrieved game::sim::SimConfig resource\",\"call_info\":{\"mcp_tool\":\"world_get_resources\",\"brp_method\":\"world.get_resources\"},\"parameters\":{\"resource\":\"game::sim::SimConfig\",\"port\":15702},\"result\":{\"value\":{\"bench_secs\":0.0,\"entity_count\":1000,\"paused\":false,\"seed\":20260926}}}",
+      "textLength": 305
+    }
+  ]
+}
