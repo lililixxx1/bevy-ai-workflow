@@ -22,5 +22,5 @@
 
 ## 判定记录
 
-- 判定者/日期/结论：（两阶段：人工对照 / run_tests 脚本）
-- 证据：（命令与响应摘录 / 日志路径）
+- 判定者/日期/结论：执行 agent，2026-09-26，**通过（第一阶段人工对照）**——5/5 断言首次执行全部 PASS，零改码（`cargo check --workspace` REAL_EXIT=0 仍按公共前置执行）。断言 4 实测错误码 **-23401**（`ENTITY_NOT_FOUND`，`bevy_remote-0.19.1/src/lib.rs:1409`；message `Entity 411v0 not found`），断言 5 重复销毁同为 -23401——按本次任务纪律该回填值记录于证据文件与本节，清单表行未改写。
+- 证据：`docs/evidence/ts-06-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；原始响应/运行日志/门禁日志 `docs/evidence/ts-06/`。
