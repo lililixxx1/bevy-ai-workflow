@@ -4,7 +4,7 @@
 - 入库门禁与条目字段定义：见 [assets-methodology/pitfalls-schema.md](../assets-methodology/pitfalls-schema.md)（失败须在标注版本复现 + 修复过编译与运行验证；**未过验证禁止入库**）。
 - 追加方式：按下方模板在文件末尾追加，`PIT-B-XXX` 三位自增（从 001 起），并在本行更新条数。
 - 反例代码统一用 ```` ```compile_fail ```` 标记（doctest 断言其编译失败）；语义不符时用 `ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
-- 当前：3 条（2026-09-26 起）。
+- 当前：4 条（2026-09-26 起）。
 
 ---
 
@@ -163,3 +163,35 @@ fn f(window: Window) -> PresentMode {
 **验证证据**：
 - 复现：错误路径 query 返回空 + 下游 NaN/undefined（2026-09-26 断言脚本首跑）；
 - 修复：`world.list_components` 实测路径 + strict 后 `PASS | camera orbit radius~=90`（`docs/evidence/brp-assert-result.txt` #9）。
+
+---
+
+### PIT-B-004：BRP 0.19.1 的 params「存在性语义」——传 `{}` 与完全省略 params 行为不同；`world.get_resources` 字段是单数
+
+- 日期：2026-09-26
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（BRP 方法签名随版本收紧）
+- 标签：`BRP` `params` `world.list_components` `world.get_resources` `schema收紧`
+
+**现象**：两个实测失败原文（2026-09-26，curl 对 127.0.0.1:15702）：
+1. `world.list_components` 传 `"params":{}` → `{"code":-32602,"message":"missing field \`entity\`"}`；而完全省略 params 才走「全量注册组件」分支（实测返回 310 个）。
+2. `world.get_resources` 传 `"params":{"resources":["..."]}`（复数、按 0.16 时代直觉）→ `{"code":-32602,"message":"missing field \`resource\`"}`；0.19.1 字段为单数 `resource: String`。
+
+**最小复现**（运行时行为，非编译失败；语义不符 compile_fail，标 ignore 附理由：本坑是 HTTP JSON-RPC 参数反序列化失败，无编译期载体）：
+
+```rust,ignore
+// 游戏运行中（BRP 127.0.0.1:15702）：
+// POST {"method":"world.list_components","params":{}}      → -32602 missing field `entity`
+// POST {"method":"world.list_components"}                  → 200，310 个组件（正确全量用法）
+// POST {"method":"world.get_resources","params":{"resources":["game::sim::SimStats"]}} → -32602 missing field `resource`
+// POST {"method":"world.get_resources","params":{"resource":"game::sim::SimStats"}}    → 200 成功
+```
+
+**根因**：0.19.1 各方法 handler 形如 `In<Option<Value>>` + `params.map(parse).transpose()?`（`bevy_remote-0.19.1/src/builtin_methods.rs:1378-1385`，核实 2026-09-26）：params 为 `Some` 时必须完整满足 `BrpXxxParams` 反序列化（`{}` 缺必填字段即 -32602）；`None`（整个 params 字段省略或 null）才有独立的全量分支。`get_resources` 的参数结构在 0.19.1 是单数 `resource: String`（builtin_methods.rs:140-145），与旧资料复数数组形态不同。
+
+**修复**（已过运行验证）：写 BRP 请求前逐方法核对本地源码的 `BrpXxxParams` 结构；「全量清单」类调用完全省略 params；资源读取用单数 `resource` 字段。bevy_brp_mcp 0.22.7 已正确适配这些语义（可作为参数形态的活参考）。
+
+**验证证据**：
+- 复现：`tooling/brp-logs/07-world-list-components.md`（-32602 原文 + 省略 params 后 310 个）与 `08-world-get-resources.md`（-32602 原文 + 单数修正后成功）；
+- 运行验证：同两文件的修正重测段（2026-09-26，curl 原文存证）。
