@@ -18,6 +18,8 @@
 | 2 | `world.despawn_entity` | `entity=e` | 响应无 error |
 | 3 | `world.query` | 同 #1 | 行数 == 99 且不含 `e` |
 | 4 | `world.get_components` | `entity=e`, `strict=true` | 响应 `error` 存在（实体已不存在，具体错误码以实测为准并回填本条） |
+
+> 断言 4 实测回填（2026-09-26 测量后按任务原文「回填本条」补齐）：错误码 **-23401**（`ENTITY_NOT_FOUND`，`bevy_remote-0.19.1/src/lib.rs:1409`；message 为 Entity Display 形态，如 `Entity 411v0 not found`）。测量期纪律为不改清单文件，回填延至测量完成、经 M1 审计确认后执行（见判定记录与 `docs/evidence/ts-06-brp.md`）。
 | 5 | `world.despawn_entity` | `entity=e`（重复销毁） | 响应 `error` 存在 |
 
 ## 判定记录

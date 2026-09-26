@@ -47,8 +47,10 @@ curl -s --max-time 30 http://127.0.0.1:15702 -H "Content-Type: application/json"
 响应原文摘录（全量 100 行见 `ts-05/a1-query-wanderer.raw.json`，`result` 数组首行原文）：
 
 ```json
-{"components":{"game::sim::Wanderer":{"index":0,"origin":[-70.7808609008789,0.800000011920929,-63.557125091552734],"phase":1.2848815917968752}},"entity":4294966884}
+{"components":{"game::sim::Wanderer":{"index":0,"origin":[59.20360565185547,0.800000011920929,40.68254470825195],"phase":0.6825083494186401}},"entity":4294966884}
 ```
+
+> **勘误（2026-09-26，M1 独立审计发现）**：本行摘录初版 `origin:[-70.78…,-63.55…], phase:1.2848…` 与 raw 首行不符（系誊写失真，TS-06 执行时已发现并披露于 ts-06-brp.md，本文件当时未改），现按 `ts-05/a1-query-wanderer.raw.json` 首行逐字改正。判定 `n0 = 100` 不受影响（以 raw 全量行数为准）。
 
 判定：`result` 数组行数 **100**，无 `error` 字段。`n0 = 100`。**通过**。
 

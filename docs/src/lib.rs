@@ -19,3 +19,7 @@ pub mod fps_baseline {}
 /// 《BRP 冒烟与断言实录》（M1 第一役）——通路确认 + 断言链 + 实测形态结论。
 #[doc = include_str!("../brp-smoke.md")]
 pub mod brp_smoke {}
+
+/// 《M1 验收结论》（一次通过率测量）——协议、结果、独立审计与样本量限制。
+#[doc = include_str!("../m1-acceptance.md")]
+pub mod m1_acceptance {}

@@ -61,8 +61,10 @@ curl -s http://127.0.0.1:15702 -H "Content-Type: application/json" \
 
 ```json
 读1: {"jsonrpc":"2.0","id":103,"result":{"value":{"avg_fps":88.17662026638628,"elapsed_secs":46.07029781979509,"fps_1s":60.12245268067289,"frame_count":4142,"tick":4142}}}
-读2: {"jsonrpc":"2.0","id":104,"result":{"value":{"avg_fps":86.8955234848406,"elapsed_secs":48.170046421000734,"fps_1s":60.11129322958322,"frame_count":4268,"tick":4268}}}
+读2: {"jsonrpc":"2.0","id":104,"result":{"value":{"avg_fps":86.8955234848406,"elapsed_secs":48.170046421000734,"fps_1s":60.11129655829322,"frame_count":4268,"tick":4268}}}
 ```
+
+> **勘误（2026-09-26，M1 独立审计发现）**：读 2 的 `fps_1s` 摘录初版写作 `60.11129322958322`（末段数字誊写失真），raw（`ts-01/a3-stats-tick2.raw.txt`）为 `60.11129655829322`，已改正。tick 判定不受影响。
 
 判定：`tick1 = 4142 > 0`；间隔 2s 后 `tick2 = 4268 > tick1`。**通过**。
 

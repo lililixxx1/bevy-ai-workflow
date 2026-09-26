@@ -9,7 +9,7 @@
   - demo 基线代码在 `game/`（`--count`/`--seed`/`--bench-secs` CLI、BRP 常驻 127.0.0.1:15702、模拟确定性口径见 `game/src/sim.rs` 模块注释）；
   - BRP 请求均为 JSON-RPC 2.0 over HTTP POST `http://127.0.0.1:15702`（必须含 `"jsonrpc":"2.0"` 与 `"id"`；组件/资源引用用 Rust 全路径，如 `game::sim::SimStats`）；
   - 完成判定 = 验收清单逐条断言通过 + `cargo check --workspace` REAL_EXIT=0（运行时行为另按 SKILL.md §4.2 走 BRP 闭环）；
-  - 证据留存：验收断言的命令与响应摘录（或日志路径）记入台账「证据」列。
+  - 证据留存：验收断言的命令与响应摘录（或日志路径）记入台账「证据」列；**摘录必须逐字回对 raw 原文后才可定稿**（M1 审计发现两处誊写失真，坑见 `assets-methodology/pitfalls.md` PIT-M-004）。
 
 ## 条目模板
 
@@ -53,6 +53,16 @@
 | TS-09 | 新组件类型注册与 schema | 中 | world.list_components / registry.schema | [ts-09-type-schema.md](./ts-09-type-schema.md) |
 | TS-10 | 事件驱动的状态变更 | 高 | world.trigger_event / world.get_resources | [ts-10-trigger-event.md](./ts-10-trigger-event.md) |
 | TS-11 | 阶梯性能回归验证 | 中 | world.get_resources(SimStats) + 基线对照 | [ts-11-perf-ladder.md](./ts-11-perf-ladder.md) |
-| TS-12 | 批量实体操作一致性 | 中 | world.insert_components / world.query 计数 | [ts-12-batch-ops.md](./ts-12-batch-ops.md) |
+| TS-12 | 批量实体操作一致性 | 中 | world.despawn_entity + world.spawn_entity / world.query 计数 | [ts-12-batch-ops.md](./ts-12-batch-ops.md) |
 
 > JSON 数值形态注记（2026-09-26 实测，详见 `docs/brp-smoke.md`）：**向量（`Vec3`/`Vec2` 等）在 BRP 请求与响应中均为 `[x,y,z]` 数组**（glam serde 形态）；传 `{"x":..,"y":..}` 对象会报 `expected a sequence of 3 f32 values`。引用 bevy 内置类型时全路径以 `world.list_components` 实测为准（如 0.19 的 Camera 是 `bevy_camera::camera::Camera`，bevy_camera crate 而非 bevy_render）。任务书写断言时以 `world.query` 实测响应为准，不凭记忆猜形态。
+
+> 索引勘误（2026-09-26，M1 审计发现）：TS-12 行「验证面」初版误写 `world.insert_components / world.query 计数`，任务文件实际验收清单用的是 `world.despawn_entity + world.spawn_entity + world.query`（任务文件自建库起未改过），已按任务文件改正。
+
+## 回归口径注意事项（M1 测量与审计沉淀，2026-09-26）
+
+把本测试集当升级窗口回归集使用时，以下口径必须遵守：
+
+1. **不得断言绝对 entity id**：entity 位串跨进程不稳定（同 `--count 100 --seed 20260926` 下 index 0 的位串实测分别为 4294966884 / 4294966883 / 4294966882）。断言应按组件内容（如 `Wanderer.index`）定位实体，先 query 后断言。
+2. **断言多为单点/双点采样**：只证明断言时刻的状态，不含「无回绕」证明；对时序敏感的回归应增加采样密度并记录采样时刻（`SimStats.elapsed_secs`）。
+3. **TS-11 作回归哨兵须改用 no-vsync 组基线**（`docs/fps-baseline.md` 的 113.8fps 阶梯才有区分度）；vsync 组（锁 60.0）仅用于证明采集链路活着，其阈值（60.0×0.8=48）几乎不携带回归检测能力。
