@@ -21,4 +21,4 @@
 
 | 编号 | 任务 | 类型 | 一次通过 | 返工次数 | 耗时 | 原因 | 证据 |
 |---|---|---|---|---|---|---|---|
-| T001 | 仓库骨架搭建与台账启用（意向文档 §10 第 1、2 条 + §6） | 骨架 | （任务收尾时填） | （任务收尾时填） | （任务收尾时填） | （任务收尾时填） | （任务收尾时填） |
+| T001 | 仓库骨架搭建与台账启用（意向文档 §10 第 1、2 条 + §6） | 骨架 | 否 | 1 | ≈15 min | 首次 `cargo check --workspace` 在解析阶段被拒：环境 rustc 1.94.0 低于 bevy 0.19.1 MSRV 1.95.0（`bevy-0.19.1/Cargo.toml:14`）；修复 = `rustup update stable` → 1.98.1（环境级动作，已提交代码零返工），重跑通过。教训入库 PIT-M-001（含管道吞退出码风险）。另：曾拟用 `bevy::VERSION`，查本地源码发现 0.19.1 无此常量（容器 crate 仅 `pub use bevy_internal::*`），未造成编译失败，main.rs 注释留痕 | 提交 d8ecd72 / cd7fd32 / 3fb1098 + 收尾提交；`cargo check --workspace` REAL_EXIT=0（1m44s）；`cargo test --doc -p docs` REAL_EXIT=0（2 passed）；`cargo run -p game` REAL_EXIT=0 |
