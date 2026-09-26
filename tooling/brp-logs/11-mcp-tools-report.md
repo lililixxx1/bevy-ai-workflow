@@ -12,14 +12,19 @@
 
 ## 工具清单（tools/list 实测）
 
-共 **47 个工具**（第一轮会话 `tools/list` 原文，`10-mcp-session-transcript.jsonl`）：
-BRP 核心（world_* / registry_schema / rpc_discover）20 个、应用管理（brp_*）12 个、
-extras 桥（brp_extras_*）14 个、watch 2 个（world_get_components_watch / world_list_components_watch）、
-日志 3 个（brp_list_logs / brp_read_log / brp_delete_logs）。
+共 **47 个工具**（第一轮会话 `tools/list` 原文，`10-mcp-session-transcript.jsonl`；分类经脚本对
+tools/list 逐名重数，2026-09-26 返工核正）：world 核心（`world_*` 非 watch）16 个、协议元
+（rpc_discover / registry_schema）2 个、应用管理（brp_status / brp_launch / brp_list_bevy /
+brp_shutdown / brp_all_type_guides / brp_list_agent_tools / brp_type_guide / brp_execute）8 个、
+extras 桥（`brp_extras_*`）14 个、watch 4 个（world_get_components_watch /
+world_list_components_watch / brp_list_active_watches / brp_stop_watch）、
+日志 3 个（brp_list_logs / brp_read_log / brp_delete_logs）。16+2+8+14+4+3 = **47** ✅。
 
 ## 逐工具实测结果
 
 「兼容」判据：调用成功且结果与原生 BRP（curl 直连同方法）语义一致。
+下表为**工具 × 场景**的合并视图（19 行）；按原始调用次数的完整统计见表后 §「按原始调用次数统计」
+（三轮共 32 次 tools/call，同工具多次调用各计一次）。
 
 | 工具 | 调用参数（要点） | 结果 | 与 bevy 0.19.1 兼容 | 证据 |
 |------|------------------|------|--------------------|------|
@@ -41,15 +46,28 @@ extras 桥（brp_extras_*）14 个、watch 2 个（world_get_components_watch / 
 | `brp_extras_send_keys` | `{keys:["Space"], port:15703}` | ❌ 同上（`requires ... BrpExtrasPlugin (error -32601)`） | ⚠️ 环境性失败（同上） | s2 |
 | `brp_list_agent_tools` | `{port:15702}` | ❌ `Method \`brp_extras/agent_tools\` not found ...` | ⚠️ 环境性失败（同上） | s3 |
 | 错误处理探针 | 错误端口 15799 / 已删实体二次 despawn | ❌ 干净透传：HTTP connection failed 原文 / `Entity 1419v0 not found (error -23401)` | ✅（错误码与原文透传，agent 可读） | s2 |
-| 参数校验探针 | entity 传字符串 `"4294965876"` | ❌ `Invalid parameter format for 'GetComponentsParams': invalid type: string ..., expected u64` | ✅（MCP 侧严格校验；客户端必须传数字而非字符串） | s1 |
+| 参数校验探针 | 探针侧参数格式错误共 8 次（见下节统计）：entity 传字符串 `"4294965876"`（5 次，`Invalid parameter format ... invalid type: string ..., expected u64`）、brp_status 缺 `app_name`（1 次）、brp_extras_screenshot 缺 `path`（1 次，s1 版）、brp_type_guide 缺 `types`（1 次，s2 版） | ❌ 均被 MCP 参数校验拦截，报错原文自解释 | ✅（MCP 侧严格校验；客户端须传数字而非字符串、必填字段不可缺） | s1+s2 |
 
 （证据列：s1 = `10-mcp-session-transcript.jsonl`，s2 = `10-mcp-session2-transcript.jsonl`，s3 = `10-mcp-session3-transcript.jsonl`；均配 `.summary.json`）
 
+## 按原始调用次数统计（2026-09-26 返工核正）
+
+对三轮 transcript 的 32 次 `tools/call` 逐条解析（解析脚本重跑于返工时，与首轮会话原文比对一致）：
+
+| 分类 | 次数 | 明细 |
+|------|------|------|
+| 成功 | **19** | rpc_discover、world_spawn_entity、world_query×2、world_get_resources×2、registry_schema、brp_status、world_get_components×2（读+读回）、world_mutate_components、world_list_components×2（实体+全量）、world_despawn_entity、brp_execute、brp_type_guide×2（Wanderer+Velocity）、brp_all_type_guides、world_list_resources |
+| 探针参数格式错误（我方之错，MCP 校验拦截） | **8** | s1 探针 v1：brp_status 缺 `app_name`（1）、entity 传字符串致 u64 校验失败（5：get_components×2 / mutate_components / list_components / despawn_entity）、brp_extras_screenshot 缺 `path`（1）；s2：brp_type_guide 缺 `types`（1，v3 补测成功） |
+| 故意错误探针（验证错误透传） | **2** | 错误端口 15799 的 world_get_resources（HTTP connection failed 原文）；已删实体二次 despawn（`Entity 1419v0 not found (error -23401)`） |
+| extras 环境性失败（游戏未装 bevy_brp_extras，预期内） | **3** | brp_extras_screenshot、brp_extras_send_keys、brp_list_agent_tools |
+| **合计** | **32** | 19 成功 + 13 失败 |
+
 ## 结论
 
-1. **bevy_brp_mcp 0.22.7 与 bevy 0.19.1 游戏协议级兼容**：本轮 19 项调用中 14 项直接成功，
-   3 项失败均为游戏侧未安装 `bevy_brp_extras` 的环境性预期失败（报错原文自解释），2 项失败为我方探针
-   传错参数类型（MCP 校验拦截，行为正确）。未发现任何协议不兼容。
+1. **bevy_brp_mcp 0.22.7 与 bevy 0.19.1 游戏协议级兼容**：32 次 `tools/call` 中 19 次成功；13 次失败
+   无一为协议不兼容——8 次为我方探针参数格式错误（被 MCP 校验正确拦截，报错原文自解释）、
+   2 次为故意的错误处理探针（错误码与原文干净透传）、3 次为游戏侧未安装 `bevy_brp_extras` 的
+   环境性预期失败。探针侧失败恰恰验证了 MCP 的参数校验与错误透传质量。
 2. MCP 对 0.19 的三处收紧 schema 均已正确适配（list_components 无参全量 / get_resources 单数 /
    mutate_components 字段级 path）——对照 `验证报告.md` §1.1，这些恰是裸写 curl 易踩的坑，
    MCP 工具层已抹平。
