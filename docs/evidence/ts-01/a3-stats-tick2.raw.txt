@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":104,"result":{"value":{"avg_fps":86.8955234848406,"elapsed_secs":48.170046421000734,"fps_1s":60.11129655829322,"frame_count":4268,"tick":4268}}}
