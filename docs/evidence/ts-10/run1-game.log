@@ -1,0 +1,92 @@
+[CONFIG] game demo | count=100 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.19 (workspace locked)
+[2m2026-09-26T14:41:54.836652Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-26T14:41:55.094157Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-26T14:41:55.592408Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-09-26T14:41:55.604951Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-26T14:41:55.605004Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-26T14:41:55.605547Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (65v0)
+[2m2026-09-26T14:41:55.667627Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=100 | seed=20260926
+[2m2026-09-26T14:41:55.667695Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 100 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-09-26T14:41:55.667943Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-09-26T14:41:56.677309Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.0s tick=54 fps_1s=53.6 avg_fps=0.0
+[2m2026-09-26T14:41:57.693794Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.0s tick=115 fps_1s=60.0 avg_fps=59.9
+[2m2026-09-26T14:41:58.710158Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.0s tick=176 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:41:59.726861Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.1s tick=237 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:00.743398Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=5.1s tick=298 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:01.760116Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=6.1s tick=359 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:02.776665Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=7.1s tick=420 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:03.777171Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=8.1s tick=480 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:04.793296Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=9.1s tick=541 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:05.809836Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=10.1s tick=602 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:06.826774Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=11.2s tick=663 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:07.843306Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=12.2s tick=724 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:08.859740Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=13.2s tick=785 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:09.876381Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=14.2s tick=846 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:10.892842Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=15.2s tick=907 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:11.909478Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=16.2s tick=968 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:12.909570Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=17.2s tick=1028 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:13.926044Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=18.3s tick=1089 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:14.942992Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=19.3s tick=1150 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:15.959248Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=20.3s tick=1211 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:16.976020Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=21.3s tick=1272 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:17.244294Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=true
+[2m2026-09-26T14:42:17.992302Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=22.3s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:19.009176Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=23.3s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:20.026657Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=24.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:21.042103Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=25.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:22.058795Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=26.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:23.075340Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=27.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:24.092309Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=28.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:25.108675Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=29.4s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:26.125307Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=30.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:27.142053Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=31.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:28.158658Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=32.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:29.158546Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=33.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:30.174916Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=34.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:31.191469Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=35.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:32.208146Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=36.5s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:33.224772Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=37.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:34.224689Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=38.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:35.241233Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=39.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:36.257881Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=40.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:37.258107Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=41.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:38.274467Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=42.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:39.291174Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=43.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:40.307774Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=44.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:41.308355Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=45.6s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:42.324155Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=46.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:43.324421Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=47.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:44.340906Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=48.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:45.357562Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=49.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:46.374363Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=50.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:47.391130Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=51.7s tick=1288 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:47.542525Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=false
+[2m2026-09-26T14:42:48.407349Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=52.7s tick=1340 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:49.423976Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=53.8s tick=1401 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:50.440399Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=54.8s tick=1462 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:51.440809Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=55.8s tick=1522 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:52.457934Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=56.8s tick=1583 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:53.457004Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=57.8s tick=1643 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:54.473477Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=58.8s tick=1704 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:55.490006Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=59.8s tick=1765 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:56.490501Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=60.8s tick=1825 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:57.506784Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=61.8s tick=1886 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:58.523300Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=62.9s tick=1947 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:42:59.539913Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=63.9s tick=2008 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:00.539967Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=64.9s tick=2068 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:01.556508Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=65.9s tick=2129 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:02.573147Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=66.9s tick=2190 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:03.589669Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=67.9s tick=2251 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:04.606307Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=68.9s tick=2312 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:05.624073Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=70.0s tick=2373 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:06.639468Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=71.0s tick=2434 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:07.656288Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=72.0s tick=2495 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:08.672835Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=73.0s tick=2556 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:09.689373Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=74.0s tick=2617 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:10.705981Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=75.0s tick=2678 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:11.722570Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=76.1s tick=2739 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:12.739179Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=77.1s tick=2800 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:13.755937Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=78.1s tick=2861 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:14.772276Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=79.1s tick=2922 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:15.788936Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=80.1s tick=2983 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-26T14:43:16.805594Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=81.1s tick=3044 fps_1s=60.0 avg_fps=60.0

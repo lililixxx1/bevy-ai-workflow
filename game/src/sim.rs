@@ -10,12 +10,13 @@
 //!   `translation = origin + linear * t + Y * BOUNCE_AMP * sin(TAU * BOUNCE_HZ * t + phase)`
 //!   （常量见 [`BOUNCE_AMP`] / [`BOUNCE_HZ`]）。同种子同 t ⇒ 所有实体位置逐位相同，
 //!   与帧率无关——BRP 端可据 `SimStats.elapsed_secs` 精确复算并断言任意实体位置。
-//! - 暂停（`SimConfig::paused = true`，可经 BRP `world.mutate_resources` 翻转）：
+//! - 暂停（`SimConfig::paused = true`，可经 BRP `world.mutate_resources` 直接改写，
+//!   或经 [`PauseRequested`] 事件由 observer 翻转——TS-10）：
 //!   tick / elapsed / 实体位置全部冻结（运动系统与统计系统共用同一 run condition）。
 //!
 //! BRP 反射注册（SKILL.md §3.4 强制）：本插件 build 中显式 `register_type`
-//! 全部六个类型（SimConfig / SimStats / SimMetadata / Wanderer / Velocity / Tagged）；
-//! BRP 全路径即 Rust 模块路径（`game::sim::Wanderer` 等）。
+//! 全部七个类型（SimConfig / SimStats / SimMetadata / Wanderer / Velocity /
+//! Tagged / PauseRequested）；BRP 全路径即 Rust 模块路径（`game::sim::Wanderer` 等）。
 
 use crate::rng::{phase_hash, SplitMix64};
 use bevy::prelude::*;
@@ -129,6 +130,26 @@ pub struct Tagged {
     pub tag: String,
 }
 
+/// 暂停请求事件（TS-10：事件驱动的状态变更——收到即由 [`on_pause_requested`]
+/// observer 翻转 [`SimConfig::paused`]；BRP `world.trigger_event` 是唯一允许的
+/// 触发通道）。
+///
+/// 空载荷（unit 结构体）：BRP 端可省略 `value`——handler 对空载荷以
+/// `DynamicStruct::default()`（0 字段）走 `from_reflect`，本类型 0 字段无外部
+/// 数据依赖，构造无条件成功，无需 `#[reflect(Default)]` 兜底。
+/// 依据: `BrpTriggerEventParams { event, value: Option<Value> }`
+/// `bevy_remote-0.19.1/src/builtin_methods.rs:327-333`；handler 逐层校验
+/// （未注册类型报 `Unknown event type`、缺 `ReflectEvent` 数据报 `is not
+/// reflectable`）并反射构造后 `ReflectEvent::trigger`
+/// `builtin_methods.rs:1481-1516`；`#[reflect(Event)]` 即注册 `ReflectEvent`
+/// 数据（默认 trigger fn = `from_reflect_with_fallback::<E>` 后 `world.trigger`）
+/// `bevy_ecs-0.19.1/src/reflect/event.rs:125-137`；`#[derive(Reflect)]` 自动注册
+/// `ReflectFromReflect` `bevy_reflect_derive-0.19.1/src/registration.rs:32`
+/// （核实 2026-09-26）。
+#[derive(Event, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[reflect(Event, Serialize, Deserialize)]
+pub struct PauseRequested;
+
 pub struct SimPlugin {
     pub config: SimConfig,
 }
@@ -144,6 +165,8 @@ impl Plugin for SimPlugin {
             .register_type::<Wanderer>()
             .register_type::<Velocity>()
             .register_type::<Tagged>()
+            .register_type::<PauseRequested>()
+            .add_observer(on_pause_requested)
             .add_systems(Startup, (init_metadata, spawn_swarm, tag_first_ten).chain())
             .add_systems(
                 Update,
@@ -245,6 +268,24 @@ fn tag_first_ten(mut commands: Commands, query: Query<(Entity, &Wanderer)>) {
         }
     }
     info!("[SIM] tagged {tagged} wanderers (index < 10)");
+}
+
+/// Observer：收到 [`PauseRequested`] 事件即翻转 [`SimConfig::paused`]（TS-10）。
+///
+/// `world.trigger` 同步执行匹配的 observer（BRP handler 内联触发），因此翻转在
+/// `world.trigger_event` 的 HTTP 响应返回前已生效——BRP 端下一次
+/// `world.get_resources` 必然读到新值。
+/// 依据: observer 系统参数形态 `On<E>` + `ResMut` 并用
+/// `bevy-0.19.1/examples/ecs/observers.rs:142`（`on_add_mine`）；
+/// `App::add_observer` `bevy_app-0.19.1/src/app.rs:1474`；
+/// `World::trigger` 同步运行 observer `bevy_ecs-0.19.1/src/observer/mod.rs:63`
+/// （核实 2026-09-26）。
+fn on_pause_requested(_: On<PauseRequested>, mut config: ResMut<SimConfig>) {
+    config.paused = !config.paused;
+    info!(
+        "[SIM] PauseRequested observed -> paused={}",
+        config.paused
+    );
 }
 
 /// 单实体确定性初值（origin / linear / phase）——抽取顺序口径的单一落点。
@@ -365,5 +406,33 @@ mod tests {
                 assert!(len_c <= cap, "模长不超上限（cap={cap}, index={index}）");
             }
         }
+    }
+
+    #[test]
+    fn pause_requested_event_flips_paused() {
+        // TS-10：PauseRequested 事件 → observer 翻转 SimConfig.paused（翻转语义：
+        // 奇数次触发后 true，偶数次回 false）。world.trigger 同步执行 observer，
+        // 无需推进调度即可断言。
+        // 依据: World::add_observer / World::trigger
+        // bevy_ecs-0.19.1/src/observer/mod.rs:55 / :63（核实 2026-09-26）。
+        let mut world = World::new();
+        world.insert_resource(SimConfig {
+            entity_count: 0,
+            seed: 20260926,
+            max_speed: DEFAULT_MAX_SPEED,
+            bench_secs: 0.0,
+            paused: false,
+        });
+        world.add_observer(on_pause_requested);
+        world.trigger(PauseRequested);
+        assert!(
+            world.resource::<SimConfig>().paused,
+            "首次触发后 paused=true"
+        );
+        world.trigger(PauseRequested);
+        assert!(
+            !world.resource::<SimConfig>().paused,
+            "再次触发回 false（翻转语义）"
+        );
     }
 }

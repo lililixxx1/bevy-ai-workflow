@@ -185,9 +185,33 @@
 
 - bevy 0.19.1 MSRV = rustc **1.95.0**（`bevy-0.19.1/Cargo.toml:14`，`rust-version` 字段）。
 
+### 6.7 事件与 observer（BRP `world.trigger_event` 通路）
+
+- 事件定义：`#[derive(Event, Reflect, Serialize, Deserialize)]` + 容器属性
+  `#[reflect(Event, Serialize, Deserialize)]`——`#[reflect(Event)]` 注册 `ReflectEvent` 数据
+  （`bevy_ecs-0.19.1/src/reflect/event.rs:34-36` 文档），缺它时 BRP 报 `Event ... is not
+  reflectable`、类型未注册报 `Unknown event type`（`bevy_remote-0.19.1/src/builtin_methods.rs:1492/1497`）。
+  BRP 端按全路径 `event` + 可选 `value` 触发（`BrpTriggerEventParams`，`builtin_methods.rs:327-333`）；
+  省略 `value` 时 handler 以 `DynamicStruct::default()` 经 `ReflectFromReflect` 构造
+  （`builtin_methods.rs:1481-1516`；derive(Reflect) 自动注册 `ReflectFromReflect`，
+  `bevy_reflect_derive-0.19.1/src/registration.rs:32`）——**0 字段（unit）事件无条件成功**，
+  带字段事件走 TypedReflectDeserializer 需完整形态。
+- observer 形态（0.19 系统参数为 `On<E>`，非旧语料的 `Trigger<E>`）：
+  `fn on_x(_: On<E>, mut r: ResMut<R>)` + `app.add_observer(on_x)`
+  （官方示例 `bevy-0.19.1/examples/ecs/observers.rs:142`；`App::add_observer`
+  `bevy_app-0.19.1/src/app.rs:1474`）。`World::trigger` **同步**执行匹配 observer
+  （`bevy_ecs-0.19.1/src/observer/mod.rs:63`）——BRP `trigger_event` 的 HTTP 响应返回前
+  副作用已生效，紧接着的 `get_resources` 必读到新值。
+- **已验证**（TS-10/T015，2026-09-26：unit 事件 `game::sim::PauseRequested` + observer 翻转
+  `SimConfig.paused`，经 BRP 空载荷触发两连翻转，false→true→false 闭环；单测用
+  `World::add_observer` + `World::trigger` 直证，`observer/mod.rs:55/63`）。
+
 ---
 
 ## 变更记录
+
+- **v0.3（2026-09-26）**：新增 §6.7 事件与 observer（TS-10 运行时验证 `world.trigger_event`
+  空载荷触发 + `On<E>` observer 翻转资源后回写，未改既有约束）。
 
 - **v0.2（2026-09-26）**：§3.4 增补 `#[reflect(no_auto_register)]` 条目（TS-09 运行时验证「显式注册唯一通路」后回写，未改既有约束）。
 

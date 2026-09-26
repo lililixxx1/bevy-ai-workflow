@@ -23,5 +23,11 @@
 
 ## 判定记录
 
-- 判定者/日期/结论：（两阶段：人工对照 / run_tests 脚本）
-- 证据：（命令与响应摘录 / 日志路径）
+- 判定者/日期/结论：执行 agent，2026-09-26，**通过**（两阶段判定第一阶段：人工对照；4/4 断言
+  首次执行全 PASS，首次 `cargo check --workspace` REAL_EXIT=0，一次通过、返工 0）。
+  实现：`game/src/sim.rs` 新增 `PauseRequested`（unit 事件，`Event + Reflect + Serialize +
+  Deserialize` + `#[reflect(Event, Serialize, Deserialize)]`，显式 `register_type`）+
+  observer `on_pause_requested`（`On<PauseRequested>` + `ResMut<SimConfig>` 翻转 `paused`，
+  `App::add_observer` 注册）；BRP `world.trigger_event`（省略 `value`）为唯一触发通道。
+- 证据：`docs/evidence/ts-10-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定 + 请求形态
+  源码查证 + 终态复验 run2）；原始响应/运行日志/门禁日志 `docs/evidence/ts-10/`。
