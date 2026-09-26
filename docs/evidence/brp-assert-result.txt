@@ -1,0 +1,12 @@
+PASS | SimConfig readback | {"bench_secs":0,"entity_count":1000,"paused":false,"seed":20260926}
+PASS | tick increases | tick 360 -> 427
+PASS | Wanderer count==1000 | len=1000
+PASS | entity position changes per frame | [72.3544921875,1.5031394958496094,45.49543762207031] -> [73.47582244873047,0.31962233781814575,45.90581512451172]
+PASS | paused: tick frozen (<=2 frame boundary) | 467 == 468
+PASS | resumed: tick increases | 468 -> 535
+PASS | spawn+readback Velocity | [1,0,2]
+PASS | despawn: count back to 1000 | len=1000
+PASS | camera orbit radius~=90 | len=1 dist=90.00
+PASS | list_components has custom types
+PASS | analytic motion math assert |p-f(t)|<0.1 | t=9.13 err=5.89e-2
+SUMMARY: 11/11 PASS

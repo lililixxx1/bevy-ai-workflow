@@ -11,3 +11,11 @@
 /// 《文档写法规范》——`docs/` 全部文档的写法基准（seed 文档）。
 #[doc = include_str!("../doc-conventions.md")]
 pub mod doc_conventions {}
+
+/// 《帧率基线》（M1 第一役）——口径五要素 + 阶梯数据 + 复测方式。
+#[doc = include_str!("../fps-baseline.md")]
+pub mod fps_baseline {}
+
+/// 《BRP 冒烟与断言实录》（M1 第一役）——通路确认 + 断言链 + 实测形态结论。
+#[doc = include_str!("../brp-smoke.md")]
+pub mod brp_smoke {}
