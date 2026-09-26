@@ -6,4 +6,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-bevy = { workspace = true }
+# feature 追加在成员层（SKILL.md §1.2）：bevy_remote = BRP 常驻。
+bevy = { workspace = true, features = ["bevy_remote"] }
+# BRP 组件/资源序列化所需（derive 形态对齐官方示例 remote/server.rs:13）。
+serde = { version = "1", features = ["derive"] }
