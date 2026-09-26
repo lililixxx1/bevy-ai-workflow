@@ -1,0 +1,38 @@
+== 冒烟环境 ==
+date: 2026-09-26 | bevy 0.19.1 (workspace) | dx 0.7.10 (dioxus-cli) | rustc rustc 1.98.1 (48a229cea 2026-0 | Windows 10 19044 x64
+
+== 段1：启动（首次 fat binary 构建 280s 后启动应用，tag=BEFORE） ==
+289.90s  INFO Build completed successfully in [33m280.08s[0m, launching app! 💫
+290.55s ERROR [2m2026-09-26T12:04:57.769808Z[0m [32m INFO[0m [2mhotpatch_smoke[0m[2m:[0m [hotpatch-smoke] frame=30 tag=BEFORE
+290.55s ERROR [2m2026-09-26T12:04:57.774545Z[0m [32m INFO[0m [2mhotpatch_smoke[0m[2m:[0m [hotpatch-smoke] frame=60 tag=BEFORE
+290.55s ERROR [2m2026-09-26T12:04:57.778863Z[0m [32m INFO[0m [2mhotpatch_smoke[0m[2m:[0m [hotpatch-smoke] frame=90 tag=BEFORE
+
+== 段2：第一次热补丁（改 TAG: BEFORE→AFTER，仅字符串常量） ==
+402.16s ERROR 2026-09-26T12:06:49.654117Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749400 tag=BEFORE
+402.17s ERROR 2026-09-26T12:06:49.660543Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749430 tag=BEFORE
+402.17s ERROR 2026-09-26T12:06:49.667400Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749460 tag=BEFORE
+402.18s  INFO Hot-patching: tooling\hotpatch-smoke\src\main.rs took 1077ms
+402.18s ERROR 2026-09-26T12:06:49.673535Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749490 tag=AFTER
+402.19s ERROR 2026-09-26T12:06:49.678657Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749520 tag=AFTER
+402.19s ERROR 2026-09-26T12:06:49.683388Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749550 tag=AFTER
+402.20s ERROR 2026-09-26T12:06:49.687908Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=749580 tag=AFTER
+
+== 段3：第二次热补丁（改打印间隔逻辑 %30→%10，控制流变更） ==
+39822:469.02s  INFO Hot-patching: [32mtooling\hotpatch-smoke\src\main.rs[0m took [33m1085ms[0m
+469.00s ERROR 2026-09-26T12:07:56.495345Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194150 tag=AFTER
+469.01s ERROR 2026-09-26T12:07:56.501564Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194180 tag=AFTER
+469.02s ERROR 2026-09-26T12:07:56.508698Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194210 tag=AFTER
+469.02s  INFO Hot-patching: tooling\hotpatch-smoke\src\main.rs took 1085ms
+469.02s ERROR 2026-09-26T12:07:56.515279Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194240 tag=AFTER
+469.03s ERROR 2026-09-26T12:07:56.517653Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194250 tag=AFTER
+469.03s ERROR 2026-09-26T12:07:56.519688Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194260 tag=AFTER
+469.03s ERROR 2026-09-26T12:07:56.521684Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1194270 tag=AFTER
+-- 补丁生效后输出步长变 10（约 30s 后采样，frame 计数自 119 万连续涨至 139 万+）：
+500.44s ERROR 2026-09-26T12:08:27.928846Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1398200 tag=AFTER
+500.44s ERROR 2026-09-26T12:08:27.930320Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1398210 tag=AFTER
+500.44s ERROR 2026-09-26T12:08:27.931786Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1398220 tag=AFTER
+500.44s ERROR 2026-09-26T12:08:27.933291Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1398230 tag=AFTER
+500.44s ERROR 2026-09-26T12:08:27.934737Z  INFO hotpatch_smoke: [hotpatch-smoke] frame=1398240 tag=AFTER
+
+== 判定 ==
+两次热补丁均在 ~1.1s 内生效；frame 计数全程连续单调（749460→749490 / 1194210→1194240→1398200+），无归零无重启：进程未重启、行为已变更。结论：通过。

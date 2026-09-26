@@ -1,0 +1,13 @@
+# Rust Hotpatching Windows 独立冒烟（意向文档 §10 第 6 条 / §5.3）。
+# 运行方式（对齐 bevy 0.19.1 官方 examples/ecs/hotpatching_systems.rs 的说明）：
+#   dx serve --hot-patch
+[package]
+name = "hotpatch-smoke"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+# hotpatching feature 经 bevy_internal 转发到 bevy_app/bevy_ecs（bevy_ecs 引入 subsecond 0.7.0-rc.0），
+# 并使 DefaultPlugins 自动附带 HotPatchPlugin（bevy_internal default_plugins.rs）。
+bevy = { workspace = true, features = ["hotpatching"] }
