@@ -2,7 +2,7 @@
 
 - 收录：通用性分级为 `methodology`（换引擎后仍成立）的错题条目。
 - 入库门禁与条目模板：见 [pitfalls-schema.md](./pitfalls-schema.md)（未过验证的条目禁止入库）。
-- 当前：1 条。
+- 当前：2 条。
 
 ---
 
@@ -48,3 +48,51 @@ cargo check --workspace | tail -30; echo $?   # 反例：$? 是 tail 的退出�
 
 - 修复后 `cargo check --workspace`：`REAL_EXIT=0`（Checking game/docs 均过，1m44s）；
 - `cargo test --doc -p docs`：`REAL_EXIT=0`（2 passed; 0 failed）。
+
+### PIT-M-002：测试参考向量不得凭记忆书写——算法常数的「正确感」也是幻觉
+
+- 日期：2026-09-26
+- 适用版本：方法论级（无引擎版本要求；实例为 SplitMix64 参考向量，坑本身与语言/引擎无关）
+- 分型：错题
+- 通用性分级：methodology（换引擎/换语言后仍成立：任何「我应该记得这个值」的常量、哈希、编码、签名都是同一坑）
+- 标签：`参考向量` `记忆不可信` `单元测试` `幻觉`
+
+**现象**：为 SplitMix64（seed=0）写单测参考向量时，前两个值凭训练记忆直接写出 `0xE220A87510B23965` / `0x6C789E6AA1B965F4`。独立实现（node BigInt，同算法常数）计算的真实值为 `0xE220A8397B1DCDAF` / `0x6E789E6AA1B965F4`——前 16 进制位相同（`0xE220`/`0x06C4` 级别的开头碰对），主体错误。若未先验证直接提交，测试会以「看似可信的错误期望值」污染回归集。
+
+**最小复现**（Rust 测试断言；`compile_fail` 语义不符——代码可编译，失败在断言，故用 `ignore` 并附理由：本块还原的是**运行期断言失败**，非编译失败）：
+
+```rust,ignore
+// 反例：期望值凭记忆书写（真实输出是 0xE220A8397B1DCDAF）
+let mut r = SplitMix64::new(0);
+assert_eq!(r.next_u64(), 0xE220_A875_10B2_3965);  // 运行期 panic
+```
+
+实测复现（2026-09-26，`cargo test -p game splitmix64_reference`）：
+
+```text
+assertion `left == right` failed
+  left: 16294208416658607535    (真实输出)
+ right: 16294208672571210085    (记忆期望值)
+test result: FAILED. 0 passed; 1 failed; ... REAL_EXIT=101
+```
+
+**根因**：训练记忆对「曾经见过的高熵常量」只保留模糊印迹，输出时以貌似合理的十六进制填充细节——与 API 幻觉同源，只是对象从签名换成了数值。开头几位碰对反而提高了蒙混概率。
+
+**修复**（已过 cargo test）：
+
+1. 用**独立实现**（另一语言/另一份代码）计算参考向量后再写断言；本例用 node BigInt 按公开算法常数独立计算；
+2. 在测试注释中注明向量来源与计算方式，供升级窗口复核。
+
+```rust
+// 正例（节选自 game/src/rng.rs，已过 cargo test -p game）
+// 参考向量由独立实现（node BigInt，同算法常数）计算，防手误。
+let mut r = SplitMix64::new(0);
+assert_eq!(r.next_u64(), 0xE220_A839_7B1D_CDAF);
+assert_eq!(r.next_u64(), 0x6E78_9E6A_A1B9_65F4);
+assert_eq!(r.next_u64(), 0x06C4_5D18_8009_454F);
+```
+
+**验证证据**：
+
+- 复现：记忆向量版本 `cargo test -p game splitmix64_reference` → FAILED，REAL_EXIT=101（输出见上，2026-09-26）；
+- 修复：独立计算向量替换后同命令 → `test result: ok. 1 passed`（全量 `cargo test -p game` 8 passed）。
