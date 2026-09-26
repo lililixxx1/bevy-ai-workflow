@@ -10,7 +10,7 @@
 
 1. 读 `AGENTS.md`、本文件、`assets-methodology/sop.md`；涉及仓库结构、里程碑、范围边界的决策，先读《Bevy-AI开发意向文档.md》对应章节。
 2. 确认版本未被擅动：根 `Cargo.toml` 的 `bevy = "0.19"`（`Cargo.toml:9`）与 `Cargo.lock` 一致；发现版本号在本仓库被改动且非升级窗口任务 → 停止并上报。
-3. 确认工具链 ≥ MSRV：`rustc -V` ≥ 1.95.0（`rust-version` 声明于 `bevy-0.19.1/Cargo.toml:13`；低于此 cargo 在解析阶段即拒绝，见 `assets-methodology/pitfalls.md` PIT-M-001）。
+3. 确认工具链 ≥ MSRV：`rustc -V` ≥ 1.95.0（`rust-version` 声明于 `bevy-0.19.1/Cargo.toml:14`；低于此 cargo 在解析阶段即拒绝，见 `assets-methodology/pitfalls.md` PIT-M-001）。
 4. 台账 `assets-methodology/task-ledger.md` 中上一任务已完整登记（缺 → 先补记再开工）。
 5. 长时命令（cargo 全量编译等）后台跑 + 轮询，成败判定看**真实退出码**（`... > log 2>&1; echo REAL_EXIT=$?`），禁止管道末端判码（PIT-M-001 教训）。
 
@@ -157,9 +157,10 @@
 
 ### 6.2 BRP 方法集与自定义方法
 
-- 内置方法（`RemotePlugin::default()` 自动注册，注册逻辑 `src/lib.rs:791-803`；方法名常量 `src/builtin_methods.rs:45-111`）：
-  `world.get_components` / `world.query` / `world.spawn_entity` / `world.insert_components` / `world.remove_components` / `world.despawn_entity` / `world.reparent_entities` / `world.list_components` / `world.mutate_components` / `world.get_components+watch` / `world.list_components+watch` / `world.get_resources` / `world.insert_resources` / `world.remove_resources` / `world.mutate_resources` / `world.list_resources` / `world.trigger_event` / `world.write_message` / `world.observe+watch` / `registry.schema` / `rpc.discover`。
-- 自定义方法（自研件 `launch_level`/`run_tests`/`screenshot` 的注册通道）公开 API：**`with_method_main` / `with_method_render`**（`src/lib.rs:591` / `:601`）；watch 变体 `with_watching_method_main` / `with_watching_method_render`（`:632` / `:641`）。
+- 内置方法共 **23** 个（`RemotePlugin::default()` 经 `add_default_methods` 全量注册，Default impl `src/lib.rs:791-803`；方法名常量表 `src/builtin_methods.rs:45-111`）：
+  `world.get_components` / `world.query` / `world.spawn_entity` / `world.insert_components` / `world.remove_components` / `world.despawn_entity` / `world.reparent_entities` / `world.list_components` / `world.mutate_components` / `world.get_components+watch` / `world.list_components+watch` / `world.get_resources` / `world.insert_resources` / `world.remove_resources` / `world.mutate_resources` / `world.list_resources` / `world.trigger_event` / `world.write_message` / `world.observe+watch` / `registry.schema` / `schedule.list` / `schedule.graph` / `rpc.discover`。
+  检索提示：常量名大多带 `_METHOD` 后缀，但 `schedule.list` / `schedule.graph` 的常量是 `BRP_SCHEDULE_LIST` / `BRP_SCHEDULE_GRAPH`（`src/builtin_methods.rs:102` / `:108`，**无** `_METHOD` 后缀）——grep 常量表时勿按后缀过滤（v0.1 前车之鉴）。两方法随 `bevy_dev_tools`（bevy_remote 的**非 optional** 依赖，`Cargo.toml:76-78`）默认可用，注册处 `src/lib.rs:779` / `:784`；`rpc.discover` 注册于 `src/lib.rs:719`。
+- 自定义方法（自研件 `launch_level`/`run_tests`/`screenshot` 的注册通道）公开 API：**`with_method_main` / `with_method_render`**（`src/lib.rs:591` / `:601`）；watch 变体 `with_watching_method_main` / `with_watching_method_render`（`:632` / `:642`）。
 - ⚠️ **常见误写：`with_method`**——0.19.1 中它是私有 `fn`（`src/lib.rs:611`，无 `pub`），外部不可调用。任务种子信息或旧资料出现 `RemotePlugin::default().with_method(...)` 时按本条纠正（本条即查证纪律的实例：种子信息也错，源码为准）。
 - handler 形态：`impl IntoSystem<In<Option<Value>>, BrpResult, M>`（`src/lib.rs:594`），即 `fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult`；`BrpResult<T = Value> = Result<T, BrpError>`（`src/lib.rs:1428`），`Value` = `serde_json::Value`。此签名形态**未在本仓库过编译**，首个自研 RPC 任务落地时验证。
 
@@ -181,10 +182,11 @@
 
 ### 6.6 工具链
 
-- bevy 0.19.1 MSRV = rustc **1.95.0**（`bevy-0.19.1/Cargo.toml:13`，`rust-version` 字段）。
+- bevy 0.19.1 MSRV = rustc **1.95.0**（`bevy-0.19.1/Cargo.toml:14`，`rust-version` 字段）。
 
 ---
 
 ## 变更记录
 
+- **v0.1（2026-09-26）**：审核返工修复三处事实失准（未降低约束、未删证据）：①§6.2 内置方法清单漏 `schedule.list` / `schedule.graph`——常量名不带 `_METHOD` 后缀（`builtin_methods.rs:102/108`）致初版 grep 按后缀过滤漏检，补齐为 23 个并附注册行号（`lib.rs:719/779/784`）；②§6.2 `with_watching_method_render` 行号 `:641` → `:642`（641 是 `#[inline]` 属性行）；③§0.3 与 §6.6 的 `rust-version` 行号 `:13` → `:14`（与台账 T001 一致）。
 - **v0（2026-09-26）**：首次成文（意向文档 §10 第 3 条 + §5.2）。五节纪律（版本/查证/架构/验证/分层）+ 事实速查；全部 API 事实按本地源码 `<reg>` 核实并带行号引用。核实过程中的两处修正：①种子信息中的 `RemotePlugin::with_method` 实为私有（§6.2）；②BRP 默认监听确认为 127.0.0.1:15702（§6.1）。bevy_remote 源码经仓库外临时 crate `cargo fetch` 拉取核实（未动本仓库 manifest）。
