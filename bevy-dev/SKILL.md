@@ -53,7 +53,7 @@
 ### 3.1 工程组织
 
 - workspace 只有三类成员：`game/`（可执行，游戏本体/试金石）、`docs/`（doctest 门禁 crate）、`tooling/*`（自研件，游戏外进程）。新 crate 先问归属；不属于任何一类 → 上报，不塞进 `game/`。
-- `game/src/` 内按系统分模块（组件、system、插件各自成文件或按领域聚合）；首个 demo（§10 第 5 条）落定目录结构后，把定案补记到本节。
+- `game/src/` 目录定案（M1 第一役，2026-09-26）：`main.rs`（只组装插件）+ 按功能一模块一插件——`cli.rs`（参数解析）/ `rng.rs`（确定性 PRNG，纯逻辑）/ `sim.rs`（模拟组件+Resource+system 聚合）/ `camera.rs` / `brp.rs` / `bench.rs`（帧率采集）。新功能优先新模块+新插件，不在旧模块里堆系统；纯逻辑（无 Plugin）可独立小模块。
 
 ### 3.2 插件组织
 
