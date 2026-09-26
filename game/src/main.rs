@@ -26,6 +26,7 @@ fn main() -> AppExit {
     let sim_config = sim::SimConfig {
         entity_count: args.count,
         seed: args.seed,
+        max_speed: args.max_speed,
         bench_secs: args.bench_secs,
         paused: false,
     };

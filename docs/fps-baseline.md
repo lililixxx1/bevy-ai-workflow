@@ -56,3 +56,5 @@ cargo build --release -p game
 ./target/release/game.exe --count <N> --seed 20260926 --bench-secs 12 [--no-vsync]
 # 结果取日志中 [BENCH] 汇总行；对照上表同组同阶梯
 ```
+
+注：TS-02（2026-09-26）起速度上限经 `--max-speed F` 配置化（默认 3.0，`game::sim::DEFAULT_MAX_SPEED`）；上表基线数据均在默认值下采集，复测对照时不传该参即口径一致。
