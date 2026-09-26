@@ -80,6 +80,7 @@
   2. 接入 bevy_brp_mcp，验证其对 0.19 的兼容性（M2 首个任务；不兼容则修补/fork）；截图暂用 OS 级窗口截屏过渡；
   3. 自研游戏专属 RPC（`RemotePlugin::with_method` 注册 `launch_level` / `run_tests` / `screenshot`）——这是自研件的核心（M2 验收③）：`run_tests` 按任务测试集的验收清单逐条断言，设计吸收「状态注入优先、截图作辅助证据」（§3 学界结论）。
 - Rust Hotpatching（0.17+，基于 subsecond）现状限制：仅支持热补 ECS system 函数，实验特性，Windows 成熟度未经验证。M1 期间独立冒烟：通过则纳入「改逻辑不重启」流程；不通过则回退「重启进程验证」（桥上有进程管理，重启成本可控）。
+  - **冒烟结论（2026-09-26）：通过，纳入「改逻辑不重启」流程**。bevy 0.19.1 机制经本地源码核实延续 0.17 路线（`bevy/hotpatching` feature → bevy_ecs 引入 subsecond 0.7.0-rc.0；DefaultPlugins 在该 feature 下自动附带 HotPatchPlugin），运行方式 `dx serve --hot-patch`（dioxus-cli 0.7.10）。Windows 10 19044 实测：两次热补丁（字符串常量变更 / 控制流 `%30→%10` 变更）各约 1.1s 生效，frame 计数全程连续单调（749460→749490、1194210→1398200+，进程未重启）而输出行为已变更。适用边界沿用上述限制：仅 system 函数体内的改动；结构变更（新增/删除 system、非 system 代码、依赖变更）仍走重启。证据：`tooling/hotpatch-smoke/`（冒烟 crate + evidence/hotpatch-smoke-run.log，台账 T005）。
 
 ## 6. 仓库结构与知识资产分层（已定案）
 
@@ -154,6 +155,7 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 
 ## 变更记录
 
+- **2026-09-26（Hotpatching 冒烟结论回写，§10 第 6 条）**：冒烟通过，§5.3 Hotpatching 条目末尾追加带日期结论注记（原文未动）；新增 `tooling/hotpatch-smoke/`（最小冒烟 crate + 运行证据）；修复根 Cargo.toml 的 `tooling/*` glob 成员误吸入 `tooling/brp-logs`（无 Cargo.toml 的证据目录）导致 workspace 解析失败的问题（加 `exclude`）。
 - **v0.3.1（2026-09-26）**：plan-code-reviewer 审核（裁决：有条件通过）后修订，6 项必改全部落实：B1 M1「一次通过」定义与两阶段判定机制、§10 依赖序修正；B2 M3 ④ 样本池改为「台账返工 ≥1 任务」并规定 M1 失败快照不可重做；B3 M2 截图口径与「无人工点击」可核查定义；B4 自研件 run_tests/screenshot 纳入 M2 验收③；B5 错题/模式门禁分型（反例 `compile_fail` 标记）+ 方法论级条目落点（assets-methodology/pitfalls.md、patterns.md）；B6 帧率基线采集口径。同时采纳审核建议：S1 版本锁写法更正（`"0.19"` + Cargo.lock，`=` 精确锁不适用于 x 范围）；S2 新增「资产不增值」风险与未达标处置规则、升级窗口完成判定；S3 M4 可玩性定义与选品备忘录固化项；S4 doctest 机制指定（include_str! 薄封装、no_run 规范）；S5 「24 小时回写」改为可执行的会话口径；S6 PR 文档纪律收窄（豁免纯重构/格式化）；S7 BRP 仅监听回环地址；G1 补 SKILL.md v0 冷启动步骤；G2 里程碑执行规则（依赖序/并行/时间盒待定）；G3 游戏核心系统入测试集；G4 变更记录补注 v0.2 的 M5 移动端评估里程碑已随移动端移除而删除；G5 统一「知识资产/自研件/工作流」用词口径。复核（裁决：通过）后处理两条非阻断备注：台账 schema 补「耗时」字段（升级窗口的工时量化有出处）；台账启用上移至骨架后首位、序号措辞改为「建议次序，前置/并行以各条内注为准」、Hotpatching 冒烟标注可并行。
 - **v0.3（2026-09-26）**：目的重定调（owner 决策）——主产出 = 工作流 + 两层知识资产，游戏降为试金石，移动端全部移除（v0.2 曾补设的 M5 移动端评估里程碑一并删除）。新增 §3 调研对照（bevy_brp_mcp/bevy_debugger_mcp/Godot-Unity 阵营/Voyager/GameLogicBench 等）。五项决策经 grill 定案落地：①M2 复用 bevy_brp_mcp，不自建通用桥，游戏专属 RPC 自研；②知识资产两层结构（§6）；③游戏定选品标准不锁品类（§8）；④私有起步保持可公开态，开源延后 M3 再议；⑤立即 0.19 起步，0.20 即首个升级窗口。里程碑重构：任务测试集入库为资产、迁移成本量化、M4 改为试金石定位。吸收 Voyager「验证过才入库」纪律与学界「状态注入 > 纯截图」验证结论。
 - **v0.2（2026-09-26）**：事实核查修订——①BSN 论据更正（0.19 仅 `bsn!` 宏，`.bsn` 未发布）；②版本归因更正（GPU-driven=0.16、Hotpatching=0.17）；③性能数字替换为官方 Caldera 基准；④补齐 M5；⑤成功标准量化；⑥工作流三截图落地顺序修正；⑦Hotpatching 限制与回退；⑧决策点 0；⑨no-AI 政策更新；⑩doctest 门禁；⑪工具清单加入 ZCode。

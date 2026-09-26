@@ -2,7 +2,7 @@
 
 - 收录：通用性分级为 `methodology`（换引擎后仍成立）的错题条目。
 - 入库门禁与条目模板：见 [pitfalls-schema.md](./pitfalls-schema.md)（未过验证的条目禁止入库）。
-- 当前：2 条。
+- 当前：3 条。
 
 ---
 
@@ -96,3 +96,52 @@ assert_eq!(r.next_u64(), 0x06C4_5D18_8009_454F);
 
 - 复现：记忆向量版本 `cargo test -p game splitmix64_reference` → FAILED，REAL_EXIT=101（输出见上，2026-09-26）；
 - 修复：独立计算向量替换后同命令 → `test result: ok. 1 passed`（全量 `cargo test -p game` 8 passed）。
+
+### PIT-M-003：workspace 成员 glob 会把非 crate 目录吸入解析链——证据目录与 crate 目录不能共用一个命名空间
+
+- 日期：2026-09-26
+- 适用版本：方法论级（无引擎版本要求；实例为 Cargo workspace glob 成员，坑模式适用于任何「构建系统按目录隐式发现成员」的栈）
+- 分型：错题
+- 通用性分级：methodology（换引擎后同型坑仍在：工程工具按目录约定隐式注册成员时，非代码目录混入即破坏构建）
+- 标签：`workspace` `glob 成员` `目录职责混放` `证据管理`
+
+**现象**：T004 把 BRP 验证证据放在 `tooling/brp-logs/`（纯日志目录，无 Cargo.toml）。根 workspace 用 `members = ["tooling/*"]` glob。T005 在 `tooling/hotpatch-smoke/` 新建 crate 后，**任何** cargo 命令（包括 `cargo check -p hotpatch-smoke`）在解析阶段即失败，尚未编译任何代码：
+
+```text
+error: failed to load manifest for workspace member `...\tooling\brp-logs`
+referenced via `tooling/*` by workspace at `...\bevy-ai-workflow\Cargo.toml`
+
+Caused by:
+  failed to read `...\tooling\brp-logs\Cargo.toml`
+
+Caused by:
+  系统找不到指定的文件。 (os error 2)
+```
+
+**最小复现**（shell 语义；`compile_fail` 不适用——失败在 cargo 解析而非 rustc 编译，故用 `ignore` 并附理由：还原的是**构建系统报错**，非编译失败）：
+
+```text,ignore
+# 结构：根 Cargo.toml 含 members=["tooling/*"]，tooling/brp-logs/ 存在但无 Cargo.toml
+cargo check -p <任何成员>
+# → error: failed to load manifest for workspace member `tooling/brp-logs`（os error 2）
+```
+
+**根因**：`members` glob 把每个直接子目录都视为候选成员，候选必须可解析为 package（含 Cargo.toml）；解析失败发生在 workspace 装配阶段，先于目标选择，故 `-p` 无法绕开。深层原因是**目录职责混放**：证据资产目录（长期入库、会被 glob 吸入）与 crate 目录（构建系统成员）共用 `tooling/` 命名空间。
+
+**修复**（已过编译与运行验证）：
+
+1. 根 workspace 加 `exclude = ["tooling/brp-logs"]`（exclude 优先于 glob 匹配）；
+2. 规约：`tooling/` 下只放 crate；证据目录放 crate 内部（如 `tooling/hotpatch-smoke/evidence/`，非 `tooling/*` 直接子级，不入 glob 命名空间）或 docs 侧。
+
+```toml
+# 正例（根 Cargo.toml，修复后 cargo check --workspace 通过）
+[workspace]
+resolver = "2"
+members = ["game", "docs", "tooling/*"]
+exclude = ["tooling/brp-logs"]
+```
+
+**验证证据**：
+
+- 复现：`cargo check -p hotpatch-smoke` → 上述报错（2026-09-26）；
+- 修复：加 exclude 后 `cargo check -p hotpatch-smoke` → `Finished dev profile ... in 0.78s`；`cargo check --workspace` 亦通过；冒烟全流程（dx serve --hot-patch 两次热补丁）正常执行。
