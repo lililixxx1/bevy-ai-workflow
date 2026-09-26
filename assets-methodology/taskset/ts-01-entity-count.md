@@ -25,3 +25,12 @@
 
 - 判定者/日期/结论：执行 agent，2026-09-26 — **一次通过**（人工对照阶段；4/4 断言在进程 1 首次执行全部通过，返工 0，零改码）
 - 证据：`docs/evidence/ts-01-brp.md`（curl 命令原文 + 响应原文摘录 + 判定；原始响应与运行日志在 `docs/evidence/ts-01/`；断言 4 的 `option` 字段形态核实于 `bevy_remote-0.19.1/src/builtin_methods.rs:383-396`）
+- 第二阶段（run_tests 脚本）：**PASS**，2026-09-26 — `task-runner run --suite ts-01
+  --expect-count 500 --expect-seed 20260926` 全自动判定：套件 5/5 断言通过 + 字面值
+  绑定（经 `world.get_resources` 核对 entity_count/seed 与清单字面值一致）+ 跨调用
+  `snapshot.tick` 递增通过，退出码 0（负例 `--expect-seed 1` 正确失败退出 1）。证据
+  `docs/evidence/m2-rpc.md` 断言组 B/E（raw `m2-rpc/taskrunner-run1.txt` /
+  `taskrunner-run2.txt` / `taskrunner-run2-negative.txt`，台账 T019）。进程内套件与本
+  清单的对应：`game/src/rpc/suites/ts01.rs` 模块文档（断言 1/2 套件内为配置自洽口径，
+  清单字面值由工具端 `--expect-*` 绑定；清单 #4 括注的「跨进程一致」为测量口径，进程内
+  以初值重抽一致断言等价替代；断言 3 的第二采样由工具端两连调比对 `snapshot.tick` 完成）。

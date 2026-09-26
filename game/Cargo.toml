@@ -10,8 +10,7 @@ publish = false
 bevy = { workspace = true, features = ["bevy_remote"] }
 # BRP 组件/资源序列化所需（derive 形态对齐官方示例 remote/server.rs:13）。
 serde = { version = "1", features = ["derive"] }
-
-[dev-dependencies]
-# 仅测试用：TS-02 验证 SimConfig 旧序列化（无 max_speed 字段）兼容读入。
-# 已在 Cargo.lock 依赖图内（bevy_remote → serde_json），不引入新的版本解析面。
+# BRP 自定义方法（game.run_tests / game.screenshot）的响应构造与 params 解析。
+# 已在 Cargo.lock 依赖图内（bevy_remote → serde_json），不引入新的版本解析面
+# （原为 dev-dependencies 仅测试使用；自研 RPC 起升为运行时依赖）。
 serde_json = "1"

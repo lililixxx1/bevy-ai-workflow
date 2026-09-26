@@ -163,7 +163,7 @@
   检索提示：常量名大多带 `_METHOD` 后缀，但 `schedule.list` / `schedule.graph` 的常量是 `BRP_SCHEDULE_LIST` / `BRP_SCHEDULE_GRAPH`（`src/builtin_methods.rs:102` / `:108`，**无** `_METHOD` 后缀）——grep 常量表时勿按后缀过滤（v0.1 前车之鉴）。两方法随 `bevy_dev_tools`（bevy_remote 的**非 optional** 依赖，`Cargo.toml:76-78`）默认可用，注册处 `src/lib.rs:779` / `:784`；`rpc.discover` 注册于 `src/lib.rs:719`。
 - 自定义方法（自研件 `launch_level`/`run_tests`/`screenshot` 的注册通道）公开 API：**`with_method_main` / `with_method_render`**（`src/lib.rs:591` / `:601`）；watch 变体 `with_watching_method_main` / `with_watching_method_render`（`:632` / `:642`）。
 - ⚠️ **常见误写：`with_method`**——0.19.1 中它是私有 `fn`（`src/lib.rs:611`，无 `pub`），外部不可调用。任务种子信息或旧资料出现 `RemotePlugin::default().with_method(...)` 时按本条纠正（本条即查证纪律的实例：种子信息也错，源码为准）。
-- handler 形态：`impl IntoSystem<In<Option<Value>>, BrpResult, M>`（`src/lib.rs:594`），即 `fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult`；`BrpResult<T = Value> = Result<T, BrpError>`（`src/lib.rs:1428`），`Value` = `serde_json::Value`。此签名形态**未在本仓库过编译**，首个自研 RPC 任务落地时验证。
+- handler 形态：`impl IntoSystem<In<Option<Value>>, BrpResult, M>`（`src/lib.rs:591-599`，name 参数为 `impl Into<String>`），即 `fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult`；`BrpResult<T = Value> = Result<T, BrpError>`（`src/lib.rs:1428`），`Value` = `serde_json::Value`。handler 经 `world.run_system_with(id, message.params)` 独占执行（`src/lib.rs:1501`）——handler 内可直改世界（§3.3 认可的 `&mut World` 场景）。`BrpError` 三字段全公开（code/message/data，`lib.rs:1304-1312`），错误码复用 `error_codes` 常量模块（`lib.rs:1387` 起，如 `INVALID_PARAMS` = -32602）。**已验证**（T019，2026-09-26：`game/src/rpc/` 三方法注册运行，证据 `docs/evidence/m2-rpc.md`）。自定义方法会进 `rpc.discover` 方法清单（与内置方法同域，实测）。
 
 ### 6.3 BRP 与反射注册
 
@@ -206,9 +206,19 @@
   `SimConfig.paused`，经 BRP 空载荷触发两连翻转，false→true→false 闭环；单测用
   `World::add_observer` + `World::trigger` 直证，`observer/mod.rs:55/63`）。
 
+### 6.8 Screenshot 捕获管线（`bevy::render::view::screenshot`）
+
+- 导入路径 `bevy::render::view::screenshot` 的实体文件是 `bevy_render-0.19.1/src/view/window/screenshot.rs`（经 `view/mod.rs:10` 的 `pub use window::*` 重导出）——按 `view/screenshot.rs` 路径 grep 会落空。
+- 用法是**组件实体 + observer**（不是挂到相机上）：`world.spawn(Screenshot::primary_window()).observe(save_to_disk(path))`；完成是异步实体事件 `ScreenshotCaptured { entity, image }`（`screenshot.rs:49`），本机实测受理后 +3 帧完成。同一实体可并挂多个 observer（写盘 + 日志回填），相对次序无契约。
+- `save_to_disk(path: impl AsRef<Path>) -> impl FnMut(On<ScreenshotCaptured>)`（`screenshot.rs:134`）：observer 内**同步**写盘（`to_rgb8` + `save_with_format`，格式按扩展名）。捕获实体完成后由 ScreenshotPlugin 的 `clear_screenshots`（First 调度）清理——完成轮询须经自有日志资源，不能靠查实体。
+- 截图为**物理分辨率**：逻辑 1280x720 + DPI 1.25 的本机实得 1600x900——尺寸断言以物理分辨率为准。
+- **已验证**（T019，2026-09-26：`game.screenshot` / `game.screenshot_log` 经此管线，PNG 魔数 + IHDR 尺寸与日志回填互证，证据 `docs/evidence/m2-rpc.md`）。
+
 ---
 
 ## 变更记录
+
+- **v0.4（2026-09-26）**：§6.2 handler 形态从「未过编译」改标**已验证**（T019 三方法落地；补 `run_system_with` 独占执行、`BrpError` 公开字段、`error_codes` 复用、`rpc.discover` 收录自定义方法四条实测事实）；新增 §6.8 Screenshot 捕获管线（导入路径与实体文件错位、组件实体+observer 形态、异步 +3 帧完成、物理分辨率口径，均 T019 实测）。
 
 - **v0.3（2026-09-26）**：新增 §6.7 事件与 observer（TS-10 运行时验证 `world.trigger_event`
   空载荷触发 + `On<E>` observer 翻转资源后回写，未改既有约束）。

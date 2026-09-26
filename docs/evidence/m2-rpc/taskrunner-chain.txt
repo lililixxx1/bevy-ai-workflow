@@ -1,0 +1,28 @@
+== [1/6] world.spawn_entity（Tagged + Velocity）==
+>> [1] world.spawn_entity params={"components":{"game::sim::Tagged":{"tag":"brp-chain-marker"},"game::sim::Velocity":{"linear":[0.5,0.0,0.5]}}}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"entity":4294966371}}
+[PASS] 实体号 4294966371
+== [2/6] world.mutate_components（tag → brp-chain-mutated）==
+>> [2] world.mutate_components params={"component":"game::sim::Tagged","entity":4294966371,"path":"tag","value":"brp-chain-mutated"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":null}
+[PASS] 响应无 error（改写已受理）
+== [3/6] game.screenshot（主窗口帧）==
+>> [3] game.screenshot params={"path":"docs/evidence/m2-rpc/chain/m2-chain-4294966371.png"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"id":0,"note":"捕获异步完成：轮询 game.screenshot_log 至 status=captured，再核验 PNG 文件","path":"docs/evidence/m2-rpc/chain/m2-chain-4294966371.png","queued":true}}
+[PASS] 受理 id=Some(0) path=docs/evidence/m2-rpc/chain/m2-chain-4294966371.png
+== [4/6] world.get_components 读回断言（tag == brp-chain-mutated）==
+>> [4] world.get_components params={"components":["game::sim::Tagged"],"entity":4294966371}
+<< [4] {"id":4,"jsonrpc":"2.0","result":{"components":{"game::sim::Tagged":{"tag":"brp-chain-mutated"}},"errors":{}}}
+[PASS] tag="brp-chain-mutated"
+== [5/6] game.screenshot_log 轮询 + PNG 文件核验 ==
+>> [5] game.screenshot_log params={}
+<< [5] {"id":5,"jsonrpc":"2.0","result":{"entries":[{"frame_captured":null,"frame_requested":3484,"height":null,"id":0,"path":"docs/evidence/m2-rpc/chain/m2-chain-4294966371.png","status":"pending","width":null}],"next_id":1,"pending":1}}
+>> [6] game.screenshot_log params={}
+<< [6] {"id":6,"jsonrpc":"2.0","result":{"entries":[{"frame_captured":3487,"frame_requested":3484,"height":900,"id":0,"path":"docs/evidence/m2-rpc/chain/m2-chain-4294966371.png","status":"captured","width":1600}],"next_id":1,"pending":0}}
+[PASS] docs/evidence/m2-rpc/chain/m2-chain-4294966371.png（1082508 字节，PNG 1600x900，与日志一致；status=captured）
+== [6/6] world.despawn_entity（清理链路实体）==
+>> [7] world.despawn_entity params={"entity":4294966371}
+<< [7] {"id":7,"jsonrpc":"2.0","result":null}
+[PASS] 实体 4294966371 已清理
+== 结论：全部通过 ==
+REAL_EXIT=0

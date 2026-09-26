@@ -23,3 +23,7 @@ pub mod brp_smoke {}
 /// 《M1 验收结论》（一次通过率测量）——协议、结果、独立审计与样本量限制。
 #[doc = include_str!("../m1-acceptance.md")]
 pub mod m1_acceptance {}
+
+/// 《M2 自研 RPC 证据》——game.run_tests / game.screenshot 的协议面、全自动判定与全链留证。
+#[doc = include_str!("../evidence/m2-rpc.md")]
+pub mod m2_rpc {}

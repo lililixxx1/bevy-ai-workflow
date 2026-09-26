@@ -1,0 +1,13 @@
+# 自研件：任务测试集的自动判定驱动（游戏外进程，SKILL.md §3.6——不链接 bevy）。
+# M2 验收③「以 ≥1 个任务的验收清单跑通一次全自动判定」的工具侧载体，
+# 兼作 M2 验收②全链（spawn → mutate → screenshot → 读回断言）的单条脚本。
+[package]
+name = "task-runner"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+# 依赖面刻意最小：仅 JSON（已在 Cargo.lock 依赖图内，bevy_remote → serde_json），
+# HTTP 用 std TCP 极简实现（见 src/brp.rs）——不引入新的版本解析面。
+serde_json = "1"

@@ -1,0 +1,12 @@
+warning: unused imports: `BrpError` and `error_codes`
+  --> game\src\rpc\screenshot.rs:26:20
+   |
+26 | use bevy::remote::{error_codes, BrpError, BrpResult};
+   |                    ^^^^^^^^^^^  ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Checking docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+warning: `game` (bin "game") generated 1 warning (run `cargo fix --bin "game" -p game` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.76s
+REAL_EXIT=0

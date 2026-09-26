@@ -1,0 +1,28 @@
+    Checking task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\task-runner)
+    Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+error[E0658]: use of unstable library feature `str_as_str`
+  --> tooling\task-runner\src\brp.rs:68:47
+   |
+68 |     let mut stream = TcpStream::connect((host.as_str(), port))
+   |                                               ^^^^^^
+   |
+   = note: see issue #130366 <https://github.com/rust-lang/rust/issues/130366> for more information
+
+For more information about this error, try `rustc --explain E0658`.
+error: could not compile `task-runner` (bin "task-runner") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error[E0502]: cannot borrow `*world` as mutable because it is also borrowed as immutable
+   --> game\src\rpc\suites\ts01.rs:117:17
+    |
+105 |     let Some(config) = world.get_resource::<SimConfig>() else {
+    |                        ----- immutable borrow occurs here
+...
+117 |     let mut q = world.query::<(&Wanderer, &Velocity)>();
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+...
+129 |         mismatches == 0 && total == config.entity_count,
+    |                                     ------------------- immutable borrow later used here
+
+For more information about this error, try `rustc --explain E0502`.
+error: could not compile `game` (bin "game") due to 1 previous error
+REAL_EXIT=101

@@ -2,7 +2,7 @@
 
 - 收录：通用性分级为 `methodology`（换引擎后仍成立）的错题条目。
 - 入库门禁与条目模板：见 [pitfalls-schema.md](./pitfalls-schema.md)（未过验证的条目禁止入库）。
-- 当前：4 条。
+- 当前：5 条。
 
 ---
 
@@ -183,3 +183,41 @@ exclude = ["tooling/brp-logs"]
 
 - 复现：M1 审计全量数字扫描报告（2026-09-26，plan-code-reviewer）——12 份证据中不匹配 raw 的仅上述 2 处，其余高精度数字均为可独立复算的派生值；
 - 修复后复扫：2 处勘误落实后，摘录与 raw 一致（勘误注保留审计轨迹）。
+
+### PIT-M-005：类 Unix shell 调 Windows 原生命令时，斜杠开关会被 MSYS 路径转换破坏
+
+- 日期：2026-09-26
+- 适用版本：方法论级（无引擎版本要求；实例为 Git Bash 调 taskkill，坑模式适用于任何「POSIX 风格 shell 调用另族原生命令」的组合）
+- 分型：错题
+- 通用性分级：methodology（换引擎后同样成立：进程收尾/系统调用与 shell 族无关）
+- 标签：`Git Bash` `MSYS 路径转换` `taskkill` `进程收尾`
+
+**现象**：运行时验证收尾执行 `taskkill /F /IM game.exe`，命令失败且**目标进程未被终止**：
+
+```text
+错误: 无效参数/选项 - 'F:/'。
+键入 "TASKKILL /?" 以了解用法。
+```
+
+`/F` 被 MSYS 当作 POSIX 路径转换为 `F:/`（盘符根），taskkill 收到的是非法开关。若只看「命令已执行」不核对退出码与进程清单，残留进程会占用 BRP 端口与 GPU，静默污染下一次运行时验证。
+
+**最小复现**（shell 语义；`compile_fail` 不适用——非编译失败，故用 `ignore` 并附理由：还原的是 **shell 参数转换失败**）：
+
+```text,ignore
+# Git Bash（MSYS）下：
+taskkill /F /IM game.exe     # → 错误: 无效参数/选项 - 'F:/'，进程未终止
+taskkill //F //IM game.exe   # 双斜杠转义后正常
+```
+
+**根因**：MSYS 的启发式路径转换把以单个 `/` 开头的参数视作 POSIX 路径并映射为 Windows 路径（`/F` → `F:/`）；`//` 开头不被视为路径，原样传递后在 Win32 侧等价单斜杠开关。
+
+**修复**（已过验证）：
+
+1. 单斜杠开关改双斜杠（`taskkill //F //IM game.exe`），或环境变量 `MSYS_NO_PATHCONV=1` 一次性关闭转换；
+2. 收尾纪律：强杀后必须 `tasklist | grep <进程>` 核对无残留（本仓库 SKILL.md §4.2 已有「验证完杀干净游戏进程」，本条补上「怎么杀才杀得掉」）。
+
+**验证证据**：
+
+- 复现：2026-09-26，`taskkill /F /IM game.exe` → 上述报错原文，`tasklist` 仍见 game.exe（PID 6720）；
+- 修复：`taskkill //F //IM game.exe` → `成功: 已终止进程 "game.exe"，其 PID 为 6720`，复查 tasklist 无残留。
+- 既有同因先例：T007（TS-02 执行期）与 `docs/evidence/ts-02-brp.md:96` 已记录「taskkill /F /IM 被路径转义吞参，改 MSYS_NO_PATHCONV=1」——本条是该坑的正式入库（含双斜杠等价修复形态）。（勘误注 2026-09-26：初版误把 TS-11/TS-12 当旁证——两任务收尾均为 PID 定点 taskkill 且核对无残留，属不同例；经独立审核指正后改正。）

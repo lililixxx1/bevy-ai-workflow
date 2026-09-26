@@ -1,0 +1,13 @@
+   Compiling task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\task-runner)
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+warning: unused imports: `BrpError` and `error_codes`
+  --> game\src\rpc\screenshot.rs:26:20
+   |
+26 | use bevy::remote::{error_codes, BrpError, BrpResult};
+   |                    ^^^^^^^^^^^  ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `game` (bin "game") generated 1 warning (run `cargo fix --bin "game" -p game` to apply 1 suggestion)
+    Finished `release` profile [optimized] target(s) in 9.59s
+REAL_EXIT=0

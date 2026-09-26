@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":201,"result":{"id":1,"note":"捕获异步完成：轮询 game.screenshot_log 至 status=captured，再核验 PNG 文件","path":"screenshot-1.png","queued":true}}

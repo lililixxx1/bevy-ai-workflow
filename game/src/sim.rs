@@ -294,7 +294,15 @@ fn on_pause_requested(_: On<PauseRequested>, mut config: ResMut<SimConfig>) {
 /// `next_range_f32(AREA)`×2（origin.x/z）→ `next_range_f32(1.0)`×2（dir.x/y）
 /// → `next_f32()`×1（单位速度）。`max_speed` 仅缩放最后一步；phase 不占抽取，
 /// 由 `phase_hash(seed, index)` 独立派生。
-fn draw_initial(rng: &mut SplitMix64, seed: u64, index: u32, max_speed: f32) -> (Vec3, Vec3, f32) {
+///
+/// `pub(crate)`：`game.run_tests` 的 ts-01 套件用它重抽初值做进程内确定性断言
+/// （复用单一落点，禁止第二份实现）。
+pub(crate) fn draw_initial(
+    rng: &mut SplitMix64,
+    seed: u64,
+    index: u32,
+    max_speed: f32,
+) -> (Vec3, Vec3, f32) {
     let origin = Vec3::new(
         rng.next_range_f32(AREA),
         0.8,
