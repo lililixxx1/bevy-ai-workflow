@@ -14,7 +14,7 @@
 //!   tick / elapsed / 实体位置全部冻结（运动系统与统计系统共用同一 run condition）。
 //!
 //! BRP 反射注册（SKILL.md §3.4 强制）：本插件 build 中显式 `register_type`
-//! 全部五个类型（SimConfig / SimStats / SimMetadata / Wanderer / Velocity）；
+//! 全部六个类型（SimConfig / SimStats / SimMetadata / Wanderer / Velocity / Tagged）；
 //! BRP 全路径即 Rust 模块路径（`game::sim::Wanderer` 等）。
 
 use crate::rng::{phase_hash, SplitMix64};
@@ -110,6 +110,25 @@ pub struct Velocity {
     pub linear: Vec3,
 }
 
+/// 任意字符串标签（TS-09：新组件类型注册与 schema 的测量载体；Startup 给
+/// `index < 10` 的 Wanderer 实体打上本组件，tag 取确定性形态 `wanderer-{index}`）。
+///
+/// `no_auto_register`：退出 `reflect_auto_register` 自动注册——任务约束「注册必须
+/// 显式（register_type），不依赖 reflect_auto_register 自动链」的落点，显式
+/// `register_type::<Tagged>()` 是本类型唯一的注册通路。
+/// 依据: 属性语义 `bevy_reflect_derive-0.19.1/src/lib.rs:329-335`（opt-out of the
+/// automatic reflect type registration）；标注后不发 inventory::submit
+/// `bevy_reflect_derive-0.19.1/src/impls/common.rs:174-177`；行为 doctest
+/// `bevy_reflect-0.19.1/src/lib.rs:4044-4057`（register_derived_types 后
+/// registry 不含该类型）；多个 `#[reflect(...)]` 参数可混排（同一属性列表逐项
+/// 解析，container_attributes.rs:196-268）（核实 2026-09-26）。
+#[derive(Component, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[reflect(Component, Serialize, Deserialize, no_auto_register)]
+pub struct Tagged {
+    /// 标签字符串。
+    pub tag: String,
+}
+
 pub struct SimPlugin {
     pub config: SimConfig,
 }
@@ -124,7 +143,8 @@ impl Plugin for SimPlugin {
             .register_type::<SimMetadata>()
             .register_type::<Wanderer>()
             .register_type::<Velocity>()
-            .add_systems(Startup, (init_metadata, spawn_swarm))
+            .register_type::<Tagged>()
+            .add_systems(Startup, (init_metadata, spawn_swarm, tag_first_ten).chain())
             .add_systems(
                 Update,
                 (update_stats, move_swarm)
@@ -204,6 +224,27 @@ fn spawn_swarm(
         "[SIM] spawned {} wanderers | seed={} | area={} | max_speed={}",
         config.entity_count, config.seed, AREA, config.max_speed
     );
+}
+
+/// Startup：给 `index < 10` 的 Wanderer 实体打上 [`Tagged`]（TS-09 需求）。
+///
+/// 排在 spawn_swarm 之后（chain 显式排序，SKILL.md §3.3）：spawn_batch 的
+/// Commands 会在两系统间自动 flush——`auto_insert_apply_deferred` 构建通道默认
+/// 开启，对「上游含 Deferred 参数（Commands 即是）且存在排序依赖」的边自动插入
+/// ApplyDeferred。
+/// 依据: bevy_ecs-0.19.1/src/schedule/auto_insert_apply_deferred.rs:13-17（文档）
+/// 与 schedule.rs:1629（`auto_insert_apply_deferred: true` 默认）（核实 2026-09-26）。
+fn tag_first_ten(mut commands: Commands, query: Query<(Entity, &Wanderer)>) {
+    let mut tagged = 0u32;
+    for (entity, wanderer) in &query {
+        if wanderer.index < 10 {
+            commands.entity(entity).insert(Tagged {
+                tag: format!("wanderer-{}", wanderer.index),
+            });
+            tagged += 1;
+        }
+    }
+    info!("[SIM] tagged {tagged} wanderers (index < 10)");
 }
 
 /// 单实体确定性初值（origin / linear / phase）——抽取顺序口径的单一落点。

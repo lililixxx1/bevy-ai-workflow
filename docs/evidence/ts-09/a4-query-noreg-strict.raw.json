@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":913,"error":{"code":-23402,"message":"Component `game::sim::Tagged` isn't registered or used in the world"}}

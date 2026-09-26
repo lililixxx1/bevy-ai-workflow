@@ -88,6 +88,7 @@
 
   （片段抄自上述官方示例同形态，**未在本仓库过编译**；首次写入 `game/` 时必须过 `cargo check`。）
 - 为什么显式 `register_type` 仍强制：0.19 默认 feature 链（`default` → `2d`/`3d` → `default_app` → `reflect_auto_register`，`bevy-0.19.1/Cargo.toml:2742-2754`）会经 `inventory` 自动注册**非泛型**的 `#[derive(Reflect)]` 类型（`bevy_ecs-0.19.1/src/reflect/mod.rs:58-63`；`bevy_reflect-0.19.1/src/type_registry.rs:126-131`，Windows 在支持平台列表）；但**泛型类型不覆盖、`default-features = false` 即失效**。显式注册无条件成立且自文档化。
+- 需要显式注册成为**唯一**通路时（如验证「未注册类型 BRP 拿不到」的反证实验），用容器属性 `#[reflect(..., no_auto_register)]` 退出自动链：属性语义 `bevy_reflect_derive-0.19.1/src/lib.rs:329-335`，标注后不发 `inventory::submit`（`bevy_reflect_derive-0.19.1/src/impls/common.rs:174-177`）。**已验证**（TS-09/T014，2026-09-26：标注 + 显式注册 → BRP 可见；注释显式注册 → `list_components` 立即不含该类型，312→311）。
 - 未注册类型 BRP 拿不到：解析走 `AppTypeRegistry`，未注册报 `Unknown component type: ...`（`bevy_remote-0.19.1/src/builtin_methods.rs:608-613, 686`）。
 
 ### 3.5 Resource / State 使用边界
@@ -187,6 +188,8 @@
 ---
 
 ## 变更记录
+
+- **v0.2（2026-09-26）**：§3.4 增补 `#[reflect(no_auto_register)]` 条目（TS-09 运行时验证「显式注册唯一通路」后回写，未改既有约束）。
 
 - **v0.1（2026-09-26）**：审核返工修复三处事实失准（未降低约束、未删证据）：①§6.2 内置方法清单漏 `schedule.list` / `schedule.graph`——常量名不带 `_METHOD` 后缀（`builtin_methods.rs:102/108`）致初版 grep 按后缀过滤漏检，补齐为 23 个并附注册行号（`lib.rs:719/779/784`）；②§6.2 `with_watching_method_render` 行号 `:641` → `:642`（641 是 `#[inline]` 属性行）；③§0.3 与 §6.6 的 `rust-version` 行号 `:13` → `:14`（与台账 T001 一致）。
 - **v0（2026-09-26）**：首次成文（意向文档 §10 第 3 条 + §5.2）。五节纪律（版本/查证/架构/验证/分层）+ 事实速查；全部 API 事实按本地源码 `<reg>` 核实并带行号引用。核实过程中的两处修正：①种子信息中的 `RemotePlugin::with_method` 实为私有（§6.2）；②BRP 默认监听确认为 127.0.0.1:15702（§6.1）。bevy_remote 源码经仓库外临时 crate `cargo fetch` 拉取核实（未动本仓库 manifest）。
