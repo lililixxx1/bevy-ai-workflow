@@ -1,0 +1,9 @@
+# 根 workspace（虚拟 manifest）。
+# 硬约束（意向文档 §6）：bevy 版本锁 "0.19"，仅升级窗口（0.20 起）允许变更；
+# Cargo.lock 入库。成员统一经 workspace.dependencies 继承版本。
+[workspace]
+resolver = "2"
+members = ["game", "docs", "tooling/*"]
+
+[workspace.dependencies]
+bevy = "0.19"

@@ -1,0 +1,11 @@
+# 工作流一（AI 写文档）的 doctest 门禁 crate。
+# docs/ 下的 Markdown 经 include_str! 薄封装纳入本 crate 文档，
+# 由 `cargo test --doc -p docs` 验证示例代码（意向文档 §5.1）。
+[package]
+name = "docs"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+bevy = { workspace = true }
