@@ -14,7 +14,8 @@
 //!   tick / elapsed / 实体位置全部冻结（运动系统与统计系统共用同一 run condition）。
 //!
 //! BRP 反射注册（SKILL.md §3.4 强制）：本插件 build 中显式 `register_type`
-//! 全部四个类型；BRP 全路径即 Rust 模块路径（`game::sim::Wanderer` 等）。
+//! 全部五个类型（SimConfig / SimStats / SimMetadata / Wanderer / Velocity）；
+//! BRP 全路径即 Rust 模块路径（`game::sim::Wanderer` 等）。
 
 use crate::rng::{phase_hash, SplitMix64};
 use bevy::prelude::*;
@@ -72,6 +73,23 @@ pub struct SimStats {
     pub avg_fps: f64,
 }
 
+/// 模拟元信息（Startup 一次性填充，之后只读——不引入运行时可变状态）。
+///
+/// TS-03：BRP 可见 Resource，供工具端在任意时刻核对当前 demo 的版本与启动口径。
+/// 依据: derive 形态对齐官方 BRP 示例 Resource（`bevy-0.19.1/examples/remote/
+/// server.rs:68-70`，`Resource + Reflect + Serialize + Deserialize` +
+/// `#[reflect(Resource, Serialize, Deserialize)]`；核实 2026-09-26）。
+#[derive(Resource, Reflect, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+#[reflect(Resource, Serialize, Deserialize)]
+pub struct SimMetadata {
+    /// crate 版本（编译期 `env!("CARGO_PKG_VERSION")`，game/Cargo.toml 的 version）。
+    pub version: String,
+    /// 启动实体数（Startup 时从 [`SimConfig`] 拷入）。
+    pub entity_count: u32,
+    /// 随机种子（Startup 时从 [`SimConfig`] 拷入）。
+    pub seed: u64,
+}
+
 /// 动态实体标记：index 与确定性初值（BRP `world.query` 的过滤组件）。
 #[derive(Component, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[reflect(Component, Serialize, Deserialize)]
@@ -100,11 +118,13 @@ impl Plugin for SimPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(self.config.clone())
             .init_resource::<SimStats>()
+            .init_resource::<SimMetadata>()
             .register_type::<SimConfig>()
             .register_type::<SimStats>()
+            .register_type::<SimMetadata>()
             .register_type::<Wanderer>()
             .register_type::<Velocity>()
-            .add_systems(Startup, spawn_swarm)
+            .add_systems(Startup, (init_metadata, spawn_swarm))
             .add_systems(
                 Update,
                 (update_stats, move_swarm)
@@ -112,6 +132,21 @@ impl Plugin for SimPlugin {
                     .run_if(|config: Res<SimConfig>| !config.paused),
             );
     }
+}
+
+/// Startup：一次性填充 [`SimMetadata`]（版本 + 启动口径快照），此后不再写入。
+/// `env!("CARGO_PKG_VERSION")` 为编译期 cargo 环境变量（非 Bevy API），取
+/// `game/Cargo.toml` 的 `version`。
+fn init_metadata(mut metadata: ResMut<SimMetadata>, config: Res<SimConfig>) {
+    *metadata = SimMetadata {
+        version: env!("CARGO_PKG_VERSION").to_string(),
+        entity_count: config.entity_count,
+        seed: config.seed,
+    };
+    info!(
+        "[SIM] metadata ready | version={} | entity_count={} | seed={}",
+        metadata.version, metadata.entity_count, metadata.seed
+    );
 }
 
 /// Startup：按配置生成实体群 + 地面 + 光照。
