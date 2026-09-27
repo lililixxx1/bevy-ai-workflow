@@ -1,0 +1,19 @@
+warning: field `0` is never read
+  --> src\main.rs:10:10
+   |
+10 | struct B(f32);
+   |        - ^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+R2 首帧 Changed<A> 计数 = 10
+
+thread 'main' (9940) panicked at src\main.rs:88:5:
+assertion `left == right` failed: 记忆预期：首帧 Changed 计数 0
+  left: 10
+ right: 0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+REAL_EXIT=101

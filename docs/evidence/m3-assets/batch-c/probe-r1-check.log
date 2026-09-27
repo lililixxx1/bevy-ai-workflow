@@ -1,0 +1,106 @@
+    Updating `rsproxy-sparse` index
+     Locking 562 packages to latest compatible versions
+    Checking probe-c v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-c)
+error[E0609]: no field `0` on type `std::result::Result<&Pos, QuerySingleError>`
+  --> src\lib.rs:27:7
+   |
+27 |     p.0
+   |       ^ unknown field
+   |
+help: one of the expressions' fields has a field of the same name
+   |
+27 |     p.unwrap().0
+   |       +++++++++
+
+error[E0599]: `QueryParIter<'_, '_, &Pos, ()>` is not an iterator
+  --> src\lib.rs:37:18
+   |
+37 |     q.par_iter().count()
+   |                  ^^^^^ `QueryParIter<'_, '_, &Pos, ()>` is not an iterator
+   |
+  ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\query\par_iter.rs:16:1
+   |
+16 | pub struct QueryParIter<'w, 's, D: IterQueryData, F: QueryFilter> {
+   | ----------------------------------------------------------------- doesn't satisfy `QueryParIter<'_, '_, &Pos, ()>: Iterator`
+   |
+   = note: the following trait bounds were not satisfied:
+           `QueryParIter<'_, '_, &Pos, ()>: Iterator`
+           which is required by `&mut QueryParIter<'_, '_, &Pos, ()>: Iterator`
+
+error[E0599]: no method named `add` found for struct `bevy::bevy_ecs::system::Commands<'w, 's>` in the current scope
+  --> src\lib.rs:42:14
+   |
+42 |     commands.add(|world: &mut World| {
+   |     ---------^^^ method not found in `bevy::bevy_ecs::system::Commands<'_, '_>`
+
+error[E0277]: the trait bound `&mut Vel: ReadOnlyQueryData` is not satisfied
+  --> src\lib.rs:50:17
+   |
+50 |     for pair in q.iter_combinations_mut::<2>() {
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `ReadOnlyQueryData` is not implemented for `&mut Vel`
+   |
+   = help: the following other types implement trait `ReadOnlyQueryData`:
+             &Archetype
+             &T
+             ()
+             (F,)
+             (F0, F1)
+             (F0, F1, F2)
+             (F0, F1, F2, F3)
+             (F0, F1, F2, F3, F4)
+           and 44 others
+   = note: `ReadOnlyQueryData` is implemented for `&Vel`, but not for `&mut Vel`
+   = note: required for `QueryCombinationIter<'_, '_, &mut Vel, (), 2>` to implement `Iterator`
+   = note: required for `QueryCombinationIter<'_, '_, &mut Vel, (), 2>` to implement `IntoIterator`
+
+error[E0277]: the trait bound `MySets: ScheduleLabel` is not satisfied
+   --> src\lib.rs:87:21
+    |
+ 87 |     app.add_systems(MySets::A, p6_two_mut_queries);
+    |         ----------- ^^^^^^^^^ unsatisfied trait bound
+    |         |
+    |         required by a bound introduced by this call
+    |
+help: the trait `ScheduleLabel` is not implemented for `MySets`
+   --> src\lib.rs:80:1
+    |
+ 80 | enum MySets {
+    | ^^^^^^^^^^^
+    = note: consider annotating `MySets` with `#[derive(ScheduleLabel)]`
+    = help: the following other types implement trait `ScheduleLabel`:
+              Core2d
+              Core3d
+              ExtractSchedule
+              FixedFirst
+              FixedLast
+              FixedMain
+              FixedPostUpdate
+              FixedPreUpdate
+            and 20 others
+note: required by a bound in `bevy::bevy_app::App::add_systems`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_app-0.19.1\src\app.rs:323:24
+    |
+321 |     pub fn add_systems<M>(
+    |            ----------- required by a bound in this associated function
+322 |         &mut self,
+323 |         schedule: impl ScheduleLabel,
+    |                        ^^^^^^^^^^^^^ required by this bound in `App::add_systems`
+
+error[E0599]: no method named `get_single` found for struct `bevy::bevy_ecs::system::Query<'world, 'state, D, F>` in the current scope
+  --> src\lib.rs:92:7
+   |
+92 |     q.get_single().unwrap().0
+   |       ^^^^^^^^^^
+   |
+help: there is a method `single` with a similar name
+   |
+92 -     q.get_single().unwrap().0
+92 +     q.single().unwrap().0
+   |
+
+Some errors have detailed explanations: E0277, E0599, E0609.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `probe-c` (lib) due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `probe-c` (lib test) due to 6 previous errors
+REAL_EXIT=101

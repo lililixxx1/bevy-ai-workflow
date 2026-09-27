@@ -1,0 +1,19 @@
+warning: field `0` is never read
+  --> src\main.rs:10:10
+   |
+10 | struct B(f32);
+   |        - ^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+R3c chain 定序：5 轮后 A=56（修正预期 55 = 5×(1+10)）
+
+thread 'main' (24696) panicked at src\main.rs:169:5:
+assertion `left == right` failed: 修正预期：chain 下每轮确定 +1 再 +10
+  left: 56.0
+ right: 55.0
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+REAL_EXIT=101

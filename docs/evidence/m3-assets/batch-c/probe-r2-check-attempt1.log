@@ -1,0 +1,33 @@
+    Checking probe-c v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-c)
+error[E0599]: `QueryParIter<'_, '_, &Pos, ()>` is not an iterator
+   --> src\lib.rs:113:18
+    |
+113 |     q.par_iter().count()
+    |                  ^^^^^ `QueryParIter<'_, '_, &Pos, ()>` is not an iterator
+    |
+   ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\query\par_iter.rs:16:1
+    |
+ 16 | pub struct QueryParIter<'w, 's, D: IterQueryData, F: QueryFilter> {
+    | ----------------------------------------------------------------- doesn't satisfy `QueryParIter<'_, '_, &Pos, ()>: Iterator`
+    |
+    = note: the following trait bounds were not satisfied:
+            `QueryParIter<'_, '_, &Pos, ()>: Iterator`
+            which is required by `&mut QueryParIter<'_, '_, &Pos, ()>: Iterator`
+
+error[E0596]: cannot borrow `a` as mutable, as it is not declared as mutable
+   --> src\lib.rs:131:9
+    |
+131 |         a.0 += b.0;
+    |         ^ cannot borrow as mutable
+    |
+help: consider changing this to be mutable
+    |
+130 |     while let Some([mut a, b]) = it.fetch_next() {
+    |                     +++
+
+Some errors have detailed explanations: E0596, E0599.
+For more information about an error, try `rustc --explain E0596`.
+error: could not compile `probe-c` (lib test) due to 2 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `probe-c` (lib) due to 2 previous errors
+REAL_EXIT=101

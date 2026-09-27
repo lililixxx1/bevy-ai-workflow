@@ -1,4 +1,4 @@
-# bevy-dev skill v0.6 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.7 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -225,10 +225,23 @@
 - 通用形态：`World::spawn` 返回 `EntityWorldMut`（`.id()` 取实体号，`world_mut.rs:181`），spawn/despawn/get_mut 直写**同帧生效**（无 Commands 延迟）——套件内「写→读→还原」无需跨帧。
 - **已验证**（T020，2026-09-27：11 套件 78 断言（套件 33 去重 + 工具侧 45）经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`；本行「77」系初版误记，2026-09-27 勘误）。
 
+### 6.10 ECS 查询与调度（M3 批次一探查，2026-09-27 本地源码核实 + 探针双重验证）
+
+- `Query::single()` / `single_mut()` 返回 `Result<_, QuerySingleError>`（`system/query.rs:2097/:2126`）；`get_single` 不存在（全文 0 处）——PIT-B-005。
+- `Query::par_iter()` 返回的 `QueryParIter` **不实现任何迭代器 trait**（也无 rayon ParallelIterator）；并行面是固有方法 `for_each`/`for_each_init`（`query/par_iter.rs:42/:77`，内部按 feature 与 ComputeTaskPool 线程数选并行/串行 `:86-120`）——PIT-B-006。
+- **multi_threaded 经默认链传递启用（2026-09-27 勘误，独立审核纠正初判「默认单线程」）**：门面 `default=[2d,3d,ui,audio]`（`bevy-0.19.1/Cargo.toml:2742-2747`）本身不含它，但 `2d`/`3d`/`ui` 均含 `default_platform`（`:2762-2774`），后者含 `multi_threaded`（`:2768`）——本仓 game/docs 随默认链实际启用（`cargo tree -e features` 实证），执行器为 **MultiThreadedExecutor**（`executor/mod.rs:49-66` default_executor）。如需强制单线程（确定性调试等）须显式 `default-features = false` 自组 feature——属架构决策，归 owner。
+- `Commands` 入队命令 = `queue`（`commands/mod.rs:641`），`add` 不存在——PIT-B-007。
+- 可变组合迭代 = `while let Some([mut a, b]) = it.fetch_next()`（官方示例 `query.rs:796-806`，`fetch_next` `:802`）；for/IntoIterator 仅对只读数据成立——PIT-B-008。
+- `App::add_systems` 首参只收 `ScheduleLabel`（`bevy_app app.rs:321-323`）；系统入集用 `.in_set(Set)`（`schedule/config.rs:322/:493`）+ `configure_sets`——PIT-B-009。
+- query 迭代序不保证（`query.rs:654` 等 8 处文档：654/685/723/762/792/824/1154/1183）；确定性按业务键定位（`Wanderer::index` 先例）——PIT-B-010。`Changed/Added` 首帧全量命中（含 Query 首跑前变更，`query/filter.rs:886-896`）——PIT-B-011。跨系统冲突不 panic、任意序（歧义仅可选项，`schedule/schedule.rs:48-49`），定序须 `.chain()`——PIT-B-012。同系统冲突 Query 编译放行、首帧 panic B0001（`query/state.rs:210-218`），正解 `ParamSet`/`Without`——PIT-B-013。
+- 无坑确认（记忆写对，探针实测编译通过）：`iter_many(&[Entity])` 存在；`Res<T>::is_changed()` 存在；`run_if` 接受捕获环境闭包（`move || -> bool`）。
+- 探查证据：`docs/evidence/m3-assets/batch-c/`（r1 失败原文 / r2 正解（含 attempt1 两轮留痕）/ 9 个运行时探针日志（含 1 失败轮）+ 探针源码快照 + errata 勘误页）。
+
 ---
 
 ## 变更记录
 
+- **v0.7（2026-09-27）**：新增 §6.10 ECS 查询与调度事实速查（M3 批次一探针双重验证：single 家族 Result 语义、par_iter 无迭代器 trait（固有 for_each/:42/:77）、Commands::queue、组合迭代 fetch_next、add_systems 首参 ScheduleLabel/.in_set、迭代序不保证、Changed 首帧全量、跨系统冲突不 panic、同系统冲突 B0001→ParamSet；对应 PIT-B-005..013 入库）。勘误注 2026-09-27：本条目初版「本仓 game 默认单线程执行器」有误——multi_threaded 经 default→2d/3d/ui→default_platform 链传递启用，实际为 MultiThreadedExecutor（独立审核以 cargo tree 纠正）；「是否启用」命题反转 为「是否强制单线程」。
 - **v0.6（2026-09-27）**：①§2.3/§4.3/§4.1 同步 doctest 门禁覆盖面变更——`bevy-dev/pitfalls.md` 经 `docs/src/lib.rs` 纳入 `cargo test --doc -p docs`（M3 启动块落地），`compile_fail` 反例升级为机器断言，围栏约定见 pitfalls.md 文件头；本文件与 `patterns/` 维持不进门禁。②§6.5 Hotpatching 由「未验证」改判冒烟通过并回写机制事实与两条编译教训（T005；原「未验证」表述与意向文档 §5.3 冒烟结论矛盾，M3 启动块审核建议 4 落实）。③§6.9 与 v0.5 变更记录的断言计数 77→78 勘误（审核建议 1 落实）。
 - **v0.5（2026-09-27）**：新增 §6.9 BRP 内省的进程内等价 API（list_components/list_resources 的注册表判定源、schema 的 TypeInfo/StructInfo 同源等价、`World::despawn` warn+false 语义、`World::trigger` 在 run_tests handler 内同步执行、spawn 直写同帧生效——T020 十一套件实测。勘误注 2026-09-27：本行初版误记「77 断言」，终版口径 78 = 套件 33 去重 + 工具侧 45，见 docs/evidence/m1-phase2.md）。
 - **v0.4（2026-09-26）**：§6.2 handler 形态从「未过编译」改标**已验证**（T019 三方法落地；补 `run_system_with` 独占执行、`BrpError` 公开字段、`error_codes` 复用、`rpc.discover` 收录自定义方法四条实测事实）；新增 §6.8 Screenshot 捕获管线（导入路径与实体文件错位、组件实体+observer 形态、异步 +3 帧完成、物理分辨率口径，均 T019 实测）。

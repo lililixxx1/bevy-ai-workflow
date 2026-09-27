@@ -1,0 +1,14 @@
+[package]
+name = "probe-c"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# M3 Block C 探针载体（仓库外临时 crate，docs/m3-plan.md §3.1 时序）。
+# r1 轮：default + bevy_remote（与本仓 workspace 统一构建对齐）。
+# r2 轮：追加 multi_threaded——验证 P3 正解（par_iter 需要 feature；bevy 门面
+# default=[2d,3d,ui,audio] 不含它，Cargo.toml:2742-2747）。
+[dependencies]
+bevy = { version = "0.19", features = ["bevy_remote", "multi_threaded"] }
+
+[workspace]

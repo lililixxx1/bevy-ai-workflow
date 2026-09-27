@@ -1,0 +1,13 @@
+warning: field `0` is never read
+  --> src\main.rs:10:10
+   |
+10 | struct B(f32);
+   |        - ^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+R1c 实际迭代序 = [3.0, 2.0, 1.0]（不保证，已证实）→ 排序后 = [1.0, 2.0, 3.0]
+REAL_EXIT=0

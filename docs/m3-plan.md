@@ -23,7 +23,7 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 |---|---|---|
 | A | M3 启动：工作树修复（陌生重跑存档+恢复）+ 本计划落档 + 错题本 doctest 门禁升级（pitfalls.md 纳入 `cargo test --doc`，存量 4 条适配）+ SKILL.md v0.6 同步 | 已完成（2026-09-27，ad4953e） |
 | B | ① 收口：sop.md 三工作流操作步骤回填（M1/M2 实战提炼）+ `assets-methodology/patterns.md` 首批方法论模式（≥5 条 PAT-M）+ schema 过程型模式验证口径补注 + §6 结构对照表 | 已完成（2026-09-27） |
-| C | ② 批次一：ECS 查询与调度域 | 未开始 |
+| C | ② 批次一：ECS 查询与调度域 | 已完成（2026-09-27） |
 | D | ② 批次二：事件 / observer / State 域 | 未开始 |
 | E | ② 批次三：反射 / BRP 深水区 | 未开始 |
 | F | ② 批次四：资产 / 场景 / 时间 / 输入域 | 未开始 |
@@ -73,7 +73,7 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 ### 3.3 批次规格
 
 - 每批目标：PIT-B 8–12 条 + PAT-B 3–5 条（五批合计预期 ≈50 错题 / ≈20 模式，含存量 4/1）；实际以探查结果为准，禁止凑数——某域探完不足预期属正常，缺口由后续域 / 新任务补。
-- 每批交付：pitfalls.md / patterns 增量 + 探查证据归档 + 台账条目（类型=资产回写）+ plan-code-reviewer 审核 + 提交。
+- 每批交付：pitfalls.md / patterns 增量 + 探查证据归档 + 台账条目（类型=资产回写）+ plan-code-reviewer 审核 + 提交。探查过程轮（attempt）的失败日志与当轮源码快照一并归档（Block C 审计建议：attempt 留存升级为规格，下批起执行）。
 - 运行时验证沿用 M2 口径：`game.run_tests` 套件 / task-runner / curl 直调，按 SKILL.md §4.2；常驻游戏进程一律后台任务托管（PIT-M-007）。
 
 ## 四、④ 取样与量化口径（预注册，Block H 执行前不得修改）
@@ -109,8 +109,8 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 | `assets-methodology/patterns.md` | PAT-M-001..007（本块首批） | ✓ |
 | `assets-methodology/pitfalls-schema.md` | schema + 过程型分型补注（本块） | ✓ |
 | `bevy-dev/SKILL.md` | v0.6 | ✓ |
-| `bevy-dev/patterns/` | PAT-B-001 + README + 模板 | ✓ |
-| `bevy-dev/pitfalls.md` | PIT-B-001..004 + doctest 门禁（Block A 起） | ✓ |
+| `bevy-dev/patterns/` | PAT-B-001..005（Block C 批次一 +4）+ README + 模板 | ✓ |
+| `bevy-dev/pitfalls.md` | PIT-B-001..013（Block C 批次一 +9，探针双重验证）+ doctest 门禁（Block A 起） | ✓ |
 | `tooling/`（自研件） | task-runner / hotpatch-smoke（crate）+ brp-logs（证据目录，workspace exclude）；run_tests / screenshot 以 game 侧 BRP 自定义方法落地（`game/src/rpc/`，SKILL §3.6 定案）、launch_level 未建（§3.1 候选任务） | ✓ |
 | 两层不掺私货 | 无密钥 / 机器路径硬编码（`<reg>` 类以「实测为准」写法） | ✓ |
 
@@ -132,3 +132,4 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 - **Block A（2026-09-27）**：工作树修复——提交 72de272 之后一次未经记录的 `run-all.sh` 重跑（本日 13:29）覆盖了 `docs/evidence/m1-phase2/` 下 54 个证据文件，且新 summary 丢失 round2 取代 round1 的出处注记；判定结论未变（12 任务退出码全 0），但至少 ts-11 的测量数值族与提交态不可比（存档实测 brp-avg 99.90 / [BENCH] avg_fps 95.7，当次 vsync 未实际生效——非 60fps 基线族），重跑产物非等值证据；处置：全量存档至会话内部区（`.zcode/`，gitignore，不入库）后 `git restore` 恢复提交态，待 owner 知悉。本计划落档（§四预注册 ④ 口径；审核后补返工计数含审核轮、注入边界细则）；pitfalls.md 纳入 doctest 门禁（存量 4 条按围栏约定适配）；SKILL.md v0.6（门禁覆盖面同步 + §6.5 Hotpatching 冒烟结论回写 + 断言计数 77→78 勘误×2）；pitfalls-schema.md 补 doctest 适用面注记；台账 T021。
 - （后续块逐条追加）
 - **Block B（2026-09-27）**：① 收口——sop.md 三工作流操作步骤实战回填（骨架 → v1）；patterns.md 首批 7 条过程型 PAT-M（全部过过程型门禁：≥1 任务执行留痕）；pitfalls-schema.md 模式条目分型补注（代码型门禁不变）；§五 结构对照表 13 项全 ✓，**M3 ① 达成**。审核与门禁结果见台账 T022。
+- **Block C（2026-09-27）**：② 批次一（ECS 查询与调度域）——仓库外探针 crate「凭记忆首试」（10 编译级 + 4 运行时假设，时序合规：r1 失败原文先归档后查源码）；产出 **PIT-B-005..013 共 9 条**（编译级 5 + 运行时 4，全部过「复现+根因（源码行号）+修复（check/运行验证）」门禁，compile_fail 反例已入 doctest 机器断言）+ **PAT-B-002..005 共 4 条**（spawn_batch owned 迭代器 / Startup 链式定序+auto_insert_apply_deferred / 确定性 PRNG 单一抽取落点 / 解析式运动 BRP 可复算，均出自本仓已验证代码）；无坑确认 3 项独立列出（iter_many、Res::is_changed、run_if 捕获闭包）+ configure_sets 并入 PIT-B-009 行。**事实发现（含一次勘误）：bevy 0.19.1 门面 default=[2d,3d,ui,audio] 本身不含 multi_threaded，但经 2d/3d/ui→default_platform（Cargo.toml:2762-2774，:2768）传递启用——本仓 game/docs 实际跑 MultiThreadedExecutor（cargo tree -e features 实证）**；本行初版误判「默认单线程」，独立审核以 cargo tree 纠正，已同步 SKILL §6.10 与 PIT-B-006 勘误注。计数：PIT-B 13/50、PAT-B 5/20。审核与门禁见台账 T023。

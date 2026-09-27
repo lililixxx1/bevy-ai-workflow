@@ -1,0 +1,13 @@
+warning: field `0` is never read
+  --> src\main.rs:10:10
+   |
+10 | struct B(f32);
+   |        - ^^^
+   |        |
+   |        field in this struct
+   |
+   = help: consider removing this field
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+R3c chain 定序：5 轮后 A=56（修正预期 56 = 1+5×(1+10)）
+REAL_EXIT=0
