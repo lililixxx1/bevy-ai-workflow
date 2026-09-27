@@ -28,6 +28,14 @@ pub mod m1_acceptance {}
 #[doc = include_str!("../evidence/m2-rpc.md")]
 pub mod m2_rpc {}
 
-/// 《M1 两阶段判定第二阶段》——12 任务验收清单的脚本化重跑校准（套件架构、77 断言结果、返工与驱动口径）。
+/// 《M1 两阶段判定第二阶段》——12 任务验收清单的脚本化重跑校准（套件架构、78 断言结果、返工与驱动口径）。
 #[doc = include_str!("../evidence/m1-phase2.md")]
 pub mod m1_phase2 {}
+
+/// 《M3 执行计划》——验收映射与块划分、② 资产生产方法学、④ 取样与量化口径预注册。
+#[doc = include_str!("../m3-plan.md")]
+pub mod m3_plan {}
+
+/// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
+#[doc = include_str!("../../bevy-dev/pitfalls.md")]
+pub mod bevy_dev_pitfalls {}

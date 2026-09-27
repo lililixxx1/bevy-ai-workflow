@@ -1,0 +1,16 @@
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.82s
+   Doc-tests docs
+
+running 7 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 111) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 127) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 192) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 224) ... ignored
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 164) - compile fail ... ok
+
+test result: ok. 3 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 0.28s
+
+REAL_EXIT=0

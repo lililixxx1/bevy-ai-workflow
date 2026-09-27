@@ -3,7 +3,8 @@
 - 收录：通用性分级为 `bevy-specific`（换引擎后不再成立）的错题条目——API/版本/引擎行为相关的坑。
 - 入库门禁与条目字段定义：见 [assets-methodology/pitfalls-schema.md](../assets-methodology/pitfalls-schema.md)（失败须在标注版本复现 + 修复过编译与运行验证；**未过验证禁止入库**）。
 - 追加方式：按下方模板在文件末尾追加，`PIT-B-XXX` 三位自增（从 001 起），并在本行更新条数。
-- 反例代码统一用 ```` ```compile_fail ```` 标记（doctest 断言其编译失败）；语义不符时用 `ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
+- 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
+- **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 当前：4 条（2026-09-26 起）。
 
 ---
@@ -84,7 +85,8 @@ fn spawn_swarm(mut commands: Commands, config: Res<SimConfig>) {
 1. 闭包改 `move`，把 mesh/material 句柄、PRNG、配置字段**拷出为 owned 值**后 move 进闭包（handle 是 `Arc` 内部指针，`clone()` 代价可忽略）；
 2. `Res` 不能 move——只拷贝需要的标量字段（`let seed = config.seed;`）。
 
-```rust
+```rust,ignore
+// 片段（形态示意，不独立编译；完整已验证实现见 game/src/sim.rs 首役代码，T003）：
 let seed = config.seed;
 let mut rng = SplitMix64::new(seed);
 let iter = (0..config.entity_count).map(move |index| {

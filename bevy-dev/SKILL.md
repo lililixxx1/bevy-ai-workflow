@@ -1,4 +1,4 @@
-# bevy-dev skill v0.5 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.6 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -46,7 +46,7 @@
 
 - 读源码/docs.rs 只算**已核实**（签名、feature 名、默认值可信度提高）。
 - **已验证** = 该 API 实际写进 `game/`/`tooling/` 并通过 `cargo check`（运行时行为另走 §4.2）。模式/错题条目的门禁更高，见 §4.3。
-- 本文件与 `patterns/` 的代码片段**不进 doctest 门禁**（`docs/src/lib.rs:12` 只封装 `docs/doc-conventions.md`）。因此本层片段必须：要么逐字抄自官方示例/已验证条目并注明出处行号，要么显式标注「未过编译，首次使用须过 check」。
+- **doctest 门禁覆盖面（v0.6 起）**：`docs/` 全部文档 + `bevy-dev/pitfalls.md`（均经 `docs/src/lib.rs` 的 include_str! 纳入 `cargo test --doc -p docs`）。pitfalls.md 内 `rust,compile_fail` 反例由 doctest **机器断言**编译必败（围栏约定见其文件头；升级窗口换版本后反例能编译即红=条目过期检测）。本文件与 `patterns/` 的代码片段仍**不进门禁**（多为删减形态），因此必须：要么逐字抄自官方示例/已验证条目并注明出处行号，要么显式标注「未过编译，首次使用须过 check」。
 
 ## 3. 架构约定
 
@@ -106,7 +106,7 @@
 ### 4.1 每次代码变更的门禁（无例外）
 
 - `cargo check --workspace` 通过（真实退出码；全量编译可能超 10 分钟，后台跑 + 轮询）。失败即修，禁止带错提交。
-- 涉及 `docs/` 变更：另跑 `cargo test --doc -p docs`，全绿才合并（意向文档 §5.1）。
+- 涉及 `docs/` 或 `bevy-dev/pitfalls.md` 变更：另跑 `cargo test --doc -p docs`，全绿才合并（意向文档 §5.1；v0.6 起 pitfalls.md 亦在门禁内，见 §2.3）。
 
 ### 4.2 运行时行为 → 工作流三（BRP 闭环）
 
@@ -126,7 +126,7 @@
 ### 4.3 资产入库门禁（细则见 `assets-methodology/pitfalls-schema.md`，此处为本层执行要点）
 
 - **模式条目**（正例）：代码过编译 + 运行验证后才可入库 → `bevy-dev/patterns/`，一条一文件，命名 `PAT-B-XXX-<slug>.md`，从 [`patterns/_TEMPLATE.md`](./patterns/_TEMPLATE.md) 复制起手，并在 `patterns/README.md` 索引表加行。
-- **错题条目**（反例）：失败须在标注版本上复现（最小复现代码或失败原文）+ 修复方案过编译与运行验证，才可入库 → 追加进 [`bevy-dev/pitfalls.md`](./pitfalls.md)（内联模板已放好，id 形如 `PIT-B-001` 递增）。反例代码统一 ```` ```compile_fail ````；语义不符（如 shell 命令、行为差异）用 `ignore` 并附理由。
+- **错题条目**（反例）：失败须在标注版本上复现（最小复现代码或失败原文）+ 修复方案过编译与运行验证，才可入库 → 追加进 [`bevy-dev/pitfalls.md`](./pitfalls.md)（内联模板已放好，id 形如 `PIT-B-001` 递增）。反例代码统一 `rust,compile_fail` 围栏；语义不符（如 shell 命令、行为差异）用 `rust,ignore` 并附理由。M3 起 pitfalls.md 在 doctest 门禁内：`compile_fail` 反例由 `cargo test --doc -p docs` 机器断言，`ignore` 围栏须附理由（围栏约定见 pitfalls.md 文件头）。
 - **通用性分层**：换引擎后该教训仍成立 → `assets-methodology/`；不再成立 → `bevy-dev/`。判定拿不准 → 两边都不放，先在台账「原因」列记「待分层」，不要硬塞。
 - **回写时机**：同一任务收尾前、最迟下次会话开始前（意向文档 §5.2）。
 - **门禁未过 = 不入库**：宁可台账留「待验证教训」条目，不写半真半假的资产条目（Voyager 原则）。
@@ -176,10 +176,12 @@
 - 响应：成功含 `result`，失败含 `error`（`code`/`message` 恒在，`:65-90`）。
 - 注意：crate 文档自己的请求示例（`src/lib.rs:15-25`）**漏了 `jsonrpc` 字段**，与反序列化器实际行为不符——文档也可能错，编译目标（源码）才是最终依据。
 
-### 6.5 Hotpatching（0.19.1 现状，未验证部分如实标注）
+### 6.5 Hotpatching（0.19.1；Windows 冒烟已通过）
 
-- feature 存在：`hotpatching = ["bevy_internal/hotpatching"]`（`bevy-0.19.1/Cargo.toml:2802`），作用域为 `bevy_app/hotpatching` + `bevy_ecs/hotpatching` 两个下游 feature（`bevy_internal-0.19.1/Cargo.toml:282-285`）——即只覆盖 ECS/app 层。
-- 运行方式（dx CLI）、Windows 成熟度、0.19 相对 0.17 的变化：**未在本仓库验证**。M1 冒烟任务（意向文档 §10 第 6 条）出结论前，不得把 Hotpatching 写进任何流程假设。
+- feature：`hotpatching = ["bevy_internal/hotpatching"]`（`bevy-0.19.1/Cargo.toml:2802`），作用域为 `bevy_app/hotpatching` + `bevy_ecs/hotpatching` 两个下游 feature（`bevy_internal-0.19.1/Cargo.toml:282-285`）——只覆盖 ECS/app 层；该链经 `bevy_ecs-0.19.1/Cargo.toml:70` 引入 subsecond 0.7.0-rc.0，DefaultPlugins 在该 feature 下自动附带 HotPatchPlugin（`bevy_internal-0.19.1/src/default_plugins.rs:95-97`，bevy_app/src/hotpatch.rs 连接 dx CLI；以上行号核实 2026-09-26，T005）。
+- 运行方式：`dx serve --hot-patch`（dioxus-cli 0.7.10，官方 `examples/ecs/hotpatching_systems.rs` 证实）。
+- **已验证**（T005 冒烟，2026-09-26，Windows 10 19044 / rustc 1.98.1，结论已回写意向文档 §5.3 注记）：无窗口 MinimalPlugins + 显式 HotPatchPlugin + LogPlugin 下，两次热补丁（字符串常量变更 / 控制流变更）各约 1.1s 生效，frame 计数全程连续单调（进程未重启）；证据 `tooling/hotpatch-smoke/evidence/hotpatch-smoke-run.log`。适用边界：仅 system 函数体内改动；结构变更（新增/删除 system、非 system 代码、依赖变更）仍走重启流程。
+- 冒烟期两条编译教训（均失败复现后修复、过 check + 运行验证，T005）：`LogPlugin` 不在 prelude，须 `bevy::log::LogPlugin`（bevy_log prelude 仅 tracing 宏）；inline format 捕获对包装类型（如 `Local`）报 E0277，须解引用后捕获（`*frame`）。
 
 ### 6.6 工具链
 
@@ -221,13 +223,14 @@
 - `World::despawn(entity) -> bool`：实体不存在时 **warn + 返回 false**（不 panic；`world/mod.rs:1598-1605`）——进程内等价 BRP 侧 -23401 `ENTITY_NOT_FOUND` 的判定语义。存在性检查用 `World::get_entity`（`Result` 形态，`:951`，Err 即不存在）。
 - `World::trigger`（`observer/mod.rs:63`）在 `run_tests` handler（`world.run_system_with` 上下文）内**实测同步执行 observer**（ts-10 套件：触发即翻转 `paused`，两次触发净零；与 §6.7 的 BRP `world.trigger_event` 行为一致）。
 - 通用形态：`World::spawn` 返回 `EntityWorldMut`（`.id()` 取实体号，`world_mut.rs:181`），spawn/despawn/get_mut 直写**同帧生效**（无 Commands 延迟）——套件内「写→读→还原」无需跨帧。
-- **已验证**（T020，2026-09-27：11 套件 77 断言经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`）。
+- **已验证**（T020，2026-09-27：11 套件 78 断言（套件 33 去重 + 工具侧 45）经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`；本行「77」系初版误记，2026-09-27 勘误）。
 
 ---
 
 ## 变更记录
 
-- **v0.5（2026-09-27）**：新增 §6.9 BRP 内省的进程内等价 API（list_components/list_resources 的注册表判定源、schema 的 TypeInfo/StructInfo 同源等价、`World::despawn` warn+false 语义、`World::trigger` 在 run_tests handler 内同步执行、spawn 直写同帧生效——T020 十一套件 77 断言实测）。
+- **v0.6（2026-09-27）**：①§2.3/§4.3/§4.1 同步 doctest 门禁覆盖面变更——`bevy-dev/pitfalls.md` 经 `docs/src/lib.rs` 纳入 `cargo test --doc -p docs`（M3 启动块落地），`compile_fail` 反例升级为机器断言，围栏约定见 pitfalls.md 文件头；本文件与 `patterns/` 维持不进门禁。②§6.5 Hotpatching 由「未验证」改判冒烟通过并回写机制事实与两条编译教训（T005；原「未验证」表述与意向文档 §5.3 冒烟结论矛盾，M3 启动块审核建议 4 落实）。③§6.9 与 v0.5 变更记录的断言计数 77→78 勘误（审核建议 1 落实）。
+- **v0.5（2026-09-27）**：新增 §6.9 BRP 内省的进程内等价 API（list_components/list_resources 的注册表判定源、schema 的 TypeInfo/StructInfo 同源等价、`World::despawn` warn+false 语义、`World::trigger` 在 run_tests handler 内同步执行、spawn 直写同帧生效——T020 十一套件实测。勘误注 2026-09-27：本行初版误记「77 断言」，终版口径 78 = 套件 33 去重 + 工具侧 45，见 docs/evidence/m1-phase2.md）。
 - **v0.4（2026-09-26）**：§6.2 handler 形态从「未过编译」改标**已验证**（T019 三方法落地；补 `run_system_with` 独占执行、`BrpError` 公开字段、`error_codes` 复用、`rpc.discover` 收录自定义方法四条实测事实）；新增 §6.8 Screenshot 捕获管线（导入路径与实体文件错位、组件实体+observer 形态、异步 +3 帧完成、物理分辨率口径，均 T019 实测）。
 
 - **v0.3（2026-09-26）**：新增 §6.7 事件与 observer（TS-10 运行时验证 `world.trigger_event`

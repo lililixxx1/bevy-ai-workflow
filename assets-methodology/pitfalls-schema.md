@@ -18,6 +18,7 @@
   2. 修复方案**过编译与运行验证**。
 - 落点：Bevy 特定 → `bevy-dev/pitfalls.md`；方法论级 → `assets-methodology/pitfalls.md`。
 - 反例代码统一用 ` ```compile_fail ` 标记（doctest 断言其编译失败）；语义不符时用 `ignore` 并附理由。
+  - 适用面注记（2026-09-27）：`bevy-dev/pitfalls.md` 已纳入 `cargo test --doc -p docs`（经 `docs/src/lib.rs`），其 compile_fail 反例为**机器断言**；方法论层 `assets-methodology/pitfalls.md` 未入门禁，仍为标记约定。
 
 ## 通用性分级字段
 
