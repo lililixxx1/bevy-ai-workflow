@@ -1,0 +1,19 @@
+[CONFIG] game demo | count=100 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.19 (workspace locked)
+[2m2026-09-27T01:07:59.372911Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-27T01:07:59.720159Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-27T01:08:00.344074Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-09-27T01:08:00.344110Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] custom methods: game.run_tests / game.screenshot / game.screenshot_log
+[2m2026-09-27T01:08:00.359289Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-27T01:08:00.359354Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-27T01:08:00.360060Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (65v0)
+[2m2026-09-27T01:08:00.432326Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=100 | seed=20260926
+[2m2026-09-27T01:08:00.432445Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 100 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-09-27T01:08:00.432875Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-09-27T01:08:01.446564Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.0s tick=58 fps_1s=57.4 avg_fps=0.0
+[2m2026-09-27T01:08:02.462217Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.0s tick=119 fps_1s=60.0 avg_fps=60.1
+[2m2026-09-27T01:08:03.478935Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.0s tick=180 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-27T01:08:04.296805Z[0m [33m WARN[0m [2mbevy_ecs::world[0m[2m:[0m Could not despawn entity: Entity despawned: The entity with ID 526v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+[2m2026-09-27T01:08:04.479173Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.0s tick=240 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-27T01:08:05.329977Z[0m [33m WARN[0m [2mbevy_ecs::world[0m[2m:[0m Could not despawn entity: Entity despawned: The entity with ID 527v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others

@@ -1,0 +1,21 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-06）==
+>> [1] game.run_tests params={"suite":"ts-06"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"spawn 探针 526v0 后计数 101 == 基线 100+1；despawn 返回 true；计数回 100 == 基线；get_entity 探针 Err（已不存在）","name":"despawn_removes_entity","pass":true},{"detail":"重复 despawn 526v0 返回 false（false = 不存在，BRP 侧即 -23401 ENTITY_NOT_FOUND）；终态计数 100 == 基线 100（世界无残留）","name":"double_despawn_fails","pass":true}],"snapshot":{"elapsed_secs":3.8604032080620527,"frame_count":229,"tick":229},"suite":"ts-06","total":2}}
+[PASS] despawn_removes_entity — spawn 探针 526v0 后计数 101 == 基线 100+1；despawn 返回 true；计数回 100 == 基线；get_entity 探针 Err（已不存在）
+[PASS] double_despawn_fails — 重复 despawn 526v0 返回 false（false = 不存在，BRP 侧即 -23401 ENTITY_NOT_FOUND）；终态计数 100 == 基线 100（世界无残留）
+-- 汇总：2/2 通过，snapshot.tick=Some(229) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-06"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"spawn 探针 527v0 后计数 101 == 基线 100+1；despawn 返回 true；计数回 100 == 基线；get_entity 探针 Err（已不存在）","name":"despawn_removes_entity","pass":true},{"detail":"重复 despawn 527v0 返回 false（false = 不存在，BRP 侧即 -23401 ENTITY_NOT_FOUND）；终态计数 100 == 基线 100（世界无残留）","name":"double_despawn_fails","pass":true}],"snapshot":{"elapsed_secs":4.893483706749976,"frame_count":291,"tick":291},"suite":"ts-06","total":2}}
+[PASS] despawn_removes_entity — spawn 探针 527v0 后计数 101 == 基线 100+1；despawn 返回 true；计数回 100 == 基线；get_entity 探针 Err（已不存在）
+[PASS] double_despawn_fails — 重复 despawn 527v0 返回 false（false = 不存在，BRP 侧即 -23401 ENTITY_NOT_FOUND）；终态计数 100 == 基线 100（世界无残留）
+-- 汇总：2/2 通过，snapshot.tick=Some(291) --
+== 跨调用断言：snapshot.tick2(Some(291)) > tick1(Some(229))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

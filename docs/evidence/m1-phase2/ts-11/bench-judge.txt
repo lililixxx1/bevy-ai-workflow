@@ -1,0 +1,6 @@
+== [BENCH] 行原文：[2m2026-09-27T01:09:09.047732Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [BENCH] n=50000 seed=20260926 bench_secs=10.0 warmup_secs=2.0 measure_secs=8.016 measure_frames=476 avg_fps=59.4 ==
+[PASS] n=Some(50000) == 期望 50000
+[PASS] warmup_secs=Some(2.0) == 2（基线口径）
+[PASS] 双源一致：[BENCH] avg_fps=Some(59.4) vs BRP 读值 59.69532174429972（|Δ|/brp ≤ 10%）
+[PASS] 基线对照：avg_fps=Some(59.4) ≥ 60 × 0.8 = 48
+== 结论：全部通过 ==

@@ -32,3 +32,10 @@
   "isn't registered or used in the world"（同码 -23402），主分支（list_components 不含该路径）
   原样通过。实现按约束用 `#[reflect(..., no_auto_register)]` 使显式注册成为唯一通路（详见证据
   文件「实现口径」节；SKILL.md §3.4 已增补该已验证事实）。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-09`（3 断言×2
+  调用）：`tagged_reflect_visible`（Tagged 在 AppTypeRegistry 且带 ReflectComponent
+  数据——BRP list_components 同源判定；#1 进程内等价）、`tagged_schema_has_tag_field`
+  （TypeInfo::Struct 字段表含 `tag` 且类型 String——与 registry.schema 同源自注册表；
+  #2 进程内等价）、`tagged_first_ten_count`（恰 10）。#4 反证为实现期源码干预，
+  第一阶段已执行，不重复。退出码 0。证据 `docs/evidence/m1-phase2.md` §三 +
+  `docs/evidence/m1-phase2/ts-09/`（台账 T020）。

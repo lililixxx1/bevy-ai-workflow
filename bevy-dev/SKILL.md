@@ -1,4 +1,4 @@
-# bevy-dev skill v0 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.5 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -214,10 +214,20 @@
 - 截图为**物理分辨率**：逻辑 1280x720 + DPI 1.25 的本机实得 1600x900——尺寸断言以物理分辨率为准。
 - **已验证**（T019，2026-09-26：`game.screenshot` / `game.screenshot_log` 经此管线，PNG 魔数 + IHDR 尺寸与日志回填互证，证据 `docs/evidence/m2-rpc.md`）。
 
+### 6.9 BRP 内省的进程内等价 API（`run_tests` 套件用，0.19.1 本地源码核实 2026-09-27）
+
+- BRP `world.list_components` / `world.list_resources` 的数据源是 **AppTypeRegistry 中带 `ReflectComponent` / `ReflectResource` 数据的类型**（`builtin_methods.rs:1377-1400` 与 `:1414-1424` 两 handler 同构判定）——进程内套件直查同一注册表即等价：`world.resource::<AppTypeRegistry>().read().get(TypeId::of::<T>())` 再 `.data::<ReflectComponent>()`（`AppTypeRegistry` 定义 `bevy_ecs/src/reflect/mod.rs:36`；`TypeRegistry::get` `bevy_reflect/src/type_registry.rs:423`、`TypeRegistration::data` `:677`）。
+- BRP `registry.schema` 的同源等价：`TypeRegistration::type_info() -> &'static TypeInfo`（`type_registry.rs:635`）→ `TypeInfo::Struct(&StructInfo)` → `StructInfo::field(name) -> Option<&NamedField>`（`structs.rs:165`）→ `NamedField::type_info()`（`fields.rs:58`）+ `TypeInfo::is::<T>()`（`type_info.rs:295`）可断言「字段存在且类型为 T」。
+- `World::despawn(entity) -> bool`：实体不存在时 **warn + 返回 false**（不 panic；`world/mod.rs:1598-1605`）——进程内等价 BRP 侧 -23401 `ENTITY_NOT_FOUND` 的判定语义。存在性检查用 `World::get_entity`（`Result` 形态，`:951`，Err 即不存在）。
+- `World::trigger`（`observer/mod.rs:63`）在 `run_tests` handler（`world.run_system_with` 上下文）内**实测同步执行 observer**（ts-10 套件：触发即翻转 `paused`，两次触发净零；与 §6.7 的 BRP `world.trigger_event` 行为一致）。
+- 通用形态：`World::spawn` 返回 `EntityWorldMut`（`.id()` 取实体号，`world_mut.rs:181`），spawn/despawn/get_mut 直写**同帧生效**（无 Commands 延迟）——套件内「写→读→还原」无需跨帧。
+- **已验证**（T020，2026-09-27：11 套件 77 断言经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`）。
+
 ---
 
 ## 变更记录
 
+- **v0.5（2026-09-27）**：新增 §6.9 BRP 内省的进程内等价 API（list_components/list_resources 的注册表判定源、schema 的 TypeInfo/StructInfo 同源等价、`World::despawn` warn+false 语义、`World::trigger` 在 run_tests handler 内同步执行、spawn 直写同帧生效——T020 十一套件 77 断言实测）。
 - **v0.4（2026-09-26）**：§6.2 handler 形态从「未过编译」改标**已验证**（T019 三方法落地；补 `run_system_with` 独占执行、`BrpError` 公开字段、`error_codes` 复用、`rpc.discover` 收录自定义方法四条实测事实）；新增 §6.8 Screenshot 捕获管线（导入路径与实体文件错位、组件实体+observer 形态、异步 +3 帧完成、物理分辨率口径，均 T019 实测）。
 
 - **v0.3（2026-09-26）**：新增 §6.7 事件与 observer（TS-10 运行时验证 `world.trigger_event`

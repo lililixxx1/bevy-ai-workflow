@@ -1,0 +1,21 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-11）==
+>> [1] game.run_tests params={"suite":"ts-11"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"avg_fps=59.500 > 0 且 fps_1s=59.967 > 0（warmup 后实测值，供 bench-judge 双源对照引用）","name":"bench_stats_alive","pass":true},{"detail":"tick=237 > 0；实体 50000 == entity_count 50000（跨调用 tick 递增由工具端比对 snapshot.tick）","name":"sim_ticking_at_scale","pass":true}],"snapshot":{"elapsed_secs":4.177957102656364,"frame_count":237,"tick":237},"suite":"ts-11","total":2}}
+[PASS] bench_stats_alive — avg_fps=59.500 > 0 且 fps_1s=59.967 > 0（warmup 后实测值，供 bench-judge 双源对照引用）
+[PASS] sim_ticking_at_scale — tick=237 > 0；实体 50000 == entity_count 50000（跨调用 tick 递增由工具端比对 snapshot.tick）
+-- 汇总：2/2 通过，snapshot.tick=Some(237) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":10.0,"entity_count":50000,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(50000)（期望 50000）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-11"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"avg_fps=59.695 > 0 且 fps_1s=58.664 > 0（warmup 后实测值，供 bench-judge 双源对照引用）","name":"bench_stats_alive","pass":true},{"detail":"tick=299 > 0；实体 50000 == entity_count 50000（跨调用 tick 递增由工具端比对 snapshot.tick）","name":"sim_ticking_at_scale","pass":true}],"snapshot":{"elapsed_secs":5.209439200349152,"frame_count":299,"tick":299},"suite":"ts-11","total":2}}
+[PASS] bench_stats_alive — avg_fps=59.695 > 0 且 fps_1s=58.664 > 0（warmup 后实测值，供 bench-judge 双源对照引用）
+[PASS] sim_ticking_at_scale — tick=299 > 0；实体 50000 == entity_count 50000（跨调用 tick 递增由工具端比对 snapshot.tick）
+-- 汇总：2/2 通过，snapshot.tick=Some(299) --
+== 跨调用断言：snapshot.tick2(Some(299)) > tick1(Some(237))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

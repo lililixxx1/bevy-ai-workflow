@@ -26,3 +26,10 @@
 
 - 判定者/日期/结论：执行 agent，2026-09-26，**通过（第一阶段人工对照）**——5/5 断言首次执行全部 PASS，零改码（`cargo check --workspace` REAL_EXIT=0 仍按公共前置执行）。断言 4 实测错误码 **-23401**（`ENTITY_NOT_FOUND`，`bevy_remote-0.19.1/src/lib.rs:1409`；message `Entity 411v0 not found`），断言 5 重复销毁同为 -23401——按本次任务纪律该回填值记录于证据文件与本节，清单表行未改写。
 - 证据：`docs/evidence/ts-06-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；原始响应/运行日志/门禁日志 `docs/evidence/ts-06/`。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-06`（2 断言×2
+  调用）：`despawn_removes_entity`（探针=真实 Wanderer 语义、index=u32::MAX 与真实
+  序号隔离：spawn 后 101==100+1 → despawn 返回 true → 计数回 100 → `get_entity`
+  Err；ECS 直写复测判定语义，BRP 通路第一阶段已证）、`double_despawn_fails`
+  （重复 despawn 返回 **false**——BRP 侧即 -23401 ENTITY_NOT_FOUND 的进程内等价；
+  终态计数==基线无残留）。字面值 100/20260926 + tick 递增。退出码 0。证据
+  `docs/evidence/m1-phase2.md` §三 + `docs/evidence/m1-phase2/ts-06/`（台账 T020）。

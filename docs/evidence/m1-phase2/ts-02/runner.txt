@@ -1,0 +1,22 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-02）==
+>> [1] game.run_tests params={"suite":"ts-02"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"1000 个实体模长全部 ∈ (0, 9]（越界 0 个，最大实测 8.9986）；>默认上限 3 的 675 个（cap>4 时须 ≥1）","name":"velocity_within_configured_cap","pass":true},{"detail":"1000 个实体 origin/phase 与默认上限 3 重抽序列逐位一致（不符 0 个；当前 cap=9，跨进程对照为测量口径，进程内等价替换）","name":"origin_invariant_to_max_speed","pass":true}],"snapshot":{"elapsed_secs":4.087991019710898,"frame_count":241,"tick":241},"suite":"ts-02","total":2}}
+[PASS] velocity_within_configured_cap — 1000 个实体模长全部 ∈ (0, 9]（越界 0 个，最大实测 8.9986）；>默认上限 3 的 675 个（cap>4 时须 ≥1）
+[PASS] origin_invariant_to_max_speed — 1000 个实体 origin/phase 与默认上限 3 重抽序列逐位一致（不符 0 个；当前 cap=9，跨进程对照为测量口径，进程内等价替换）
+-- 汇总：2/2 通过，snapshot.tick=Some(241) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":1000,"max_speed":9.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(1000)（期望 1000）
+[PASS] seed=Some(20260926)（期望 20260926）
+[PASS] max_speed=Some(9.0)（期望 9，|Δ|≤1e-6）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-02"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"1000 个实体模长全部 ∈ (0, 9]（越界 0 个，最大实测 8.9986）；>默认上限 3 的 675 个（cap>4 时须 ≥1）","name":"velocity_within_configured_cap","pass":true},{"detail":"1000 个实体 origin/phase 与默认上限 3 重抽序列逐位一致（不符 0 个；当前 cap=9，跨进程对照为测量口径，进程内等价替换）","name":"origin_invariant_to_max_speed","pass":true}],"snapshot":{"elapsed_secs":5.121133718639612,"frame_count":303,"tick":303},"suite":"ts-02","total":2}}
+[PASS] velocity_within_configured_cap — 1000 个实体模长全部 ∈ (0, 9]（越界 0 个，最大实测 8.9986）；>默认上限 3 的 675 个（cap>4 时须 ≥1）
+[PASS] origin_invariant_to_max_speed — 1000 个实体 origin/phase 与默认上限 3 重抽序列逐位一致（不符 0 个；当前 cap=9，跨进程对照为测量口径，进程内等价替换）
+-- 汇总：2/2 通过，snapshot.tick=Some(303) --
+== 跨调用断言：snapshot.tick2(Some(303)) > tick1(Some(241))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

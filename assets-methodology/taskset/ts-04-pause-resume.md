@@ -26,3 +26,10 @@
 
 - 判定者/日期/结论：执行 agent，2026-09-26，**通过**（人工对照阶段；5/5 断言首次执行全部通过，零改码，一次通过、返工 0）
 - 证据：`docs/evidence/ts-04-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定 + 采样间隔时间戳）；原始响应与运行日志 `docs/evidence/ts-04/`
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — task-runner `pause`
+  子命令（本任务清单全部为跨帧时序断言，不建进程内套件，全程经 BRP 驱动）五步
+  全过：①运行中 paused=false、tick 237→298；②mutate_resources paused=true 无
+  error、复读 true；③冻结 tick 299→299（Δ0≤2）；④两次全量 query（各 1000 行）
+  Transform 按 entity 排序逐位一致（强于「任一实体」）；⑤恢复 paused=false、
+  tick 301→362。退出码 0。证据 `docs/evidence/m1-phase2.md` §三 +
+  `docs/evidence/m1-phase2/ts-04/`（台账 T020）。

@@ -1,0 +1,19 @@
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 13.69s
+     Running unittests src\main.rs (target\debug\deps\game-24c12bfc479a3fd9.exe)
+
+running 11 tests
+test bench::tests::warmup_constant_is_calibrated ... ok
+test cli::tests::defaults_match_baseline_caliber ... ok
+test camera::tests::orbit_distance_is_constant ... ok
+test rng::tests::splitmix64_reference_vectors ... ok
+test rng::tests::next_f32_in_unit_interval ... ok
+test sim::tests::analytic_motion_is_deterministic_per_seed_and_time ... ok
+test rng::tests::same_seed_same_sequence ... ok
+test sim::tests::same_seed_and_count_same_initial_state ... ok
+test sim::tests::max_speed_only_scales_speed_draw_order_untouched ... ok
+test sim::tests::simconfig_deserializes_legacy_json_with_default_max_speed ... ok
+test sim::tests::pause_requested_event_flips_paused ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

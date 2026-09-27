@@ -1,0 +1,25 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-12）==
+>> [1] game.run_tests params={"suite":"ts-12"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":4,"results":[{"detail":"基线 w0=100 == entity_count Some(100)（自洽；字面 100 工具端绑定）、v0=0 == 0（新进程启动态）、且 w0 ≥ 10（循环配额前置）","name":"baseline_matches_checklist","pass":true},{"detail":"10 轮成对操作（spawn 探针 + despawn 最小 index Wanderer）全部成功（含恢复期 despawn 探针）","name":"batch_loop_ops_succeed","pass":true},{"detail":"循环后 w1=90 == w0(100)-10、v1=10 == v0(0)+10（净变化精确一致）","name":"batch_net_change_exact","pass":true},{"detail":"恢复后 w=100 == w0(100)、v=0 == v0(0)、Tagged=10 == t0(10)（探针清理 + 快照重生，index/初值/Tagged 逐位还原）","name":"world_restored_after_suite","pass":true}],"snapshot":{"elapsed_secs":7.132199808955193,"frame_count":427,"tick":427},"suite":"ts-12","total":4}}
+[PASS] baseline_matches_checklist — 基线 w0=100 == entity_count Some(100)（自洽；字面 100 工具端绑定）、v0=0 == 0（新进程启动态）、且 w0 ≥ 10（循环配额前置）
+[PASS] batch_loop_ops_succeed — 10 轮成对操作（spawn 探针 + despawn 最小 index Wanderer）全部成功（含恢复期 despawn 探针）
+[PASS] batch_net_change_exact — 循环后 w1=90 == w0(100)-10、v1=10 == v0(0)+10（净变化精确一致）
+[PASS] world_restored_after_suite — 恢复后 w=100 == w0(100)、v=0 == v0(0)、Tagged=10 == t0(10)（探针清理 + 快照重生，index/初值/Tagged 逐位还原）
+-- 汇总：4/4 通过，snapshot.tick=Some(427) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-12"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":4,"results":[{"detail":"基线 w0=100 == entity_count Some(100)（自洽；字面 100 工具端绑定）、v0=0 == 0（新进程启动态）、且 w0 ≥ 10（循环配额前置）","name":"baseline_matches_checklist","pass":true},{"detail":"10 轮成对操作（spawn 探针 + despawn 最小 index Wanderer）全部成功（含恢复期 despawn 探针）","name":"batch_loop_ops_succeed","pass":true},{"detail":"循环后 w1=90 == w0(100)-10、v1=10 == v0(0)+10（净变化精确一致）","name":"batch_net_change_exact","pass":true},{"detail":"恢复后 w=100 == w0(100)、v=0 == v0(0)、Tagged=10 == t0(10)（探针清理 + 快照重生，index/初值/Tagged 逐位还原）","name":"world_restored_after_suite","pass":true}],"snapshot":{"elapsed_secs":8.165478710085154,"frame_count":489,"tick":489},"suite":"ts-12","total":4}}
+[PASS] baseline_matches_checklist — 基线 w0=100 == entity_count Some(100)（自洽；字面 100 工具端绑定）、v0=0 == 0（新进程启动态）、且 w0 ≥ 10（循环配额前置）
+[PASS] batch_loop_ops_succeed — 10 轮成对操作（spawn 探针 + despawn 最小 index Wanderer）全部成功（含恢复期 despawn 探针）
+[PASS] batch_net_change_exact — 循环后 w1=90 == w0(100)-10、v1=10 == v0(0)+10（净变化精确一致）
+[PASS] world_restored_after_suite — 恢复后 w=100 == w0(100)、v=0 == v0(0)、Tagged=10 == t0(10)（探针清理 + 快照重生，index/初值/Tagged 逐位还原）
+-- 汇总：4/4 通过，snapshot.tick=Some(489) --
+== 跨调用断言：snapshot.tick2(Some(489)) > tick1(Some(427))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

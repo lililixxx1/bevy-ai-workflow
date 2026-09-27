@@ -1,9 +1,9 @@
 //! [`game.run_tests`]：任务测试集验收清单的游戏进程内自动判定（M2 验收③）。
 //!
-//! 设计口径（意向文档 §10 第 3 条「状态注入优先、截图作辅助证据」）：本方法
-//! 只读世界状态做断言，不产生任何副作用；清单中需要跨调用采样的断言（如
-//! TS-01 断言 3 的「间隔 ≥1s 后 tick2 > tick1」）由工具端驱动两次调用并比对
-//! 响应中的 `snapshot` 完成——进程内单次调用无法跨帧采样。
+//! 设计口径（意向文档 §10 第 3 条「状态注入优先、截图作辅助证据」）：套件
+//! 约定**无净副作用**（只读或写后自恢复，见 [`suites`] 模块文档）；清单中需要
+//! 跨调用采样的断言（如 TS-01 断言 3 的「间隔 ≥1s 后 tick2 > tick1」）由工具端
+//! 驱动两次调用并比对响应中的 `snapshot` 完成——进程内单次调用无法跨帧采样。
 //!
 //! 请求：`{"suite": "ts-01"}`。缺 params / 缺 suite / 未知套件 → JSON-RPC 错误
 //! `INVALID_PARAMS`（-32602，message 附可用套件清单）；**断言失败不是协议错误**，
@@ -15,7 +15,7 @@ use serde_json::{json, Value};
 
 use super::{invalid_params, suites};
 
-/// handler 入口（`with_method_main` 注册，独占 `&mut World`；本方法约定只读）。
+/// handler 入口（`with_method_main` 注册，独占 `&mut World`；套件约定无净副作用）。
 pub fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
     let params = params.ok_or_else(|| {
         invalid_params(&format!("缺 params（须为 {{\"suite\": \"...\"}}）；可用套件：{}", suites::names().join(", ")))

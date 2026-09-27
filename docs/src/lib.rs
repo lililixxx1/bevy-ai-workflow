@@ -27,3 +27,7 @@ pub mod m1_acceptance {}
 /// 《M2 自研 RPC 证据》——game.run_tests / game.screenshot 的协议面、全自动判定与全链留证。
 #[doc = include_str!("../evidence/m2-rpc.md")]
 pub mod m2_rpc {}
+
+/// 《M1 两阶段判定第二阶段》——12 任务验收清单的脚本化重跑校准（套件架构、77 断言结果、返工与驱动口径）。
+#[doc = include_str!("../evidence/m1-phase2.md")]
+pub mod m1_phase2 {}

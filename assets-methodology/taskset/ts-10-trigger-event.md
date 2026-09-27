@@ -31,3 +31,11 @@
   `App::add_observer` 注册）；BRP `world.trigger_event`（省略 `value`）为唯一触发通道。
 - 证据：`docs/evidence/ts-10-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定 + 请求形态
   源码查证 + 终态复验 run2）；原始响应/运行日志/门禁日志 `docs/evidence/ts-10/`。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**（第二轮），2026-09-27 — 套件 `ts-10`
+  （3 断言×2 调用）：初始 paused=false → `world.trigger` 触发后 **true** → 再触发
+  **false**（翻转语义 + 套件净零；trigger 在 BRP handler 上下文同步执行 observer，
+  与 BRP trigger_event 语义一致，第一阶段已证反射构造通路）。**首跑 FAIL 如实记录**：
+  套件内两次 trigger 的 `second` 布尔实参交叉错位（断言名与期望错配），世界翻转语义
+  自始正确（round1 详情可证 false→true→false 净零）；修复后复跑 3/3×2 全过退出码 0
+  （round1 存档 `m1-phase2/ts-10/runner-round1.txt`，计入台账 T020 返工）。证据
+  `docs/evidence/m1-phase2.md` §三/§四 + `docs/evidence/m1-phase2/ts-10/`。

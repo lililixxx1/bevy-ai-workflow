@@ -1,0 +1,27 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-03）==
+>> [1] game.run_tests params={"suite":"ts-03"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"SimMetadata 在 AppTypeRegistry 中且带 ReflectResource 数据（BRP list_resources 同源判定）","name":"metadata_reflect_visible","pass":true},{"detail":"version=\"0.1.0\"（== CARGO_PKG_VERSION \"0.1.0\"，字面 0.1.0 由工具端 --expect-version 绑定）、entity_count=250（== config）、seed=7（== config）","name":"metadata_fields_consistent","pass":true}],"snapshot":{"elapsed_secs":4.012239492032677,"frame_count":238,"tick":238},"suite":"ts-03","total":2}}
+[PASS] metadata_reflect_visible — SimMetadata 在 AppTypeRegistry 中且带 ReflectResource 数据（BRP list_resources 同源判定）
+[PASS] metadata_fields_consistent — version="0.1.0"（== CARGO_PKG_VERSION "0.1.0"，字面 0.1.0 由工具端 --expect-version 绑定）、entity_count=250（== config）、seed=7（== config）
+-- 汇总：2/2 通过，snapshot.tick=Some(238) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":250,"max_speed":3.0,"paused":false,"seed":7}}}
+[PASS] entity_count=Some(250)（期望 250）
+[PASS] seed=Some(7)（期望 7）
+>> [3] world.get_resources params={"resource":"game::sim::SimMetadata"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"value":{"entity_count":250,"seed":7,"version":"0.1.0"}}}
+[PASS] SimMetadata.version=Some("0.1.0")（期望 "0.1.0"）
+>> [4] world.list_resources params={}
+<< [4] {"id":4,"jsonrpc":"2.0","result":["bevy_a11y::AccessibilityRequested","bevy_a11y::ManageAccessibilityUpdates","bevy_audio::audio::DefaultSpatialScale","bevy_audio::volume::GlobalVolume","bevy_camera::clear_color::ClearColor","bevy_dev_tools::fps_overlay::FpsOverlayConfig","bevy_dev_tools::render_debug::GlobalRenderDebugOverlay","bevy_ecs::entity_disabling::DefaultQueryFilters","bevy_gizmos::config::GizmoConfigStore","bevy_gizmos::transform_gizmo::TransformGizmoSettings","bevy_gizmos::transform_gizmo::TransformGizmoState","bevy_gizmos_render::LineGizmoEntities","bevy_input::button_input::ButtonInput<bevy_input::gamepad::GamepadButton>","bevy_input::mouse::AccumulatedMouseMotion","bevy_input::mouse::AccumulatedMouseScroll","bevy_input_focus::InputFocus","bevy_input_focus::InputFocusVisible","bevy_input_focus::directional_navigation::AutoNavigationConfig","bevy_input_focus::directional_navigation::DirectionalNavigationMap","bevy_light::ambient_light::GlobalAmbientLight","bevy_light::directional_light::DirectionalLightShadowMap","bevy_light::point_light::PointLightShadowMap","bevy_pbr::material::DefaultOpaqueRendererMethod","bevy_pbr::wireframe::WireframeConfig","bevy_picking::PickingSettings","bevy_picking::input::PointerInputSettings","bevy_picking::mesh_picking::MeshPickingSettings","bevy_remote::schemas::SchemaTypesMetadata","bevy_render::globals::GlobalsUniform","bevy_sprite::picking_backend::SpritePickingSettings","bevy_sprite_render::mesh2d::wireframe2d::Wireframe2dConfig","bevy_sprite_render::tilemap_chunk::TilemapChunkMeshCache","bevy_time::time::Time<()>","bevy_time::time::Time<bevy_time::fixed::Fixed>","bevy_time::time::Time<bevy_time::real::Real>","bevy_time::time::Time<bevy_time::virt::Virtual>","bevy_ui::UiScale","bevy_ui::picking_backend::UiPickingSettings","bevy_ui::stack::UiStack","bevy_ui_render::debug_overlay::GlobalUiDebugOptions","bevy_ui_widgets::text_input::QueuedSelectAll","game::camera::CameraRig","game::sim::SimConfig","game::sim::SimMetadata","game::sim::SimStats"]}
+[PASS] world.list_resources 含 game::sim::SimMetadata
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [5] game.run_tests params={"suite":"ts-03"}
+<< [5] {"id":5,"jsonrpc":"2.0","result":{"failed":0,"passed":2,"results":[{"detail":"SimMetadata 在 AppTypeRegistry 中且带 ReflectResource 数据（BRP list_resources 同源判定）","name":"metadata_reflect_visible","pass":true},{"detail":"version=\"0.1.0\"（== CARGO_PKG_VERSION \"0.1.0\"，字面 0.1.0 由工具端 --expect-version 绑定）、entity_count=250（== config）、seed=7（== config）","name":"metadata_fields_consistent","pass":true}],"snapshot":{"elapsed_secs":5.078573091421276,"frame_count":302,"tick":302},"suite":"ts-03","total":2}}
+[PASS] metadata_reflect_visible — SimMetadata 在 AppTypeRegistry 中且带 ReflectResource 数据（BRP list_resources 同源判定）
+[PASS] metadata_fields_consistent — version="0.1.0"（== CARGO_PKG_VERSION "0.1.0"，字面 0.1.0 由工具端 --expect-version 绑定）、entity_count=250（== config）、seed=7（== config）
+-- 汇总：2/2 通过，snapshot.tick=Some(302) --
+== 跨调用断言：snapshot.tick2(Some(302)) > tick1(Some(238))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

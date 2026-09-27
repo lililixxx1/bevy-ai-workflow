@@ -25,3 +25,11 @@
   全部 PASS，首次 `cargo check --workspace` REAL_EXIT=0，一次通过、返工 0
 - 证据：`docs/evidence/ts-03-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；
   原始响应/运行日志/门禁日志 `docs/evidence/ts-03/`
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-03`（2 断言×2
+  调用）：`metadata_reflect_visible`（SimMetadata 在 AppTypeRegistry 且带
+  ReflectResource 数据——BRP list_resources 同源判定，进程内等价 #1）+
+  `metadata_fields_consistent`（version=="0.1.0"==CARGO_PKG_VERSION、250/7 与
+  config 自洽）；工具端 BRP 实证 #1：`world.list_resources` 含
+  game::sim::SimMetadata（--expect-version 触发）+ get_resources version=="0.1.0"
+  字面绑定。退出码 0。证据 `docs/evidence/m1-phase2.md` §三 +
+  `docs/evidence/m1-phase2/ts-03/`（台账 T020）。

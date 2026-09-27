@@ -28,3 +28,14 @@
   单进程（PID 23924）无重启，零改码，一次通过。
 - 证据：`docs/evidence/ts-12-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；原始响应/运行日志/门禁
   日志 `docs/evidence/ts-12/`。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-12`（4 断言×2
+  调用）：基线 w0=100==entity_count、v0=0；10 轮成对操作（spawn 探针 + despawn
+  **剩余最小 index** 的真实 Wanderer——确定性取序，强于第一阶段依赖 archetype
+  迭代序）全部成功；终态 w1=90==w0−10、v1=10==v0+10 净变化精确一致；恢复后
+  w=100/v=0（探针清理 + 五组件快照重生，index/初值逐位还原，实体号允许变化——
+  回归口径禁断言绝对 entity id）。#4 tick 递增由工具端两连调完成（246→308）。
+  退出码 0。证据 `docs/evidence/m1-phase2.md` §三 + `docs/evidence/m1-phase2/ts-12/`
+  （台账 T020）。round2（2026-09-27，审核 P1-3 修复后最终证据）：快照由五组件补
+  为全组件（含 Tagged——最小 index 恰为 index<10 打标实体，旧版重生丢 Tagged 致
+  组件集不等价），恢复断言加 Tagged 计数核对，实测 Tagged=10==t0(10)；
+  `saturating_sub` 防下溢 + w0≥10 前置；4/4×2 调用全过退出码 0，tick 427→489。

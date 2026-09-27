@@ -1,0 +1,31 @@
+=== ts-01 2026-09-27T09:07:26+08:00 ===
+ts-01 RUNNER_EXIT=0 kill_clean=0
+=== ts-02 2026-09-27T09:07:34+08:00 ===
+ts-02 RUNNER_EXIT=0 kill_clean=0
+=== ts-03 2026-09-27T09:07:42+08:00 ===
+ts-03 RUNNER_EXIT=0 kill_clean=0
+=== ts-05 2026-09-27T09:07:50+08:00 ===
+ts-05 RUNNER_EXIT=0 kill_clean=0   # round1：全绿；raw 被 round2（审核 P2-1/P2-8 修复）取代
+=== ts-06 2026-09-27T09:07:58+08:00 ===
+ts-06 RUNNER_EXIT=0 kill_clean=0
+=== ts-07 2026-09-27T09:08:06+08:00 ===
+ts-07 RUNNER_EXIT=0 kill_clean=0
+=== ts-08 2026-09-27T09:08:14+08:00 ===
+ts-08 RUNNER_EXIT=0 kill_clean=0
+=== ts-09 2026-09-27T09:08:22+08:00 ===
+ts-09 RUNNER_EXIT=0 kill_clean=0
+=== ts-10 2026-09-27T09:08:30+08:00 ===
+ts-10 RUNNER_EXIT=1 kill_clean=0   # round1：套件 second 布尔实参交叉错位（世界语义正确），修复后见 round2 行
+=== ts-12 2026-09-27T09:08:38+08:00 ===
+ts-12 RUNNER_EXIT=0 kill_clean=0   # round1：全绿；raw 被 round2（审核 P1-3 Tagged 恢复修复）取代
+=== ts-04 2026-09-27T09:08:46+08:00 ===
+ts-04 RUNNER_EXIT=0 kill_clean=0
+=== ts-11 2026-09-27T09:08:57+08:00 ===
+ts-11 RUNNER_EXIT=0 BENCH_JUDGE_EXIT=0 brp_avg=59.69532174429972
+=== 全部任务完成 2026-09-27T09:09:09+08:00 ===
+=== ts-10 round2 2026-09-27T09:11:37+08:00 ===
+ts-10 round2 RUNNER_EXIT=0
+=== ts-05 round2 2026-09-27T09:37:20+08:00 ===
+ts-05 round2 RUNNER_EXIT=0 residue=none
+=== ts-12 round2 2026-09-27T09:37:31+08:00 ===
+ts-12 round2 RUNNER_EXIT=0 residue=none

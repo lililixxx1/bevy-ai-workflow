@@ -23,3 +23,13 @@
 
 - 判定者/日期/结论：执行 agent，2026-09-26，**通过（第一阶段人工对照）**——4/4 断言首次执行全部通过，零改码，一次通过（返工 0）。e = 4294966777，`linear` 回读严格等于 `[1.0, 0.0, 2.0]`，无 Wanderer 的 Velocity 行恰 1 行且 entity == e。
 - 证据：`docs/evidence/ts-05-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；原始响应/运行日志/门禁日志 `docs/evidence/ts-05/`；台账 T010。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-05`（3 断言×2
+  调用）：`spawn_velocity_readback`（ECS 直写 spawn 后**同帧回读** linear==
+  [1.0,0.0,2.0] 逐位；BRP 反射通路第一阶段已证，此处复测判定语义）、
+  `velocity_only_isolation`（Velocity-only 计数 1 == 基线 0+1，等价清单 #4 的
+  without 筛选）、`world_restored_after_suite`（探针 despawn 后计数回 0——套件
+  无净副作用约定）。字面值 100/20260926 + tick 递增。退出码 0。证据
+  `docs/evidence/m1-phase2.md` §三 + `docs/evidence/m1-phase2/ts-05/`（台账 T020）。
+  round2（2026-09-27，审核 P2-1/P2-8 修复后最终证据）：断言 3→4——增
+  `wanderer_baseline_matches_config`（清单 #1 进程内自洽：计数 100==entity_count），
+  恢复改无条件 despawn；4/4×2 调用全过退出码 0，tick 411→473。

@@ -1,0 +1,7 @@
+# PIT-M-006 最小复现（2026-09-27，bash，无副作用）
+$ cd docs/evidence/m1-phase2 && cd -- "../.." && pwd
+/c/Users/Administrator/Desktop/ccc/bevy-ai-workflow/docs
+# ↑ 错误锚定：落在 <repo>/docs 而非仓库根（脚本在根下三级，须上溯三级）
+$ cd docs/evidence/m1-phase2 && cd -- "../../.." && pwd
+/c/Users/Administrator/Desktop/ccc/bevy-ai-workflow
+# ↑ 修复形态：落在仓库根

@@ -28,3 +28,10 @@
   `#[serde(default = "default_max_speed")]` 落地（缺字段默认 3.0 而非 0.0，依「默认 3.0，保持现口径不变」同句约束）。
 - 证据：`docs/evidence/ts-02-brp.md`（curl 命令原文 + 响应原文摘录 + 逐条判定）；原始响应/运行日志/门禁日志
   `docs/evidence/ts-02/`。
+- 第二阶段（脚本判定，M1 校准重跑）：**PASS**，2026-09-27 — 套件 `ts-02`（2 断言×2
+  调用）：`velocity_within_configured_cap` 1000 实体模长全量 ∈ (0,9]（越界 0，最大
+  8.9986）、>默认上限 3.0 的 675 个 ≥1（全量扫描强于清单「采样 ≥100」）；
+  `origin_invariant_to_max_speed` 1000 实体 origin/phase 与默认上限重抽逐位一致
+  （不符 0；清单 #3 跨进程对照以进程内重抽等价替换，`sim::draw_initial` 单一落点）。
+  字面值：count 1000 / seed 20260926 / max_speed 9.0（--expect-max-speed）。退出码 0。
+  证据 `docs/evidence/m1-phase2.md` §三 + `docs/evidence/m1-phase2/ts-02/`（台账 T020）。

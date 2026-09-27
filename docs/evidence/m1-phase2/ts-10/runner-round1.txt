@@ -1,0 +1,24 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-10）==
+>> [1] game.run_tests params={"suite":"ts-10"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":2,"passed":1,"results":[{"detail":"初始 paused=Some(false)（清单要求 false）","name":"paused_initially_false","pass":true},{"detail":"触发后 paused=Some(true)（期望 Some(false)，翻转语义：第二次触发回初始值）","name":"second_trigger_resumes","pass":false},{"detail":"触发后 paused=Some(false)（期望 Some(true)，翻转语义：第一次触发取反）","name":"first_trigger_pauses","pass":false}],"snapshot":{"elapsed_secs":4.072424384765327,"frame_count":243,"tick":243},"suite":"ts-10","total":3}}
+[PASS] paused_initially_false — 初始 paused=Some(false)（清单要求 false）
+[FAIL] second_trigger_resumes — 触发后 paused=Some(true)（期望 Some(false)，翻转语义：第二次触发回初始值）
+[FAIL] first_trigger_pauses — 触发后 paused=Some(false)（期望 Some(true)，翻转语义：第一次触发取反）
+-- 汇总：1/3 通过，snapshot.tick=Some(243) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-10"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":2,"passed":1,"results":[{"detail":"初始 paused=Some(false)（清单要求 false）","name":"paused_initially_false","pass":true},{"detail":"触发后 paused=Some(true)（期望 Some(false)，翻转语义：第二次触发回初始值）","name":"second_trigger_resumes","pass":false},{"detail":"触发后 paused=Some(false)（期望 Some(true)，翻转语义：第一次触发取反）","name":"first_trigger_pauses","pass":false}],"snapshot":{"elapsed_secs":5.105709587223828,"frame_count":305,"tick":305},"suite":"ts-10","total":3}}
+[PASS] paused_initially_false — 初始 paused=Some(false)（清单要求 false）
+[FAIL] second_trigger_resumes — 触发后 paused=Some(true)（期望 Some(false)，翻转语义：第二次触发回初始值）
+[FAIL] first_trigger_pauses — 触发后 paused=Some(false)（期望 Some(true)，翻转语义：第一次触发取反）
+-- 汇总：1/3 通过，snapshot.tick=Some(305) --
+== 跨调用断言：snapshot.tick2(Some(305)) > tick1(Some(243))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：失败 ==
+套件 ts-10 未全通过：第 1 次 1/3，第 2 次 1/3，tick 递增 true，字面值 true
