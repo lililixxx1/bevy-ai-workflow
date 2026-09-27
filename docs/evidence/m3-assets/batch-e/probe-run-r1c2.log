@@ -1,0 +1,10 @@
+warning: unused import: `bevy::reflect::TypeRegistry`
+ --> src\main.rs:5:5
+  |
+5 | use bevy::reflect::TypeRegistry;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+R1c 注册后 registry 收录 20 型（含依赖闭包），MyStruct 在册 = true
+REAL_EXIT=0

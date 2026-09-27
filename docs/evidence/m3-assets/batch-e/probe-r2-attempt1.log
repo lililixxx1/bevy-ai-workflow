@@ -1,0 +1,41 @@
+# probe-r2-attempt1.log（补录）
+
+性质说明：本文件为**补录**——r2 修正轮的两笔失败（opaque 需 Clone 的 E0277、
+RwLock 守卫 E0716）真实发生于查证后的修正路径中（会话内 cargo check 即时输出），
+当时未单独落盘（成功轮 probe-r2-check.log 被多轮覆盖为终态）。此处从会话输出
+逐字补录关键段，供 PIT-B-023/024 的「修正轮发现」有 raw 可指。独立审核已复现
+两条均真实（临时 crate rustc 直连验证）。补录于 2026-09-27，内容未改写。
+
+## 其一：#[reflect(opaque)] 缺 Clone → E0277（r2 首次 check）
+
+```text
+error[E0277]: the trait bound `OpaqueWrapC: Clone` is not satisfied
+   --> src\lib.rs:136:10
+    |
+136 | #[derive(Reflect)]
+    |          ^^^^^^^ the trait `Clone` is not implemented for `OpaqueWrapC`
+    |
+    = note: this error originates in the derive macro `Reflect` (in Nightly builds, run with `-Z macro-backtrace` for more details)
+help: consider annotating `OpaqueWrapC` with `#[derive(Clone)]`
+    |
+138 + #[derive(Clone)]
+139 + struct OpaqueWrapC(f32);
+    |
+...
+error: could not compile `probe-e` (lib) due to 3 previous errors
+```
+
+（该轮共 3 error，其余 2 条为同 derive 展开的重复 bound 报告，日志仅显示首条完整块。）
+
+## 其二：内联 &arc.read() 传参 → E0716（修 Clone 后第二次 check，bin 侧）
+
+```text
+error[E0716]: temporary value dropped while borrowed
+  --> src\main.rs:72:43
+   |
+72 |     let ser = ReflectSerializer::new(&v, &arc.read());
+   |                                           ^^^^^^^^^^^ - temporary value is freed at the end of this statement
+   |
+```
+
+修复：守卫显式绑定 `let reg = arc.read();` 后传 `&reg`（终态源码 main.rs R2c 内注释）。

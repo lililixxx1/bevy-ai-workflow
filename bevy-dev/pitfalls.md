@@ -6,7 +6,7 @@
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：20 条（2026-09-26 起；2026-09-27 M3 批次一新增 005–013，探查证据 `docs/evidence/m3-assets/batch-c/`；批次二新增 014–020，探查证据 `docs/evidence/m3-assets/batch-d/`）。
+- 当前：25 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 `docs/evidence/m3-assets/batch-c/`；批次二 014–020 证据 `docs/evidence/m3-assets/batch-d/`；批次三 021–025 证据 `docs/evidence/m3-assets/batch-e/`）。
 
 ---
 
@@ -1140,3 +1140,280 @@ assert_eq!((first, second), (1, 1)); // 新读者隔帧仍读到：消息活过�
 **验证证据**：
 - 复现（误读对照）：`docs/evidence/m3-assets/batch-d/probe-run-r2.log`（单读者 (1, 0)）；
 - 修复（语义实证）：`docs/evidence/m3-assets/batch-d/probe-run-r2b.log`（双读者错峰 (1, 1)，REAL_EXIT=0）；本条目正例 fence 即 doctest 运行验证。
+### PIT-B-021：反射克隆 `clone_value` 已移除——正解 `reflect_clone`（Result 语义）
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Reflect trait API 迁移）
+- 标签：`Reflect` `clone_value` `reflect_clone` `E0599` `反射`
+
+**现象**：按旧语料写 `v.clone_value()` 克隆反射值，E0599（2026-09-27，`docs/evidence/m3-assets/batch-e/probe-r1-check.log`）：
+
+```text
+error[E0599]: no method named `clone_value` found for reference `&(dyn bevy::bevy_reflect::Reflect + 'static)` in the current scope
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::reflect::Reflect;
+
+#[derive(Reflect, Clone)]
+struct Hp(f32);
+
+fn clone_wrong(v: &dyn Reflect) -> Box<dyn Reflect> {
+    v.clone_value() // E0599：clone_value 已移除
+}
+```
+
+**根因**：反射克隆整体迁往 `reflect_clone`——`fn reflect_clone(&self) -> Result<Box<dyn Reflect>, ReflectCloneError>`（`bevy_reflect-0.19.1/src/reflect.rs:312`，核实 2026-09-27）；另有 `reflect_clone_and_take::<T>`（:321）。`clone_value` 在 bevy_reflect 0.19.1 全库无实现（全文 0 处；bevy_animation 有同名非 Reflect 方法，不相干）。Result 语义的边界：不可克隆字段（如非 Clone 依赖）返回 `ReflectCloneError` 而非 panic。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Reflect, Clone, Debug, PartialEq)]
+struct Hp(f32);
+
+let v = Hp(3.0);
+let cloned: Box<dyn Reflect> = v.reflect_clone().expect("Clone 型可克隆");
+assert_eq!(*cloned.downcast_ref::<Hp>().unwrap(), Hp(3.0));
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-e/probe-r1-check.log`（E0599 原文）；
+- 修复：`docs/evidence/m3-assets/batch-e/probe-r2-check.log`（p3c 形态编译通过，REAL_EXIT=0）；本条目正例 fence 含克隆后下转断言（doctest 机器断言）。
+
+### PIT-B-022：`ReflectComponent::from_world` bounds 不满足——正解从注册表 `data::<ReflectComponent>()` 取，insert 已改三参
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（ECS 反射组件 API）
+- 标签：`ReflectComponent` `from_world` `insert` `E0277` `反射` `BRP同源`
+
+**现象**：按旧语料 `ReflectComponent::from_world(world)` 构造再 insert，编译报 bounds（2026-09-27，`docs/evidence/m3-assets/batch-e/probe-r1-check.log`）：
+
+```text
+error[E0599]: the associated function or constant `from_world` exists for struct `ReflectComponent`, but its trait bounds were not satisfied
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::ecs::reflect::ReflectComponent;
+use bevy::prelude::*;
+
+#[derive(Component, Reflect)]
+struct Marker;
+
+fn insert_wrong(world: &mut World) {
+    let rc = ReflectComponent::from_world(world); // E0599（bounds 版）：不可用形态
+}
+```
+
+**根因**：0.19 的标准路径是**从注册表取类型数据**：`TypeRegistration::data::<ReflectComponent>()`（BRP `get_component`/`insert` 内部同源）；`insert` 签名已改为三参 `(entity: &mut EntityWorldMut, component: &dyn PartialReflect, registry: &TypeRegistry)`（`bevy_ecs-0.19.1/src/reflect/component.rs:153-159`，核实 2026-09-27）——组件值以 `PartialReflect` 传入且须携带注册表。**且组件须带 `#[reflect(Component)]` 属性**（仅 `derive(Component, Reflect)` 不注册该数据，运行时 `data::<ReflectComponent>()` 得 None——`component.rs:14`「When a user adds the `#[reflect(Component)]` attribute」；本条正例首版漏此属性，doctest 运行断言抓出后补，失败轮见门禁日志）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::ecs::reflect::{AppTypeRegistry, ReflectComponent};
+use bevy::prelude::*;
+
+// 第二坑（doctest 机器断言抓出）：缺 #[reflect(Component)] 属性时
+// data::<ReflectComponent>() 运行时返回 None（静默，expect 才 panic）——
+// 该属性才注册 FromType<ReflectComponent> 数据（component.rs:14 文档；
+// 本仓 sim.rs:96/:108/:127 全部组件同款实证）。
+#[derive(Component, Reflect, Clone, Debug, PartialEq)]
+#[reflect(Component)]
+struct Marker(f32);
+
+let mut world = World::new();
+world
+    .get_resource_or_insert_with::<AppTypeRegistry>(Default::default)
+    .write()
+    .register::<Marker>();
+let entity = world.spawn_empty().id();
+let value = Marker(7.0);
+let arc = world.resource::<AppTypeRegistry>().0.clone();
+let reg = arc.read(); // 守卫显式绑定（内联 &arc.read() 会 E0716 提前 drop）
+let data = reg
+    .get(std::any::TypeId::of::<Marker>())
+    .and_then(|r| r.data::<ReflectComponent>())
+    .expect("Marker 已注册");
+data.insert(&mut world.entity_mut(entity), &value, &reg);
+assert_eq!(world.get::<Marker>(entity), Some(&Marker(7.0)));
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-e/probe-r1-check.log`（bounds 版 E0599 原文）；
+- 修复：`docs/evidence/m3-assets/batch-e/probe-r2-check.log`（p4c 形态编译通过，REAL_EXIT=0）；本条目正例 fence 含插入后读回断言（doctest 机器断言）。
+
+### PIT-B-023：不透明反射属性 `#[reflect_value]` 已改名 `#[reflect(opaque)]`——且要求类型实现 `Clone`
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Reflect derive 属性面）
+- 标签：`reflect_value` `reflect(opaque)` `不透明反射` `Clone` `属性`
+
+**现象**：旧属性名 `#[reflect_value]` 不再存在（2026-09-27，`docs/evidence/m3-assets/batch-e/probe-r1-check.log`）：
+
+```text
+error: cannot find attribute `reflect_value` in this scope
+...
+```
+
+改名后首试又踩附带 bound：`#[reflect(opaque)]` derive 要求 `Clone`（r2 修正轮实测 E0277，help 明示 `consider annotating with #[derive(Clone)]`）。
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::reflect::Reflect;
+
+#[derive(Reflect)]
+#[reflect_value] // 属性不存在（0.19 已改名）
+struct Wrap(f32);
+```
+
+**根因**：不透明反射属性现名 `#[reflect(opaque)]`（`bevy_reflect_derive-0.19.1/src/container_attributes.rs:394` 文档；用例见 `bevy_reflect/src/lib.rs` `#[cfg(test)] mod tests` 内 :3635/:4020，核实 2026-09-27）。三笔事实（独立审核以临时 crate 实测复核）：①opaque derive 要求 `Clone`（bound，E0277）；②`reflect_clone` 是 **PartialReflect** 的方法（`reflect.rs:101` trait 起、:312 定义，默认实现返回 `Err(ReflectCloneError::NotImplemented)`）——调用它须 `use PartialReflect`，仅 `use Reflect` 报 E0599（首版 doctest 失败的真因即漏此 import，help 明示「trait PartialReflect which provides reflect_clone is implemented but not in scope」）；③opaque 变体默认未实现 reflect_clone（运行期 NotImplemented），可克隆须再标 `#[reflect(Clone)]`（该属性生成实现 `container_attributes.rs:621-637`）；官方测试用例走 `data.apply(&patch)` 通路（opaque 的 `PartialReflect::apply` 经 `impls/opaque.rs:92-104` try_apply→Clone）。
+
+**修复**（已过编译 + 运行验证；官方 doctest 同款 apply 通路）：
+
+```rust
+use bevy::reflect::{PartialReflect, Reflect};
+
+#[derive(Reflect, Clone, Debug, PartialEq)] // opaque 要求 Clone（E0277 help 明示）
+#[reflect(opaque)]
+struct WrapC(f32);
+
+let mut data = WrapC(1.0);
+data.apply(&WrapC(2.0)); // PartialReflect::apply（须 use PartialReflect；
+                         // reflect_clone 亦可，但须 #[reflect(Clone)] 才非 NotImplemented）
+assert_eq!(data, WrapC(2.0));
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-e/probe-r1-check.log`（属性不存在原文）+ r2 修正轮 E0277 原文（`probe-r2-attempt1.log` 补录）+ 首版 doctest E0599 漏 import 失败轮（`gate-doc-test-attempt1.log` 补录）；
+- 修复：`docs/evidence/m3-assets/batch-e/probe-r2-check.log`（REAL_EXIT=0）；本条目正例 fence 即 doctest 编译+运行验证。
+
+### PIT-B-024：注册表资源面重排——`TypeRegistry` 非 Resource、裸 `World` 无 `register_type`、短名查改名 `get_with_short_type_path`
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（类型注册表的资源形态与访问协议）
+- 标签：`TypeRegistry` `AppTypeRegistry` `register_type` `get_with_short_type_path` `E0277` `E0599` `RwLock`
+
+**现象**：四连坑（2026-09-27，`docs/evidence/m3-assets/batch-e/probe-r1-check.log` + `probe-r1b-check.log`）：
+
+```text
+error[E0277]: `TypeRegistry` is not a `Resource`
+...
+error[E0599]: no method named `register_type` found for struct `bevy::bevy_ecs::world::World` in the current scope
+...
+error[E0599]: no method named `get_with_short_name` found for reference `&TypeRegistry` in the current scope
+...
+error[E0599]: no method named `len` found for reference `&TypeRegistry` in the current scope
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::reflect::TypeRegistry;
+use bevy::prelude::*;
+
+fn registry_wrong(world: &World) -> usize {
+    world.resource::<TypeRegistry>().len() // E0277：TypeRegistry 不是 Resource（也无 len）
+}
+```
+
+**根因**：Resource 是包装器 `AppTypeRegistry(pub TypeRegistryArc)`（`bevy_ecs-0.19.1/src/reflect/mod.rs:35-41`，`#[derive(Resource)]` + Deref→`TypeRegistryArc`，核实 2026-09-27）；`TypeRegistryArc` 内 `Arc<RwLock<TypeRegistry>>`，访问须经 `.read()`/`.write()` 守卫（`bevy_reflect/src/type_registry.rs:569/:574`）。`register_type` 只在 App 侧（`bevy_app/src/app.rs:677`，写 `AppTypeRegistry`）；裸 `World` 须手动 `get_resource_or_insert_with::<AppTypeRegistry>` 后 `write().register::<T>()`（`TypeRegistry::register` :201）。短名查现名 `get_with_short_type_path`（:467）；`TypeRegistry` 无 `len`（计数用 `iter().count()` :547）。附带通用注意（Rust 层，不单独立条）：守卫须显式绑定变量——内联 `&arc.read()` 传参会 E0716 临时值提前 drop。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::ecs::reflect::AppTypeRegistry;
+use bevy::prelude::*;
+use bevy::reflect::Reflect;
+
+#[derive(Reflect)]
+struct Cfg(f32);
+
+let mut world = World::new();
+world
+    .get_resource_or_insert_with::<AppTypeRegistry>(Default::default)
+    .write()
+    .register::<Cfg>();
+let hit = world
+    .resource::<AppTypeRegistry>()
+    .read()
+    .get_with_short_type_path("Cfg")
+    .is_some();
+assert!(hit); // App 上等价：app.register_type::<Cfg>() 后同样 read() 可查
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-e/probe-r1-check.log`（P9 E0277）+ `probe-r1b-check.log`（bin 侧 E0277 ×3 / E0599 ×3）；
+- 修复：`docs/evidence/m3-assets/batch-e/probe-r2-check.log`（REAL_EXIT=0）+ `probe-run-r1c2.log`（注册+短名查 PASS）；本条目正例 fence 即 doctest 机器断言。
+
+### PIT-B-025：`register::<T>` 注册的是**类型依赖闭包**——「注册 1 型得 1 型」预期被证伪
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（注册表递归注册语义）
+- 标签：`register` `依赖闭包` `TypeRegistry` `list_components` `计数`
+
+**现象**：运行时断言「注册 MyStruct 后 registry 恰 1 型」被证伪——实测 **20 型**（2026-09-27，`docs/evidence/m3-assets/batch-e/probe-run-r1c.log`，REAL_EXIT=101）：
+
+```text
+R1c 裸 World 经 AppTypeRegistry 注册后收录 20 型
+...
+thread 'main' (10024) panicked at src\main.rs:52:5:
+assertion `left == right` failed: 注册后恰收录 1 型
+  left: 20
+ right: 1
+...
+```
+
+**最小复现**（运行时语义反例，非编译载体；标 ignore 附理由——完整脚本与失败轮见证据目录）：
+
+```rust,ignore
+// 误读预期：register::<MyStruct>() 只登记 MyStruct 一型。
+// 对照证据：docs/evidence/m3-assets/batch-e/probe-run-r1c.log（断言 ==1 失败，
+// 实测 20）与 probe-run-r1c2.log（按依赖闭包语义复测 PASS）。
+```
+
+**根因**：`TypeRegistry::register::<T>` 在登记 T 后递归调用 `T::register_type_dependencies(self)`（`bevy_reflect-0.19.1/src/type_registry.rs:201-207`；doc :166「will also recursively register any type dependencies」，核实 2026-09-27）。依赖闭包层层展开：MyStruct → Inner/f32/String → std primitives 全家桶。推论：BRP `registry.list_components` 的可见集合同样含依赖型；对注册数做精确断言须按闭包口径，或改断言 `contains(TypeId)`。
+
+**修复**（已过运行验证；按闭包语义断言）：
+
+```rust
+use bevy::ecs::reflect::AppTypeRegistry;
+use bevy::prelude::*;
+use bevy::reflect::Reflect;
+
+#[derive(Reflect)]
+struct Inner(f32);
+
+#[derive(Reflect)]
+struct Outer(Inner, String);
+
+let mut world = World::new();
+world
+    .get_resource_or_insert_with::<AppTypeRegistry>(Default::default)
+    .write()
+    .register::<Outer>();
+let n = world.resource::<AppTypeRegistry>().read().iter().count();
+assert!(n > 1, "依赖闭包一并注册（Outer→Inner/String→primitives）");
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-e/probe-run-r1c.log`（断言失败原文，REAL_EXIT=101）；
+- 修复：`docs/evidence/m3-assets/batch-e/probe-run-r1c2.log`（闭包语义复测 PASS「收录 20 型（含依赖闭包），MyStruct 在册 = true」，REAL_EXIT=0）；本条目正例 fence 即 doctest 机器断言。

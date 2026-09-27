@@ -7,7 +7,7 @@
   2. 复制 `_TEMPLATE.md` → 改名 `PAT-B-XXX-slug.md` → 填完全部必填字段（模板内注释一并删除）；
   3. 在下方索引表加一行；
   4. 反例形态的教训不进本目录——走 `bevy-dev/pitfalls.md`。
-- 当前：8 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008）。
+- 当前：10 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008；批次三新增 009–010）。
 
 ## 索引
 
@@ -21,3 +21,5 @@
 | PAT-B-006 | 定时自退出采集——BenchState 幂等闸门 + MessageWriter\<AppExit\> 条件写出 | bevy 0.19.1 | [PAT-B-006-timed-self-exit.md](./PAT-B-006-timed-self-exit.md) | TS-11 `--bench-secs` 自退出 REAL_EXIT=0 + `[BENCH]` 汇总行；常驻模式 [STATS]/BRP 可读（2026-09-26） |
 | PAT-B-007 | 反射 Event + observer 资源翻转——BRP trigger_event 到生效零往返 | bevy 0.19.1 | [PAT-B-007-reflect-event-observer-flip.md](./PAT-B-007-reflect-event-observer-flip.md) | T015 发/收/读三步闭环；TS-04 pause 五步时序（2026-09-26/27） |
 | PAT-B-008 | run_if 资源门控 + .chain() 定序——暂停语义一行调度表达 | bevy 0.19.1 | [PAT-B-008-runif-gate-chain.md](./PAT-B-008-runif-gate-chain.md) | TS-04 暂停后 tick 停滞/恢复递增 + BRP 旁路不受门控（2026-09-27） |
+| PAT-B-009 | BRP 自定义方法组装——with_method_main 链 + 错误码复用受理侧纪律 | bevy 0.19.1 | [PAT-B-009-brp-custom-method-assembly.md](./PAT-B-009-brp-custom-method-assembly.md) | M2 三方法 BRP 实测全通 + rpc.discover 收录（2026-09-26） |
+| PAT-B-010 | 异步截图受理-轮询契约——spawn+observe 双 observer + 日志资源两段式 | bevy 0.19.1 | [PAT-B-010-async-screenshot-accept-poll.md](./PAT-B-010-async-screenshot-accept-poll.md) | M2 验收②全链 PNG 魔数+IHDR 断言、捕获 +3 帧口径（2026-09-26） |

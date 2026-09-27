@@ -1,0 +1,81 @@
+    Updating `rsproxy-sparse` index
+     Locking 562 packages to latest compatible versions
+    Checking probe-e v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-e)
+error: cannot find attribute `reflect_value` in this scope
+  --> src\lib.rs:66:3
+   |
+66 | #[reflect_value]
+   |   ^^^^^^^^^^^^^
+
+error[E0599]: no method named `clone_value` found for reference `&(dyn bevy::bevy_reflect::Reflect + 'static)` in the current scope
+  --> src\lib.rs:47:7
+   |
+47 |     v.clone_value()
+   |       ^^^^^^^^^^^ method not found in `&(dyn bevy::bevy_reflect::Reflect + 'static)`
+
+error[E0599]: the associated function or constant `from_world` exists for struct `ReflectComponent`, but its trait bounds were not satisfied
+   --> src\lib.rs:53:32
+    |
+ 53 |     let rc = ReflectComponent::from_world(world);
+    |                                ^^^^^^^^^^ associated function or constant cannot be called on `ReflectComponent` due to unsatisfied trait bounds
+    |
+   ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\reflect\component.rs:81:1
+    |
+ 81 | pub struct ReflectComponent(ReflectComponentFns);
+    | --------------------------- doesn't satisfy `ReflectComponent: bevy::bevy_ecs::world::FromWorld` or `ReflectComponent: std::default::Default`
+    |
+note: if you're trying to build a new `ReflectComponent`, consider using `ReflectComponent::new` which returns `ReflectComponent`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\reflect\component.rs:279:5
+    |
+279 |     pub fn new(fns: ReflectComponentFns) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: the following trait bounds were not satisfied:
+            `ReflectComponent: std::default::Default`
+            which is required by `ReflectComponent: bevy::bevy_ecs::world::FromWorld`
+            `&ReflectComponent: std::default::Default`
+            which is required by `&ReflectComponent: bevy::bevy_ecs::world::FromWorld`
+            `&mut ReflectComponent: std::default::Default`
+            which is required by `&mut ReflectComponent: bevy::bevy_ecs::world::FromWorld`
+
+error[E0599]: no method named `get_with_short_name` found for reference `&TypeRegistry` in the current scope
+  --> src\lib.rs:78:14
+   |
+78 |     registry.get_with_short_name("MyStruct").is_some()
+   |              ^^^^^^^^^^^^^^^^^^^
+   |
+help: there is a method `get_with_short_type_path` with a similar name
+   |
+78 -     registry.get_with_short_name("MyStruct").is_some()
+78 +     registry.get_with_short_type_path("MyStruct").is_some()
+   |
+
+error[E0277]: `TypeRegistry` is not a `Resource`
+    --> src\lib.rs:83:46
+     |
+  83 |     let _r: &TypeRegistry = world.resource::<TypeRegistry>();
+     |                                   --------   ^^^^^^^^^^^^ invalid `Resource`
+     |                                   |
+     |                                   required by a bound introduced by this call
+     |
+     = help: the trait `Resource` is not implemented for `TypeRegistry`
+     = note: consider annotating `TypeRegistry` with `#[derive(Resource)]`
+     = help: the following other types implement trait `Resource`:
+               AccessibilityRequested
+               AccumulatedMouseMotion
+               AccumulatedMouseScroll
+               AppTypeRegistry
+               AreaLightLuts
+               AssetProcessor
+               AssetServer
+               AssetSourceBuilders
+             and 307 others
+note: required by a bound in `bevy::bevy_ecs::world::World::resource`
+    --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\world\mod.rs:2239:24
+     |
+2239 |     pub fn resource<R: Resource>(&self) -> &R {
+     |                        ^^^^^^^^ required by this bound in `World::resource`
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `probe-e` (lib) due to 5 previous errors
+REAL_EXIT=101

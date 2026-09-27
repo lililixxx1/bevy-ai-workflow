@@ -1,0 +1,119 @@
+    Checking probe-e v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-e)
+error[E0599]: no method named `register_type` found for struct `bevy::bevy_ecs::world::World` in the current scope
+   --> src\main.rs:32:11
+    |
+ 32 |     world.register_type::<MyStruct>();
+    |           ^^^^^^^^^^^^^
+    |
+help: there is a method `register_system` with a similar name, but with different arguments
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\system\system_registry.rs:455:5
+    |
+455 | /     pub fn register_system<I, O, M>(
+456 | |         &mut self,
+457 | |         system: impl IntoSystem<I, O, M> + 'static,
+458 | |     ) -> SystemId<I, O>
+459 | |     where
+460 | |         I: SystemInput + 'static,
+461 | |         O: 'static,
+    | |___________________^
+
+error[E0277]: `TypeRegistry` is not a `Resource`
+    --> src\main.rs:33:30
+     |
+  33 |     let n = world.resource::<TypeRegistry>().len();
+     |                   --------   ^^^^^^^^^^^^ invalid `Resource`
+     |                   |
+     |                   required by a bound introduced by this call
+     |
+     = help: the trait `Resource` is not implemented for `TypeRegistry`
+     = note: consider annotating `TypeRegistry` with `#[derive(Resource)]`
+     = help: the following other types implement trait `Resource`:
+               AccessibilityRequested
+               AccumulatedMouseMotion
+               AccumulatedMouseScroll
+               AppTypeRegistry
+               AreaLightLuts
+               AssetProcessor
+               AssetServer
+               AssetSourceBuilders
+             and 307 others
+note: required by a bound in `bevy::bevy_ecs::world::World::resource`
+    --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\world\mod.rs:2239:24
+     |
+2239 |     pub fn resource<R: Resource>(&self) -> &R {
+     |                        ^^^^^^^^ required by this bound in `World::resource`
+
+error[E0599]: no method named `len` found for reference `&TypeRegistry` in the current scope
+  --> src\main.rs:33:46
+   |
+33 |     let n = world.resource::<TypeRegistry>().len();
+   |                                              ^^^ method not found in `&TypeRegistry`
+
+error[E0277]: `TypeRegistry` is not a `Resource`
+    --> src\main.rs:42:43
+     |
+  42 |     let registry = app.world().resource::<TypeRegistry>().clone();
+     |                                --------   ^^^^^^^^^^^^ invalid `Resource`
+     |                                |
+     |                                required by a bound introduced by this call
+     |
+     = help: the trait `Resource` is not implemented for `TypeRegistry`
+     = note: consider annotating `TypeRegistry` with `#[derive(Resource)]`
+     = help: the following other types implement trait `Resource`:
+               AccessibilityRequested
+               AccumulatedMouseMotion
+               AccumulatedMouseScroll
+               AppTypeRegistry
+               AreaLightLuts
+               AssetProcessor
+               AssetServer
+               AssetSourceBuilders
+             and 307 others
+note: required by a bound in `bevy::bevy_ecs::world::World::resource`
+    --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\world\mod.rs:2239:24
+     |
+2239 |     pub fn resource<R: Resource>(&self) -> &R {
+     |                        ^^^^^^^^ required by this bound in `World::resource`
+
+error[E0277]: `TypeRegistry` is not a `Resource`
+    --> src\main.rs:66:38
+     |
+  66 |     let reg = app.world().resource::<TypeRegistry>();
+     |                           --------   ^^^^^^^^^^^^ invalid `Resource`
+     |                           |
+     |                           required by a bound introduced by this call
+     |
+     = help: the trait `Resource` is not implemented for `TypeRegistry`
+     = note: consider annotating `TypeRegistry` with `#[derive(Resource)]`
+     = help: the following other types implement trait `Resource`:
+               AccessibilityRequested
+               AccumulatedMouseMotion
+               AccumulatedMouseScroll
+               AppTypeRegistry
+               AreaLightLuts
+               AssetProcessor
+               AssetServer
+               AssetSourceBuilders
+             and 307 others
+note: required by a bound in `bevy::bevy_ecs::world::World::resource`
+    --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\world\mod.rs:2239:24
+     |
+2239 |     pub fn resource<R: Resource>(&self) -> &R {
+     |                        ^^^^^^^^ required by this bound in `World::resource`
+
+error[E0599]: no method named `get_with_short_name` found for reference `&TypeRegistry` in the current scope
+  --> src\main.rs:67:19
+   |
+67 |     let hit = reg.get_with_short_name("MyStruct").is_some();
+   |                   ^^^^^^^^^^^^^^^^^^^
+   |
+help: there is a method `get_with_short_type_path` with a similar name
+   |
+67 -     let hit = reg.get_with_short_name("MyStruct").is_some();
+67 +     let hit = reg.get_with_short_type_path("MyStruct").is_some();
+   |
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `probe-e` (bin "probe-e") due to 6 previous errors
+REAL_EXIT=101

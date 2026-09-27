@@ -1,0 +1,40 @@
+# gate-doc-test-attempt1.log（补录）
+
+性质说明：本文件为**补录**——条目入库后的首次 `cargo test --doc -p docs` 运行失败
+（REAL_EXIT=101），其文件级日志被修复后复跑覆盖；此处从会话输出逐字补录关键段，
+作为 PIT-B-022/023 两笔「doctest 机器断言抓出」发现的失败轮证据。补录时间与
+首跑同日（2026-09-27），内容未做任何改写。
+
+```text
+failures:
+
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1321) stdout ----
+error[E0599]: no method named `reflect_clone` found for struct `WrapC` in the current scope
+    --> docs\src\lib.rs:1329:34
+     |
+1326 | struct WrapC(f32);
+--
+...
+For more information about this error, try `rustc --explain E0599`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1262) stdout ----
+Test executable failed (exit code: 101).
+
+stderr:
+
+thread 'main' (14100) panicked at docs\src\lib.rs:21:6:
+Marker 已注册
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1262)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1321)
+
+test result: FAILED. 26 passed; 2 failed; 16 ignored; 0 measured; 0 filtered out; finished in 466.52s
+```
+
+结论：①line 1262（PIT-B-022 正例）运行时 panic「Marker 已注册」——`data::<ReflectComponent>()`
+返回 None，根因 = 缺 `#[reflect(Component)]` 属性；②line 1321（PIT-B-023 正例）E0599——
+opaque 变体无 `reflect_clone`。修复后复跑 REAL_EXIT=0（28 passed / 16 ignored，
+见 gate-doc-test.log）。

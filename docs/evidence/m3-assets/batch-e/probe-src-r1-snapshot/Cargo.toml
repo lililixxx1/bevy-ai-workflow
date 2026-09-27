@@ -1,0 +1,13 @@
+[package]
+name = "probe-e"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# M3 Block E 探针载体（仓库外临时 crate，docs/m3-plan.md §3.1 时序）。
+# features 与本仓 workspace 统一构建对齐（default + bevy_remote）以复用 target 缓存。
+[dependencies]
+bevy = { version = "0.19", features = ["bevy_remote"] }
+serde_json = "1"
+
+[workspace]

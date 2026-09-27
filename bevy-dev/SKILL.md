@@ -1,4 +1,4 @@
-# bevy-dev skill v0.8 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.9 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -246,11 +246,21 @@
 - **State 侧**：`StatesPlugin` **不在 prelude**，完整路径 `bevy::state::app::StatesPlugin`（`bevy_state/src/lib.rs:77-99` prelude 清单无它；`bevy_internal/src/lib.rs:93-94` `bevy_state as state`）——PIT-B-019（含 E0425 复现）。`init_state` 在装好插件后：注册 State/NextState 资源 + `add_message::<StateTransitionEvent<S>>()`（`bevy_state/src/app.rs:99-101`——**State 转换内部也走 Message 系**）并**当即写入初始 entered 转换**（:107-112），故首个 `update()` 触发 `OnEnter(初始态)` **恰好一次**（探针 R3c 实证）；`NextState::set` 后**一次 `update()`** 完成转换并触发 `OnEnter(新态)` 一次（探针 R4c 实证）。
 - 无坑确认（记忆写对，探针 r1 编译通过）：`MessageReader::read`、`App::add_message`、`RemovedComponents<T>` 系统参数、`On<E>::event()`、`States` derive + `init_state` + `OnEnter(State)` 调度、`State::get()` / `NextState::set`、`App::add_observer` 收带载荷 `On<E>` 系统。
 - 探查证据：`docs/evidence/m3-assets/batch-d/`（r1/r1b 两轮失败原文 / r2 正解 check / 运行时 r1..r4 首试（含 3 panic）+ r1c/r2b/r3c/r4c 正解 / 探针源码 r1 快照与 final 快照 / E0425 复现实验日志）。
+### 6.12 反射注册表面（M3 批次三探查，2026-09-27 本地源码核实 + 探针双重验证）
+
+- **资源形态**：注册表的 Resource 是 `AppTypeRegistry(pub TypeRegistryArc)`（`bevy_ecs/src/reflect/mod.rs:35-41`，Deref→`TypeRegistryArc`=`Arc<RwLock<TypeRegistry>>`）；访问经 `.read()/.write()` 守卫（`type_registry.rs:569/:574`），守卫须显式绑定（内联 `&arc.read()` 传参 E0716）。`TypeRegistry` 本体非 Resource 也无 `len`（计数 `iter().count()` :547）；短名查 = `get_with_short_type_path`（:467，旧名 get_with_short_name 不存在）——PIT-B-024。
+- **注册入口**：`app.register_type::<T>()` 在 App 侧（`bevy_app/src/app.rs:677`）；裸 `World` 无 register_type——手动 `get_resource_or_insert_with::<AppTypeRegistry>(Default::default).write().register::<T>()`——PIT-B-024。**register 注册的是依赖闭包**：递归 `T::register_type_dependencies`（`type_registry.rs:201-207`），注册 1 型实测得 20 型（primitives 全家桶）；BRP `registry.list_components` 可见集合同口径——PIT-B-025。
+- **克隆与不透明**：反射克隆 = `reflect_clone() -> Result<Box<dyn Reflect>, ReflectCloneError>`（`reflect.rs:312`；另有 `reflect_clone_and_take` :321；clone_value 已移除）——PIT-B-021。不透明属性 = `#[reflect(opaque)]` 且要求 `Clone`（`bevy_reflect_derive container_attributes.rs:394`）；**`reflect_clone` 是 `PartialReflect` 的方法（`reflect.rs:101/:312`，默认 NotImplemented）——调用须 `use PartialReflect`，opaque 变体可克隆须再标 `#[reflect(Clone)]`**（`:621-637` 生成实现；官方测试用例走 apply 通路）——PIT-B-023。
+- **组件反射插入**：`ReflectComponent` 从注册表 `TypeRegistration::data::<ReflectComponent>()` 取（BRP get/insert 同源）；`insert(&mut EntityWorldMut, &dyn PartialReflect, &TypeRegistry)` 三参（`bevy_ecs/src/reflect/component.rs:153-159`）；`from_world` 形态 bounds 不满足不可用；**组件须带 `#[reflect(Component)]` 属性**（仅 `derive(Component, Reflect)` 不注册 data，运行时得 None——doctest 抓出，失败轮 `batch-e/gate-doc-test-attempt1.log`）——PIT-B-022。
+- 无坑确认（记忆写对，探针 r1 编译通过）：`reflect_path("a.b")`、`FromReflect::from_reflect`（trait 存续）、`ReflectSerializer::new(&v, &TypeRegistry)`（`bevy::reflect::serde` 路径，需 serde_json 消费）、`#[reflect(Default)]`、`as_any_mut().downcast_mut`、`dyn Reflect` 上直接 `apply`（trait 上转 coercion 生效）。
+- 序列化形态（探针 r2c 实测）：`ReflectSerializer` 输出 `{"probe_e::MyStruct":{"hp":3.5,...}}`——**外层按 type_path 包裹、内层按字段**；BRP 响应值同源。
+- 探查证据：`docs/evidence/m3-assets/batch-e/`（r1/r1b 失败原文 / r2 正解 check + 修正轮两笔失败原文补录（`probe-r2-attempt1.log`：opaque 需 Clone、守卫 E0716）/ 运行时 r1c 失败轮 + r1c2/r2c/r3/r4c / r1 与 final 双源码快照 / 条目 doctest 失败轮补录 `gate-doc-test-attempt1.log`）。
 
 ---
 
 ## 变更记录
 
+- **v0.9（2026-09-27）**：新增 §6.12 反射注册表面速查（M3 批次三探针双重验证：AppTypeRegistry 资源形态与 RwLock 守卫协议、裸 World 注册路径、短名查改名 get_with_short_type_path、register 依赖闭包语义（1 型→20 型实测）、reflect_clone Result 语义、#[reflect(opaque)]+Clone bound、ReflectComponent 注册表取用与三参 insert、ReflectSerializer 输出形态（type_path 外包裹，BRP 响应同源）；对应 PIT-B-021..025 入库、PAT-B-009..010 入库；条目 doctest 断言另抓出两笔并回写：`#[reflect(Component)]` 才注册组件反射数据、opaque 无 reflect_clone 走 apply）。探针证据 `docs/evidence/m3-assets/batch-e/`。
 - **v0.8（2026-09-27）**：新增 §6.11 事件/消息/State 速查（M3 批次二探针双重验证：Event/Message 分流总纲、`On<Add, T>` 生命周期过滤、MessageMutator/Reader 统一 `.read()`、`add_message` 注册与未注册 panic、双缓冲错峰语义、StatesPlugin 不在 prelude 及 `bevy::state::app` 完整路径、init_state 初始 entered 转换与首个 update() 恰一次 OnEnter、NextState::set 一次 update 生效、StateTransitionEvent 走 Message 系；对应 PIT-B-014..020 入库、PAT-B-006..008 入库）。探针证据 `docs/evidence/m3-assets/batch-d/`。
 - **v0.7（2026-09-27）**：新增 §6.10 ECS 查询与调度事实速查（M3 批次一探针双重验证：single 家族 Result 语义、par_iter 无迭代器 trait（固有 for_each/:42/:77）、Commands::queue、组合迭代 fetch_next、add_systems 首参 ScheduleLabel/.in_set、迭代序不保证、Changed 首帧全量、跨系统冲突不 panic、同系统冲突 B0001→ParamSet；对应 PIT-B-005..013 入库）。勘误注 2026-09-27：本条目初版「本仓 game 默认单线程执行器」有误——multi_threaded 经 default→2d/3d/ui→default_platform 链传递启用，实际为 MultiThreadedExecutor（独立审核以 cargo tree 纠正）；「是否启用」命题反转 为「是否强制单线程」。
 - **v0.6（2026-09-27）**：①§2.3/§4.3/§4.1 同步 doctest 门禁覆盖面变更——`bevy-dev/pitfalls.md` 经 `docs/src/lib.rs` 纳入 `cargo test --doc -p docs`（M3 启动块落地），`compile_fail` 反例升级为机器断言，围栏约定见 pitfalls.md 文件头；本文件与 `patterns/` 维持不进门禁。②§6.5 Hotpatching 由「未验证」改判冒烟通过并回写机制事实与两条编译教训（T005；原「未验证」表述与意向文档 §5.3 冒烟结论矛盾，M3 启动块审核建议 4 落实）。③§6.9 与 v0.5 变更记录的断言计数 77→78 勘误（审核建议 1 落实）。
