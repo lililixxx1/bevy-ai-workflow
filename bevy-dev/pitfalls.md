@@ -6,7 +6,7 @@
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：13 条（2026-09-26 起；2026-09-27 M3 批次一新增 005–013，探查证据 `docs/evidence/m3-assets/batch-c/`）。
+- 当前：20 条（2026-09-26 起；2026-09-27 M3 批次一新增 005–013，探查证据 `docs/evidence/m3-assets/batch-c/`；批次二新增 014–020，探查证据 `docs/evidence/m3-assets/batch-d/`）。
 
 ---
 
@@ -670,3 +670,473 @@ fn two_mut_set(mut set: ParamSet<(Query<&mut A>, Query<&mut A>)>) {
 **验证证据**：
 - 复现：`probe-run-r4.log`（B0001 panic 原文，REAL_EXIT=101）；
 - 修复：`probe-run-r4c.log`（ParamSet 形态 PASS，REAL_EXIT=0）。
+
+### PIT-B-014：缓冲事件 API 全面不存在——`write_event` / `read_event` / `register_event` / `add_event` 均已移除
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Event/Message 架构分流的 API 面）
+- 标签：`Event` `Message` `write_event` `read_event` `register_event` `E0599` `trigger` `observer`
+
+**现象**：按 EventReader 时代记忆写「事件缓冲」调用——`World::write_event` / `World::read_event` / `Commands::write_event` 全部 E0599（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-r1-check.log`，REAL_EXIT=101 共 4 错含 P6）：
+
+```text
+error[E0599]: no method named `write_event` found for mutable reference `&mut bevy::bevy_ecs::world::World` in the current scope
+...
+error[E0599]: no method named `read_event` found for mutable reference `&mut bevy::bevy_ecs::world::World` in the current scope
+...
+error[E0599]: no method named `write_event` found for struct `bevy::bevy_ecs::system::Commands<'w, 's>` in the current scope
+```
+
+追加轮又实证注册侧旧称同样不存在：`app.register_event::<T>()` E0599（`probe-r1b-check.log`）。
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+#[derive(Event)]
+struct Exploded {
+    power: f32,
+}
+
+// EventReader 时代印象的「缓冲事件 API」在 0.19 全部不存在：
+fn buffered_event_api_gone(world: &mut World, app: &mut App, mut commands: Commands) {
+    world.write_event(Exploded { power: 1.0 });    // E0599
+    let _n = world.read_event::<Exploded>();       // E0599
+    commands.write_event(Exploded { power: 2.0 }); // E0599
+    app.register_event::<Exploded>();              // E0599（add_event 同样不存在）
+}
+```
+
+**根因**：0.19 的 Event 是**纯 observer 触发**、无缓冲存储——官方定义「To make an Event happen, you trigger it on a World using `World::trigger` or via a Command using `Commands::trigger`. This causes any Observer watching for that Event to run _immediately_, as part of the `World::trigger` call.」（`bevy_ecs-0.19.1/src/event/mod.rs:16-18`，核实 2026-09-27；引文去除 rustdoc 链接标记，文字逐字）。缓冲需求整体迁往 Message 系（`Messages<M>` 资源 + Writer/Reader/Mutator），注册入口 `app.add_message::<T>()`（`bevy_app-0.19.1/src/sub_app.rs:390`，实体为 `MessageRegistry::register_message` 调用 :395；幂等来自 `contains_resource::<Messages<T>>()` 守卫 :394-396）。World 侧对已注册消息有 `write_message`（`world/mod.rs:3015`），但**没有**任何 `*_event` 缓冲方法。
+
+**修复**（已过编译 + 运行验证）：触发用 `trigger`；需要缓冲/多读者错峰读就改用 Message 系（见 PIT-B-018 注册坑、PIT-B-020 双缓冲语义）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Event)]
+struct Exploded {
+    power: f32,
+}
+
+#[derive(Resource, Default)]
+struct Fired(usize);
+
+let mut world = World::new();
+world.init_resource::<Fired>();
+world.add_observer(|_: On<Exploded>, mut fired: ResMut<Fired>| {
+    fired.0 += 1;
+});
+world.trigger(Exploded { power: 1.0 }); // World 侧；Commands 侧为 commands.trigger(...)
+assert_eq!(world.resource::<Fired>().0, 1); // 同步执行：trigger 返回前观察者已跑
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-r1-check.log`（E0599 ×3，REAL_EXIT=101）、`probe-r1b-check.log`（register_event E0599）；
+- 修复：`docs/evidence/m3-assets/batch-d/probe-r2-check.log`（`World::trigger` / `Commands::trigger` 形态编译通过，REAL_EXIT=0）；本条目正例 fence 含断言「trigger 后观察者恰执行一次」（doctest 机器断言）。
+
+### PIT-B-015：生命周期观察者过滤写成 `On<Add<T>>`——正解是第二泛型 `On<Add, T>`
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（observer 泛型签名）
+- 标签：`observer` `生命周期` `On` `Add` `Remove` `E0107` `Bundle`
+
+**现象**：组件添加/移除的观察者按直觉写 `On<Add<T>>` 泛型过滤，E0107（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-r1-check.log`）：
+
+```text
+error[E0107]: struct takes 0 generic arguments but 1 generic argument was supplied
+   --> src\lib.rs:59:29
+    |
+ 59 | fn p6_on_add_observer(_: On<Add<Health>>) {}
+    |                             ^^^-------- help: remove the unnecessary generics
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+#[derive(Component)]
+struct Health(f32);
+
+// 生命周期过滤的「泛型组件」形态——Add 不是泛型：
+fn on_add_wrong(_: On<Add<Health>>) {} // E0107
+```
+
+**根因**：`Add` 是无泛型的事件载荷结构体（`bevy_ecs-0.19.1/src/lifecycle.rs:337` `pub struct Add { pub entity: Entity }`）；组件过滤走 `On` 的**第二泛型** `B: Bundle`（`observer/system_param.rs:38` `pub struct On<'w, 't, E: Event, B: Bundle = ()>`）。官方示例即此形态（`examples/ecs/observers.rs:142` `fn on_add_mine(add: On<Add, Mine>, ...)`，:152 `On<Remove, Mine>`）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Component)]
+struct Health(f32);
+
+#[derive(Resource, Default)]
+struct Fired(usize);
+
+fn on_add_right(add: On<Add, Health>, mut fired: ResMut<Fired>) {
+    fired.0 += 1;
+    let _who = add.entity; // 载荷字段直读（官方 observers.rs:143 用法）
+}
+
+let mut world = World::new();
+world.init_resource::<Fired>();
+world.add_observer(on_add_right);
+world.spawn(Health(100.0)); // spawn 即触发
+assert_eq!(world.resource::<Fired>().0, 1);
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-r1-check.log`（E0107 原文）；
+- 修复：`docs/evidence/m3-assets/batch-d/probe-r2-check.log`（`On<Add, Health>` 编译通过，REAL_EXIT=0）；本条目正例 fence 含断言「spawn 后观察者恰执行一次」（doctest 机器断言）。
+
+### PIT-B-016：`MessageMutator` 没有 `iter_mut`——可变迭代也是 `.read()`
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Message 系 API 命名）
+- 标签：`MessageMutator` `iter_mut` `read` `E0599` `消息`
+
+**现象**：消息可变访问按迭代器惯例写 `m.iter_mut()`，E0599（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-r1b-check.log`）：
+
+```text
+error[E0599]: no method named `iter_mut` found for struct `bevy::bevy_ecs::message::MessageMutator<'w, 's, M>` in the current scope
+   --> src\lib.rs:106:16
+    |
+106 |     for d in m.iter_mut() {
+    |                ^^^^^^^^ method not found in `bevy::bevy_ecs::message::MessageMutator<'_, '_, Damage>`
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+fn mutate_wrong(mut m: MessageMutator<Damage>) {
+    for d in m.iter_mut() { // E0599：MessageMutator 无 iter_mut
+        d.amount += 1.0;
+    }
+}
+```
+
+**根因**：`MessageMutator` 的 API 面只有 `read`（`message_mutator.rs:67`，产可变项的迭代器）/ `read_with_id`（:72）/ `par_read`（并行版）——「迭代未读过的消息并推进游标」统一叫 `read`，不按容器惯例分 `iter`/`iter_mut`。`MessageReader::read` 同名同构（只读）。
+
+**修复**（已过编译验证；系统形态运行验证随探针 r2 编译面）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+fn mutate_right(mut m: MessageMutator<Damage>) {
+    for d in m.read() { // read() 产可变项；游标推进，重复调用不重读
+        d.amount += 1.0;
+    }
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-r1b-check.log`（E0599 原文）；
+- 修复：`docs/evidence/m3-assets/batch-d/probe-r2-check.log`（`.read()` 形态编译通过，REAL_EXIT=0）；本条目正例 fence 即 doctest 编译验证。
+
+### PIT-B-017：`On<Message<T>>` 不存在——缓冲消息没有 observer 形态（事件/消息分流结论）
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Event/Message 架构边界）
+- 标签：`On` `Message` `Event` `E0782` `observer` `分流`
+
+**现象**：想用观察者监听缓冲消息，写 `On<Message<Damage>>`，E0782（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-r1b-check.log`）：
+
+```text
+error[E0782]: expected a type, found a trait
+   --> src\lib.rs:112:34
+    |
+112 | fn p12_on_message_observer(_: On<Message<Damage>>) {}
+    |                                  ^^^^^^^^^^^^^^^
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+// 给缓冲消息找 observer 形态：Message<Damage> 非类型（裸 Message 被解析为 trait）
+fn observe_message_wrong(_: On<Message<Damage>>) {} // E0782
+```
+
+**根因**：0.19 的架构分流——**Event = 触发（trigger + observer，无缓冲）；Message = 缓冲队列（Writer/Reader/Mutator，不可 trigger）**。`On<E>` 要求 `E: Event`（`observer/system_param.rs:38`），Message 载荷不实现 Event，故不存在任何「观察消息」的监听形态；裸 `Message` 是 trait 名（与 derive 宏同名），`Message<Damage>` 连类型都不是。
+
+**修复**（已过编译 + 运行验证）：按需求选边——要「观察/响应」用 Event；要「缓冲、多读者、隔帧可读」用 Message 系：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Event)]
+struct Damaged {
+    amount: f32,
+}
+
+#[derive(Resource, Default)]
+struct Fired(usize);
+
+fn observe_event(dmg: On<Damaged>, mut fired: ResMut<Fired>) {
+    fired.0 += 1;
+    let _amount = dmg.event().amount;
+}
+
+let mut world = World::new();
+world.init_resource::<Fired>();
+world.add_observer(observe_event);
+world.trigger(Damaged { amount: 1.0 });
+assert_eq!(world.resource::<Fired>().0, 1);
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-r1b-check.log`（E0782 原文）；
+- 修复：本条目正例 fence 含断言「Event 侧观察恰执行一次」（doctest 机器断言）；消息侧缓冲读法见 PIT-B-018/020。
+
+### PIT-B-018：未注册消息直接挂 `MessageWriter`——运行时 panic「Message not initialized」
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Message 注册机制）
+- 标签：`Message` `MessageWriter` `add_message` `Messages` `注册` `运行时`
+
+**现象**：EventReader 时代印象「事件队列随用随有」，不注册 `Messages<T>` 直接给系统挂 `MessageWriter`——编译通过，系统首次运行 panic（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-run-r1.log`，REAL_EXIT=101）：
+
+```text
+thread 'TaskPool (1)' (2500) panicked at ...bevy_ecs-0.19.1\src\error\handler.rs:130:1:
+Encountered an error in system `probe_d::writer_only`: Parameter `MessageWriter<Damage>::messages` failed validation: Message not initialized
+If this is an expected state, wrap the parameter in `Option<T>` and handle `None` when it happens, or wrap the parameter in `If<T>` to skip the system when it happens.
+...
+```
+
+**最小复现**（运行时 panic，非编译失败；标 ignore 附理由——panic 载体完整脚本见证据目录）：
+
+```rust,ignore
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+fn writer_only(mut w: MessageWriter<Damage>) {
+    w.write(Damage { amount: 1.0 });
+}
+
+let mut world = World::new(); // ← 未注册 Messages<Damage>
+let mut sched = Schedule::default();
+sched.add_systems(writer_only);
+sched.run(&mut world); // ← panic：Message not initialized
+```
+
+**根因**：`MessageWriter` 的系统参数校验要求 `Messages<T>` 资源已存在；注册入口是 `app.add_message::<T>()`（`bevy_app-0.19.1/src/sub_app.rs:390-399`，实体 `MessageRegistry::register_message` 调用 :395，幂等来自 `contains_resource` 守卫 :394-396）。裸 `World`/`Schedule` 环境等价做法是 `world.init_resource::<Messages<T>>()`（探针 R1c 实证单凭资源初始化即可通过校验）。报错文案自带两条容错出路：`Option<T>` 参数或 `If<T>` 跳过。
+
+**修复**（已过运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+#[derive(Resource, Default)]
+struct Count(usize);
+
+fn writer_once(mut w: MessageWriter<Damage>) {
+    w.write(Damage { amount: 1.0 });
+}
+
+fn reader(mut c: ResMut<Count>, mut r: MessageReader<Damage>) {
+    c.0 += r.read().count();
+}
+
+let mut world = World::new();
+world.init_resource::<Messages<Damage>>(); // 注册（App 侧等价：app.add_message::<Damage>()）
+world.init_resource::<Count>();
+let mut sched = Schedule::default();
+sched.add_systems((writer_once, reader).chain());
+sched.run(&mut world);
+assert_eq!(world.resource::<Count>().0, 1);
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-run-r1.log`（panic 原文，REAL_EXIT=101）；
+- 修复：`docs/evidence/m3-assets/batch-d/probe-run-r1c.log`（「R1c 注册后消息：单帧读到 1 条」，REAL_EXIT=0）；本条目正例 fence 即 doctest 运行验证。
+
+### PIT-B-019：`init_state` 前未装 `StatesPlugin` 运行时 panic——且 `StatesPlugin` 不在 prelude
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（States 插件依赖 + 导出面）
+- 标签：`StatesPlugin` `init_state` `StateTransition` `prelude` `E0425` `运行时`
+
+**现象**（双重坑）：① 裸 `App::new()`（无 DefaultPlugins）直接 `init_state::<S>()`——panic（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-run-r3.log`，REAL_EXIT=101）：
+
+```text
+thread 'main' (25028) panicked at ...bevy_state-0.19.1\src\app.rs:102:67:
+The `StateTransition` schedule is missing. Did you forget to add StatesPlugin or DefaultPlugins before calling init_state?
+...
+```
+
+② 补装插件时按惯例写 `use bevy::prelude::*` 就用——`StatesPlugin` **不在 prelude**，E0425（`docs/evidence/m3-assets/batch-d/probe-import-prelude-check.log` ×2 处，REAL_EXIT=101）：
+
+```text
+error[E0425]: cannot find value `StatesPlugin` in this scope
+   --> src\main.rs:165:21
+    |
+165 |     app.add_plugins(StatesPlugin);
+...
+```
+
+**最小复现**（运行时 panic，非编译失败；标 ignore 附理由——panic 载体完整脚本见证据目录）：
+
+```rust,ignore
+use bevy::prelude::*;
+
+#[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+enum GameState {
+    #[default]
+    Menu,
+    Playing,
+}
+
+let mut app = App::new(); // ← 未装 StatesPlugin / DefaultPlugins
+app.init_state::<GameState>(); // ← panic：StateTransition schedule is missing
+```
+
+**根因**：`init_state` 依赖 `StateTransition` schedule，由 `StatesPlugin` 建立且**必须先装**（`bevy_state-0.19.1/src/app.rs:96-103`：`warn_if_no_states_plugin_installed` 先警告，随后 `get_schedule_mut(StateTransition).expect(...)` :102-103 panic）；`insert_state`/`add_computed_state`/`add_sub_state` 同款检查（:129/:165/:195）。导出面上 `bevy::state` 模块存在（`bevy_internal/src/lib.rs:93-94` `bevy_state as state`），但 `bevy_state` 的 prelude 清单不含 `StatesPlugin`（`bevy_state/src/lib.rs:77-99`）——完整路径 `bevy::state::app::StatesPlugin`（`bevy_state/src/lib.rs:55` `pub mod app` + `app.rs:330`）。`DefaultPlugins` 内含它，故走默认插件链的项目感知不到。
+
+**修复**（已过运行验证）：
+
+```rust
+use bevy::prelude::*;
+use bevy::state::app::StatesPlugin; // 不在 prelude——完整路径
+
+#[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+enum GameState {
+    #[default]
+    Menu,
+    Playing,
+}
+
+#[derive(Resource, Default)]
+struct Fired(usize);
+
+fn on_enter_menu(mut c: ResMut<Fired>) {
+    c.0 += 1;
+}
+
+let mut app = App::new();
+app.add_plugins(StatesPlugin); // 必须先于 init_state
+app.init_resource::<Fired>();
+app.init_state::<GameState>();
+app.add_systems(OnEnter(GameState::Menu), on_enter_menu);
+app.update();
+assert_eq!(app.world().resource::<Fired>().0, 1); // 首个 update() 触发初始 OnEnter（语义见 SKILL §6.11）
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-d/probe-run-r3.log`（panic 原文 REAL_EXIT=101）、`probe-run-r4.log`（同款 panic）、`probe-import-prelude-check.log`（E0425 ×2，REAL_EXIT=101；复现实验：临时注释正确 import 重跑 check 后恢复，时序见 m3-plan §七 D 行）；
+- 修复：`docs/evidence/m3-assets/batch-d/probe-run-r3c.log` / `probe-run-r4c.log`（装插件后 PASS，REAL_EXIT=0）；本条目正例 fence 即 doctest 运行验证。
+
+### PIT-B-020：消息生命周期不是「单帧清空」——双缓冲 + 读者游标，新读者隔帧仍可读
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Messages 双缓冲实现）
+- 标签：`Messages` `双缓冲` `MessageReader` `生命周期` `update` `语义`
+
+**现象**：认知预期「消息单帧生命周期：下一帧清零」。单读者实测 `(run1 读 1 条, run2 再读 0 条)` 表面吻合（`docs/evidence/m3-assets/batch-d/probe-run-r2.log`），但这是**游标推进**不是清空——换「新读者隔一帧再读」就暴露真相：仍能读到 1 条（`probe-run-r2b.log`，REAL_EXIT=0）：
+
+```text
+R2 消息生命周期：run1 读 1 条，run2 再读 0 条
+R2b 双缓冲错峰：reader_a 第 1 帧读 1 条，reader_b 第 2 帧读 1 条
+```
+
+**最小复现**（语义反例，非报错载体；标 ignore 附理由——完整对照脚本见证据目录）：
+
+```rust,ignore
+// 误读推理：run2 读 0 →「消息被清空」。
+// 实际：同一 MessageReader 实例游标已推进到 1，第二帧无新消息可读。
+// 对照证据（完整脚本见证据目录）：docs/evidence/m3-assets/batch-d/probe-run-r2.log
+// （单读者 (1, 0)）与 probe-run-r2b.log（双读者错峰 (1, 1)）。
+```
+
+**根因**：`Messages<M>` 是**双缓冲**资源（`bevy_ecs-0.19.1/src/message/messages.rs:95-102`：`messages_a` 存最旧存活消息（字段 :98）、`messages_b` 存新消息（字段 :100））；`update()` 每帧一次交换并清最旧缓冲（:193-196，doc 原文「Swaps the message buffers and clears the oldest message buffer. In general, this should be called once per frame/update」）。每条消息因此**至少存活到下一次 update 之后**；各 `MessageReader` 持独立游标、互不影响——同读者第二帧读 0 是游标语义，新读者（游标 0）隔帧照读。推论：错峰/延迟读取是设计内行为，不是竞态。
+
+**修复**（已过运行验证；按真实语义设计读者，勿按「单帧清空」直觉）：
+
+```rust
+use bevy::prelude::*;
+
+#[derive(Message)]
+struct Damage {
+    amount: f32,
+}
+
+#[derive(Resource, Default)]
+struct Count(usize);
+
+fn writer_once(mut w: MessageWriter<Damage>) {
+    w.write(Damage { amount: 1.0 });
+}
+
+fn reader(mut c: ResMut<Count>, mut r: MessageReader<Damage>) {
+    c.0 += r.read().count();
+}
+
+let mut world = World::new();
+world.init_resource::<Messages<Damage>>();
+world.init_resource::<Count>();
+
+let mut run_a = Schedule::default();
+run_a.add_systems((writer_once, reader).chain());
+run_a.run(&mut world);
+let first = world.resource::<Count>().0; // 读者 A（实例 1）：读 1 条
+
+world.resource_mut::<Messages<Damage>>().update(); // 帧边界：交换双缓冲
+
+let mut run_b = Schedule::default();
+run_b.add_systems(reader); // 新 Schedule = 新系统实例 = 新 MessageReader（游标 0）
+run_b.run(&mut world);
+let second = world.resource::<Count>().0 - first;
+
+assert_eq!((first, second), (1, 1)); // 新读者隔帧仍读到：消息活过一次 update()
+```
+
+**验证证据**：
+- 复现（误读对照）：`docs/evidence/m3-assets/batch-d/probe-run-r2.log`（单读者 (1, 0)）；
+- 修复（语义实证）：`docs/evidence/m3-assets/batch-d/probe-run-r2b.log`（双读者错峰 (1, 1)，REAL_EXIT=0）；本条目正例 fence 即 doctest 运行验证。

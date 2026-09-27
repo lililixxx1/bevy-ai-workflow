@@ -1,0 +1,43 @@
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+   Doc-tests docs
+
+running 34 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1064) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 112) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1130) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 128) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 193) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 225) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 351) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 450) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 539) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 559) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 587) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 630) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 680) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 701) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 165) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 285) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 801) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 497) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 431) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 385) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 982) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 336) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 920) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 861) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 735) - compile fail ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 880) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1082) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 936) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1004) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1141) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 815) ... ok
+
+test result: ok. 19 passed; 0 failed; 15 ignored; 0 measured; 0 filtered out; finished in 57.81s
+
+REAL_EXIT=0

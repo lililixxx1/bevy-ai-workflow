@@ -1,4 +1,4 @@
-# bevy-dev skill v0.7 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.8 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -237,10 +237,21 @@
 - 无坑确认（记忆写对，探针实测编译通过）：`iter_many(&[Entity])` 存在；`Res<T>::is_changed()` 存在；`run_if` 接受捕获环境闭包（`move || -> bool`）。
 - 探查证据：`docs/evidence/m3-assets/batch-c/`（r1 失败原文 / r2 正解（含 attempt1 两轮留痕）/ 9 个运行时探针日志（含 1 失败轮）+ 探针源码快照 + errata 勘误页）。
 
+### 6.11 事件 / 消息 / State（M3 批次二探查，2026-09-27 本地源码核实 + 探针双重验证）
+
+**分流总纲（最重要的一个心智模型）**：0.19 把旧「Event」拆成两半——**Event = 纯 observer 触发**（无缓冲存储，`World::trigger`/`Commands::trigger` 即刻同步执行观察者，`bevy_ecs-0.19.1/src/event/mod.rs:16-18`）；**Message = 缓冲队列**（`Messages<M>` 双缓冲资源 + Writer/Reader/Mutator，不可 trigger、无 observer 形态）。旧缓冲事件 API（`write_event`/`read_event`/`register_event`/`add_event`）全部不存在——PIT-B-014/017。
+
+- **Event 侧**：`On<E>` 可与普通系统参数并用（`observer/system_param.rs:38`）；载荷取值 `on.event()`（或 Deref）；生命周期过滤 = 第二泛型 `On<Add, T>` / `On<Remove, T>`（B: Bundle；载荷字段 `entity` 直读，官方 `examples/ecs/observers.rs:142` 与 :152）——PIT-B-015。
+- **Message 侧**：读写迭代统一叫 `.read()`——`MessageReader::read()` 只读、`MessageMutator::read()` 产可变项（`message_mutator.rs:67`），无 `iter`/`iter_mut`——PIT-B-016。注册入口 `app.add_message::<T>()`（`bevy_app/src/sub_app.rs:390-399`，实体 `MessageRegistry::register_message` 调用 :395，幂等来自 `contains_resource` 守卫 :394-396）；未注册挂 Writer → 运行时 panic「Message not initialized」，裸 World 等价 `init_resource::<Messages<T>>()`——PIT-B-018。**生命周期语义**：双缓冲（`message/messages.rs:95-102`，a=最旧存活（字段 :98）/ b=新（字段 :100））+ 每帧 `update()` 交换清最旧（:193-196）——消息至少活到下一次 update 之后；读者各持游标，新读者隔帧仍可读（错峰读取是设计内行为）——PIT-B-020。World 侧直接写入：`write_message` / `write_message_default` / `write_message_batch`（`world/mod.rs:3015/:3023/:3031`）。
+- **State 侧**：`StatesPlugin` **不在 prelude**，完整路径 `bevy::state::app::StatesPlugin`（`bevy_state/src/lib.rs:77-99` prelude 清单无它；`bevy_internal/src/lib.rs:93-94` `bevy_state as state`）——PIT-B-019（含 E0425 复现）。`init_state` 在装好插件后：注册 State/NextState 资源 + `add_message::<StateTransitionEvent<S>>()`（`bevy_state/src/app.rs:99-101`——**State 转换内部也走 Message 系**）并**当即写入初始 entered 转换**（:107-112），故首个 `update()` 触发 `OnEnter(初始态)` **恰好一次**（探针 R3c 实证）；`NextState::set` 后**一次 `update()`** 完成转换并触发 `OnEnter(新态)` 一次（探针 R4c 实证）。
+- 无坑确认（记忆写对，探针 r1 编译通过）：`MessageReader::read`、`App::add_message`、`RemovedComponents<T>` 系统参数、`On<E>::event()`、`States` derive + `init_state` + `OnEnter(State)` 调度、`State::get()` / `NextState::set`、`App::add_observer` 收带载荷 `On<E>` 系统。
+- 探查证据：`docs/evidence/m3-assets/batch-d/`（r1/r1b 两轮失败原文 / r2 正解 check / 运行时 r1..r4 首试（含 3 panic）+ r1c/r2b/r3c/r4c 正解 / 探针源码 r1 快照与 final 快照 / E0425 复现实验日志）。
+
 ---
 
 ## 变更记录
 
+- **v0.8（2026-09-27）**：新增 §6.11 事件/消息/State 速查（M3 批次二探针双重验证：Event/Message 分流总纲、`On<Add, T>` 生命周期过滤、MessageMutator/Reader 统一 `.read()`、`add_message` 注册与未注册 panic、双缓冲错峰语义、StatesPlugin 不在 prelude 及 `bevy::state::app` 完整路径、init_state 初始 entered 转换与首个 update() 恰一次 OnEnter、NextState::set 一次 update 生效、StateTransitionEvent 走 Message 系；对应 PIT-B-014..020 入库、PAT-B-006..008 入库）。探针证据 `docs/evidence/m3-assets/batch-d/`。
 - **v0.7（2026-09-27）**：新增 §6.10 ECS 查询与调度事实速查（M3 批次一探针双重验证：single 家族 Result 语义、par_iter 无迭代器 trait（固有 for_each/:42/:77）、Commands::queue、组合迭代 fetch_next、add_systems 首参 ScheduleLabel/.in_set、迭代序不保证、Changed 首帧全量、跨系统冲突不 panic、同系统冲突 B0001→ParamSet；对应 PIT-B-005..013 入库）。勘误注 2026-09-27：本条目初版「本仓 game 默认单线程执行器」有误——multi_threaded 经 default→2d/3d/ui→default_platform 链传递启用，实际为 MultiThreadedExecutor（独立审核以 cargo tree 纠正）；「是否启用」命题反转 为「是否强制单线程」。
 - **v0.6（2026-09-27）**：①§2.3/§4.3/§4.1 同步 doctest 门禁覆盖面变更——`bevy-dev/pitfalls.md` 经 `docs/src/lib.rs` 纳入 `cargo test --doc -p docs`（M3 启动块落地），`compile_fail` 反例升级为机器断言，围栏约定见 pitfalls.md 文件头；本文件与 `patterns/` 维持不进门禁。②§6.5 Hotpatching 由「未验证」改判冒烟通过并回写机制事实与两条编译教训（T005；原「未验证」表述与意向文档 §5.3 冒烟结论矛盾，M3 启动块审核建议 4 落实）。③§6.9 与 v0.5 变更记录的断言计数 77→78 勘误（审核建议 1 落实）。
 - **v0.5（2026-09-27）**：新增 §6.9 BRP 内省的进程内等价 API（list_components/list_resources 的注册表判定源、schema 的 TypeInfo/StructInfo 同源等价、`World::despawn` warn+false 语义、`World::trigger` 在 run_tests handler 内同步执行、spawn 直写同帧生效——T020 十一套件实测。勘误注 2026-09-27：本行初版误记「77 断言」，终版口径 78 = 套件 33 去重 + 工具侧 45，见 docs/evidence/m1-phase2.md）。

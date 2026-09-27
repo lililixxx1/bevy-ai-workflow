@@ -1,0 +1,16 @@
+warning: field `amount` is never read
+ --> src\main.rs:7:5
+  |
+6 | struct Damage {
+  |        ------ field in this struct
+7 |     amount: f32,
+  |     ^^^^^^
+  |
+  = note: `Damage` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+
+thread 'main' (25028) panicked at C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_state-0.19.1\src\app.rs:102:67:
+The `StateTransition` schedule is missing. Did you forget to add StatesPlugin or DefaultPlugins before calling init_state?
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+REAL_EXIT=101

@@ -1,0 +1,41 @@
+    Updating `rsproxy-sparse` index
+     Locking 562 packages to latest compatible versions
+    Checking probe-d v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-d)
+error[E0107]: struct takes 0 generic arguments but 1 generic argument was supplied
+   --> src\lib.rs:59:29
+    |
+ 59 | fn p6_on_add_observer(_: On<Add<Health>>) {}
+    |                             ^^^-------- help: remove the unnecessary generics
+    |                             |
+    |                             expected 0 generic arguments
+    |
+note: struct defined here, with 0 generic parameters
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\lifecycle.rs:337:12
+    |
+337 | pub struct Add {
+    |            ^^^
+
+error[E0599]: no method named `write_event` found for mutable reference `&mut bevy::bevy_ecs::world::World` in the current scope
+  --> src\lib.rs:48:11
+   |
+48 |     world.write_event(Exploded { power: 1.0 });
+   |           ^^^^^^^^^^^ method not found in `&mut bevy::bevy_ecs::world::World`
+
+error[E0599]: no method named `read_event` found for mutable reference `&mut bevy::bevy_ecs::world::World` in the current scope
+  --> src\lib.rs:49:20
+   |
+49 |     let _n = world.read_event::<Exploded>().count();
+   |                    ^^^^^^^^^^ method not found in `&mut bevy::bevy_ecs::world::World`
+
+error[E0599]: no method named `write_event` found for struct `bevy::bevy_ecs::system::Commands<'w, 's>` in the current scope
+  --> src\lib.rs:86:14
+   |
+86 |     commands.write_event(Exploded { power: 2.0 });
+   |              ^^^^^^^^^^^ method not found in `bevy::bevy_ecs::system::Commands<'_, '_>`
+
+Some errors have detailed explanations: E0107, E0599.
+For more information about an error, try `rustc --explain E0107`.
+error: could not compile `probe-d` (lib) due to 4 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `probe-d` (lib test) due to 4 previous errors
+REAL_EXIT=101

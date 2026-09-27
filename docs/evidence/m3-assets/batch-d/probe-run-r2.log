@@ -1,0 +1,13 @@
+warning: field `amount` is never read
+ --> src\main.rs:7:5
+  |
+6 | struct Damage {
+  |        ------ field in this struct
+7 |     amount: f32,
+  |     ^^^^^^
+  |
+  = note: `Damage` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+R2 消息生命周期：run1 读 1 条，run2 再读 0 条
+REAL_EXIT=0

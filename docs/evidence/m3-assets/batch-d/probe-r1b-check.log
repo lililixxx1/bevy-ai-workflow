@@ -1,0 +1,28 @@
+    Checking probe-d v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-d)
+error[E0782]: expected a type, found a trait
+   --> src\lib.rs:112:34
+    |
+112 | fn p12_on_message_observer(_: On<Message<Damage>>) {}
+    |                                  ^^^^^^^^^^^^^^^
+    |
+help: you can add the `dyn` keyword if you want a trait object
+    |
+112 | fn p12_on_message_observer(_: On<dyn Message<Damage>>) {}
+    |                                  +++
+
+error[E0599]: no method named `iter_mut` found for struct `bevy::bevy_ecs::message::MessageMutator<'w, 's, M>` in the current scope
+   --> src\lib.rs:106:16
+    |
+106 |     for d in m.iter_mut() {
+    |                ^^^^^^^^ method not found in `bevy::bevy_ecs::message::MessageMutator<'_, '_, Damage>`
+
+error[E0599]: no method named `register_event` found for mutable reference `&mut bevy::bevy_app::App` in the current scope
+   --> src\lib.rs:116:9
+    |
+116 |     app.register_event::<Exploded>();
+    |         ^^^^^^^^^^^^^^ method not found in `&mut bevy::bevy_app::App`
+
+Some errors have detailed explanations: E0599, E0782.
+For more information about an error, try `rustc --explain E0599`.
+error: could not compile `probe-d` (lib) due to 3 previous errors
+REAL_EXIT=101

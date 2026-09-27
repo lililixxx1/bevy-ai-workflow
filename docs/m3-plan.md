@@ -24,7 +24,7 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 | A | M3 启动：工作树修复（陌生重跑存档+恢复）+ 本计划落档 + 错题本 doctest 门禁升级（pitfalls.md 纳入 `cargo test --doc`，存量 4 条适配）+ SKILL.md v0.6 同步 | 已完成（2026-09-27，ad4953e） |
 | B | ① 收口：sop.md 三工作流操作步骤回填（M1/M2 实战提炼）+ `assets-methodology/patterns.md` 首批方法论模式（≥5 条 PAT-M）+ schema 过程型模式验证口径补注 + §6 结构对照表 | 已完成（2026-09-27） |
 | C | ② 批次一：ECS 查询与调度域 | 已完成（2026-09-27） |
-| D | ② 批次二：事件 / observer / State 域 | 未开始 |
+| D | ② 批次二：事件 / observer / State 域 | 已完成（2026-09-27） |
 | E | ② 批次三：反射 / BRP 深水区 | 未开始 |
 | F | ② 批次四：资产 / 场景 / 时间 / 输入域 | 未开始 |
 | G | ② 批次五：渲染 / 窗口 / UI / 数学域 | 未开始 |
@@ -108,9 +108,9 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 | `assets-methodology/pitfalls.md` | PIT-M-001..007 | ✓ |
 | `assets-methodology/patterns.md` | PAT-M-001..007（本块首批） | ✓ |
 | `assets-methodology/pitfalls-schema.md` | schema + 过程型分型补注（本块） | ✓ |
-| `bevy-dev/SKILL.md` | v0.6 | ✓ |
-| `bevy-dev/patterns/` | PAT-B-001..005（Block C 批次一 +4）+ README + 模板 | ✓ |
-| `bevy-dev/pitfalls.md` | PIT-B-001..013（Block C 批次一 +9，探针双重验证）+ doctest 门禁（Block A 起） | ✓ |
+| `bevy-dev/SKILL.md` | v0.8（Block C 升 v0.7/§6.10，Block D 升 v0.8/§6.11） | ✓ |
+| `bevy-dev/patterns/` | PAT-B-001..008（Block C 批次一 +4、Block D 批次二 +3）+ README + 模板 | ✓ |
+| `bevy-dev/pitfalls.md` | PIT-B-001..020（Block C 批次一 +9、Block D 批次二 +7，探针双重验证）+ doctest 门禁（Block A 起） | ✓ |
 | `tooling/`（自研件） | task-runner / hotpatch-smoke（crate）+ brp-logs（证据目录，workspace exclude）；run_tests / screenshot 以 game 侧 BRP 自定义方法落地（`game/src/rpc/`，SKILL §3.6 定案）、launch_level 未建（§3.1 候选任务） | ✓ |
 | 两层不掺私货 | 无密钥 / 机器路径硬编码（`<reg>` 类以「实测为准」写法） | ✓ |
 
@@ -133,3 +133,4 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 - （后续块逐条追加）
 - **Block B（2026-09-27）**：① 收口——sop.md 三工作流操作步骤实战回填（骨架 → v1）；patterns.md 首批 7 条过程型 PAT-M（全部过过程型门禁：≥1 任务执行留痕）；pitfalls-schema.md 模式条目分型补注（代码型门禁不变）；§五 结构对照表 13 项全 ✓，**M3 ① 达成**。审核与门禁结果见台账 T022。
 - **Block C（2026-09-27）**：② 批次一（ECS 查询与调度域）——仓库外探针 crate「凭记忆首试」（10 编译级 + 4 运行时假设，时序合规：r1 失败原文先归档后查源码）；产出 **PIT-B-005..013 共 9 条**（编译级 5 + 运行时 4，全部过「复现+根因（源码行号）+修复（check/运行验证）」门禁，compile_fail 反例已入 doctest 机器断言）+ **PAT-B-002..005 共 4 条**（spawn_batch owned 迭代器 / Startup 链式定序+auto_insert_apply_deferred / 确定性 PRNG 单一抽取落点 / 解析式运动 BRP 可复算，均出自本仓已验证代码）；无坑确认 3 项独立列出（iter_many、Res::is_changed、run_if 捕获闭包）+ configure_sets 并入 PIT-B-009 行。**事实发现（含一次勘误）：bevy 0.19.1 门面 default=[2d,3d,ui,audio] 本身不含 multi_threaded，但经 2d/3d/ui→default_platform（Cargo.toml:2762-2774，:2768）传递启用——本仓 game/docs 实际跑 MultiThreadedExecutor（cargo tree -e features 实证）**；本行初版误判「默认单线程」，独立审核以 cargo tree 纠正，已同步 SKILL §6.10 与 PIT-B-006 勘误注。计数：PIT-B 13/50、PAT-B 5/20。审核与门禁见台账 T023。
+- **Block D（2026-09-27）**：② 批次二（事件 / observer / State 域）——探针两轮首试：r1 轮 10 编译探针失败 3 函数 4 处（P4/P6/P9）+ 4 运行时假设 3 panic（R1 未注册消息 / R3、R4 缺 StatesPlugin）；r1b 轮追加 3 个「先验摇摆」探针全失败（P11 iter_mut / P12 On<Message<T>> / P13 register_event）——两轮失败原文均先归档后查源码（时序合规）。r2 正解：编译面 `World::trigger`/`Commands::trigger`、`On<Add, T>`、`MessageMutator::read()` 全过 check；运行时正解 r1c/r2b/r3c/r4c 四探针 REAL_EXIT=0。产出 **PIT-B-014..020 共 7 条**（编译级 4：缓冲事件 API 全面不存在 / `On<Add<T>>`→第二泛型 / `iter_mut`→`read` / `On<Message<T>>` 不存在；运行时 3：未注册消息 panic / StatesPlugin 缺装 panic+不在 prelude / 双缓冲语义误读）+ **PAT-B-006..008 共 3 条**（定时自退出采集 / 反射 Event+observer 资源翻转 / run_if 门控+chain）。**架构级发现：Event（纯触发，无缓冲）与 Message（双缓冲队列，不可 trigger）分流总纲；State 转换内部也走 Message 系（init_state 即 add_message::<StateTransitionEvent> + write_message 初始 entered 转换，bevy_state/src/app.rs:99-112）；StatesPlugin 不在 prelude，完整路径 `bevy::state::app::StatesPlugin`**；语义确认（无错不入错题本，进 SKILL §6.11）：初始 OnEnter 恰一次（R3c）、NextState::set 后一次 update() 完成转换（R4c）；R2b 双缓冲语义两面处置——误读面以 PIT-B-020 入错题本、正面语义（错峰可读）进 SKILL §6.11。过程诚实记录两笔：①lib.rs P12 注释初版「Message 是 derive 宏」与 E0782 原文（found a trait）不符——修正注释后重跑 check 并重做最终快照（证据—源码一致性优先）；②r2 轮首写 import 凭 prelude 惯例触发 E0425——该失败真实发生于查证后（会话内即时输出），为满足「失败须归档」纪律以复现实验重跑留痕（`probe-import-prelude-check.log`：临时注释正确 import → check REAL_EXIT=101 → 恢复）。计数：PIT-B 20/50、PAT-B 8/20。**独立审核（plan-code-reviewer）：有条件通过 → 4 必改 + 9 建议 + 4 备注全数落实**（必改：PAT-B-006 注记「逐字删减+两处行内注解为条目添加」+ 区间 58-108、PAT-B-008「未删减但系 build 链中段片段不独立编译」、PIT-B-015/SKILL observers.rs 行号 :149→:152/:144→:143/区间 142-152、本行 R2b 分类措辞两面化；建议：batch-d/provenance.md 出处页（E0425 复现实验时序）、event/mod.rs 引文补全尾句+去链接化标注+区间 :16-18、摘录统一 `...` 省略标记、messages.rs/sub_app.rs 行号微精化、幂等归属 contains_resource 守卫、014/015/017 fence 补观察者计数断言、020 ignore fence 补证据指向、PAT-B-008 标签行修复、PAT-B-007 doc 段注记改准确；备注：探针 main.rs 注释 :108-113→:107-112 勘误 + check 重跑 + 快照重制）。门禁（审核后终跑）：`cargo check --workspace` REAL_EXIT=0；`cargo test --doc -p docs` REAL_EXIT=0（19 passed / 15 ignored）。审核与门禁见台账 T024。

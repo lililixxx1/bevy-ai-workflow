@@ -1,0 +1,16 @@
+    Checking probe-d v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-d)
+error[E0425]: cannot find value `StatesPlugin` in this scope
+   --> src\main.rs:165:21
+    |
+165 |     app.add_plugins(StatesPlugin);
+    |                     ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `StatesPlugin` in this scope
+   --> src\main.rs:179:21
+    |
+179 |     app.add_plugins(StatesPlugin);
+    |                     ^^^^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `probe-d` (bin "probe-d") due to 2 previous errors
+REAL_EXIT=101

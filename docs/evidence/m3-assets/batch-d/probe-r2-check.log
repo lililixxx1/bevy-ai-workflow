@@ -1,0 +1,15 @@
+    Checking probe-d v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-d)
+warning: field `amount` is never read
+  --> src\main.rs:11:5
+   |
+10 | struct Damage {
+   |        ------ field in this struct
+11 |     amount: f32,
+   |     ^^^^^^
+   |
+   = note: `Damage` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `probe-d` (bin "probe-d") generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.31s
+REAL_EXIT=0
