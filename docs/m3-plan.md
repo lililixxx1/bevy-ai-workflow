@@ -21,8 +21,8 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 
 | 块 | 内容 | 状态 |
 |---|---|---|
-| A | M3 启动：工作树修复（陌生重跑存档+恢复）+ 本计划落档 + 错题本 doctest 门禁升级（pitfalls.md 纳入 `cargo test --doc`，存量 4 条适配）+ SKILL.md v0.6 同步 | 本块 |
-| B | ① 收口：sop.md 三工作流操作步骤回填（M1/M2 实战提炼）+ `assets-methodology/patterns.md` 首批方法论模式（≥5 条 PAT-M）+ schema 过程型模式验证口径补注 + §6 结构对照表 | 未开始 |
+| A | M3 启动：工作树修复（陌生重跑存档+恢复）+ 本计划落档 + 错题本 doctest 门禁升级（pitfalls.md 纳入 `cargo test --doc`，存量 4 条适配）+ SKILL.md v0.6 同步 | 已完成（2026-09-27，ad4953e） |
+| B | ① 收口：sop.md 三工作流操作步骤回填（M1/M2 实战提炼）+ `assets-methodology/patterns.md` 首批方法论模式（≥5 条 PAT-M）+ schema 过程型模式验证口径补注 + §6 结构对照表 | 已完成（2026-09-27） |
 | C | ② 批次一：ECS 查询与调度域 | 未开始 |
 | D | ② 批次二：事件 / observer / State 域 | 未开始 |
 | E | ② 批次三：反射 / BRP 深水区 | 未开始 |
@@ -33,7 +33,7 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 
 > 域清单为初排，批次内按探查实况调整次序与内容（某域无可入库条目时如实记 0 并换域，不硬凑）；调整回写本表。
 
-## 二、现状基线（2026-09-27，提交 72de272 + 本块）
+## 二、现状基线（快照时点 = Block A，2026-09-27 提交 72de272 + ad4953e；Block B 后最新计数见 §五对照表）
 
 | 资产 | 现状 | M3 目标 | 缺口 |
 |---|---|---|---|
@@ -92,11 +92,29 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 
 ## 五、①③ 的收口与核对
 
-- ①（Block B）：
-  - `sop.md` 三工作流「操作步骤」从骨架回填为实战提炼（工作流一：doctest 门禁操作链与 no_run 规范；工作流二：查证 → 写码 → check → 转工作流三的链路；工作流三：后台启动 → BRP 断言 / run_tests / task-runner → 收尾杀进程，含实战细节如常驻进程后台托管（PIT-M-007）、摘录逐字回对 raw（PIT-M-004））；
-  - `assets-methodology/patterns.md` 首批 PAT-M ≥ 5（候选：两阶段判定、字面值绑定断言、无净副作用套件、真实退出码判定、常驻进程后台托管——各条验证证据指向台账任务与证据文件）；
-  - `pitfalls-schema.md` 补注：过程型模式条目的「验证证据」= 其在 ≥1 任务中执行并留痕的证据（代码型模式仍为编译 + 运行验证，口径不变）；
-  - §6 结构对照表（实际目录树 vs 意向文档 §6，逐项核对）随 Block B 记录。
+- ①（Block B，2026-09-27 已完成）：
+  - `sop.md` 三工作流「操作步骤」回填为 M1/M2 实战提炼（工作流一：doctest 门禁操作链；工作流二：查证 → 写码 → check → 转工作流三；工作流三：后台托管启动 → 冒烟 → 状态断言优先 → 自动判定 → 杀进程收尾），状态由「骨架」升「实战回填 v1」；
+  - `assets-methodology/patterns.md` 首批 **7 条** PAT-M（001 真实退出码判定 / 002 两阶段判定 / 003 字面值绑定断言 / 004 无净副作用套件 / 005 常驻进程后台托管 / 006 摘录逐字回对 raw / 007 驱动脚本绝对锚定）——全部过程型，验证证据逐条指向实际执行任务与留痕（PIT-M-001/004/005/006/007 的正例面配对入条）；
+  - `pitfalls-schema.md` 补注模式条目分型：代码型 = 编译 + 运行验证（不变）；过程型 = ≥1 任务实际执行并留痕；
+  - §6 结构对照表（逐项核对，2026-09-27）：
+
+| 意向文档 §6 条目 | 实际状态 | 核对 |
+|---|---|---|
+| `game/` 锁版本游戏工程 | bevy = "0.19"（workspace 继承）+ Cargo.lock 入库 | ✓ |
+| `docs/`（include_str! doctest 门禁） | `docs/src/lib.rs` 封装 8 个 Markdown 模块（含 bevy-dev/pitfalls.md，Block A 起） | ✓ |
+| `assets-methodology/sop.md` | 实战回填 v1（本块） | ✓ |
+| `assets-methodology/task-ledger.md` | T001..T021 连续；T022 本块登记后并入 | ✓ |
+| `assets-methodology/taskset/` | TS-01..12 + README（含回归口径注意事项） | ✓ |
+| `assets-methodology/pitfalls.md` | PIT-M-001..007 | ✓ |
+| `assets-methodology/patterns.md` | PAT-M-001..007（本块首批） | ✓ |
+| `assets-methodology/pitfalls-schema.md` | schema + 过程型分型补注（本块） | ✓ |
+| `bevy-dev/SKILL.md` | v0.6 | ✓ |
+| `bevy-dev/patterns/` | PAT-B-001 + README + 模板 | ✓ |
+| `bevy-dev/pitfalls.md` | PIT-B-001..004 + doctest 门禁（Block A 起） | ✓ |
+| `tooling/`（自研件） | task-runner / hotpatch-smoke（crate）+ brp-logs（证据目录，workspace exclude）；run_tests / screenshot 以 game 侧 BRP 自定义方法落地（`game/src/rpc/`，SKILL §3.6 定案）、launch_level 未建（§3.1 候选任务） | ✓ |
+| 两层不掺私货 | 无密钥 / 机器路径硬编码（`<reg>` 类以「实测为准」写法） | ✓ |
+
+  **结论：意向文档 §6 结构全部落地，① 的内容缺口（sop 步骤、方法论模式）本块收口——M3 ① 达成（待 M3 验收文档复核确认）。**
 - ③（全程）：台账每块必登；M3 验收时核 T001..T0xx 连续无断档、字段齐备。
 
 ## 六、风险与对策（M3 特有）
@@ -113,3 +131,4 @@ M3 成功标准（意向文档 §4，逐条可验收）：
 
 - **Block A（2026-09-27）**：工作树修复——提交 72de272 之后一次未经记录的 `run-all.sh` 重跑（本日 13:29）覆盖了 `docs/evidence/m1-phase2/` 下 54 个证据文件，且新 summary 丢失 round2 取代 round1 的出处注记；判定结论未变（12 任务退出码全 0），但至少 ts-11 的测量数值族与提交态不可比（存档实测 brp-avg 99.90 / [BENCH] avg_fps 95.7，当次 vsync 未实际生效——非 60fps 基线族），重跑产物非等值证据；处置：全量存档至会话内部区（`.zcode/`，gitignore，不入库）后 `git restore` 恢复提交态，待 owner 知悉。本计划落档（§四预注册 ④ 口径；审核后补返工计数含审核轮、注入边界细则）；pitfalls.md 纳入 doctest 门禁（存量 4 条按围栏约定适配）；SKILL.md v0.6（门禁覆盖面同步 + §6.5 Hotpatching 冒烟结论回写 + 断言计数 77→78 勘误×2）；pitfalls-schema.md 补 doctest 适用面注记；台账 T021。
 - （后续块逐条追加）
+- **Block B（2026-09-27）**：① 收口——sop.md 三工作流操作步骤实战回填（骨架 → v1）；patterns.md 首批 7 条过程型 PAT-M（全部过过程型门禁：≥1 任务执行留痕）；pitfalls-schema.md 模式条目分型补注（代码型门禁不变）；§五 结构对照表 13 项全 ✓，**M3 ① 达成**。审核与门禁结果见台账 T022。
