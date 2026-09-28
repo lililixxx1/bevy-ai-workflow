@@ -13,7 +13,9 @@
 | 3 | PASS | `(1,1)→(1,3)` 响应 `{"from_x":1,"from_y":1,"phase":0,"to_x":1,"to_y":3,"winner":-1}`；query 三组件 `(1,3)` team0 `moved=true` |
 | 4 | PASS | 已移动/超范围/占用/越界四探针全 `-32602`；探针后布阵与 `BattleState` 与 #3 后逐位一致（无副作用） |
 | 5 | PASS | 距离>1/无单位/友方三探针全 `-32602` + 无副作用 |
-| 6 | PASS | `end_turn` 响应 `turn=2`、`enemy_actions` 3/3（全员有记录，kind ∈ 四类）；玩家 `moved` 复位（#3 单位再移动实证成功）；`rng_state=15755400384260045000 != 7`（随机档抽取推进） |
+| 6 | PASS | `end_turn` 响应 `turn=2`、`enemy_actions` 3/3（全员有记录，kind ∈ 四类）；玩家 `moved` 复位（#3 单位再移动实证成功）；`rng_state=15755400384260045000 != 7`（随机档抽取推进）。
+
+  > **勘误（R1 审核 B2，2026-09-28）**：上值系 node `JSON.parse` 的 f64 渲染值；**精确 u64 = 15755400384260043846**（curl 直写原文 + 独立复算 7+3·0x9E3779B97F4A7C15 mod 2^64 双证，`u64-precision-probe/03-battle-raw.json` + `04-node-precision-demo.txt`；错题入库 PIT-M-009——本表其余数值摘自 node transcript 的 u64 字段同理为渲染值，小整数与布尔/坐标不受影响） |
 | 7 | PASS | 贪心驱动完整对局：**7 回合玩家胜（歼灭）**，终局 query 敌方 0 行；对局全程零非预期 error（预期 error 仅 #4/#5/#8 探针）；每步状态快照 30 条入 `ts-14-replay.jsonl` |
 | 8 | PASS | 胜利后 move/attack/end_turn 三探针全 `-32602`（`"message":"终局（winner=0），不可再操作；重开请 game.launch_level"`）；随后 `rpc.discover` 正常应答（进程存活） |
 | 9 | PASS | `relaunch(1,seed=7)`：`BattleState` 全量复位（`phase=0,turn=1,winner=-1,rng_state=7`）+ 6 行布阵 |

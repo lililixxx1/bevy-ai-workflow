@@ -476,9 +476,15 @@ fn pick_attack_target(
     }
 }
 
-/// 空闲可达格（在场内、曼哈顿距离 ≤ `range`、未被占用；按业务键序），
-/// **不含原地**（原地作为移动选项由调用方另行并入）。未加载关卡返回空
-/// （调用链已被 `require_battle` 守卫，此路防御性兜底，不自造默认场界）。
+/// 空闲可达格（在场内、曼哈顿距离 ≤ `range`、未被占用；**y 主序**——枚举
+/// 序即随机档 RNG 的取模映射序），**不含原地**（原地作为移动选项由调用方
+/// 另行并入）。未加载关卡返回空（调用链已被 `require_battle` 守卫，此路
+/// 防御性兜底，不自造默认场界）。
+///
+/// **枚举序是载荷性的**（R1 审核 N2）：`random_dest` 的 `next_u64 % pool`
+/// 直接在此序上取索引——顺序即重放基线的一部分，「顺手」改成 (x, y)
+/// 业务键序会静默改写全部随机档重放基线（跨进程一致性不受影响，因两侧
+/// 同序；受影响的是与既有基线的可比性）。
 fn free_cells_within(world: &mut World, from: GridPos, range: i32) -> Vec<GridPos> {
     let Some(lvl) = world.get_resource::<LevelState>() else {
         return Vec::new();
@@ -757,13 +763,23 @@ mod tests {
 
     #[test]
     fn reach_goal_wins_on_move() {
-        let mut w = setup(&[(0, 3, 4)], AI_RANDOM, 1);
+        // R1 审核 B1：必须带敌——零敌时 check_victory 的 enemies==0 分支先行
+        // 成立，占点路径无区分力（远角敌不参与本测试的判定路径）。
+        let mut w = setup(&[(0, 3, 4), (1, 8, 8)], AI_RANDOM, 1);
         w.resource_mut::<BattleState>().goal_kind = GOAL_REACH;
         w.resource_mut::<BattleState>().goal_x = 4;
         w.resource_mut::<BattleState>().goal_y = 4;
-        let o = try_move(&mut w, (3, 4), (4, 4)).expect("合法移动");
+        let o = try_move(&mut w, (3, 4), (4, 4)).expect("占点合法移动");
         assert_eq!(o.winner, 0);
         assert_eq!(o.phase, PHASE_OVER);
+        // 负控：同阵容移动**不**踏目标格 → 不触发胜负（区分力证明）。
+        let mut w2 = setup(&[(0, 3, 4), (1, 8, 8)], AI_RANDOM, 1);
+        w2.resource_mut::<BattleState>().goal_kind = GOAL_REACH;
+        w2.resource_mut::<BattleState>().goal_x = 4;
+        w2.resource_mut::<BattleState>().goal_y = 4;
+        let n = try_move(&mut w2, (3, 4), (2, 4)).expect("合法移动（不踏目标）");
+        assert_eq!(n.winner, -1);
+        assert_eq!(n.phase, PHASE_PLAYER);
     }
 
     #[test]

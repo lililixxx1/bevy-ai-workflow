@@ -15,9 +15,9 @@
 | # | 面与方法 | 要点 | 断言 |
 |---|---|---|---|
 | 1 | 战役闭环（campaign.js） | 3 关连打，seed=20260928，上限 40 回合/关 | 三关 `winner==0`（L1/L2 歼灭 + L3 占点）；全程 0 非预期 error；关卡间 `launch` 清场自洽（前一关终局实体不残留） |
-| 2 | 重放一致性 | 冷启动进程 A 与 B 各跑完整战役 | 两份 `ts-16-replay-*.jsonl` 逐字节相等（`diff -q` 无输出；快照含 RNG 状态面 `rng_state` 与行动标记） |
+| 2 | 重放一致性 | 冷启动进程 A 与 B 各跑完整战役 | 两份 `ts-16-replay-*.jsonl` 逐字节相等（`diff -q` 无输出；快照含 RNG 状态面 `rng_state` 与行动标记——**u64 字段系 node f64 渲染值（约 53 bit 分辨率，双侧同源舍入故等值性成立）**，措辞限「渲染分辨率下一致」非数学逐位，R1 审核 B2；精确原文另由 `ts-14/u64-precision-probe/` 留证） |
 | 3 | 核心回归 · M1 十二任务 | `run-all-m1-regression.sh`（m1-phase2 复本，ROOT 重定向至 ts-16/m1-regression，追加 ts-14） | 12 任务 `RUNNER_EXIT=0` 且 `kill_clean`（ts-11 含 bench-judge `BENCH_JUDGE_EXIT=0`）；脚本聚合退出码 0 |
-| 4 | 核心回归 · 战斗套件 | 上述脚本第 13 任务 `ts-14 --count 0` | `RUNNER_EXIT=0`（套件两连调全过） |
+| 4 | 核心回归 · 战斗套件 | 上述脚本 13 任务中的 `ts-14 --count 0`（执行序第 11；初稿「第 13 任务」系任务总数口径混用，R1 审核 N1 勘误） | `RUNNER_EXIT=0`（套件两连调全过） |
 | 5 | 核心回归 · TS-13 复断言 | 新进程重采 raw + 存档 `assert-ts13.js` 原文复本 | 6/6 PASS 退出码 0（关卡加载面无回归） |
 | 6 | 日志面 | 战役双进程 + 回归各任务 game.log | 无 `panicked`；收尾无 game.exe 残留 |
 

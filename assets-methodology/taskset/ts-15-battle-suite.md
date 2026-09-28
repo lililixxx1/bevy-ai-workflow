@@ -23,5 +23,5 @@
 ## 判定记录
 
 - 判定者/日期/结论：执行 agent，2026-09-28，**通过（4/4 运行时 + 日志面 #5：0 panic、进程无残留，退出码 0）**。#3 是快照/恢复的强验证：加载态（关卡 1、seed=7）下套件打完自己的战斗后，世界布阵逐位还原且 `rng_state==7` 未被推进（套件内 RNG 消耗被恢复覆盖）。门禁返工 2 次计台账 T034（套件首轮 E0382×2 `saved.level.map` 移动后借用 + 二轮 E0308×2 `Option<&T>` 比较形态），修复后 check 0 警告 + 单测 20/20。
-- 佐证：套件断言明细 `battle_state_initial / move_accept_and_reject / attack_kill_annihilate_and_lock / end_turn_twin_deterministic / reach_goal_wins_on_move / world_restored_after_suite`；注册表 13 套件名（ts-01..03,05..12,14）。
+- 佐证：套件断言明细 `battle_state_initial / move_accept_and_reject / attack_kill_annihilate_and_lock / end_turn_twin_deterministic / reach_goal_wins_on_move / world_restored_after_suite`；注册表共 **12** 套件名（ts-01..03,05..12 + ts-14——初稿「13」系计数笔误，R1 审核 S1 勘误，与 suites::all() 及错误 message 实测一致）。
 - 证据：`docs/evidence/ts-15-brp.md`；`docs/evidence/ts-15/`（驱动脚本、transcript、运行/杀进程/门禁日志）；台账 T034。

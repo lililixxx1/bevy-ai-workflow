@@ -1,0 +1,5 @@
+raw rng_state token : 15755400384260043846
+JSON.parse->Number  : 15755400384260045000
+Number().toString() : 15755400384260045000
+精度丢失            : true
+独立复算(7+3*GAMMA mod 2^64): 15755400384260043846

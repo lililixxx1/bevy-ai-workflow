@@ -2,7 +2,7 @@
 
 - 日期：2026-09-28。启动：`./target/release/game.exe --count 0 --seed 20260926`。
 - 定位声明：备忘录 §二 A 案口径——**表现层不作验收面**；本目录仅为「席⑧已落地且不伤规则面」的佐证。无 taskset 条目（M4 验收③「核心系统入测试集」不含表现席——设计如此，非缺漏）。
-- 实现：`game/src/present.rs`（`PresentPlugin`：`sync_board`（`LevelState` change-detection 重建棋盘/目标格高亮/收拢相机）+ `sync_pieces`（阵亡 despawn/新单位补棋子/HP 高度）+ `place_pieces`（每帧随 `GridPos` 摆放）三系统链；规则实体零表现组件——分层只在表现侧挂靠）。
+- 实现：`game/src/present.rs`（`PresentPlugin`：`sync_board`（`LevelState` change-detection 重建棋盘/目标格高亮/收拢相机）+ `sync_pieces`（阵亡 despawn/新单位补棋子/初始高度按入场 HP 定型——受伤不回缩，R1 审核 S4 口径修正）+ `place_pieces`（每帧随 `GridPos` 摆放）三系统链；规则实体零表现组件——分层只在表现侧挂靠）。
 
 ## 佐证结果
 
@@ -23,5 +23,7 @@
 `gate-check-r3.log` REAL_EXIT=0（0 警告）、`gate-test-r1.log` 20/20、`gate-build-release.log` REAL_EXIT=0；doctest 面无涉（docs/ 未动）。T036 后终版双门禁归 T037 收口。
 
 ## 文件清单
+
+> 勘误（R1 审核 S5）：`p2-shot-req.json` / `p3-shot-log.json` 内记录的截图路径为改名前行文（`docs/evidence/ts-17-present/board-l1.png`）——raw 不改写，文件实体位于本目录 `board-l1.png`。
 
 `board-l1.png`、`p1..p4.json`（launch/截图请求/截图日志/套件）、`run1-game.log`、`run1-kill.log`、`gate-check-r1/r2/r3.log`、`gate-test-r1.log`、`gate-build-release.log`。

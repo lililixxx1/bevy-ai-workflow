@@ -125,14 +125,18 @@ pub fn run(world: &mut World) -> Vec<TestCase> {
         .as_ref()
         .map(|b| world.get_resource::<BattleState>() == Some(b))
         .unwrap_or_else(|| world.get_resource::<BattleState>().is_none());
-    let restored =
-        units_sorted(world).len() == baseline_count && level_restored && battle_restored;
+    // R1 审核 S3：不只比计数——出场 units_sorted 与入场快照按业务键序逐位
+    // 比较三元组（GridPos/Unit/ActionFlags 原值；两侧同序，实体号不在比较面）。
+    let after: Vec<(GridPos, Unit, ActionFlags)> =
+        units_sorted(world).into_iter().map(|v| (v.pos, v.unit, v.flags)).collect();
+    let units_exact = after == saved.units;
+    let restored = units_exact && after.len() == baseline_count && level_restored && battle_restored;
     cases.push(tc(
         "world_restored_after_suite",
         restored,
         format!(
-            "出场单位 {} == 入场 {baseline_count}（快照重生，实体号允许变化）、LevelState/BattleState 还原（含缺失分支）",
-            units_sorted(world).len()
+            "出场单位 {} == 入场 {baseline_count} 且三元组（位置/数值/标记）逐位还原（快照重生，实体号允许变化）、LevelState/BattleState 还原（含缺失分支）",
+            after.len()
         ),
     ));
     cases
@@ -232,11 +236,28 @@ fn end_turn_twin_deterministic(world: &mut World) -> Vec<TestCase> {
     )]
 }
 
-/// 清单 #10 内核：占点型移动即终局。
+/// 清单 #10 内核：占点型移动即终局（R1 审核 B1：带敌阵容 + 负控——零敌时
+/// `check_victory` 的 enemies==0 分支先行成立，占点路径将无区分力）。
 fn reach_goal_wins_on_move(world: &mut World) -> Vec<TestCase> {
-    setup(world, &[(0, 3, 4)], AI_RANDOM, 1, (GOAL_REACH, 4, 4));
+    setup(world, &[(0, 3, 4), (1, 8, 8)], AI_RANDOM, 1, (GOAL_REACH, 4, 4));
+    // 负控：移动不踏目标格 → 不触发胜负（区分力证明）。
     // 套件不 panic 纪律：规则函数 Err 亦走断言 false 而非 expect。
-    let o = match battle::try_move(world, (3, 4), (4, 4)) {
+    let neg = battle::try_move(world, (3, 4), (2, 4));
+    let neg_ok = matches!(&neg, Ok(o) if o.winner == -1 && o.phase == PHASE_PLAYER);
+    if let Err(e) = neg {
+        return vec![tc("reach_goal_wins_on_move", false, format!("负控移动被拒：{e}"))];
+    }
+    // 负控消耗了本回合移动：复位标记（等价换回合的标记复位）后做正向占点。
+    let actor = units_sorted(world)
+        .into_iter()
+        .find(|v| v.unit.team == 0)
+        .map(|v| v.entity);
+    if let Some(e) = actor {
+        if let Some(mut f) = world.get_mut::<ActionFlags>(e) {
+            f.moved = false;
+        }
+    }
+    let o = match battle::try_move(world, (2, 4), (4, 4)) {
         Ok(o) => o,
         Err(e) => {
             return vec![tc("reach_goal_wins_on_move", false, format!("占点合法移动被拒：{e}"))]
@@ -244,7 +265,10 @@ fn reach_goal_wins_on_move(world: &mut World) -> Vec<TestCase> {
     };
     vec![tc(
         "reach_goal_wins_on_move",
-        o.winner == 0 && o.phase == PHASE_OVER,
-        format!("踏 (4,4) 即 winner={} phase={}（TS-14 #10 进程内等价，敌方存活亦可）", o.winner, o.phase),
+        neg_ok && o.winner == 0 && o.phase == PHASE_OVER,
+        format!(
+            "负控 (3,4)→(2,4) 不触发胜负（winner 仍 -1）+ 正控踏 (4,4) 即 winner={} phase={}（带敌 1 名，胜利只能来自占点分支——TS-14 #10 进程内等价）",
+            o.winner, o.phase
+        ),
     )]
 }

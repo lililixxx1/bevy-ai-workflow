@@ -1,0 +1,34 @@
+cargo.exe :    Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ...  $PID).PriorityClass="BelowNormal"; & cargo test -p game 2>&1 | ForEa ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 24.90s
+     Running unittests src\main.rs (target\debug\deps\game-24c12bfc479a3fd9.exe)
+
+running 20 tests
+test bench::tests::warmup_constant_is_calibrated ... ok
+test camera::tests::orbit_distance_is_constant ... ok
+test cli::tests::defaults_match_baseline_caliber ... ok
+test rng::tests::from_state_resumes_exact_sequence ... ok
+test rng::tests::next_f32_in_unit_interval ... ok
+test rng::tests::same_seed_same_sequence ... ok
+test rng::tests::splitmix64_reference_vectors ... ok
+test sim::tests::analytic_motion_is_deterministic_per_seed_and_time ... ok
+test sim::tests::max_speed_only_scales_speed_draw_order_untouched ... ok
+test sim::tests::same_seed_and_count_same_initial_state ... ok
+test sim::tests::simconfig_deserializes_legacy_json_with_default_max_speed ... ok
+test sim::tests::pause_requested_event_flips_paused ... ok
+test battle::tests::move_rules_and_flags ... ok
+test battle::tests::player_annihilation_loses ... ok
+test battle::tests::reach_goal_wins_on_move ... ok
+test battle::tests::attack_kill_and_annihilate_victory ... ok
+test battle::tests::attack_distance_once_per_turn_and_empty_target ... ok
+test battle::tests::end_turn_resets_flags_advances_turn_and_rng ... ok
+test battle::tests::greedy_ai_closes_distance_and_prefers_killable ... ok
+test battle::tests::end_turn_deterministic_across_spawn_order ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

@@ -10,8 +10,9 @@
 //!   demo 视角不动）；
 //! - 单位棋子：独立表现实体（[`GridPiece`] 标记 + 指回规则实体），每帧对账
 //!   （reconcile）——阵亡单位的棋子 despawn、新单位补棋子、位置随 `GridPos`
-//!   摆放、棋子高度随 HP 缩放（血量的最简表现）。**规则实体不携带任何表现
-//!   组件**（分层：规则面组件 = `GridPos`/`Unit`/`ActionFlags`，表现挂在棋子上）。
+//!   摆放；棋子**初始**高度按入场 HP 定型（受伤不回缩——表现简化，非血条
+//!   语义，R1 审核 S4 口径修正）。**规则实体不携带任何表现组件**（分层：
+//!   规则面组件 = `GridPos`/`Unit`/`ActionFlags`，表现挂在棋子上）。
 //!
 //! API 依据：Mesh3d/MeshMaterial3d/材质形态与 `sim.rs` 同源
 //!（`bevy-0.19.1/examples/remote/server.rs:32-44`，仓库 T003 起已验证）；
@@ -158,7 +159,8 @@ fn sync_pieces(
         } else {
             assets.team1.clone()
         };
-        // 高度随 HP：满血 0.75、空血 0.30（血量的最简表现；10 为玩家满血口径）。
+        // 初始高度按入场 HP：满血 0.75、空血 0.30（仅补棋时定型，受伤不回缩——
+        // 表现简化非血条语义，R1 审核 S4；10 为玩家满血口径）。
         let hp_scale = (unit.hp.clamp(0, 10) as f32) / 10.0;
         commands.spawn((
             GridPiece { unit: Some(unit_entity) },

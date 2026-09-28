@@ -2,7 +2,7 @@
 
 - 收录：通用性分级为 `methodology`（换引擎后仍成立）的错题条目。
 - 入库门禁与条目模板：见 [pitfalls-schema.md](./pitfalls-schema.md)（未过验证的条目禁止入库）。
-- 当前：8 条。
+- 当前：9 条。
 
 ---
 
@@ -305,3 +305,23 @@ cd -- "$(dirname "$0")/../../.." && pwd # → <repo>           ← 对
 
 - 复现：2026-09-28，无限流两轮日志均截断于 ≥12 个 doctest 并行编译/链接段（`docs/evidence/m3-assets/batch-g/gate-doc-test-attempt1-interrupted.log` 会话中断、`gate-doc-test-attempt2-killed-reboot.log` 伴随系统卡死重启）；退出码失真两例见 `gate-doc-test-attempt3-first-fail.log`（FAILED + REAL_EXIT=0 矛盾）与 `gate-doc-test-attempt4-note.txt`（WaitForExit 不阻塞致日志污损）；
 - 修复：限流形态（BelowNormal + 4 线程）连续三轮运行期间系统全程可交互；attempt5 干净全绿（77 passed / 0 failed / 17 ignored，REAL_EXIT=0，`gate-doc-test.log`）；启动器最终形态与演化史见 `run-doc-gate.ps1` 头注。
+
+### PIT-M-009：BRP/HTTP 响应中的 u64 在 JS 工具端经 `JSON.parse` 降精度——f64 渲染值不得当精确基线
+
+- 日期：2026-09-28
+- 适用版本：方法论级（IEEE 754 f64 只有 53 bit 尾数；任意 >2^53 整数经 JS Number 往返即失真，与引擎/协议无关）
+- 分型：错题
+- 通用性分级：methodology（换引擎、换 RPC 框架后同样成立）
+- 标签：`u64` `JSON 精度` `JS Number` `证据链` `重放基线`
+
+**现象**：BRP `world.get_resources` 返回的 `BattleState.rng_state`（u64，本例 ≈1.58e19 > 2^53）——curl 直写文件的**原始字节**为 `15755400384260043846`；同一响应在 node 驱动里 `await res.json()` 解析后 `JSON.stringify` 回写 transcript 变成 `15755400384260045000`。成文证据（任务书/台账/证据文档）凡摘自 node 侧的该值，字面上全是 f64 渲染值而非真值（M4 T033 首版三处中招，R1 审核以独立复算 + 活体 curl 原文抓出）。
+
+**根因**：JS `Number` 是 IEEE 754 双精度浮点，安全整数域 `Number.MAX_SAFE_INTEGER = 2^53-1`；`JSON.parse` 把整数字符串按 Number 解析即最近舍入，`JSON.stringify` 再渲染成十进制——往返两端一致但都不等于原始 u64。serde_json/BRP 侧输出本身是精确的，失真只发生在 JS 工具链内部。
+
+**修复**（已过验证）：
+
+1. 凡 u64 量级字段（种子/RNG 状态/大计数）需要**字面基线**时：curl 直写文件留原始字节为权威证据，成文摘录以该文件为准；
+2. JS 侧需要精确比较时用文本级提取（`raw.match(/"rng_state":(\d+)/)`）或 BigInt，不经 `JSON.parse` 中转；
+3. 仅做「两侧等值」判定（如同种子重放 diff）时，f64 渲染下的比对仍强（随机分歧落入同一 double 桶概率 ≈2^-53）——但成文措辞须写明「f64 渲染分辨率下一致」，不得写「逐位一致」。
+
+**验证证据**（2026-09-28，`docs/evidence/ts-14/u64-precision-probe/`）：`03-battle-raw.json`（curl 原文，rng_state=15755400384260043846）+ `04-node-precision-demo.txt`（同一文件 `JSON.parse` → 15755400384260045000，精度丢失=true）+ `04-node-precision-demo.txt`（独立复算 7+3·0x9E3779B97F4A7C15 mod 2^64 = 15755400384260043846，与原文逐位吻合——失败复现与修复口径双重验证，node BigInt）。游戏侧行为全程正确（bevy_remote/serde_json 输出精确），错题属工具链侧。
