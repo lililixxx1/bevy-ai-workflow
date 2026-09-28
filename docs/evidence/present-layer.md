@@ -22,6 +22,10 @@
 
 `gate-check-r3.log` REAL_EXIT=0（0 警告）、`gate-test-r1.log` 20/20、`gate-build-release.log` REAL_EXIT=0；doctest 面无涉（docs/ 未动）。T036 后终版双门禁归 T037 收口。
 
+## 过程偏差（终审补记）
+
+> **勘误（终审 B1，2026-09-28）**：T033 起本批门禁日志未自含 `REAL_EXIT` 行（bash 侧回显未落盘，T031/T032 口径回退）——成文所记退出码以当次 bash 回显为准；自 T037 收口起恢复自含，`docs/evidence/m4-acceptance/gate-check-final2.log` / `gate-doc-test-final2.log`（77/0/17）为自含复跑档，终审核立独立复跑同绿。
+
 ## 文件清单
 
 > 勘误（R1 审核 S5）：`p2-shot-req.json` / `p3-shot-log.json` 内记录的截图路径为改名前行文（`docs/evidence/ts-17-present/board-l1.png`）——raw 不改写，文件实体位于本目录 `board-l1.png`。

@@ -44,6 +44,10 @@ pub mod m3_plan {}
 #[doc = include_str!("../m4-game-selection.md")]
 pub mod m4_game_selection {}
 
+/// 《M4 验收文档》——①选品备忘录 / ②可玩交付（战役闭环、无 P0、回归全绿、重放一致）/ ③台账与核心系统任务化，席位对照与体量封顶核对。
+#[doc = include_str!("../m4-acceptance.md")]
+pub mod m4_acceptance {}
+
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}

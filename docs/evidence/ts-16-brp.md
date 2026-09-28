@@ -8,9 +8,9 @@
 | # | 判定 | 关键证据 |
 |---|---|---|
 | 1 | PASS | 战役闭环（campaign.js，seed=20260928，单进程）：**L1 歼灭 8 回合（3 存活）→ L2 歼灭 6 回合（4 存活 3）→ L3 占点 2 回合（3 存活、敌 6 存活）**；73 条指令 0 非预期 error；关卡间 launch 清场自洽。摘要原文：`{"seed":20260928,"levels":[{"level":1,...,"winner":0,"turns":8,...},{"level":2,...,"winner":0,"turns":6,...},{"level":3,"mode":"reach","winner":0,"turns":2,"playersLeft":3,"enemiesLeft":6,"ops":3}],"ops":73,"errors":0}` |
-| 2 | PASS | 跨进程重放逐位一致：进程 A/B 各 78 步快照（业务键布阵 + HP + moved/attacked + winner/phase + **rng_state**，实体号排除——PIT-B-010 口径）`diff -q` 无输出（`ts-16-replay-a.jsonl` ≡ `ts-16-replay-b.jsonl`）——备忘录「同种子 + 同操作序列 → 状态序列逐位一致」由测试驱动承担的直接兑现 |
+| 2 | PASS | 跨进程重放一致：进程 A/B 各 78 步快照（业务键布阵 + HP + moved/attacked + winner/phase + **rng_state**，实体号排除——PIT-B-010 口径）`diff -q` 无输出——**u64 字段（rng_state）系 node f64 渲染分辨率（约 53 bit，双侧同源舍入故等值性成立）**，措辞限「渲染分辨率下一致」（终审 S1 / R1 B2 / PIT-M-009 口径③；精确原文 `ts-14/u64-precision-probe/03-battle-raw.json`）（`ts-16-replay-a.jsonl` ≡ `ts-16-replay-b.jsonl`）——备忘录「同种子 + 同操作序列 → 状态序列逐位一致」由测试驱动承担的直接兑现 |
 | 3 | PASS | M1 十二任务回归（run-all 复本，ROOT 重定向 `m1-regression/`）：**12× RUNNER_EXIT=0 + kill_clean**；ts-11 bench 双源 `BENCH_JUDGE_EXIT=0`（brp_avg=60.0039）；脚本聚合退出码 0 |
-| 4 | PASS | 回归第 13 任务 ts-14（战斗套件，--count 0）：RUNNER_EXIT=0 kill_clean=0（套件两连调全过——T034 语义在回归序列中复证） |
+| 4 | PASS | 回归 13 任务中的 ts-14（战斗套件，--count 0；执行序第 11——初稿「第 13 任务」系任务总数口径混用，终审 S2 勘误同 N1）：RUNNER_EXIT=0 kill_clean=0（套件两连调全过——T034 语义在回归序列中复证） |
 | 5 | PASS | TS-13 复断言（新进程重采 raw + 存档 `assert-ts13.js` 原文复本）：**6/6 ALL PASS 退出码 0**（关卡加载面无回归；实体号例 4294966867→4294966853 属预期，断言按业务键） |
 | 6 | PASS | 战役双进程 + 回归 13 任务 + 复断言进程 game.log 全部 0 panic；全部收尾无 game.exe 残留；`docs/evidence/m1-phase2/` 零改动（git status 干净——ROOT 重定向防覆盖，T021 stray 事故教训落地） |
 
@@ -21,6 +21,10 @@
 ## 门禁
 
 - 本任务零改码（驱动/脚本/文档新增不触 `cargo check` 面）；T035 收尾终版双门禁留档 `gate-check-final.log`（REAL_EXIT=0）与 `gate-doc-test-final.log`（77/0/17 REAL_EXIT=0）。
+
+## 过程偏差（终审补记）
+
+> **勘误（终审 B1，2026-09-28）**：T033 起本批门禁日志未自含 `REAL_EXIT` 行（bash 侧回显未落盘，T031/T032 口径回退）——成文所记退出码以当次 bash 回显为准；自 T037 收口起恢复自含，`docs/evidence/m4-acceptance/gate-check-final2.log` / `gate-doc-test-final2.log`（77/0/17）为自含复跑档，终审核立独立复跑同绿。
 
 ## 文件清单
 

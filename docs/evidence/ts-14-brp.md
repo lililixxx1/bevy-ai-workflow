@@ -38,6 +38,10 @@
 - `cargo build --release -p game`：REAL_EXIT=0。
 - doctest 门禁未变（docs/ 无涉本任务的门禁内文档）——终版双门禁复跑见台账 T033 行与 `gate-check-final.log` / `gate-doc-test-final.log`。
 
+## 过程偏差（终审补记）
+
+> **勘误（终审 B1，2026-09-28）**：T033 起本批门禁日志未自含 `REAL_EXIT` 行（bash 侧回显未落盘，T031/T032 口径回退）——成文所记退出码以当次 bash 回显为准；自 T037 收口起恢复自含，`docs/evidence/m4-acceptance/gate-check-final2.log` / `gate-doc-test-final2.log`（77/0/17）为自含复跑档，终审核立独立复跑同绿。
+
 ## 文件清单
 
 `drive-ts14.js`（驱动+断言）、`drive-ts14-out.txt`（run3 判定输出）、`ts-14-transcript.jsonl`（210 行全量请求/响应原文）、`ts-14-replay.jsonl`（30 步状态快照）、`ts-14-transcript-run1-miscount.jsonl` / `ts-14-replay-run1-miscount.jsonl`（run1 存档）、`run1-game.log` / `run2-kill.log` / `run3-game.log` / `run3-kill.log`、`gate-check-r1/r2.log`、`gate-test-r1/r2/r3.log`、`gate-build-release.log`。

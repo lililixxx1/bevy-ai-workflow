@@ -25,6 +25,10 @@
 - `cargo build --release -p game`：REAL_EXIT=0。
 - doctest 门禁 docs/ 无涉——T034 收尾未改门禁内文档，终版双门禁归 TS-16 回归任务统一留档。
 
+## 过程偏差（终审补记）
+
+> **勘误（终审 B1，2026-09-28）**：T033 起本批门禁日志未自含 `REAL_EXIT` 行（bash 侧回显未落盘，T031/T032 口径回退）——成文所记退出码以当次 bash 回显为准；自 T037 收口起恢复自含，`docs/evidence/m4-acceptance/gate-check-final2.log` / `gate-doc-test-final2.log`（77/0/17）为自含复跑档，终审核立独立复跑同绿。
+
 ## 文件清单
 
 `drive-ts15.js`、`drive-ts15-out.txt`、`ts-15-transcript.jsonl`、`run1-game.log`、`run1-kill.log`、`gate-check-r1/r2/r3.log`、`gate-test-r1/r2.log`、`gate-build-release.log`。
