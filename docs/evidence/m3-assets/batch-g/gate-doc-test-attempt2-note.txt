@@ -1,0 +1,1 @@
+说明：第二次 doc 门禁（13:52 启动）随系统 CPU 占用爆满卡死、用户重启而被杀。日志截断形态与 attempt1 相同：94 测试发现、8 个 compile_fail 全 ok、12 个运行型 doctest 并行编译/链接中。原因认定：rustdoc 以可用并行度（=12 核）并发为每个运行型 doctest 拉起 rustc 链接 bevy，CPU 全核占满 + 内存峰值，系统失去响应。防复发：第三次运行改用 BelowNormal 优先级（子进程继承）+ --test-threads 4 限并发。

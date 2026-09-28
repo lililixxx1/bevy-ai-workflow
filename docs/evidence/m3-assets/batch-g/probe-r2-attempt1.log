@@ -1,0 +1,103 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0425]: cannot find value `Hdr` in this scope
+  --> src\lib.rs:76:42
+   |
+76 |     commands.spawn((Camera3d::default(), Hdr, Transform::default()));
+   |                                          ^^^ not found in this scope
+
+warning: unused import: `PrimaryWindow`
+  --> src\lib.rs:26:53
+   |
+26 | use bevy::window::{CursorOptions, MonitorSelection, PrimaryWindow, WindowMode};
+   |                                                     ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0063]: missing field `affects_lightmapped_meshes` in initializer of `bevy::bevy_light::GlobalAmbientLight`
+   --> src\lib.rs:105:25
+    |
+105 |     app.insert_resource(GlobalAmbientLight {
+    |                         ^^^^^^^^^^^^^^^^^^ missing `affects_lightmapped_meshes`
+
+error[E0063]: missing field `rotation` in initializer of `Skybox`
+   --> src\lib.rs:188:9
+    |
+188 |         Skybox {
+    |         ^^^^^^ missing `rotation`
+
+error[E0433]: cannot find type `WindowRef` in this scope
+   --> src\lib.rs:282:30
+    |
+282 |         RenderTarget::Window(WindowRef::Primary),
+    |                              ^^^^^^^^^ use of undeclared type `WindowRef`
+    |
+help: a struct with a similar name exists
+    |
+282 -         RenderTarget::Window(WindowRef::Primary),
+282 +         RenderTarget::Window(Window::Primary),
+    |
+
+error[E0308]: mismatched types
+   --> src\lib.rs:289:5
+    |
+288 | pub fn g20_dir3(v: Vec3) -> Dir3 {
+    |                             ---- expected `bevy::bevy_math::Dir3` because of return type
+289 |     Dir3::new(v)
+    |     ^^^^^^^^^^^^ expected `Dir3`, found `Result<Dir3, InvalidDirectionError>`
+    |
+    = note: expected struct `bevy::bevy_math::Dir3`
+                 found enum `std::result::Result<bevy::bevy_math::Dir3, InvalidDirectionError>`
+help: consider using `Result::expect` to unwrap the `std::result::Result<bevy::bevy_math::Dir3, InvalidDirectionError>` value, panicking if the value is a `Result::Err`
+    |
+289 |     Dir3::new(v).expect("REASON")
+    |                 +++++++++++++++++
+
+error[E0596]: cannot borrow `meshes` as mutable, as it is not declared as mutable
+  --> src\lib.rs:46:16
+   |
+46 |     let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+   |                ^^^^^^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+43 |     mut meshes: ResMut<Assets<Mesh>>,
+   |     +++
+
+error[E0596]: cannot borrow `materials` as mutable, as it is not declared as mutable
+  --> src\lib.rs:47:15
+   |
+47 |     let mat = materials.add(StandardMaterial::default());
+   |               ^^^^^^^^^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+44 |     mut materials: ResMut<Assets<StandardMaterial>>,
+   |     +++
+
+error[E0596]: cannot borrow `materials` as mutable, as it is not declared as mutable
+  --> src\lib.rs:58:19
+   |
+58 |     let _handle = materials.add(StandardMaterial {
+   |                   ^^^^^^^^^ cannot borrow as mutable
+   |
+help: consider changing this to be mutable
+   |
+57 | pub fn g3c_material_fields(mut materials: ResMut<Assets<StandardMaterial>>) {
+   |                            +++
+
+error[E0596]: cannot borrow `meshes` as mutable, as it is not declared as mutable
+   --> src\lib.rs:133:16
+    |
+133 |     let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+    |                ^^^^^^ cannot borrow as mutable
+    |
+help: consider changing this to be mutable
+    |
+132 | pub fn g9c_visibility(mut commands: Commands, mut meshes: ResMut<Assets<Mesh>>) {
+    |                                               +++
+
+Some errors have detailed explanations: E0063, E0308, E0425, E0433, E0596.
+For more information about an error, try `rustc --explain E0063`.
+warning: `probe-g` (lib) generated 1 warning
+error: could not compile `probe-g` (lib) due to 9 previous errors; 1 warning emitted
+REAL_EXIT=101

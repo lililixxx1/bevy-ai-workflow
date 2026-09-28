@@ -1,0 +1,3 @@
+说明：attempt4 因启动脚本第二版 bug 作废（非 doctest 内容失败）。$p.WaitForExit() 在 Start-Process -PassThu 返回的进程对象上未阻塞即返回（本机 cargo 为 rustup shim，PID 13724 为 rustup.exe，真实进程树 rustup→cargo(4360)→rustdoc(5348)→rustc×4 存活至 14:1x），powershell exit $null → 0，外层 bash 随即 cat 部分 err + 追加 REAL_EXIT=0 进正被 cargo 写着的 gate-doc-test.log，日志污损不可作门禁证据。该轮仍被允许跑完，仅作内容信号读取（两处 fence 修复是否有效），正式门禁为 attempt5（run-doc-gate.ps1 已改第三形态：PS 自降 BelowNormal + 前台 & cargo + exit $LASTEXITCODE）。
+
+附注（S3④）：当时的 gate-doc-test.log.err（Start-Process 的 stderr 重定向文件，cargo 常规进度输出所在）已于事后更名为 gate-doc-test-attempt4-stderr-residue.log 归位，避免与 attempt5 最终日志混淆；attempt4 的 stdout 侧内容已随本 note 所述污损过程并入 gate-doc-test-attempt4 相关叙事，正式门禁日志以 gate-doc-test.log（attempt5）为准。

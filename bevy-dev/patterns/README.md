@@ -7,7 +7,7 @@
   2. 复制 `_TEMPLATE.md` → 改名 `PAT-B-XXX-slug.md` → 填完全部必填字段（模板内注释一并删除）；
   3. 在下方索引表加一行；
   4. 反例形态的教训不进本目录——走 `bevy-dev/pitfalls.md`。
-- 当前：10 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008；批次三新增 009–010）。
+- 当前：20 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008；批次三新增 009–010；2026-09-28 批次五新增 011–020）。
 
 ## 索引
 
@@ -23,3 +23,13 @@
 | PAT-B-008 | run_if 资源门控 + .chain() 定序——暂停语义一行调度表达 | bevy 0.19.1 | [PAT-B-008-runif-gate-chain.md](./PAT-B-008-runif-gate-chain.md) | TS-04 暂停后 tick 停滞/恢复递增 + BRP 旁路不受门控（2026-09-27） |
 | PAT-B-009 | BRP 自定义方法组装——with_method_main 链 + 错误码复用受理侧纪律 | bevy 0.19.1 | [PAT-B-009-brp-custom-method-assembly.md](./PAT-B-009-brp-custom-method-assembly.md) | M2 三方法 BRP 实测全通 + rpc.discover 收录（2026-09-26） |
 | PAT-B-010 | 异步截图受理-轮询契约——spawn+observe 双 observer + 日志资源两段式 | bevy 0.19.1 | [PAT-B-010-async-screenshot-accept-poll.md](./PAT-B-010-async-screenshot-accept-poll.md) | M2 验收②全链 PNG 魔数+IHDR 断言、捕获 +3 帧口径（2026-09-26） |
+| PAT-B-011 | 窗口口径配置——DefaultPlugins.set(WindowPlugin) + CLI 直通 PresentMode | bevy 0.19.1 | [PAT-B-011-window-config-baseline.md](./PAT-B-011-window-config-baseline.md) | 12 任务运行实证 + ts-11 vsync 双口径（2026-09-28） |
+| PAT-B-012 | 轨道相机——Camera3d+looking_at spawn 与解析轨迹更新 | bevy 0.19.1 | [PAT-B-012-orbit-camera-analytic.md](./PAT-B-012-orbit-camera-analytic.md) | 单测恒等 + TS-08 BRP 距离断言 + 探针 dot=1（2026-09-28） |
+| PAT-B-013 | PBR 实体群 spawn——Assets 系统参数 + 句柄复用 + spawn_batch | bevy 0.19.1 | [PAT-B-013-pbr-swarm-spawn.md](./PAT-B-013-pbr-swarm-spawn.md) | TS-01/02/11 计数与逐位一致断言（2026-09-28） |
+| PAT-B-014 | BRP 可读写 Resource 反射形态——四 derive + reflect 属性双面 | bevy 0.19.1 | [PAT-B-014-brp-readable-writable-resource.md](./PAT-B-014-brp-readable-writable-resource.md) | TS-08 get/mutate_resources 断言（2026-09-28） |
+| PAT-B-015 | 插件组装分层——配置物化 + 引擎/领域/观察/通路/工具五层 | bevy 0.19.1 | [PAT-B-015-plugin-assembly-layers.md](./PAT-B-015-plugin-assembly-layers.md) | 12 任务 + ts-11 bench 形态自退出（2026-09-28） |
+| PAT-B-016 | 可观测统计 Resource——tick/frame_count 分层心跳面 | bevy 0.19.1 | [PAT-B-016-observable-stats-resource.md](./PAT-B-016-observable-stats-resource.md) | TS-12 tick 递增 + ts-11 双源一致 0.49%（2026-09-28） |
+| PAT-B-017 | 进程内测试套件——SuiteFn 注册表 + 无净副作用约定 | bevy 0.19.1 | [PAT-B-017-in-process-test-suites.md](./PAT-B-017-in-process-test-suites.md) | M2 验收③退出码绑定 + m1-phase2 十套件重跑（2026-09-28） |
+| PAT-B-018 | BRP 安全绑定——显式 with_address(LOCALHOST) 不依赖默认 | bevy 0.19.1 | [PAT-B-018-brp-loopback-bind.md](./PAT-B-018-brp-loopback-bind.md) | 全部 BRP 证据经 127.0.0.1:15702（2026-09-28） |
+| PAT-B-019 | 零依赖 CLI——手写 parse + 退出码协议 + 启动横幅自含口径 | bevy 0.19.1 | [PAT-B-019-std-only-cli-args.md](./PAT-B-019-std-only-cli-args.md) | 12 任务横幅自含口径 + 退出码 2 负例消费（2026-09-28） |
+| PAT-B-020 | 任务集驱动脚本——绝对路径锚定+BRP 业务探针轮询+聚合退出码 | bevy 0.19.1 | [PAT-B-020-taskset-driver-script.md](./PAT-B-020-taskset-driver-script.md) | m1-phase2 全量重跑 12 任务退出码全 0 残留 clean（2026-09-28） |

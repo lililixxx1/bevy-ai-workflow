@@ -1,0 +1,30 @@
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.86s
+   Doc-tests docs
+
+running 94 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1064) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 112) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1130) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 128) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1426) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1314) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1480) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1366) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1246) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1199) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1526) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1573) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1637) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1004) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1082) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1141) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1214) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1262) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1326) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1379) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1436) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1492) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1538) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1585) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1649) has been running for over 60 seconds

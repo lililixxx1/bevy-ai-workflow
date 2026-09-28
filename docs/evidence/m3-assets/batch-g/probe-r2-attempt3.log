@@ -1,0 +1,29 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0599]: no associated function or constant named `new` found for struct `FramesLeft` in the current scope
+  --> src\main.rs:26:34
+   |
+26 |     .insert_resource(FramesLeft::new(6))
+   |                                  ^^^ associated function or constant not found in `FramesLeft`
+...
+36 | struct FramesLeft(u32);
+   | ----------------- associated function or constant `new` not found for this struct
+   |
+   = help: items from traits can only be used if the trait is implemented and in scope
+   = note: the following traits define an item `new`, perhaps you need to implement one of them:
+           candidate #1: `BinnedPhaseItem`
+           candidate #2: `RelationshipSourceCollection`
+           candidate #3: `foldhash::convenience::HashMapExt`
+           candidate #4: `foldhash::convenience::HashSetExt`
+           candidate #5: `itertools::adaptors::coalesce::CountItem`
+           candidate #6: `parking_lot_core::thread_parker::ThreadParkerT`
+           candidate #7: `petgraph::graph_impl::IndexType`
+           candidate #8: `petgraph::matrix_graph::Nullable`
+           candidate #9: `rand::distr::uniform::UniformSampler`
+           candidate #10: `read_fonts::tables::variations::TupleDelta`
+           candidate #11: `read_fonts::tables::variations::TupleDelta`
+           candidate #12: `weak_table::traits::WeakElement`
+           candidate #13: `wgpu::dispatch::InstanceInterface`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `probe-g` (bin "probe-g") due to 1 previous error
+REAL_EXIT=101

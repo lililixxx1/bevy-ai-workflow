@@ -6,7 +6,7 @@
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：30 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 docs/evidence/m3-assets/batch-f/）。
+- 当前：50 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/）。
 
 ---
 
@@ -1675,3 +1675,1053 @@ fn folder(server: &bevy::prelude::AssetServer) -> bevy::asset::Handle<bevy::asse
 **验证证据**：
 - 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0425 + E0521 原文）；
 - 修复：`docs/evidence/m3-assets/batch-f/probe-r2-check.log`（f8c/f13c 形态编译通过，REAL_EXIT=0）；本条目正例 fence 即 doctest 编译验证。
+### PIT-B-031：`*Bundle` 整包类型全面移除（渲染/UI 域）——required components 裸组件 spawn
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bundle→required components 迁移的渲染/UI 面）
+- 标签：`Camera3dBundle` `SpriteBundle` `TextBundle` `NodeBundle` `VisibilityBundle` `E0422` `E0433` `required_components`
+
+**现象**：按 0.14-0.15 语料写整包 spawn，五类 Bundle 全部 E0422/E0433（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0422]: cannot find struct, variant or union type `Camera3dBundle` in this scope
+  --> src\lib.rs:11:20
+   |
+11 |     commands.spawn(Camera3dBundle {
+   |                    ^^^^^^^^^^^^^^ not found in this scope
+```
+
+（SpriteBundle/TextBundle/VisibilityBundle 同型 E0433；NodeBundle 为 E0422，原文同日志。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn spawn_camera_wrong(mut commands: Commands) {
+    commands.spawn(Camera3dBundle {
+        transform: Transform::from_xyz(0.0, 5.0, 10.0),
+        ..default()
+    }); // E0422：Camera3dBundle 不存在
+}
+```
+
+**根因**：0.15 起 bundle 体系废除、0.19 沿用 required components 范式——`Camera3d` 等标记组件自带必需组件自动插入，spawn 只需标记组件 + 想定制的字段（本仓 `game/src/camera.rs:57-61` 即现行形态：`Camera3d::default()` + `Transform`）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn((
+        Camera3d::default(),
+        Transform::from_xyz(0.0, 5.0, 10.0).looking_at(Vec3::ZERO, Vec3::Y),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G1 Camera3dBundle/G13 NodeBundle E0422、G9 VisibilityBundle/G11 SpriteBundle/G12 TextBundle E0433 原文）；
+- 修复：探针 g1c/g11c/g12c/g13c/g9c 编译通过（`probe-r2-check.log` + `probe-r2b-check-final.log` REAL_EXIT=0）；相机 spawn 形态运行验证 `probe-run-r5.log`（R2 forward dot=1）+ 本仓 `game/src/camera.rs` 同形态在跑。
+
+### PIT-B-032：`Handle<Mesh>` / `Handle<StandardMaterial>` 直挂不是 Bundle——须 `Mesh3d` / `MeshMaterial3d` 包装组件
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（网格/材质组件位）
+- 标签：`Handle` `Mesh3d` `MeshMaterial3d` `E0277` `PBR`
+
+**现象**：0.14 记忆把 Handle 直接进 spawn 元组（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0277]: `(Handle<Mesh>, Handle<StandardMaterial>, Transform)` is not a `Bundle`
+   --> src\lib.rs:25:20
+    |
+ 25 |     commands.spawn((mesh, mat, Transform::default()));
+    |              ----- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid `Bundle`
+    |              |
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn spawn_mesh_wrong(
+    mut commands: Commands,
+    meshes: ResMut<Assets<Mesh>>,
+    materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+    let mat = materials.add(StandardMaterial::default());
+    commands.spawn((mesh, mat, Transform::default())); // E0277：Handle 不是组件
+}
+```
+
+**根因**：Handle 泛型不实现 Component；网格/材质组件位是包装类型 `Mesh3d(Handle<Mesh>)` / `MeshMaterial3d<M: Material>(Handle<M>)`（本仓 `game/src/sim.rs:214-215`、`bevy-0.19.1/examples/3d/wireframe.rs:64` 同形态）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn spawn_mesh(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    let mesh = meshes.add(Cuboid::new(1.0, 1.0, 1.0));
+    let mat = materials.add(StandardMaterial::default());
+    commands.spawn((
+        Mesh3d(mesh),
+        MeshMaterial3d(mat),
+        Transform::default(),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G2 E0277 原文）；
+- 修复：探针 g2c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；本仓 `game/src/sim.rs:204-238` 同形态 50000 实体运行验证（ts-11 证据链）。
+- 关联：`ResMut` 参数调 `Assets::add`（`&mut self`）要求参数绑定声明 `mut`——G2 修正轮同日志 `probe-r2-attempt1.log` E0596 三连，纯 Rust 层约束。
+
+### PIT-B-033：相机配置外置伴生组件三连——`hdr` 字段→`Hdr` 组件、`target` 字段→`RenderTarget` 组件、`Msaa` 资源→per-Camera 组件
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_camera 配置模型重组）
+- 标签：`Camera` `Hdr` `RenderTarget` `Msaa` `伴生组件` `E0560` `E0277`
+
+**现象**：三笔独立旧形态同批失败（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0560]: struct `bevy::bevy_camera::Camera` has no field named `hdr`
+  --> src\lib.rs:49:13
+   |
+49 |             hdr: true,
+   |             ^^^ `bevy::bevy_camera::Camera` does not have this field
+   |
+   = note: available fields are: `viewport`, `order`, `is_active`, `computed`, `output_mode` ... and 4 others
+```
+
+（`target` 字段 E0560 同型（:243）；`insert_resource(Msaa::Sample4)` E0277「`bevy::bevy_render::view::Msaa` is not a `Resource`」原文同日志 :41。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn msaa_wrong(app: &mut App) {
+    app.insert_resource(Msaa::Sample4); // E0277：Msaa 是组件不是资源
+}
+
+fn hdr_wrong(mut commands: Commands) {
+    commands.spawn((
+        Camera3d::default(),
+        Camera { hdr: true, ..default() }, // E0560：无 hdr 字段
+        Transform::default(),
+    ));
+}
+```
+
+**根因**：相机配置从「结构体字段/全局资源」整体外置为**伴生组件**：
+- HDR = 单元组件 `Hdr`（`bevy_camera-0.19.1/src/components.rs:89`，中间 HDR 纹理开关）；
+- 渲染目标 = `RenderTarget` 组件（`camera.rs:890-892`，`#[derive(Component)]`；变体 `Window(WindowRef)` / `Image(ImageRenderTarget)`（非裸 Handle 包装）/ `TextureView` / `None { size }`；`Camera` 结构体现存字段见 E0560 帮助文本：`viewport/order/is_active/computed/output_mode...`）；
+- MSAA = per-Camera 组件 `Msaa`（`bevy_render-0.19.1/src/view/mod.rs:240-246`，文档「Component for configuring the number of samples ... for a Camera」；**默认相机自动插入 `Msaa(Sample4)`**——探针运行时实测）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+use bevy::camera::{Hdr, RenderTarget};
+
+fn msaa_hdr_target(mut commands: Commands) {
+    commands.spawn((
+        Camera3d::default(),
+        Msaa::Sample8,          // per-Camera 组件
+        Hdr,                    // HDR 单元组件
+        RenderTarget::Window(bevy::window::WindowRef::Primary), // 伴生组件
+        Transform::default(),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G4/G5/G6/G19 原文）；
+- 修复：探针 g4c/g5c/g19c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；
+- 运行时语义：`probe-run-r5.log` R3「camera Msaa=Sample4 samples=4」——默认相机带自动插入的 Msaa(Sample4)；探查过程两轮误判（先以为「无组件」后坐实「延迟 commands」）全程留痕 `probe-run-r2/r3/r4.log`。
+
+### PIT-B-034：`StandardMaterial.emissive` 是 `LinearRgba` 非 `Color`——且 `Color` 不实现 `Mul<f32>`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（PBR 材质字段类型）
+- 标签：`StandardMaterial` `emissive` `LinearRgba` `E0369` `自发光`
+
+**现象**：0.15 记忆「emissive: Color * 强度」双错（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0369]: cannot multiply `bevy::bevy_color::Color` by `{float}`
+  --> src\lib.rs:32:46
+   |
+32 |         emissive: Color::srgb(0.0, 1.0, 0.0) * 2.0,
+   |                   -------------------------- ^ --- {float}
+   |                   |
+   |                   bevy::bevy_color::Color
+```
+
+（emissive 字段类型面由源码核实：`bevy_pbr-0.19.1/src/pbr_material.rs:92` 为 `LinearRgba`，与 `Color` 乘法错误同日志并存。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn emissive_wrong(mut materials: ResMut<Assets<StandardMaterial>>) {
+    let _ = materials.add(StandardMaterial {
+        emissive: Color::srgb(0.0, 1.0, 0.0) * 2.0, // E0369：Color 无 *f32
+        ..default()
+    });
+}
+```
+
+**根因**：`emissive` 字段类型是 `LinearRgba`（`bevy_pbr-0.19.1/src/pbr_material.rs:92`）；`Color` 枚举不实现 `Mul<f32>`（0.19 移除）。强度语义 = 直接写高数值（cd/m²，物理单位），官方例 `examples/3d/bloom_3d.rs:39` `emissive: LinearRgba::rgb(0.0, 0.0, 150.0)`。`LinearRgba` 实现了向量运算（乘标量逐分量）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn emissive(mut materials: ResMut<Assets<StandardMaterial>>) {
+    let _ = materials.add(StandardMaterial {
+        emissive: LinearRgba::rgb(0.0, 1.0, 0.0) * 2.0, // LinearRgba 支持 *f32
+        ..default()
+    });
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G3 E0369 原文）；
+- 修复：探针 g3c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；形态出处 `examples/3d/bloom_3d.rs:39`。
+
+### PIT-B-035：`AmbientLight` 从全局资源变为相机组件——全局环境光走 `GlobalAmbientLight`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_light 环境光架构）
+- 标签：`AmbientLight` `GlobalAmbientLight` `E0277` `环境光`
+
+**现象**：`insert_resource(AmbientLight{..})`（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0277]: `bevy::bevy_light::AmbientLight` is not a `Resource`
+   --> src\lib.rs:74:25
+    |
+ 74 |       app.insert_resource(AmbientLight {
+   |  _________---------------^
+   |         |
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn ambient_wrong(app: &mut App) {
+    app.insert_resource(AmbientLight {
+        brightness: 500.0,
+        ..default()
+    }); // E0277：AmbientLight 不是 Resource
+}
+```
+
+**根因**：架构重组——`AmbientLight` 是挂在**相机**上的组件且 `#[require(Camera)]`（`bevy_light-0.19.1/src/ambient_light.rs:11`，文档句「can be added to a camera to override `GlobalAmbientLight`, which is the default」在 :8）；全局默认 = `GlobalAmbientLight` 资源（字段 `color/brightness/affects_lightmapped_meshes`，Default `WHITE/80.0/true` :82-90；用法 `examples/3d/skybox.rs:91-92` insert_resource）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn ambient(app: &mut App, mut commands: Commands) {
+    // 每相机覆盖：
+    commands.spawn((
+        Camera3d::default(),
+        AmbientLight { brightness: 500.0, ..default() },
+        Transform::default(),
+    ));
+    // 全局默认：
+    app.insert_resource(GlobalAmbientLight {
+        color: Color::WHITE,
+        brightness: 80.0,
+        ..default()
+    });
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G7 E0277 原文）；
+- 修复：探针 g7c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；修正轮实测 `GlobalAmbientLight` 缺 `affects_lightmapped_meshes` 字段 E0063（`probe-r2-attempt1.log`）。
+
+### PIT-B-036：`Color` 具名常量只剩 `WHITE`/`BLACK`/`NONE`——具名色在 `palettes::css`（`Srgba` + `Color::from`）
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_color 导出面）
+- 标签：`Color` `palettes` `css` `Srgba` `E0599` `颜色`
+
+**现象**：`Color::GRAY`/`Color::RED`/`Color::GREEN` 全部 E0599（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log` 与 `probe-r1-bin-only-check.log`）：
+
+```text
+error[E0599]: no variant, associated function, or constant named `GRAY` found for enum `bevy::bevy_color::Color` in the current scope
+  --> src\lib.rs:86:27
+   |
+86 |             color: Color::GRAY,
+   |                           ^^^^ variant, associated function or constant not found in `bevy::bevy_color::Color`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn gray_wrong() -> Color {
+    Color::GRAY // E0599：具名常量已收窄
+}
+```
+
+**根因**：`Color` 自身常量仅 `WHITE`/`BLACK`/`NONE`（`bevy_color-0.19.1/src/color.rs:503-510`）；完整具名色板在 `bevy::color::palettes::css`（`Srgba` 常量，css.rs），经 `Color::from(css::GRAY)` 或 `.into()` 进入 `Color`（官方例 `examples/3d/wireframe.rs:64` `Color::from(RED)`、`borders.rs` `BackgroundColor(MAROON.into())`）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::color::palettes::css;
+use bevy::prelude::*;
+
+fn gray() -> Color {
+    Color::from(css::GRAY)
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G8 GRAY）+ `probe-r1-bin-only-check.log`（RED/GREEN）；
+- 修复：探针 g8c/g25c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；运行时 `probe-run-r5.log` Gizmos 用 `Color::from(css::RED/GREEN)` 连续 6 帧绘制。
+
+### PIT-B-037：UI 样式模型重构——`Style` 结构体不存在，样式字段直接长在 `Node` 上 + `px()`/`percent()` 单位函数
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ui 布局模型）
+- 标签：`Node` `Style` `px` `percent` `E0422` `UI` `布局`
+
+**现象**：`NodeBundle { style: Style { ... } }` 双双不存在（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0422]: cannot find struct, variant or union type `NodeBundle` in this scope
+error[E0422]: cannot find struct, variant or union type `Style` in this scope
+   --> src\lib.rs:179:16
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn node_wrong(mut commands: Commands) {
+    commands.spawn(NodeBundle {
+        style: Style {
+            width: Val::Percent(100.0),
+            height: Val::Px(40.0),
+            ..default()
+        },
+        ..default()
+    }); // E0422：NodeBundle 与 Style 均不存在
+}
+```
+
+**根因**：0.19 UI 重构——**`Style` 的字段整体并入 `Node`**：`Node { width, height, margin, flex_wrap, border, align_items, justify_content, ... }`（`examples/ui/styling/borders.rs:95-99` 实形）；单位用自由函数 `px(T)` / `percent(T)`（`bevy_ui-0.19.1/src/geometry.rs:541/:558`）。`Node` 在 prelude。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn node(mut commands: Commands) {
+    commands.spawn(Node {
+        width: percent(100.0),
+        height: px(40.0),
+        ..default()
+    });
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G13 双 E0422 原文）；
+- 修复：探针 g13c 编译通过（`probe-r2-check.log` REAL_EXIT=0）；`docs/evidence/m3-assets/batch-g/probe-src-final/lib.rs` g13c 形态。
+
+### PIT-B-038：UI 文本/图像组件更名与多段文本形态——`TextStyle` 拆分、`UiImage`→`ImageNode`、`TextSection`→子实体 `TextSpan`、`TextAlignment`→`Justify`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ui/bevy_text 组件面）
+- 标签：`TextStyle` `TextFont` `TextColor` `UiImage` `ImageNode` `TextSection` `TextSpan` `TextAlignment` `Justify` `UI`
+
+**现象**：四笔更名/形态迁移同批暴露（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`、`probe-r1c-lib-check.log`）：
+
+```text
+error[E0422]: cannot find struct, variant or union type `TextStyle` in this scope
+error[E0599]: no associated function or constant named `from_sections` found for struct `bevy::bevy_ui::widget::Text` in the current scope
+error[E0433]: cannot find type `TextSection` in this scope
+error[E0433]: cannot find type `TextAlignment` in this scope
+```
+
+（`UiImage` E0433 见 `probe-r1-lib-check.log` :195。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn text_wrong(mut commands: Commands) {
+    commands.spawn(TextBundle::from_section(
+        "hello",
+        TextStyle { font_size: 30.0, ..default() }, // E0422：TextStyle 不存在
+    )); // TextBundle 亦不存在（PIT-B-031）
+    commands.spawn((Node::default(), UiImage::default())); // E0433：UiImage→ImageNode
+}
+```
+
+**根因**：①`TextStyle` 拆为 `TextFont { font, font_size: FontSize, .. }` + `TextColor(pub Color)` 两组件（`examples/ui/text/text.rs:37-43`；`TextFont::from_font_size(f32)` 便捷构造仍在）；②`UiImage` 更名 `ImageNode`（`bevy_ui lib.rs:70` widget 导出清单）；③多段文本改为**子实体**：根 `Text::new` + `.with_child((TextSpan::new("..."), TextFont{..}, TextColor(..)))`（`bevy_text text.rs:193` `pub struct TextSpan(pub String)`；官方例 text.rs:69-76/126-134）；④对齐 `TextAlignment` → `Justify` 枚举经 `TextLayout::justify(Justify::Center)`（text.rs:46）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn text(mut commands: Commands) {
+    // 单段：
+    commands.spawn((
+        Text::new("hello"),
+        TextFont::from_font_size(30.0),
+        TextColor(Color::WHITE),
+    ));
+    // 多段（子实体 TextSpan）：
+    commands
+        .spawn(Text::new("root"))
+        .with_child((
+            TextSpan::new(" span"),
+            TextFont::from_font_size(14.0),
+            TextColor(Color::WHITE),
+        ));
+    // 图像节点：
+    commands.spawn((Node::default(), ImageNode::default()));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G12/G15）+ `probe-r1c-lib-check.log`（G41/G42）；
+- 修复：探针 g12c/g24/g15c/g41c/g42c 编译通过（`probe-r2-check.log` + `probe-r2b-check-final.log` REAL_EXIT=0）；
+- 无坑面如实记：`Text::new + TextFont::from_font_size + TextColor` 的 0.15 记忆形态在 0.19 一次写对（G24 r1 编译通过）。
+
+### PIT-B-039：`BorderColor` 从单一 Color 变每边字段 `{ top, right, bottom, left }`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ui 边框组件）
+- 标签：`BorderColor` `E0423` `边框` `UI`
+
+**现象**：`BorderColor(Color::WHITE)` 元组形态（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1b-lib-check.log`）：
+
+```text
+error[E0423]: expected function, tuple struct or tuple variant, found struct `BorderColor`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn border_wrong(mut commands: Commands) {
+    commands.spawn((
+        Node::default(),
+        BorderColor(Color::WHITE), // E0423：BorderColor 是字段结构体非元组
+    ));
+}
+```
+
+**根因**：`BorderColor` 是每边一色结构体 `{ top: Color, right: Color, bottom: Color, left: Color }`（`bevy_ui-0.19.1/src/ui_node.rs:2256-2260`）；`impl<T: Into<Color>> From<T>` 提供全边同色捷径（:2263-2266，`BorderColor::all`）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn border(mut commands: Commands) {
+    // 每边异色：
+    commands.spawn((
+        Node::default(),
+        BorderColor { top: Color::WHITE, ..default() },
+    ));
+    // 全边同色捷径：
+    commands.spawn((Node::default(), BorderColor::from(Color::WHITE)));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1b-lib-check.log`（G29 E0423 原文）；
+- 修复：探针 g29c 编译通过（`probe-r2b-check-final.log` REAL_EXIT=0）。
+
+### PIT-B-040：`Window.cursor` 字段移除——光标选项是独立 `CursorOptions` 组件
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_window 光标配置）
+- 标签：`Window` `CursorOptions` `光标` `E0560` `E0422`
+
+**现象**：`Window { cursor: Cursor { visible: false } }`（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0560]: struct `bevy::bevy_window::Window` has no field named `cursor`
+   --> src\lib.rs:213:9
+```
+
+（`Cursor` 类型 E0422 同日志 ：213。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn cursor_wrong() -> Window {
+    Window {
+        title: "x".into(),
+        cursor: Cursor { visible: false, ..default() }, // E0560 + E0422
+        ..default()
+    }
+}
+```
+
+**根因**：光标行为配置外置为**独立组件** `CursorOptions`（`bevy_window-0.19.1/src/window.rs:752`），挂窗口实体，不占 `Window` 字段。`Window` 现存公有字段：`present_mode/mode/position/resolution/title/name/composite_alpha_mode/resize_constraints/resizable/enabled_buttons/decorations/transparent/focused/...`（window.rs:164-330 区域）——`title` 仍是公有 String 字段（运行时直读实证 `probe-run-r5.log` R1）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+use bevy::window::CursorOptions;
+
+fn cursor(mut commands: Commands) {
+    commands.spawn((
+        Window::default(),
+        CursorOptions { visible: false, ..default() },
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G16 双错原文）；
+- 修复：探针 g16c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+### PIT-B-041：窗口域 prelude 缺口——`WindowMode` / `MonitorSelection` / `PrimaryWindow` 须完整路径
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy prelude 导出面）
+- 标签：`WindowMode` `MonitorSelection` `PrimaryWindow` `prelude` `E0425` `窗口`
+
+**现象**：`use bevy::prelude::*` 下三类型 E0425（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log` 与 `probe-r1-bin-only-check.log`）：
+
+```text
+error[E0425]: cannot find type `PrimaryWindow` in this scope
+```
+
+（`WindowMode`/`MonitorSelection` E0425/E0433 原文见同两日志。）
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn mode_wrong() -> WindowMode { // E0425：不在 prelude
+    WindowMode::BorderlessFullscreen(MonitorSelection::Current)
+}
+
+fn query_wrong(windows: Query<&Window, With<PrimaryWindow>>) -> usize { // E0425
+    windows.iter().count()
+}
+```
+
+**根因**：`bevy_window` 的 prelude 面不含这三者；须 `use bevy::window::{WindowMode, MonitorSelection, PrimaryWindow};`（本仓 `game/src/main.rs:22` 先例：`use bevy::window::{PresentMode, WindowMode};`）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
+
+fn query(windows: Query<&Window, With<PrimaryWindow>>) -> usize {
+    windows.iter().count()
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G17）+ `probe-r1-bin-only-check.log`（PrimaryWindow ×2）；
+- 修复：探针 g17c + main 完整路径编译通过（`probe-r2-check.log` REAL_EXIT=0）；运行时 `probe-run-r5.log` R1 以 `With<PrimaryWindow>` 查询直读窗口实测。
+
+### PIT-B-042：渲染域 prelude 缺口清单——`Bloom`/`Exposure`/`Hdr`/`Skybox`/`Wireframe`/`RenderTarget`/`Tonemapping`/`DebandDither`/`FocusPolicy`/`RenderLayers`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy prelude 导出面）
+- 标签：`prelude` `Bloom` `Exposure` `Skybox` `Wireframe` `RenderTarget` `Tonemapping` `DebandDither` `FocusPolicy` `RenderLayers` `E0433` `E0432`
+
+**现象**：渲染/后处理相关类型十项在 prelude 全部 E0433/E0432（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`、`probe-r1b-lib-check.log`、`probe-r1c-lib-check.log`、`probe-r2b-check.log`）：
+
+```text
+error[E0433]: cannot find type `Bloom` in this scope
+error[E0433]: cannot find type `Exposure` in this scope
+error[E0433]: cannot find type `Skybox` in this scope
+error[E0433]: cannot find type `Tonemapping` in this scope
+error[E0432]: unresolved import `bevy::render::view::RenderLayers`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn bloom_wrong(mut commands: Commands) {
+    commands.spawn((Camera3d::default(), Bloom::NATURAL, Transform::default())); // E0433
+}
+```
+
+**根因**：现行路径（逐项本地源码核实 2026-09-28）：
+- `bevy::post_process::bloom::Bloom`（`bevy_post_process-0.19.1/src/bloom/settings.rs:33`，`#[require(Hdr)]`）；
+- `bevy::camera::Hdr`（`bevy_camera components.rs:89`）；`bevy::camera::Exposure`（camera.rs:232）；`bevy::camera::RenderTarget`（camera.rs:892）；
+- `bevy::light::Skybox`（`bevy_light probe.rs:229`）；
+- `bevy::pbr::wireframe::{Wireframe, NoWireframe, WireframeColor, WireframePlugin, ...}`（`examples/3d/wireframe.rs:13-16`）；
+- `bevy::core_pipeline::tonemapping::{Tonemapping, DebandDither}`（mod.rs:119/:383）；
+- `bevy::ui::FocusPolicy`（`bevy_ui focus.rs:108`）；
+- `RenderLayers` 在 `bevy::camera::visibility`（`render_layers.rs:20`；旧路径 `bevy::render::view::` 已失效，E0432 两轮实证，正解 `examples/2d/pixel_grid_snap.rs:4`）；
+- `WindowRef` 定义在 `bevy::window`（bevy_camera 仅 use）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::camera::{Exposure, Hdr};
+use bevy::camera::visibility::RenderLayers;
+use bevy::core_pipeline::tonemapping::Tonemapping;
+use bevy::post_process::bloom::Bloom;
+use bevy::prelude::*;
+
+fn camera_stack(mut commands: Commands) {
+    commands.spawn((
+        Camera3d::default(),
+        Hdr,
+        Bloom::NATURAL,
+        Exposure::INDOOR,
+        Tonemapping::TonyMcMapface,
+        RenderLayers::layer(1),
+        Transform::default(),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/`（G6/G25/G26/G27/G19 覆盖 `probe-r1-lib-check.log`；G32/G33/G40 覆盖 `probe-r1b-lib-check.log`；G44 两轮 E0432：旧路径 `bevy::render::view::` 见 `probe-r1c-lib-check.log`、修正轮误路径 `bevy::camera::` 根见 `probe-r2b-check.log`）；
+- 修复：探针 g6c/g26c/g27c（`probe-r2-check.log`）与 g32c/g33c/g40c/g44c（`probe-r2b-check-final.log`）编译通过，REAL_EXIT=0。
+
+### PIT-B-043：光照阴影字段更名 `shadows_enabled` → `shadow_maps_enabled`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_light 字段名）
+- 标签：`PointLight` `DirectionalLight` `shadow_maps_enabled` `E0560` `阴影`
+
+**现象**：两种光源同字段 E0560（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0560]: struct `bevy::bevy_light::PointLight` has no field named `shadows_enabled`
+  --> src\lib.rs:112:13
+   |
+112 |             shadows_enabled: true,
+   |             ^^^^^^^^^^^^^^^ unknown field
+   |
+help: a field with a similar name exists
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn shadow_wrong(mut commands: Commands) {
+    commands.spawn((
+        PointLight { shadows_enabled: true, ..default() }, // E0560
+        Transform::default(),
+    ));
+}
+```
+
+**根因**：现名 `shadow_maps_enabled: bool`（`bevy_light-0.19.1/src/point_light.rs:70`；`directional_light.rs:93`，默认 `false` :152）；另有独立 `contact_shadows_enabled` 字段（point_light.rs:73 附近）。本仓基线口径「DirectionalLight 默认无阴影」不变（`game/src/sim.rs:199-201` 注释）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn shadow(mut commands: Commands) {
+    commands.spawn((
+        PointLight {
+            shadow_maps_enabled: true,
+            ..default()
+        },
+        Transform::default(),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G22/G23 E0560 原文）；
+- 修复：探针 g22c/g23c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+
+### PIT-B-044：`Exposure::indoor()` 方法已成关联常量 `Exposure::INDOOR`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_camera 曝光 API）
+- 标签：`Exposure` `INDOOR` `常量` `E0433`
+
+**现象**：`Exposure::indoor()` 调用（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`，E0433 因 Exposure 不在 prelude 先行拦截；方法名迁移由源码核实坐实）：
+
+```text
+error[E0433]: cannot find type `Exposure` in this scope
+  --> src\lib.rs:139:42
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn exposure_wrong(mut commands: Commands) {
+    commands.spawn((Camera3d::default(), Exposure::indoor(), Transform::default()));
+    // E0433：不在 prelude；引 bevy::camera::Exposure 后 indoor() 亦不存在（是常量）
+}
+```
+
+**根因**：`Exposure` 在 `bevy::camera`（camera.rs:232，字段 `ev100: f32`）；预设是关联**常量**：`SUNLIGHT`(15.0)/`OVERCAST`(12.0)/`INDOOR`(7.0)/`BLENDER`(9.7，默认)（camera.rs:238-253 + Default :279）；方法面仅 `from_physical_camera` / `exposure()`。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::camera::Exposure;
+use bevy::prelude::*;
+
+fn exposure(mut commands: Commands) {
+    commands.spawn((Camera3d::default(), Exposure::INDOOR, Transform::default()));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G26 E0433 原文）；
+- 修复：探针 g26c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+
+### PIT-B-045：`Skybox` 双变化——`image` 是 `Option<Handle>` + 新增 `rotation: Quat` 字段
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_light 天空盒）
+- 标签：`Skybox` `Option` `rotation` `E0063` `E0433`
+
+**现象**：路径 E0433 之外，修正轮再踩两笔 E0063（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log` 与 `probe-r2-attempt1.log`）：
+
+```text
+error[E0063]: missing field `rotation` in initializer of `Skybox`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::camera::Hdr;
+use bevy::light::Skybox;
+use bevy::prelude::*;
+
+fn skybox_wrong(mut commands: Commands, mut assets: ResMut<Assets<Image>>) {
+    let image = assets.add(Image::default());
+    commands.spawn((
+        Camera3d::default(),
+        Skybox { image, brightness: 1000.0 }, // E0063：缺 rotation；image 须 Option
+        Transform::default(),
+    ));
+}
+```
+
+**根因**：`Skybox` 字段三件 `image: Option<Handle<Image>>`（:235）/ `brightness: f32`（:240）/ `rotation: Quat`（:245）（`bevy_light-0.19.1/src/probe.rs:229-245`）；官方形态 `examples/3d/skybox.rs:81-84`（`image: Some(handle)`）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::light::Skybox;
+use bevy::prelude::*;
+
+fn skybox(mut commands: Commands, mut assets: ResMut<Assets<Image>>) {
+    let image = assets.add(Image::default());
+    commands.spawn((
+        Camera3d::default(),
+        Skybox {
+            image: Some(image),
+            brightness: 1000.0,
+            rotation: Quat::IDENTITY,
+        },
+        Transform::default(),
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G27 E0433）+ `probe-r2-attempt1.log`（E0063 rotation）；
+- 修复：探针 g27c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+
+### PIT-B-046：`Wireframe` 单元组件化 + 颜色分离 `WireframeColor`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_pbr 线框）
+- 标签：`Wireframe` `WireframeColor` `E0422` `线框`
+
+**现象**：`Wireframe { color }` 构造 + prelude 双错（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`）：
+
+```text
+error[E0422]: cannot find struct, variant or union type `Wireframe` in this scope
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn wireframe_wrong(mut commands: Commands) {
+    commands.spawn((Wireframe { color: Color::RED },)); // E0422：不在 prelude 且无 color 字段
+}
+```
+
+**根因**：`Wireframe` 是**单元组件**（开关语义，三态：不挂/`Wireframe`/`NoWireframe`）；颜色经独立组件 `WireframeColor { color: Color }`（`bevy_pbr-0.19.1/src/wireframe.rs:845-846`）；全在 `bevy::pbr::wireframe` 模块，另有 `WireframePlugin`、全局 `WireframeConfig` 资源（`examples/3d/wireframe.rs:13-16/:34-37`）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::color::palettes::css;
+use bevy::pbr::wireframe::{Wireframe, WireframeColor};
+use bevy::prelude::*;
+
+fn wireframe(mut commands: Commands) {
+    commands.spawn((
+        Wireframe,
+        WireframeColor { color: Color::from(css::RED) },
+    ));
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（G25 E0422 原文）；
+- 修复：探针 g25c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+
+### PIT-B-047：`Dir3::new` 返回 `Result<Dir3, InvalidDirectionError>`——表面「编译通过」在返回位才暴露
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_math 方向类型构造面）
+- 标签：`Dir3` `Result` `E0308` `方向` `构造器`
+
+**现象**：r1 轮即以 E0308 暴露（g20 探针带显式返回位，30 错之一，`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log` :304-317）；r2 修正轮 attempt1 因 g20 尚未修而同错复发（`probe-r2-attempt1.log` :40-52，引文如下）：
+
+```text
+error[E0308]: mismatched types
+   --> src\lib.rs:289:5
+    |
+288 | pub fn g20_dir3(v: Vec3) -> Dir3 {
+    |                             ---- expected `bevy::bevy_math::Dir3` because of return type
+289 |     Dir3::new(v)
+    |     ^^^^^^^^^^^^ expected `Dir3`, found `Result<Dir3, InvalidDirectionError>`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::math::{Dir3, Vec3};
+
+fn dir3_wrong(v: Vec3) -> Dir3 {
+    Dir3::new(v) // E0308：new 返回 Result
+}
+```
+
+**根因**：`Dir3::new(value: Vec3) -> Result<Self, InvalidDirectionError>`（`bevy_math-0.19.1/src/direction.rs:563`）；同族 `new_unchecked`（:572，panic 语义由调用方担）、`new_and_length -> Result<(Self, f32), _>`（:587）、`from_xyz -> Result`（:596）。Dir2 同构（:153/:162）。**探查方法佐证**：g20 的探针函数带显式返回位，签名变化在 r1 首试轮即被 E0308 抓住——表达式级探查（如 `let _ = Dir3::new(v);`）会漏掉此类变化，探针函数应带显式返回位。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::math::{Dir3, Vec3};
+
+fn dir3(v: Vec3) -> Option<Dir3> {
+    Dir3::new(v).ok() // Result 显式处理；或 .expect(..) / new_unchecked
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-lib-check.log`（r1 首试 E0308 原文，:304-317）+ `probe-r2-attempt1.log`（修正轮未及修而复发，:40-52）；
+- 修复：探针 g20c 编译通过（`probe-r2-check.log` REAL_EXIT=0）。
+
+### PIT-B-048：`Query::single()` 返回 `Result`——`forward()` 等链式调用直接 E0599
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ecs 查询 API 签名）
+- 标签：`Query` `single` `Result` `E0599` `查询`
+
+**现象**：`query.single().forward()` 链式调用（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1-bin-only-check.log`）：
+
+```text
+error[E0599]: no method named `forward` found for enum `std::result::Result<T, E>` in the current scope
+  --> src\main.rs:58:18
+   |
+ 58 |     let fwd = gt.forward();
+   |                  ^^^^^^^ method not found in `std::result::Result<&bevy::bevy_transform::components::GlobalTransform, QuerySingleError>`
+   |
+note: the method `forward` exists on the type `&bevy::bevy_transform::components::GlobalTransform`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn forward_wrong(query: Query<&GlobalTransform, With<Camera3d>>) -> f32 {
+    let gt = query.single(); // 0.19：返回 Result
+    gt.forward().z // E0599：Result 无 forward
+}
+```
+
+**根因**：`Query::single(&self) -> Result<ROQueryItem<'_, 's, D>, QuerySingleError>`（`bevy_ecs-0.19.1/src/system/query.rs:2097`）——0.19 将「非唯一即 panic」改为显式 Result；须 `.expect(..)`/`.unwrap()`/`?` 解包（或 `single_mut` 同构）。错误帮助文本会精确指出方法存在于解包后类型上。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn forward(query: Query<&GlobalTransform, With<Camera3d>>) -> f32 {
+    let gt = query.single().expect("唯一相机");
+    gt.forward().z
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1-bin-only-check.log`（forward/translation E0599 原文）；
+- 修复：main r2 形态编译 + 运行验证（`probe-r2-check.log` + `probe-run-r5.log` R2，dot=1 断言通过）。
+
+### PIT-B-049：Startup 同 schedule 内查询刚 spawn 的实体必空——commands 延迟应用（运行时 NoEntities 双踩）
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ecs 延迟命令语义；与 PAT-B-003 正例面配对）
+- 标签：`Commands` `延迟` `Startup` `NoEntities` `运行时` `调度`
+
+**现象**：探针把「spawn 相机」与「查询相机」并排挂 Startup，查询 panic（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-run-r2.log` 与 `probe-run-r3.log` 两轮同型）：
+
+```text
+thread 'Compute Task Pool (5)' (25748) panicked at src\main.rs:72:31:
+唯一相机: NoEntities("bevy_ecs::system::query::Query<'_, '_, &bevy_render::view::Msaa, ...With<bevy_camera::components::Camera3d>>")
+```
+
+**最小复现**（语义型，`ignore` 理由：panic 须真实 App 运行，doctest 内以正例 fence 表达对照）：
+
+```rust,ignore
+use bevy::prelude::*;
+
+fn spawn(mut commands: Commands) {
+    commands.spawn(Camera3d::default()); // 延迟：本 schedule 内未生效
+}
+
+// 同在 Startup 的查询系统拿到 NoEntities（运行时 panic 于 .single().expect()）。
+```
+
+**根因**：`Commands` 是**延迟写**——spawn 排队到下一个 apply_deferred 同步点才进 World；同 schedule 内排在后面的系统查不到（Block C 已建正例：`.chain()` + `auto_insert_apply_deferred` 在链间自动插同步点，PAT-B-003）。本条是它的运行时错题面：探针自身复踩两次（r2/r3），并把「默认相机无 Msaa 组件」误判为根因，r4/r5 才分离两因——**先排掉调度因素再下组件语义结论**的教训一并入库。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn spawn_later(mut app: App) {
+    app.add_systems(Startup, spawn)
+        .add_systems(Update, |query: Query<&Camera3d>| {
+            assert_eq!(query.iter().count(), 1); // Update 时 Startup 命令已应用
+        });
+}
+
+fn spawn(mut commands: Commands) {
+    commands.spawn(Camera3d::default());
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-run-r2.log` + `probe-run-r3.log`（NoEntities 两轮原文）；
+- 修复：`probe-run-r4.log`/`probe-run-r5.log`（查询移至 Update 后相机可见，R3 断言通过，REAL_EXIT=0）；正例面 PAT-B-003（`bevy-dev/patterns/PAT-B-003-*.md`）。
+
+### PIT-B-050：`Val` 枚举变体重组——`Undefined` 移除，新增视口单位 `Vw`/`Vh`/`VMin`/`VMax`
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_ui 几何单位）
+- 标签：`Val` `Undefined` `Vw` `Vh` `视口单位` `E0599` `UI`
+
+**现象**：`Val::Undefined`（2026-09-28，`docs/evidence/m3-assets/batch-g/probe-r1c-lib-check.log`）：
+
+```text
+error[E0599]: no variant, associated function, or constant named `Undefined` found for enum `bevy::bevy_ui::Val` in the current scope
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::ui::Val;
+
+fn val_wrong() -> Val {
+    Val::Undefined // E0599：变体已移除
+}
+```
+
+**根因**：现行变体 `Auto / Px(f32) / Percent(f32) / Vw(f32) / Vh(f32) / VMin(f32) / VMax(f32)`（`bevy_ui-0.19.1/src/geometry.rs:32-60`）——`Undefined` 语义并入 `Auto`（「按上下文自动」），并新增四种**视口相对单位**（VMin/VMax = 视口较小/较大边）；便捷构造函数 `px(T)`/`percent(T)`（:541/:558）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::ui::Val;
+
+fn val() -> Val {
+    Val::Vw(50.0) // 视口宽 50%
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-g/probe-r1c-lib-check.log`（G43 E0599 原文）；
+- 修复：探针 g43c 编译通过（`probe-r2b-check-final.log` REAL_EXIT=0）；`Val::Px`/`Val::Percent`/`Val::Auto` 未变（G37 r1 编译通过，`probe-r1b-lib-check.log` 无 G37 错）。

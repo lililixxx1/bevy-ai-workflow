@@ -1,0 +1,12 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0432]: unresolved import `bevy::camera::RenderLayers`
+   --> src\lib.rs:435:9
+    |
+435 |     use bevy::camera::RenderLayers;
+    |         ^^^^^^^^^^^^^^------------
+    |                       |
+    |                       no `RenderLayers` in the root
+
+For more information about this error, try `rustc --explain E0432`.
+error: could not compile `probe-g` (lib) due to 1 previous error
+REAL_EXIT=101

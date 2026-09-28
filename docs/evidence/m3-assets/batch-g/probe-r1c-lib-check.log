@@ -1,0 +1,112 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0432]: unresolved import `bevy::render::view::RenderLayers`
+   --> src\lib.rs:418:9
+    |
+418 |     use bevy::render::view::RenderLayers;
+    |         ^^^^^^^^^^^^^^^^^^^^------------
+    |                             |
+    |                             no `RenderLayers` in `view`
+    |
+help: a similar name exists in the module
+    |
+418 -     use bevy::render::view::RenderLayers;
+418 +     use bevy::render::view::RenderAssets;
+    |
+
+error[E0422]: cannot find struct, variant or union type `TextStyle` in this scope
+   --> src\lib.rs:401:31
+    |
+401 |         TextSection::new("a", TextStyle { font_size: 12.0, ..default() }),
+    |                               ^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `TextStyle` in this scope
+   --> src\lib.rs:402:31
+    |
+402 |         TextSection::new("b", TextStyle { font_size: 14.0, ..default() }),
+    |                               ^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `TextAlignment` in this scope
+   --> src\lib.rs:407:32
+    |
+407 | pub fn g42_text_alignment() -> TextAlignment {
+    |                                ^^^^^^^^^^^^^ not found in this scope
+
+error[E0423]: expected function, tuple struct or tuple variant, found struct `BorderColor`
+    --> src\lib.rs:323:9
+     |
+ 323 |         BorderColor(Color::WHITE),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ui-0.19.1\src\ui_node.rs:2256:1
+     |
+2256 | pub struct BorderColor {
+     | ---------------------- `BorderColor` defined here
+     |
+help: use struct literal syntax instead
+     |
+ 323 -         BorderColor(Color::WHITE),
+ 323 +         BorderColor { top: val, right: val, bottom: val, left: val },
+     |
+help: you might have meant to use the `all` associated function
+     |
+ 323 |         BorderColor::all(Color::WHITE),
+     |                    +++++
+
+error[E0433]: cannot find type `Tonemapping` in this scope
+   --> src\lib.rs:343:42
+    |
+343 |     commands.spawn((Camera3d::default(), Tonemapping::TonyMcMapface, Transform::default()));
+    |                                          ^^^^^^^^^^^ use of undeclared type `Tonemapping`
+
+error[E0433]: cannot find type `DebandDither` in this scope
+   --> src\lib.rs:348:42
+    |
+348 |     commands.spawn((Camera3d::default(), DebandDither::Enabled, Transform::default()));
+    |                                          ^^^^^^^^^^^^ use of undeclared type `DebandDither`
+
+error[E0433]: cannot find type `FocusPolicy` in this scope
+   --> src\lib.rs:393:38
+    |
+393 |     commands.spawn((Node::default(), FocusPolicy::Block));
+    |                                      ^^^^^^^^^^^ use of undeclared type `FocusPolicy`
+
+error[E0599]: no associated function or constant named `from_sections` found for struct `bevy::bevy_ui::widget::Text` in the current scope
+   --> src\lib.rs:400:26
+    |
+400 |     commands.spawn(Text::from_sections(vec![
+    |                          ^^^^^^^^^^^^^ associated function or constant not found in `bevy::bevy_ui::widget::Text`
+    |
+note: if you're trying to build a new `bevy::bevy_ui::widget::Text`, consider using `bevy::bevy_ui::widget::Text::new` which returns `bevy::bevy_ui::widget::Text`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ui-0.19.1\src\widget\text.rs:115:5
+    |
+115 |     pub fn new(text: impl Into<String>) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0433]: cannot find type `TextSection` in this scope
+   --> src\lib.rs:401:9
+    |
+401 |         TextSection::new("a", TextStyle { font_size: 12.0, ..default() }),
+    |         ^^^^^^^^^^^ use of undeclared type `TextSection`
+
+error[E0433]: cannot find type `TextSection` in this scope
+   --> src\lib.rs:402:9
+    |
+402 |         TextSection::new("b", TextStyle { font_size: 14.0, ..default() }),
+    |         ^^^^^^^^^^^ use of undeclared type `TextSection`
+
+error[E0433]: cannot find type `TextAlignment` in this scope
+   --> src\lib.rs:408:5
+    |
+408 |     TextAlignment::Center
+    |     ^^^^^^^^^^^^^ use of undeclared type `TextAlignment`
+
+error[E0599]: no variant, associated function, or constant named `Undefined` found for enum `bevy::bevy_ui::Val` in the current scope
+   --> src\lib.rs:413:10
+    |
+413 |     Val::Undefined
+    |          ^^^^^^^^^ variant, associated function, or constant not found in `bevy::bevy_ui::Val`
+
+Some errors have detailed explanations: E0422, E0423, E0425, E0432, E0433, E0599.
+For more information about an error, try `rustc --explain E0422`.
+error: could not compile `probe-g` (lib) due to 13 previous errors
+REAL_EXIT=101

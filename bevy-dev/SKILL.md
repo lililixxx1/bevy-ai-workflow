@@ -1,4 +1,4 @@
-# bevy-dev skill v0.10 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.11 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -266,10 +266,30 @@
 - 探查边界（如实记）：场景序列化（旧 `DynamicScene::serialize` 随类型移除，新 Template 体系未展开）；本域 PAT 记 0（repo 无已验证任务素材，不硬凑）。
 - 探查证据：`docs/evidence/m3-assets/batch-f/`（r1 失败 10 错原文 / r2 正解 check / 修正轮三笔失败复现式补录 `probe-r2-attempt1.log`（AssetId struct variant E0164、bsn 逗号 unexpected token、Clone+Default bound E0277×2）/ 运行时 r1/r2/r3c / r1 与 final 双源码快照）。
 
+
+### 6.14 渲染 / 窗口 / UI / 数学（M3 批次五探查，2026-09-28 本地源码核实 + 探针双重验证）
+
+- **bundle 全面终结（渲染/UI 面）**：Camera3dBundle/SpriteBundle/TextBundle/NodeBundle/VisibilityBundle 均不存在——`Camera3d::default()+Transform`、`Sprite::default()`、`Text::new(..)+TextFont+TextColor` 裸组件 spawn——PIT-B-031。
+- **网格/材质组件位**：`Mesh3d(Handle<Mesh>)` / `MeshMaterial3d(Handle<M>)`（Handle 本身不是组件）——PIT-B-032；`Assets::add` 是 &mut self（ResMut 参数须 `mut` 绑定）。
+- **相机配置伴生组件化**：`Hdr`（单元组件，替代 Camera.hdr 字段）、`RenderTarget`（组件，变体 Window(WindowRef)/Image(ImageRenderTarget 包装)/TextureView/None{size}，替代 Camera.target 字段）、`Msaa`（per-Camera 组件，**默认相机自动插入 Msaa(Sample4)**，运行时实测）、`Exposure::INDOOR` 等关联常量、`bevy::camera::visibility::RenderLayers`——PIT-B-033/042/044 邻条。
+- **环境光**：`AmbientLight` = 相机组件（require Camera，覆盖 GlobalAmbientLight）；全局默认资源 `GlobalAmbientLight{color,brightness,affects_lightmapped_meshes}`——PIT-B-035。
+- **颜色**：`Color` 常量仅 WHITE/BLACK/NONE；具名色 `bevy::color::palettes::css::*`（Srgba）经 `Color::from(..)`/`.into()`；`StandardMaterial.emissive` 是 `LinearRgba`（强度直接高数值 cd/m²），`Color` 无 `*f32`——PIT-B-034/036。
+- **UI 重构**：`Style` 结构体不存在（字段并入 `Node`）+ `px()/percent()` 单位函数 + `Val` 变体 Auto/Px/Percent/Vw/Vh/VMin/VMax（Undefined 移除）；`TextStyle`→`TextFont{font_size: FontSize}`+`TextColor`；`UiImage`→`ImageNode`；多段文本=子实体 `TextSpan`；`TextAlignment`→`Justify`+`TextLayout::justify`；`BorderColor` 每边字段；`Interaction`/`Button` 仍在 prelude（无坑）——PIT-B-037/038/039/050。
+- **窗口**：`Window.cursor` 字段→独立 `CursorOptions` 组件；`title/resolution/present_mode/mode` 仍是公有字段；`WindowMode/MonitorSelection/PrimaryWindow` 不在 prelude——PIT-B-040/041。
+- **prelude 缺口（渲染域）**：`Bloom`（bevy::post_process::bloom，require Hdr）、`Exposure/Hdr/RenderTarget`（bevy::camera）、`Skybox`（bevy::light，image: Option + rotation: Quat）、`Wireframe`（bevy::pbr::wireframe，单元组件+WireframeColor 分离）、`Tonemapping/DebandDither`（bevy::core_pipeline::tonemapping）、`FocusPolicy`（bevy::ui）——PIT-B-042/045。
+- **光照/数学签名**：`shadow_maps_enabled`（非 shadows_enabled）；`Dir3::new -> Result<Dir3, InvalidDirectionError>`（new_unchecked/new_and_length 同族）——PIT-B-043/047。
+- **查询**：`Query::single() -> Result<_, QuerySingleError>`（须 expect/unwrap/?）——PIT-B-048。
+- **运行时复踩（已有正例的错题面）**：Startup 同 schedule 内查询刚 spawn 实体必空（commands 延迟）——正例 PAT-B-003，错题面 PIT-B-049（探针自身双踩实录）。
+- 无坑确认（记忆写对）：`ClearColor` 资源、`Camera{is_active/order}` 字段、`Quat::from_euler(EulerRot)`、`Gizmos line/circle_2d`、`FogFalloff::Linear{start,end}`、`BackgroundColor(Color)`、`Text2d::new`+TextFont+TextColor、`ScreenSpaceAmbientOcclusion`（bevy::pbr）、`Color::hsl`、`Rot2::radians`、`On<Pointer<Click>>` observer、`Msaa::Sample*` 变体名。
+- 数学/色彩运行时口径：`Color::srgb(0.5,..).to_linear()` 走 sRGB 官方分段传递函数（0.21404114，非纯 2.2 幂 0.21764——探针 ±1e-6 实测）；`looking_at` 后 forward 与目标方向 dot=1（逐位）。
+- 探查边界（如实记）：自定义 Material/AsBindGroup、渲染图（RenderGraph）、后处理管线自定义未展开；`bevy_ui_widgets`（button/checkbox/menu/slider/text_input 等新官方 widget 库）未探查。
+- 探查证据：`docs/evidence/m3-assets/batch-g/`（r1 lib 30 错 + bin 9 错原文 / r2 修正轮 attempt1-4 逐轮归档 / r1b/r1c 批次二三 + r2b 修正 / 运行时 r2 失败-r3 失败-r4-r5 全链 / 双源码快照 + r1 快照误覆盖恢复留痕）。
+
 ---
 
 ## 变更记录
 
+- **v0.11（2026-09-28）**：新增 §6.14 渲染/窗口/UI/数学速查（M3 批次五探针双重验证，三批编译探针 g1-g44 + 运行时探针 R1-R5：bundle 终结、Mesh3d/MeshMaterial3d、相机配置伴生组件化（Hdr/RenderTarget/Msaa per-Camera 默认 Sample4）、AmbientLight 组件化+GlobalAmbientLight、Color 常量收窄+emissive LinearRgba、UI 重构（Style 并入 Node/px-percent/TextSpan 子实体/ImageNode/BorderColor 每边/Val 视口单位）、CursorOptions、prelude 缺口两批清单、shadow_maps_enabled、Dir3::new Result、single() Result、Startup 延迟复踩；无坑确认 12 项 + sRGB 传递函数/looking_at dot=1 运行时口径）。对应 PIT-B-031..050（20 条）+ PAT-B-011..020（10 条，窗口/相机/PBR/反射资源/组装/观测/套件/回环/CLI/驱动脚本）入库。探针证据 `docs/evidence/m3-assets/batch-g/`。
 - **v0.10（2026-09-27）**：新增 §6.13 资产/场景/时间/输入速查（M3 批次四探针双重验证：EventReader 类型删除与 AssetEvent Message 化、Handle enum Strong/Uuid 形态与 AssetId struct variant、bevy_scene 整体重构为 BSN（DynamicScene/SceneRoot 全移除、spawn_scene(bsn!) 语法与 Clone bound、.bsn 未发布）、set_relative_speed 改名与 panic 语义 + pause/倍速运行时实测、AccumulatedMouseMotion prelude 缺口、load_folder 'static 约束；无坑确认 6 项；场景序列化记探查边界、PAT 记 0）。对应 PIT-B-026..030 入库。探针证据 `docs/evidence/m3-assets/batch-f/`。
 - **v0.9（2026-09-27）**：新增 §6.12 反射注册表面速查（M3 批次三探针双重验证：AppTypeRegistry 资源形态与 RwLock 守卫协议、裸 World 注册路径、短名查改名 get_with_short_type_path、register 依赖闭包语义（1 型→20 型实测）、reflect_clone Result 语义、#[reflect(opaque)]+Clone bound、ReflectComponent 注册表取用与三参 insert、ReflectSerializer 输出形态（type_path 外包裹，BRP 响应同源）；对应 PIT-B-021..025 入库、PAT-B-009..010 入库；条目 doctest 断言另抓出两笔并回写：`#[reflect(Component)]` 才注册组件反射数据、opaque 无 reflect_clone 走 apply）。探针证据 `docs/evidence/m3-assets/batch-e/`。
 - **v0.8（2026-09-27）**：新增 §6.11 事件/消息/State 速查（M3 批次二探针双重验证：Event/Message 分流总纲、`On<Add, T>` 生命周期过滤、MessageMutator/Reader 统一 `.read()`、`add_message` 注册与未注册 panic、双缓冲错峰语义、StatesPlugin 不在 prelude 及 `bevy::state::app` 完整路径、init_state 初始 entered 转换与首个 update() 恰一次 OnEnter、NextState::set 一次 update 生效、StateTransitionEvent 走 Message 系；对应 PIT-B-014..020 入库、PAT-B-006..008 入库）。探针证据 `docs/evidence/m3-assets/batch-d/`。

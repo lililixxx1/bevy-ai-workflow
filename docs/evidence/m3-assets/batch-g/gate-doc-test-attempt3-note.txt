@@ -1,0 +1,5 @@
+说明：第一次完整跑完的 doc 门禁（attempt1/attempt2 均为基础设施中断非内容失败）。75 passed / 2 failed：
+(1) PIT-B-033 修复 fence——WindowRef 误从 bevy::camera 导入（实际 bevy::window）+ Hdr 裸用未导入（bevy::camera::Hdr，不在 prelude）；探针源码为 crate 级导入，誊写独立 fence 时遗漏。
+(2) Dir3 条目两个 fence——仅导入 Dir3 未导入 Vec3；compile_fail 侧虽过门禁但失败原因会失真（声称 E0308 实则 Vec3 未解析），一并修。
+修复三处均已改 bevy-dev/pitfalls.md；另修 run-doc-gate.ps1 退出码捕获 bug（Wait-Process 后 $p.ExitCode 为 null，exit $null → 0，故本日志尾部 REAL_EXIT=0 与 FAILED 矛盾——以 test result 行为准，真实退出码应为 101）。
+同批扫描 031-050 全部 compile_fail fence 的独立导入完整性：Cuboid/PointLight/Assets<Image> 经 probe-src-final（crate 级仅 prelude 导入即过编译）证实均在 prelude，其余「缺失」均为注释错误码或条目刻意演示的不存在项，无误报漏网。

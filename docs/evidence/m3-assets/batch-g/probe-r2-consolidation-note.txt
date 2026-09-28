@@ -1,0 +1,4 @@
+归并关系注明（Block G 审核建议 S3③）：
+- probe-r2-check.log 与 probe-r2-attempt1..4.log 中的 attempt4 逐字节相同——前者是成功轮以稳定文件名的归档副本，非独立复跑；r2 修正轮的真实轮次证据是 attempt1-4 四个日志。
+- probe-r2b-check-final.log 与 probe-r2b-attempt2.log 逐字节相同——同上（批二三修正轮，attempt2 为成功轮）。
+条目正文引用稳定名（-check / -check-final），轮次溯源看 attempt 系列。

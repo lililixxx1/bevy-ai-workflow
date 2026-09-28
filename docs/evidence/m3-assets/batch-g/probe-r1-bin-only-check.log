@@ -1,0 +1,108 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0425]: cannot find type `PrimaryWindow` in this scope
+  --> src\main.rs:47:45
+   |
+47 | fn read_window(windows: Query<&Window, With<PrimaryWindow>>) {
+   |                                             ^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+47 | fn read_window<PrimaryWindow>(windows: Query<&Window, With<PrimaryWindow>>) {
+   |               +++++++++++++++
+
+error[E0425]: cannot find type `PrimaryWindow` in this scope
+  --> src\main.rs:66:52
+   |
+66 | fn check_samples_once(windows: Query<&Window, With<PrimaryWindow>>) {
+   |                                                    ^^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+66 | fn check_samples_once<PrimaryWindow>(windows: Query<&Window, With<PrimaryWindow>>) {
+   |                      +++++++++++++++
+
+warning: unused import: `probe_g::*`
+  --> src\main.rs:12:5
+   |
+12 | use probe_g::*;
+   |     ^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no method named `forward` found for enum `std::result::Result<T, E>` in the current scope
+   --> src\main.rs:58:18
+    |
+ 58 |     let fwd = gt.forward();
+    |                  ^^^^^^^ method not found in `std::result::Result<&bevy::bevy_transform::components::GlobalTransform, QuerySingleError>`
+    |
+note: the method `forward` exists on the type `&bevy::bevy_transform::components::GlobalTransform`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_transform-0.19.1\src\components\global_transform.rs:72:9
+    |
+ 72 |         pub fn $neg_name(&self) -> Dir3 {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+...
+206 |     impl_local_axis!(back, forward, Z);
+    |     ---------------------------------- in this macro invocation
+    = note: this error originates in the macro `impl_local_axis` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider using `Result::expect` to unwrap the `&bevy::bevy_transform::components::GlobalTransform` value, panicking if the value is a `Result::Err`
+    |
+ 58 |     let fwd = gt.expect("REASON").forward();
+    |                 +++++++++++++++++
+
+error[E0599]: no method named `translation` found for enum `std::result::Result<T, E>` in the current scope
+   --> src\main.rs:59:38
+    |
+ 59 |     let to_target = (Vec3::ZERO - gt.translation()).normalize();
+    |                                      ^^^^^^^^^^^ method not found in `std::result::Result<&bevy::bevy_transform::components::GlobalTransform, QuerySingleError>`
+    |
+note: the method `translation` exists on the type `&bevy::bevy_transform::components::GlobalTransform`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_transform-0.19.1\src\components\global_transform.rs:210:5
+    |
+210 |     pub fn translation(&self) -> Vec3 {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: consider using `Result::expect` to unwrap the `&bevy::bevy_transform::components::GlobalTransform` value, panicking if the value is a `Result::Err`
+    |
+ 59 |     let to_target = (Vec3::ZERO - gt.expect("REASON").translation()).normalize();
+    |                                     +++++++++++++++++
+
+error[E0599]: no variant, associated function, or constant named `RED` found for enum `bevy::bevy_color::Color` in the current scope
+  --> src\main.rs:73:62
+   |
+73 |     gizmos.line(Vec3::ZERO, Vec3::new(1.0, 1.0, 1.0), Color::RED);
+   |                                                              ^^^ variant, associated function, or constant not found in `bevy::bevy_color::Color`
+
+error[E0599]: no variant, associated function, or constant named `GREEN` found for enum `bevy::bevy_color::Color` in the current scope
+  --> src\main.rs:74:46
+   |
+74 |     gizmos.circle_2d(Vec2::ZERO, 5.0, Color::GREEN);
+   |                                              ^^^^^ variant, associated function, or constant not found in `bevy::bevy_color::Color`
+
+error[E0599]: no method named `red` found for struct `bevy::bevy_color::LinearRgba` in the current scope
+  --> src\main.rs:81:53
+   |
+81 |     println!("[R5] linear red={} expect(2.2)={}", c.red(), expect);
+   |                                                     ^^^-- help: remove the arguments
+   |                                                     |
+   |                                                     field, not a method
+
+error[E0599]: no method named `red` found for struct `bevy::bevy_color::LinearRgba` in the current scope
+  --> src\main.rs:82:16
+   |
+82 |     assert!((c.red() - expect).abs() < 0.01, "srgb 0.5 → linear ≈ 2.2 伽马（{}）", c.red());
+   |                ^^^-- help: remove the arguments
+   |                |
+   |                field, not a method
+
+error[E0599]: no method named `red` found for struct `bevy::bevy_color::LinearRgba` in the current scope
+  --> src\main.rs:82:82
+   |
+82 |     assert!((c.red() - expect).abs() < 0.01, "srgb 0.5 → linear ≈ 2.2 伽马（{}）", c.red());
+   |                                                                                      ^^^-- help: remove the arguments
+   |                                                                                      |
+   |                                                                                      field, not a method
+
+Some errors have detailed explanations: E0425, E0599.
+For more information about an error, try `rustc --explain E0425`.
+warning: `probe-g` (bin "probe-g") generated 1 warning
+error: could not compile `probe-g` (bin "probe-g") due to 9 previous errors; 1 warning emitted
+REAL_EXIT=101

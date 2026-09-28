@@ -1,0 +1,17 @@
+   Compiling probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+    Finished `release` profile [optimized] target(s) in 6.92s
+     Running `C:/Users/Administrator/Desktop/ccc/bevy-probe-d/target\release\probe-g.exe`
+[2m2026-09-28T05:20:13.820799Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-28T05:20:14.094126Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-28T05:20:14.555530Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-28T05:20:14.555621Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-28T05:20:14.556398Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window probe-g (65v0)
+
+thread 'Compute Task Pool (0)' (18384) panicked at src\main.rs:74:31:
+唯一相机: NoEntities("bevy_ecs::system::query::Query<'_, '_, core::option::Option<&bevy_render::view::Msaa>, bevy_ecs::query::filter::With<bevy_camera::components::Camera3d>>")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[R1] title="probe-g" scale_factor=1.25
+Encountered a panic in system `probe_g::check_samples_once`!
+Encountered a panic in system `bevy_app::main_schedule::Main::run_main`!
+error: process didn't exit successfully: `C:/Users/Administrator/Desktop/ccc/bevy-probe-d/target\release\probe-g.exe` (exit code: 101)
+REAL_EXIT=101

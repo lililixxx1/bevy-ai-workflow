@@ -1,0 +1,323 @@
+    Updating `rsproxy-sparse` index
+     Locking 562 packages to latest compatible versions
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0422]: cannot find struct, variant or union type `Camera3dBundle` in this scope
+  --> src\lib.rs:11:20
+   |
+11 |     commands.spawn(Camera3dBundle {
+   |                    ^^^^^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Bloom` in this scope
+  --> src\lib.rs:64:9
+   |
+64 |         Bloom {
+   |         ^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Wireframe` in this scope
+   --> src\lib.rs:132:21
+    |
+132 |     commands.spawn((Wireframe {
+    |                     ^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Skybox` in this scope
+   --> src\lib.rs:147:9
+    |
+147 |         Skybox {
+    |         ^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `TextStyle` in this scope
+   --> src\lib.rs:168:9
+    |
+168 |         TextStyle {
+    |         ^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `NodeBundle` in this scope
+   --> src\lib.rs:178:20
+    |
+178 |     commands.spawn(NodeBundle {
+    |                    ^^^^^^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Style` in this scope
+   --> src\lib.rs:179:16
+    |
+179 |         style: Style {
+    |                ^^^^^ not found in this scope
+
+error[E0422]: cannot find struct, variant or union type `Cursor` in this scope
+   --> src\lib.rs:213:17
+    |
+213 |         cursor: Cursor {
+    |                 ^^^^^^ not found in this scope
+    |
+help: consider importing this struct
+    |
+  5 + use std::io::Cursor;
+    |
+
+error[E0425]: cannot find type `WindowMode` in this scope
+   --> src\lib.rs:222:28
+    |
+222 | pub fn g17_borderless() -> WindowMode {
+    |                            ^^^^^^^^^^
+    |
+   ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_window-0.19.1\src\event.rs:420:1
+    |
+420 | pub struct WindowMoved {
+    | ---------------------- similarly named struct `WindowMoved` defined here
+    |
+help: a struct with a similar name exists
+    |
+222 - pub fn g17_borderless() -> WindowMode {
+222 + pub fn g17_borderless() -> WindowMoved {
+    |
+
+error[E0277]: `(Handle<Mesh>, Handle<StandardMaterial>, Transform)` is not a `Bundle`
+   --> src\lib.rs:25:20
+    |
+ 25 |     commands.spawn((mesh, mat, Transform::default()));
+    |              ----- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ invalid `Bundle`
+    |              |
+    |              required by a bound introduced by this call
+    |
+    = help: the trait `Bundle` is not implemented for `(Handle<Mesh>, Handle<StandardMaterial>, Transform)`
+    = note: consider annotating `(Handle<Mesh>, Handle<StandardMaterial>, Transform)` with `#[derive(Component)]` or `#[derive(Bundle)]`
+    = help: the following other types implement trait `Bundle`:
+              ()
+              (B,)
+              (B0, B1)
+              (B0, B1, B2)
+              (B0, B1, B2, B3)
+              (B0, B1, B2, B3, B4)
+              (B0, B1, B2, B3, B4, B5)
+              (B0, B1, B2, B3, B4, B5, B6)
+            and 8 others
+note: required by a bound in `bevy::bevy_ecs::system::Commands::<'w, 's>::spawn`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.19.1\src\system\commands\mod.rs:398:21
+    |
+398 |     pub fn spawn<T: Bundle>(&mut self, bundle: T) -> EntityCommands<'_> {
+    |                     ^^^^^^ required by this bound in `Commands::<'w, 's>::spawn`
+    = note: the full name for the type has been written to 'C:/Users/Administrator/Desktop/ccc/bevy-probe-d/target\debug\deps\probe_g-5aba2f7a1865a20f.long-type-11907418087343624098.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+error[E0369]: cannot multiply `bevy::bevy_color::Color` by `{float}`
+  --> src\lib.rs:32:46
+   |
+32 |         emissive: Color::srgb(0.0, 1.0, 0.0) * 2.0,
+   |                   -------------------------- ^ --- {float}
+   |                   |
+   |                   bevy::bevy_color::Color
+   |
+note: `bevy::bevy_color::Color` does not implement `Mul<{float}>`
+  --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_color-0.19.1\src\color.rs:56:1
+   |
+56 | pub enum Color {
+   | ^^^^^^^^^^^^^^ `bevy::bevy_color::Color` is defined in another crate
+
+error[E0277]: `bevy::bevy_render::view::Msaa` is not a `Resource`
+   --> src\lib.rs:41:25
+    |
+ 41 |     app.insert_resource(Msaa::Sample4);
+    |         --------------- ^^^^^^^^^^^^^ invalid `Resource`
+    |         |
+    |         required by a bound introduced by this call
+    |
+    = help: the trait `Resource` is not implemented for `bevy::bevy_render::view::Msaa`
+    = note: consider annotating `bevy::bevy_render::view::Msaa` with `#[derive(Resource)]`
+    = help: the following other types implement trait `Resource`:
+              AccessibilityRequested
+              AccumulatedMouseMotion
+              AccumulatedMouseScroll
+              AppTypeRegistry
+              AreaLightLuts
+              AssetProcessor
+              AssetServer
+              AssetSourceBuilders
+            and 307 others
+note: required by a bound in `bevy::bevy_app::App::insert_resource`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_app-0.19.1\src\app.rs:451:31
+    |
+451 |     pub fn insert_resource<R: Resource>(&mut self, resource: R) -> &mut Self {
+    |                               ^^^^^^^^ required by this bound in `App::insert_resource`
+
+error[E0560]: struct `bevy::bevy_camera::Camera` has no field named `hdr`
+  --> src\lib.rs:49:13
+   |
+49 |             hdr: true,
+   |             ^^^ `bevy::bevy_camera::Camera` does not have this field
+   |
+   = note: available fields are: `viewport`, `order`, `is_active`, `computed`, `output_mode` ... and 4 others
+
+error[E0560]: struct `bevy::bevy_camera::Camera` has no field named `hdr`
+  --> src\lib.rs:61:13
+   |
+61 |             hdr: true,
+   |             ^^^ `bevy::bevy_camera::Camera` does not have this field
+   |
+   = note: available fields are: `viewport`, `order`, `is_active`, `computed`, `output_mode` ... and 4 others
+
+error[E0277]: `bevy::bevy_light::AmbientLight` is not a `Resource`
+   --> src\lib.rs:74:25
+    |
+ 74 |       app.insert_resource(AmbientLight {
+    |  _________---------------_^
+    | |         |
+    | |         required by a bound introduced by this call
+ 75 | |         color: Color::WHITE,
+ 76 | |         brightness: 500.0,
+ 77 | |         ..default()
+ 78 | |     });
+    | |_____^ invalid `Resource`
+    |
+    = help: the trait `Resource` is not implemented for `bevy::bevy_light::AmbientLight`
+    = note: consider annotating `bevy::bevy_light::AmbientLight` with `#[derive(Resource)]`
+    = help: the following other types implement trait `Resource`:
+              AccessibilityRequested
+              AccumulatedMouseMotion
+              AccumulatedMouseScroll
+              AppTypeRegistry
+              AreaLightLuts
+              AssetProcessor
+              AssetServer
+              AssetSourceBuilders
+            and 307 others
+note: required by a bound in `bevy::bevy_app::App::insert_resource`
+   --> C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_app-0.19.1\src\app.rs:451:31
+    |
+451 |     pub fn insert_resource<R: Resource>(&mut self, resource: R) -> &mut Self {
+    |                               ^^^^^^^^ required by this bound in `App::insert_resource`
+
+error[E0599]: no variant, associated function, or constant named `GRAY` found for enum `bevy::bevy_color::Color` in the current scope
+  --> src\lib.rs:86:27
+   |
+86 |             color: Color::GRAY,
+   |                           ^^^^ variant, associated function, or constant not found in `bevy::bevy_color::Color`
+
+error[E0433]: cannot find type `VisibilityBundle` in this scope
+   --> src\lib.rs:100:35
+    |
+100 |     commands.spawn((Mesh3d(mesh), VisibilityBundle::default()));
+    |                                   ^^^^^^^^^^^^^^^^ use of undeclared type `VisibilityBundle`
+
+error[E0560]: struct `bevy::bevy_light::PointLight` has no field named `shadows_enabled`
+   --> src\lib.rs:112:13
+    |
+112 |             shadows_enabled: true,
+    |             ^^^^^^^^^^^^^^^ unknown field
+    |
+help: a field with a similar name exists
+    |
+112 |             shadow_maps_enabled: true,
+    |                   ++++
+
+error[E0560]: struct `bevy::bevy_light::DirectionalLight` has no field named `shadows_enabled`
+   --> src\lib.rs:123:13
+    |
+123 |             shadows_enabled: true,
+    |             ^^^^^^^^^^^^^^^ unknown field
+    |
+help: a field with a similar name exists
+    |
+123 |             shadow_maps_enabled: true,
+    |                   ++++
+
+error[E0599]: no variant, associated function, or constant named `RED` found for enum `bevy::bevy_color::Color` in the current scope
+   --> src\lib.rs:133:23
+    |
+133 |         color: Color::RED,
+    |                       ^^^ variant, associated function, or constant not found in `bevy::bevy_color::Color`
+
+error[E0433]: cannot find type `Exposure` in this scope
+   --> src\lib.rs:139:42
+    |
+139 |     commands.spawn((Camera3d::default(), Exposure::indoor(), Transform::default()));
+    |                                          ^^^^^^^^ use of undeclared type `Exposure`
+
+error[E0433]: cannot find type `SpriteBundle` in this scope
+   --> src\lib.rs:159:20
+    |
+159 |     commands.spawn(SpriteBundle::default());
+    |                    ^^^^^^^^^^^^ use of undeclared type `SpriteBundle`
+
+error[E0433]: cannot find type `TextBundle` in this scope
+   --> src\lib.rs:166:20
+    |
+166 |     commands.spawn(TextBundle::from_section(
+    |                    ^^^^^^^^^^ use of undeclared type `TextBundle`
+
+error[E0433]: cannot find type `UiImage` in this scope
+   --> src\lib.rs:195:38
+    |
+195 |     commands.spawn((Node::default(), UiImage::default()));
+    |                                      ^^^^^^^ use of undeclared type `UiImage`
+    |
+help: a struct with a similar name exists
+    |
+195 -     commands.spawn((Node::default(), UiImage::default()));
+195 +     commands.spawn((Node::default(), Image::default()));
+    |
+
+error[E0560]: struct `bevy::bevy_window::Window` has no field named `cursor`
+   --> src\lib.rs:213:9
+    |
+213 |         cursor: Cursor {
+    |         ^^^^^^ `bevy::bevy_window::Window` does not have this field
+    |
+    = note: available fields are: `present_mode`, `mode`, `position`, `resolution`, `name` ... and 34 others
+
+error[E0433]: cannot find type `WindowMode` in this scope
+   --> src\lib.rs:223:5
+    |
+223 |     WindowMode::BorderlessFullscreen(MonitorSelection::Current)
+    |     ^^^^^^^^^^ use of undeclared type `WindowMode`
+    |
+help: a struct with a similar name exists
+    |
+223 -     WindowMode::BorderlessFullscreen(MonitorSelection::Current)
+223 +     WindowMoved::BorderlessFullscreen(MonitorSelection::Current)
+    |
+
+error[E0560]: struct `bevy::bevy_camera::Camera` has no field named `target`
+   --> src\lib.rs:243:9
+    |
+243 |         target: RenderTarget::Window(WindowRef::Primary),
+    |         ^^^^^^ `bevy::bevy_camera::Camera` does not have this field
+    |
+    = note: available fields are: `viewport`, `order`, `is_active`, `computed`, `output_mode` ... and 4 others
+
+error[E0433]: cannot find type `RenderTarget` in this scope
+   --> src\lib.rs:243:17
+    |
+243 |         target: RenderTarget::Window(WindowRef::Primary),
+    |                 ^^^^^^^^^^^^ use of undeclared type `RenderTarget`
+
+error[E0433]: cannot find type `WindowRef` in this scope
+   --> src\lib.rs:243:38
+    |
+243 |         target: RenderTarget::Window(WindowRef::Primary),
+    |                                      ^^^^^^^^^ use of undeclared type `WindowRef`
+    |
+help: a struct with a similar name exists
+    |
+243 -         target: RenderTarget::Window(WindowRef::Primary),
+243 +         target: RenderTarget::Window(Window::Primary),
+    |
+
+error[E0308]: mismatched types
+   --> src\lib.rs:250:5
+    |
+249 | pub fn g20_dir3(v: Vec3) -> Dir3 {
+    |                             ---- expected `bevy::bevy_math::Dir3` because of return type
+250 |     Dir3::new(v)
+    |     ^^^^^^^^^^^^ expected `Dir3`, found `Result<Dir3, InvalidDirectionError>`
+    |
+    = note: expected struct `bevy::bevy_math::Dir3`
+                 found enum `std::result::Result<bevy::bevy_math::Dir3, InvalidDirectionError>`
+help: consider using `Result::expect` to unwrap the `std::result::Result<bevy::bevy_math::Dir3, InvalidDirectionError>` value, panicking if the value is a `Result::Err`
+    |
+250 |     Dir3::new(v).expect("REASON")
+    |                 +++++++++++++++++
+
+Some errors have detailed explanations: E0277, E0308, E0369, E0422, E0425, E0433, E0560, E0599.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `probe-g` (lib) due to 30 previous errors
+REAL_EXIT=101

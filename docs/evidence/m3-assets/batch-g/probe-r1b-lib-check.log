@@ -1,0 +1,44 @@
+    Checking probe-g v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-g)
+error[E0423]: expected function, tuple struct or tuple variant, found struct `BorderColor`
+    --> src\lib.rs:323:9
+     |
+ 323 |         BorderColor(Color::WHITE),
+     |         ^^^^^^^^^^^^^^^^^^^^^^^^^
+     |
+    ::: C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ui-0.19.1\src\ui_node.rs:2256:1
+     |
+2256 | pub struct BorderColor {
+     | ---------------------- `BorderColor` defined here
+     |
+help: use struct literal syntax instead
+     |
+ 323 -         BorderColor(Color::WHITE),
+ 323 +         BorderColor { top: val, right: val, bottom: val, left: val },
+     |
+help: you might have meant to use the `all` associated function
+     |
+ 323 |         BorderColor::all(Color::WHITE),
+     |                    +++++
+
+error[E0433]: cannot find type `Tonemapping` in this scope
+   --> src\lib.rs:343:42
+    |
+343 |     commands.spawn((Camera3d::default(), Tonemapping::TonyMcMapface, Transform::default()));
+    |                                          ^^^^^^^^^^^ use of undeclared type `Tonemapping`
+
+error[E0433]: cannot find type `DebandDither` in this scope
+   --> src\lib.rs:348:42
+    |
+348 |     commands.spawn((Camera3d::default(), DebandDither::Enabled, Transform::default()));
+    |                                          ^^^^^^^^^^^^ use of undeclared type `DebandDither`
+
+error[E0433]: cannot find type `FocusPolicy` in this scope
+   --> src\lib.rs:393:38
+    |
+393 |     commands.spawn((Node::default(), FocusPolicy::Block));
+    |                                      ^^^^^^^^^^^ use of undeclared type `FocusPolicy`
+
+Some errors have detailed explanations: E0423, E0433.
+For more information about an error, try `rustc --explain E0423`.
+error: could not compile `probe-g` (lib) due to 4 previous errors
+REAL_EXIT=101

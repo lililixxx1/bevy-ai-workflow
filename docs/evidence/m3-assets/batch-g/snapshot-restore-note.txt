@@ -1,0 +1,9 @@
+# snapshot-restore-note.txt —— r1 快照误覆盖与恢复留痕
+
+- 2026-09-28：batch2（g29-g40）追加进探针 lib.rs 后，执行 cp 时目标笔误，
+  把含 r2 修正注释 + batch2 的现行 lib.rs 覆盖到了 probe-src-r1-snapshot/lib.rs
+  （r1 快照被污染约数分钟）。
+- 随即按 r1 原文恢复（r1 原文=首试版本，内容与 probe-r1-lib-check.log 的
+  30 处错误行号逐一吻合；恢复版另在文件头加【快照勘误留痕】注记指向本文件）。
+- r1 快照中 main.rs 与 Cargo.toml 未受影响（cp 只覆盖了 lib.rs 一个文件）。
+- 教训入账：快照目录只读——任何后续 cp 必须显式 --backup=numbered 或先核目标名。

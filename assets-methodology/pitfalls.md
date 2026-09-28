@@ -2,7 +2,7 @@
 
 - 收录：通用性分级为 `methodology`（换引擎后仍成立）的错题条目。
 - 入库门禁与条目模板：见 [pitfalls-schema.md](./pitfalls-schema.md)（未过验证的条目禁止入库）。
-- 当前：7 条。
+- 当前：8 条。
 
 ---
 
@@ -277,3 +277,31 @@ cd -- "$(dirname "$0")/../../.." && pwd # → <repo>           ← 对
 
 - 复现：2026-09-27，前台调用内 `game.exe &` → 日志止于 t=3.0s、tasklist 无进程、curl 连接拒绝；
 - 修复：同日驱动脚本以后台任务运行，其内 11 个游戏子进程各自存活至任务完成（BRP 就绪 + 套件判定 + taskkill 收尾全链成功，`docs/evidence/m1-phase2/summary.txt` 全绿）。
+
+---
+
+### PIT-M-008：重负载 doctest 门禁默认按核数并发拉起 rustc——不限流不限优先级可把宿主机打满卡死；退出码须走 `$LASTEXITCODE` 直通链
+
+- 日期：2026-09-28
+- 适用版本：方法论级（rustdoc doctest 并发模型与进程优先级语义，任意工具链版本；agent 执行环境）
+- 分型：错题
+- 通用性分级：methodology（换引擎/换语言后的重负载构建门禁同样成立）
+- 标签：`doctest 门禁` `资源治理` `并发限流` `进程优先级` `退出码`
+
+**现象**：`cargo test --doc -p docs`（94 个 doctest，其中十余个运行型 fence 各需独立编译+链接 bevy）作为后台任务裸跑：rustdoc 按可用并行度（本机 12 逻辑核）同时进入十余个 doctest 的编译/链接段，全核占满 + 内存峰值，桌面系统失去响应，只能硬重启（一次卡死复现；同并发形态另有一次因会话中断被杀，两份截断日志同型）。另有次生坑：为治理资源占用而写的门禁启动器，两版都在**退出码**上失真——`Start-Process -PassThru` 的进程对象经 `Wait-Process -Id` 后 `$p.ExitCode` 取到 `null`（`exit $null` → 0），换 `$p.WaitForExit()` 则在该对象上不阻塞立即返回（本机 `cargo` 实为 rustup shim，进程对象行为不可靠），外层随即把假的 `REAL_EXIT=0` 写进日志，产出「`test result: FAILED` 但 REAL_EXIT=0」的自相矛盾证据。
+
+**根因**：
+
+1. rustdoc 的 doctest 执行线程池默认 = `available_parallelism`，而每个运行型 doctest 的「执行」含一次完整 rustc 编译+链接（重依赖 crate 下链接是主要开销，单进程 1–2GB 内存 + 多核代码生成）；后台任务对资源占用无任何约束，Windows 上后台编译与前台 UI 同优先级抢调度；
+2. 证据链的退出码是最脆弱一环：`Start-Process -PassThru` 返回的进程对象在 PowerShell 5.1 下 `ExitCode`/`WaitForExit()` 行为依进程形态（直接 exe vs shim 代理链）不稳定，任何「进程对象取码」方案都比「前台执行 + `$LASTEXITCODE` 直通」多一截不可靠面。
+
+**修复**（已过验证）：
+
+1. 启动器先自降优先级再前台执行：PowerShell 内 `(Get-Process -Id $PID).PriorityClass = 'BelowNormal'`（后续 cargo/rustdoc/rustc 子进程全部继承），再 `& cargo test --doc ...`——即使 CPU 仍被占满，前台/UI 调度上抢得过它，系统不失响应；
+2. `--test-threads 4` 显式限并发（并发链接的内存峰值压到 ~6–8GB 量级，31.8GB 内存下安全；代价是墙钟拉长约 50%）；
+3. 退出码 `exit $LASTEXITCODE` 直通 cargo 退出码，文件重定向交外层 shell 完成（与既往 UTF-8 门禁日志同格式），全程不碰进程对象。
+
+**验证证据**：
+
+- 复现：2026-09-28，无限流两轮日志均截断于 ≥12 个 doctest 并行编译/链接段（`docs/evidence/m3-assets/batch-g/gate-doc-test-attempt1-interrupted.log` 会话中断、`gate-doc-test-attempt2-killed-reboot.log` 伴随系统卡死重启）；退出码失真两例见 `gate-doc-test-attempt3-first-fail.log`（FAILED + REAL_EXIT=0 矛盾）与 `gate-doc-test-attempt4-note.txt`（WaitForExit 不阻塞致日志污损）；
+- 修复：限流形态（BelowNormal + 4 线程）连续三轮运行期间系统全程可交互；attempt5 干净全绿（77 passed / 0 failed / 17 ignored，REAL_EXIT=0，`gate-doc-test.log`）；启动器最终形态与演化史见 `run-doc-gate.ps1` 头注。
