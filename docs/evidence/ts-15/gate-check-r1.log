@@ -1,0 +1,58 @@
+cargo.exe :     Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ... ).PriorityClass="BelowNormal"; & cargo check --workspace 2>&1 | ForEa ...
++                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0382]: borrow of moved value: `saved.level`
+   --> game\src\rpc\suites\ts14.rs:124:13
+    |
+119 |         && saved.level.map(|l| world.resource::<LevelState>() == &l).unwrap_or(true)
+    |                        --------------------------------------------- `saved.level` moved due to this method call
+...
+124 |         && (saved.level.is_none() == world.get_resource::<LevelState>().is_none())
+    |             ^^^^^^^^^^^ value borrowed here after move
+    |
+note: `std::option::Option::<T>::map` takes ownership of the receiver `self`, which moves `saved.level`
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\option.rs:1158:27
+    = note: move occurs because `saved.level` has type `std::option::Option<LevelState>`, which does not implement the 
+`Copy` trait
+help: consider calling `.as_ref()` to borrow the value's contents
+    |
+119 |         && saved.level.as_ref().map(|l| world.resource::<LevelState>() == &l).unwrap_or(true)
+    |                       +++++++++
+help: consider calling `.as_mut()` to mutably borrow the value's contents
+    |
+119 |         && saved.level.as_mut().map(|l| world.resource::<LevelState>() == &l).unwrap_or(true)
+    |                       +++++++++
+help: you can `clone` the value and consume it, but this might not be your desired behavior
+    |
+119 |         && saved.level.clone().map(|l| world.resource::<LevelState>() == &l).unwrap_or(true)
+    |                       ++++++++
+error[E0382]: borrow of moved value: `saved.battle`
+   --> game\src\rpc\suites\ts14.rs:125:13
+    |
+120 |         && saved.battle.map(|b| world.resource::<BattleState>() == &b).unwrap_or(true);
+    |                         ---------------------------------------------- `saved.battle` moved due to this method ca
+ll
+...
+125 |         && (saved.battle.is_none() == world.get_resource::<BattleState>().is_none());
+    |             ^^^^^^^^^^^^ value borrowed here after move
+    |
+    = note: move occurs because `saved.battle` has type `std::option::Option<BattleState>`, which does not implement th
+e `Copy` trait
+help: consider calling `.as_ref()` to borrow the value's contents
+    |
+120 |         && saved.battle.as_ref().map(|b| world.resource::<BattleState>() == &b).unwrap_or(true);
+    |                        +++++++++
+help: consider calling `.as_mut()` to mutably borrow the value's contents
+    |
+120 |         && saved.battle.as_mut().map(|b| world.resource::<BattleState>() == &b).unwrap_or(true);
+    |                        +++++++++
+help: you can `clone` the value and consume it, but this might not be your desired behavior
+    |
+120 |         && saved.battle.clone().map(|b| world.resource::<BattleState>() == &b).unwrap_or(true);
+    |                        ++++++++
+For more information about this error, try `rustc --explain E0382`.
+error: could not compile `game` (bin "game") due to 2 previous errors

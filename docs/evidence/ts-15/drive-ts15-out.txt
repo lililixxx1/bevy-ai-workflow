@@ -1,0 +1,5 @@
+#1 套件 ts-14 首跑全过: PASS — total=6 passed=6 failed=0 [battle_state_initial:P move_accept_and_reject:P attack_kill_annihilate_and_lock:P end_turn_twin_deterministic:P reach_goal_wins_on_move:P world_restored_after_suite:P]
+#2 同进程二跑仍全过: PASS — failed=0
+#3 加载态跑套件全过 + 快照恢复: PASS — suite failed=0；布阵 恢复一致；BattleState=turn=1/rng=7
+#4 未知套件 -32602 + 清单含 ts-14: PASS — code=-32602 msg=未知套件 `ts-99`；可用：ts-01, ts-02, ts-03, ts-05, ts-06, ts-07, ts-08, ts-09, ts-10, t…
+ALL PASS (4 runtime items pending #5 log check)

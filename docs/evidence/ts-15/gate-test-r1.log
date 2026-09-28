@@ -1,0 +1,53 @@
+cargo.exe :    Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ...  $PID).PriorityClass="BelowNormal"; & cargo test -p game 2>&1 | ForEa ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0308]: mismatched types
+   --> game\src\rpc\suites\ts14.rs:121:61
+    |
+121 |         .map(|l| world.get_resource::<LevelState>() == Some(*l))
+    |                                                        ---- ^^ expected `&LevelState`, found `LevelState`
+    |                                                        |
+    |                                                        arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `level::LevelState` due to the type of the argument passed
+   --> game\src\rpc\suites\ts14.rs:121:56
+    |
+121 |         .map(|l| world.get_resource::<LevelState>() == Some(*l))
+    |                                                        ^^^^^--^
+    |                                                             |
+    |                                                             this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\option.rs:606:4
+help: consider removing deref here
+    |
+121 -         .map(|l| world.get_resource::<LevelState>() == Some(*l))
+121 +         .map(|l| world.get_resource::<LevelState>() == Some(l))
+    |
+error[E0308]: mismatched types
+   --> game\src\rpc\suites\ts14.rs:126:62
+    |
+126 |         .map(|b| world.get_resource::<BattleState>() == Some(*b))
+    |                                                         ---- ^^ expected `&BattleState`, found `BattleState`
+    |                                                         |
+    |                                                         arguments to this enum variant are incorrect
+    |
+help: the type constructed contains `battle::BattleState` due to the type of the argument passed
+   --> game\src\rpc\suites\ts14.rs:126:57
+    |
+126 |         .map(|b| world.get_resource::<BattleState>() == Some(*b))
+    |                                                         ^^^^^--^
+    |                                                              |
+    |                                                              this argument influences the type of `Some`
+note: tuple variant defined here
+   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\option.rs:606:4
+help: consider removing deref here
+    |
+126 -         .map(|b| world.get_resource::<BattleState>() == Some(*b))
+126 +         .map(|b| world.get_resource::<BattleState>() == Some(b))
+    |
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `game` (bin "game" test) due to 2 previous errors

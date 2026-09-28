@@ -3,6 +3,8 @@
 //! 命名与 `assets-methodology/taskset/ts-XX-*.md` 一一对应（ts-01 ↔ TS-01）。
 //! **TS-04 无套件**：其清单全部为跨帧时序断言（暂停冻结/恢复需跨秒采样），
 //! 由 task-runner `pause` 子命令全程经 BRP 驱动判定。
+//! **ts-14 是 TS-14 的第二阶段套件**（TS-15 任务落档：BRP 第一阶段
+//! `docs/evidence/ts-14-brp.md` → 进程内回归，沿 M1 两阶段判定先例）。
 //!
 //! 套件约定（两阶段判定第二阶段，M1 校准口径）：
 //! - **无净副作用**：套件返回时世界须与调用前状态等价（计数/资源值/初值还原；
@@ -29,6 +31,7 @@ pub mod ts09;
 pub mod ts10;
 pub mod ts11;
 pub mod ts12;
+pub mod ts14;
 
 use bevy::prelude::*;
 
@@ -60,6 +63,7 @@ pub fn all() -> Vec<(&'static str, SuiteFn)> {
         ("ts-10", ts10::run),
         ("ts-11", ts11::run),
         ("ts-12", ts12::run),
+        ("ts-14", ts14::run),
     ]
 }
 
