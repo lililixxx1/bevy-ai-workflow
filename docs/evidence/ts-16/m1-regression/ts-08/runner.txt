@@ -1,0 +1,23 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-08）==
+>> [1] game.run_tests params={"suite":"ts-08"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"Camera3d + Transform 实体 1 个（清单要求恰 1）","name":"camera_singleton","pass":true},{"detail":"相位 A(默认90)：XZ 距离 90.000000000 ≈ radius 90（|Δ|=0.000e0 ≤ 0.1；mutate 随动经帧间生效）","name":"orbit_distance_matches_radius","pass":true},{"detail":"相位 A（首次调用）：radius == 90 且 height == 45（CameraRig::default 字面）成立=true；已改写 radius=60（第二次调用断言随动并还原）","name":"rig_defaults_and_transition","pass":true}],"snapshot":{"elapsed_secs":4.303941804915667,"frame_count":257,"tick":257},"suite":"ts-08","total":3}}
+[PASS] camera_singleton — Camera3d + Transform 实体 1 个（清单要求恰 1）
+[PASS] orbit_distance_matches_radius — 相位 A(默认90)：XZ 距离 90.000000000 ≈ radius 90（|Δ|=0.000e0 ≤ 0.1；mutate 随动经帧间生效）
+[PASS] rig_defaults_and_transition — 相位 A（首次调用）：radius == 90 且 height == 45（CameraRig::default 字面）成立=true；已改写 radius=60（第二次调用断言随动并还原）
+-- 汇总：3/3 通过，snapshot.tick=Some(257) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":1000,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(1000)（期望 1000）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-08"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"Camera3d + Transform 实体 1 个（清单要求恰 1）","name":"camera_singleton","pass":true},{"detail":"相位 B(已改60)：XZ 距离 59.999996185 ≈ radius 60（|Δ|=3.815e-6 ≤ 0.1；mutate 随动经帧间生效）","name":"orbit_distance_matches_radius","pass":true},{"detail":"相位 B（第二次调用）：mutate 受理 radius == 60、height == 45；已还原 radius=90（世界回默认）","name":"rig_defaults_and_transition","pass":true}],"snapshot":{"elapsed_secs":5.3371806014329195,"frame_count":319,"tick":319},"suite":"ts-08","total":3}}
+[PASS] camera_singleton — Camera3d + Transform 实体 1 个（清单要求恰 1）
+[PASS] orbit_distance_matches_radius — 相位 B(已改60)：XZ 距离 59.999996185 ≈ radius 60（|Δ|=3.815e-6 ≤ 0.1；mutate 随动经帧间生效）
+[PASS] rig_defaults_and_transition — 相位 B（第二次调用）：mutate 受理 radius == 60、height == 45；已还原 radius=90（世界回默认）
+-- 汇总：3/3 通过，snapshot.tick=Some(319) --
+== 跨调用断言：snapshot.tick2(Some(319)) > tick1(Some(257))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

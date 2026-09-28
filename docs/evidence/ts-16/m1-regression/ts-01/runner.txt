@@ -1,0 +1,27 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-01）==
+>> [1] game.run_tests params={"suite":"ts-01"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":5,"results":[{"detail":"query 计数 500 == SimConfig.entity_count 500","name":"wanderer_count_matches_config","pass":true},{"detail":"config(entity_count=500, seed=20260926, paused=false) ↔ metadata(entity_count=500, seed=20260926)，paused 须为 false","name":"config_metadata_consistent","pass":true},{"detail":"tick=263 > 0（elapsed_secs=4.392；第二次采样递增由工具端比对 snapshot.tick）","name":"sim_ticking","pass":true},{"detail":"Wanderer 计数 500，Wanderer+Velocity 计数 500（须相等且 > 0）","name":"wanderers_have_velocity","pass":true},{"detail":"500 个实体初值与 seed=20260926 + max_speed=3 重抽序列逐位一致（不符 0 个；跨进程一致为测量口径，不在进程内断言）","name":"initial_state_matches_seed_redraw","pass":true}],"snapshot":{"elapsed_secs":4.39234109967947,"frame_count":263,"tick":263},"suite":"ts-01","total":5}}
+[PASS] wanderer_count_matches_config — query 计数 500 == SimConfig.entity_count 500
+[PASS] config_metadata_consistent — config(entity_count=500, seed=20260926, paused=false) ↔ metadata(entity_count=500, seed=20260926)，paused 须为 false
+[PASS] sim_ticking — tick=263 > 0（elapsed_secs=4.392；第二次采样递增由工具端比对 snapshot.tick）
+[PASS] wanderers_have_velocity — Wanderer 计数 500，Wanderer+Velocity 计数 500（须相等且 > 0）
+[PASS] initial_state_matches_seed_redraw — 500 个实体初值与 seed=20260926 + max_speed=3 重抽序列逐位一致（不符 0 个；跨进程一致为测量口径，不在进程内断言）
+-- 汇总：5/5 通过，snapshot.tick=Some(263) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":500,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(500)（期望 500）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-01"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":5,"results":[{"detail":"query 计数 500 == SimConfig.entity_count 500","name":"wanderer_count_matches_config","pass":true},{"detail":"config(entity_count=500, seed=20260926, paused=false) ↔ metadata(entity_count=500, seed=20260926)，paused 须为 false","name":"config_metadata_consistent","pass":true},{"detail":"tick=325 > 0（elapsed_secs=5.426；第二次采样递增由工具端比对 snapshot.tick）","name":"sim_ticking","pass":true},{"detail":"Wanderer 计数 500，Wanderer+Velocity 计数 500（须相等且 > 0）","name":"wanderers_have_velocity","pass":true},{"detail":"500 个实体初值与 seed=20260926 + max_speed=3 重抽序列逐位一致（不符 0 个；跨进程一致为测量口径，不在进程内断言）","name":"initial_state_matches_seed_redraw","pass":true}],"snapshot":{"elapsed_secs":5.426185197196901,"frame_count":325,"tick":325},"suite":"ts-01","total":5}}
+[PASS] wanderer_count_matches_config — query 计数 500 == SimConfig.entity_count 500
+[PASS] config_metadata_consistent — config(entity_count=500, seed=20260926, paused=false) ↔ metadata(entity_count=500, seed=20260926)，paused 须为 false
+[PASS] sim_ticking — tick=325 > 0（elapsed_secs=5.426；第二次采样递增由工具端比对 snapshot.tick）
+[PASS] wanderers_have_velocity — Wanderer 计数 500，Wanderer+Velocity 计数 500（须相等且 > 0）
+[PASS] initial_state_matches_seed_redraw — 500 个实体初值与 seed=20260926 + max_speed=3 重抽序列逐位一致（不符 0 个；跨进程一致为测量口径，不在进程内断言）
+-- 汇总：5/5 通过，snapshot.tick=Some(325) --
+== 跨调用断言：snapshot.tick2(Some(325)) > tick1(Some(263))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

@@ -1,0 +1,1 @@
+{"seed":20260928,"levels":[{"level":1,"mode":"annihilate","winner":0,"turns":8,"playersLeft":3,"enemiesLeft":0,"ops":36},{"level":2,"mode":"annihilate","winner":0,"turns":6,"playersLeft":3,"enemiesLeft":0,"ops":34},{"level":3,"mode":"reach","winner":0,"turns":2,"playersLeft":3,"enemiesLeft":6,"ops":3}],"ops":73,"errors":0}

@@ -1,0 +1,20 @@
+[CONFIG] game demo | count=100 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.19 (workspace locked)
+[2m2026-09-28T12:07:43.945124Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-28T12:07:44.195405Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-28T12:07:44.604221Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-09-28T12:07:44.604244Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] custom methods: game.run_tests / game.screenshot / game.screenshot_log / game.launch_level / game.move_unit / game.attack / game.end_turn
+[2m2026-09-28T12:07:44.615201Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-28T12:07:44.615242Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-28T12:07:44.615670Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (65v0)
+[2m2026-09-28T12:07:44.678905Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=100 | seed=20260926
+[2m2026-09-28T12:07:44.678991Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 100 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-09-28T12:07:44.679200Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-09-28T12:07:45.693942Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.0s tick=60 fps_1s=59.2 avg_fps=0.0
+[2m2026-09-28T12:07:46.710579Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.0s tick=121 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-28T12:07:47.727316Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.0s tick=182 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-28T12:07:48.743722Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.1s tick=243 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-28T12:07:48.978314Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=true
+[2m2026-09-28T12:07:48.978343Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=false
+[2m2026-09-28T12:07:49.760414Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=5.1s tick=304 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-28T12:07:50.011337Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=true
+[2m2026-09-28T12:07:50.011364Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=false

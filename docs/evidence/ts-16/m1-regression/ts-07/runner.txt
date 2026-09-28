@@ -1,0 +1,23 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-07）==
+>> [1] game.run_tests params={"suite":"ts-07"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"index==0 实体定位 Some(421v0)（entity/origin/linear_v0/phase 已记录）","name":"index0_located","pass":true},{"detail":"改写 linear → [0,0,0] 受理（同帧回读逐位一致：true）；还原 linear_v0=Vec3(1.8184854, 0.0, 0.6655198) 受理（true）——套件内即写即还原，世界无净副作用","name":"velocity_write_accepted_and_restored","pass":true},{"detail":"t=4.332147（elapsed_secs，即 move_swarm 写 Transform 所用 t）：100 个实体 Transform 与 wanderer_translation 复算逐位一致（不符 0 个，最大偏差 0e0，期望 0）","name":"transforms_match_analytic_formula","pass":true}],"snapshot":{"elapsed_secs":4.33214679826051,"frame_count":259,"tick":259},"suite":"ts-07","total":3}}
+[PASS] index0_located — index==0 实体定位 Some(421v0)（entity/origin/linear_v0/phase 已记录）
+[PASS] velocity_write_accepted_and_restored — 改写 linear → [0,0,0] 受理（同帧回读逐位一致：true）；还原 linear_v0=Vec3(1.8184854, 0.0, 0.6655198) 受理（true）——套件内即写即还原，世界无净副作用
+[PASS] transforms_match_analytic_formula — t=4.332147（elapsed_secs，即 move_swarm 写 Transform 所用 t）：100 个实体 Transform 与 wanderer_translation 复算逐位一致（不符 0 个，最大偏差 0e0，期望 0）
+-- 汇总：3/3 通过，snapshot.tick=Some(259) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-07"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"index==0 实体定位 Some(421v0)（entity/origin/linear_v0/phase 已记录）","name":"index0_located","pass":true},{"detail":"改写 linear → [0,0,0] 受理（同帧回读逐位一致：true）；还原 linear_v0=Vec3(1.8184854, 0.0, 0.6655198) 受理（true）——套件内即写即还原，世界无净副作用","name":"velocity_write_accepted_and_restored","pass":true},{"detail":"t=5.365458（elapsed_secs，即 move_swarm 写 Transform 所用 t）：100 个实体 Transform 与 wanderer_translation 复算逐位一致（不符 0 个，最大偏差 0e0，期望 0）","name":"transforms_match_analytic_formula","pass":true}],"snapshot":{"elapsed_secs":5.365457498468459,"frame_count":321,"tick":321},"suite":"ts-07","total":3}}
+[PASS] index0_located — index==0 实体定位 Some(421v0)（entity/origin/linear_v0/phase 已记录）
+[PASS] velocity_write_accepted_and_restored — 改写 linear → [0,0,0] 受理（同帧回读逐位一致：true）；还原 linear_v0=Vec3(1.8184854, 0.0, 0.6655198) 受理（true）——套件内即写即还原，世界无净副作用
+[PASS] transforms_match_analytic_formula — t=5.365458（elapsed_secs，即 move_swarm 写 Transform 所用 t）：100 个实体 Transform 与 wanderer_translation 复算逐位一致（不符 0 个，最大偏差 0e0，期望 0）
+-- 汇总：3/3 通过，snapshot.tick=Some(321) --
+== 跨调用断言：snapshot.tick2(Some(321)) > tick1(Some(259))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

@@ -1,0 +1,25 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-05）==
+>> [1] game.run_tests params={"suite":"ts-05"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":4,"results":[{"detail":"Wanderer 计数 100 == entity_count Some(100)（字面值由工具端绑定）","name":"wanderer_baseline_matches_config","pass":true},{"detail":"spawn 实体 528v0 后同帧回读 linear=Some(Vec3(1.0, 0.0, 2.0))（期望 Vec3(1.0, 0.0, 2.0) 逐位一致）","name":"spawn_velocity_readback","pass":true},{"detail":"Velocity-only 实体 1 == 基线 0 + 1（新实体不带 Wanderer）","name":"velocity_only_isolation","pass":true},{"detail":"探针 [528v0] 已全部 despawn，Velocity-only 计数回基线 0（套件无净副作用）","name":"world_restored_after_suite","pass":true}],"snapshot":{"elapsed_secs":3.819917796179652,"frame_count":229,"tick":229},"suite":"ts-05","total":4}}
+[PASS] wanderer_baseline_matches_config — Wanderer 计数 100 == entity_count Some(100)（字面值由工具端绑定）
+[PASS] spawn_velocity_readback — spawn 实体 528v0 后同帧回读 linear=Some(Vec3(1.0, 0.0, 2.0))（期望 Vec3(1.0, 0.0, 2.0) 逐位一致）
+[PASS] velocity_only_isolation — Velocity-only 实体 1 == 基线 0 + 1（新实体不带 Wanderer）
+[PASS] world_restored_after_suite — 探针 [528v0] 已全部 despawn，Velocity-only 计数回基线 0（套件无净副作用）
+-- 汇总：4/4 通过，snapshot.tick=Some(229) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-05"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":4,"results":[{"detail":"Wanderer 计数 100 == entity_count Some(100)（字面值由工具端绑定）","name":"wanderer_baseline_matches_config","pass":true},{"detail":"spawn 实体 529v0 后同帧回读 linear=Some(Vec3(1.0, 0.0, 2.0))（期望 Vec3(1.0, 0.0, 2.0) 逐位一致）","name":"spawn_velocity_readback","pass":true},{"detail":"Velocity-only 实体 1 == 基线 0 + 1（新实体不带 Wanderer）","name":"velocity_only_isolation","pass":true},{"detail":"探针 [529v0] 已全部 despawn，Velocity-only 计数回基线 0（套件无净副作用）","name":"world_restored_after_suite","pass":true}],"snapshot":{"elapsed_secs":4.853080190718174,"frame_count":291,"tick":291},"suite":"ts-05","total":4}}
+[PASS] wanderer_baseline_matches_config — Wanderer 计数 100 == entity_count Some(100)（字面值由工具端绑定）
+[PASS] spawn_velocity_readback — spawn 实体 529v0 后同帧回读 linear=Some(Vec3(1.0, 0.0, 2.0))（期望 Vec3(1.0, 0.0, 2.0) 逐位一致）
+[PASS] velocity_only_isolation — Velocity-only 实体 1 == 基线 0 + 1（新实体不带 Wanderer）
+[PASS] world_restored_after_suite — 探针 [529v0] 已全部 despawn，Velocity-only 计数回基线 0（套件无净副作用）
+-- 汇总：4/4 通过，snapshot.tick=Some(291) --
+== 跨调用断言：snapshot.tick2(Some(291)) > tick1(Some(229))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==

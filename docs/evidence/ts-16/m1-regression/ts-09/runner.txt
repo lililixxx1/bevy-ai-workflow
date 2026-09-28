@@ -1,0 +1,23 @@
+== [1/4] game.run_tests（第 1 次调用，套件 ts-09）==
+>> [1] game.run_tests params={"suite":"ts-09"}
+<< [1] {"id":1,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"Tagged 在 AppTypeRegistry 中且带 ReflectComponent 数据（BRP list_components 同源判定；no_auto_register 下显式注册唯一通路）","name":"tagged_reflect_visible","pass":true},{"detail":"TypeInfo::Struct 字段表含 `tag` 且类型 String：Some(true)（与 BRP registry.schema 同源自注册表）","name":"tagged_schema_has_tag_field","pass":true},{"detail":"Tagged(With Wanderer) 实体 10 个（清单要求 == 10）","name":"tagged_first_ten_count","pass":true}],"snapshot":{"elapsed_secs":4.293836511671543,"frame_count":256,"tick":256},"suite":"ts-09","total":3}}
+[PASS] tagged_reflect_visible — Tagged 在 AppTypeRegistry 中且带 ReflectComponent 数据（BRP list_components 同源判定；no_auto_register 下显式注册唯一通路）
+[PASS] tagged_schema_has_tag_field — TypeInfo::Struct 字段表含 `tag` 且类型 String：Some(true)（与 BRP registry.schema 同源自注册表）
+[PASS] tagged_first_ten_count — Tagged(With Wanderer) 实体 10 个（清单要求 == 10）
+-- 汇总：3/3 通过，snapshot.tick=Some(256) --
+== [2/4] 字面值绑定（SimConfig/SimMetadata 核对：--expect-*）==
+>> [2] world.get_resources params={"resource":"game::sim::SimConfig"}
+<< [2] {"id":2,"jsonrpc":"2.0","result":{"value":{"bench_secs":0.0,"entity_count":100,"max_speed":3.0,"paused":false,"seed":20260926}}}
+[PASS] entity_count=Some(100)（期望 100）
+[PASS] seed=Some(20260926)（期望 20260926）
+== [3/4] 间隔 1s（tick 第二采样窗口）==
+== [4/4] game.run_tests（第 2 次调用）==
+>> [3] game.run_tests params={"suite":"ts-09"}
+<< [3] {"id":3,"jsonrpc":"2.0","result":{"failed":0,"passed":3,"results":[{"detail":"Tagged 在 AppTypeRegistry 中且带 ReflectComponent 数据（BRP list_components 同源判定；no_auto_register 下显式注册唯一通路）","name":"tagged_reflect_visible","pass":true},{"detail":"TypeInfo::Struct 字段表含 `tag` 且类型 String：Some(true)（与 BRP registry.schema 同源自注册表）","name":"tagged_schema_has_tag_field","pass":true},{"detail":"Tagged(With Wanderer) 实体 10 个（清单要求 == 10）","name":"tagged_first_ten_count","pass":true}],"snapshot":{"elapsed_secs":5.3270510118454695,"frame_count":318,"tick":318},"suite":"ts-09","total":3}}
+[PASS] tagged_reflect_visible — Tagged 在 AppTypeRegistry 中且带 ReflectComponent 数据（BRP list_components 同源判定；no_auto_register 下显式注册唯一通路）
+[PASS] tagged_schema_has_tag_field — TypeInfo::Struct 字段表含 `tag` 且类型 String：Some(true)（与 BRP registry.schema 同源自注册表）
+[PASS] tagged_first_ten_count — Tagged(With Wanderer) 实体 10 个（清单要求 == 10）
+-- 汇总：3/3 通过，snapshot.tick=Some(318) --
+== 跨调用断言：snapshot.tick2(Some(318)) > tick1(Some(256))（清单跨帧采样断言的工具侧半：套件执行间隔不阻塞模拟）==
+[PASS]
+== 结论：全部通过 ==
