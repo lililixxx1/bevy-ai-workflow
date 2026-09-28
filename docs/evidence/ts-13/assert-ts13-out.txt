@@ -1,0 +1,8 @@
+#1 启动基线 Unit==0: PASS — rows=0
+#2 launch(1) 响应: PASS — {"height":9,"level":1,"name":"first-contact","units_spawned":6,"width":9}
+#3 关卡1 布阵 6 行逐位: PASS — rows=6
+#4 重复 launch(1) 幂等: PASS — 两次 units_spawned=6/6；实体号 4294966870,4294966869,4294966868,4294966867,4294966866,4294966865 → 4294966857,4294966856,4294966855,4294966854,4294966853,4294966852
+#5 launch(2) 清场重载 6→9: PASS — units_spawned=9；rows=9
+#6 错误路径 -32602 + 无副作用 + 进程存活: PASS — error.code=-32602；LevelState={"height":9,"level":2,"units_spawned":9,"width":9}；after-error rows=9
+ALL PASS (6/6)
+ASSERT_EXIT=0

@@ -31,6 +31,8 @@
 
 **工作流锻炼面（选它的核心理由）**：
 - **逼出 `game.launch_level` 真实需求**：意向文档 §5.3 规划三方法中它至今未建（现役仅 `game.run_tests` / `game.screenshot` / `game.screenshot_log`，`game/src/rpc/mod.rs:38-43`；`docs/evidence/m2-rpc.md:142`「`launch_level` 未实现」）。关卡制游戏天然需要它——M4 首批任务即真实需求，不是造出来的练习题。
+
+  > 注记（2026-09-28，M4 首任务 T032 后，原文未动）：`game.launch_level` 已落地（`game/src/rpc/launch_level.rs`，任务测试集 TS-13 六断言验证闭环）；本段「至今未建」系备忘录草案起草时点事实。另：§二 A 案「关卡以数据文件落地（BSN/结构化数据二选一由首任务定）」的实际裁定 = **代码内常量表先行**（先落关卡格式与加载语义，数据文件/资产加载形态推迟至后续任务），理由与记录见 `game/src/level.rs` 模块注释与 `docs/evidence/ts-13-brp.md`。
 - **五个 M3 资产域全部压到**：ECS 查询/调度（C 批）、事件/State/回合机（D 批）、BRP 反射断言（E 批）、场景/资产加载——关卡以数据文件落地（F 批，BSN/结构化数据二选一由首任务定）、UI/渲染（G 批，恰是 G 批沉淀最厚的域）。
 - **断言面举例**（全部可进 `game.run_tests`）：`launch_level(n)` 后查询布阵；玩家操作后 HP 变化与占位变化；`end_turn` 后敌方行动结果逐项断言；目标组件状态翻转 = 胜负；错误输入（坏实体/越界）走 `Result` 路径不击穿进程——最后一条直接吸收 M3 净新发现 PIT-B-051（BRP 坏实体裸 panic）的教训。
 

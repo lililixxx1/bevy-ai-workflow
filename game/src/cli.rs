@@ -49,9 +49,11 @@ impl CliArgs {
             });
             match flag.as_str() {
                 "--count" => match value.parse::<u32>() {
-                    Ok(v) if v > 0 && v <= 200_000 => args.count = v,
+                    // 下界 0 自 M4 起放开：空 demo 场（无 wanderer 群）是关卡域
+                    // 验证的合法配置（TS-13 起），spawn_swarm 对 0 自然不生成。
+                    Ok(v) if v <= 200_000 => args.count = v,
                     _ => {
-                        eprintln!("[CLI] --count 须为 1..=200000 的整数，收到 {value}");
+                        eprintln!("[CLI] --count 须为 0..=200000 的整数，收到 {value}");
                         std::process::exit(EXIT_USAGE);
                     }
                 },

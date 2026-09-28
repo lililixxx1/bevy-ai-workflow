@@ -54,6 +54,7 @@
 | TS-10 | 事件驱动的状态变更 | 高 | world.trigger_event / world.get_resources | [ts-10-trigger-event.md](./ts-10-trigger-event.md) |
 | TS-11 | 阶梯性能回归验证 | 中 | world.get_resources(SimStats) + 基线对照 | [ts-11-perf-ladder.md](./ts-11-perf-ladder.md) |
 | TS-12 | 批量实体操作一致性 | 中 | world.despawn_entity + world.spawn_entity / world.query 计数 | [ts-12-batch-ops.md](./ts-12-batch-ops.md) |
+| TS-13 | 关卡加载 game.launch_level（M4 A 案系统席①） | 低 | game.launch_level + world.query / world.get_resources | [ts-13-launch-level.md](./ts-13-launch-level.md) |
 
 > JSON 数值形态注记（2026-09-26 实测，详见 `docs/brp-smoke.md`）：**向量（`Vec3`/`Vec2` 等）在 BRP 请求与响应中均为 `[x,y,z]` 数组**（glam serde 形态）；传 `{"x":..,"y":..}` 对象会报 `expected a sequence of 3 f32 values`。引用 bevy 内置类型时全路径以 `world.list_components` 实测为准（如 0.19 的 Camera 是 `bevy_camera::camera::Camera`，bevy_camera crate 而非 bevy_render）。任务书写断言时以 `world.query` 实测响应为准，不凭记忆猜形态。
 
