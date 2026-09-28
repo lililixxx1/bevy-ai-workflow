@@ -1,0 +1,47 @@
+cargo.exe :    Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ...  $PID).PriorityClass="BelowNormal"; & cargo test -p game 2>&1 | ForEa ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0369]: binary operation `==` cannot be applied to type `std::option::Option<UnitView>`
+   --> game\src\battle.rs:652:9
+    |
+652 |         assert_eq!(unit_at(&mut w, 2, 1), None);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         std::option::Option<UnitView>
+    |         std::option::Option<UnitView>
+    |
+note: an implementation of `PartialEq` might be missing for `UnitView`
+   --> game\src\battle.rs:95:1
+    |
+ 95 | pub struct UnitView {
+    | ^^^^^^^^^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `UnitView` with `#[derive(PartialEq)]`
+    |
+ 95 + #[derive(PartialEq)]
+ 96 | pub struct UnitView {
+    |
+error[E0369]: binary operation `==` cannot be applied to type `std::option::Option<UnitView>`
+   --> game\src\battle.rs:778:9
+    |
+778 |         assert_eq!(unit_at(&mut w, 4, 4), None);
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |         |
+    |         std::option::Option<UnitView>
+    |         std::option::Option<UnitView>
+    |
+note: an implementation of `PartialEq` might be missing for `UnitView`
+   --> game\src\battle.rs:95:1
+    |
+ 95 | pub struct UnitView {
+    | ^^^^^^^^^^^^^^^^^^^ must implement `PartialEq`
+help: consider annotating `UnitView` with `#[derive(PartialEq)]`
+    |
+ 95 + #[derive(PartialEq)]
+ 96 | pub struct UnitView {
+    |
+For more information about this error, try `rustc --explain E0369`.
+error: could not compile `game` (bin "game" test) due to 2 previous errors

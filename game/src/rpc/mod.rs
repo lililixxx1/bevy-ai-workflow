@@ -5,9 +5,12 @@
 //!   逐条断言，响应附世界快照供工具端做跨调用断言（M2 验收③）；
 //! - [`SCREENSHOT_METHOD`] / [`SCREENSHOT_LOG_METHOD`]（[`screenshot`]）：主窗口
 //!   帧异步捕获 + 落盘 + 完成状态查询（M2 验收②的截图环节）；
-//! - [`LAUNCH_LEVEL_METHOD`]（[`launch_level`]）：关卡加载——清场 + 按关卡定义
-//!   生成单位 + 写关卡状态资源（M4 A 案系统席①，T032 落地——意向文档 §5.3
-//!   规划三方法自此齐全）。
+//! - [`LAUNCH_LEVEL_METHOD`]（[`launch_level`]）：M4 关卡加载——清场 + 按关卡
+//!   定义生成单位 + 写关卡/战斗状态资源（系统席①，T032；战斗态扩展 T033）；
+//! - [`MOVE_UNIT_METHOD`] / [`ATTACK_METHOD`] / [`END_TURN_METHOD`]
+//!   （[`move_unit`] / [`attack`] / [`end_turn`]）：M4 战斗指令三通路（系统席
+//!   ④⑤⑥⑦，T033；规则面见 [`crate::battle`]——回合机/移动/攻击结算/敌方
+//!   AI/胜负判定，全部整数运算）。
 //!
 //! handler 形态（SKILL.md §6.2 首次仓库内落地）：`fn(In(params): In<Option<Value>>,
 //! world: &mut World) -> BrpResult`，由 bevy_remote 经 `world.run_system_with`
@@ -22,13 +25,17 @@
 //!
 //! [`brp`]: crate::brp
 
+pub mod attack;
+pub mod end_turn;
 pub mod launch_level;
+pub mod move_unit;
 pub mod run_tests;
 pub mod screenshot;
 pub mod suites;
 
 use bevy::prelude::*;
 use bevy::remote::{error_codes, BrpError};
+use serde_json::Value;
 
 /// 本模块族共用的参数错误（JSON-RPC INVALID_PARAMS -32602）。
 pub(crate) fn invalid_params(message: &str) -> BrpError {
@@ -39,6 +46,24 @@ pub(crate) fn invalid_params(message: &str) -> BrpError {
     }
 }
 
+/// 战斗指令共用的坐标参数对（`i32`；缺键/非整数/超范围统一 -32602——
+/// JSON 浮点/字符串经 `as_i64` 一律取不到，负整数合法交规则层按越界拒绝）。
+pub(crate) fn coord_pair(params: &Value, xk: &str, yk: &str) -> Result<(i32, i32), BrpError> {
+    let x = params
+        .get(xk)
+        .and_then(Value::as_i64)
+        .ok_or_else(|| invalid_params(&format!("缺 {xk} 或非整数")))?;
+    let y = params
+        .get(yk)
+        .and_then(Value::as_i64)
+        .ok_or_else(|| invalid_params(&format!("缺 {yk} 或非整数")))?;
+    let x =
+        i32::try_from(x).map_err(|_| invalid_params(&format!("{xk}={x} 超出 i32 范围")))?;
+    let y =
+        i32::try_from(y).map_err(|_| invalid_params(&format!("{yk}={y} 超出 i32 范围")))?;
+    Ok((x, y))
+}
+
 /// `game.run_tests` 方法名（内置方法用 `world.`/`registry.` 前缀，游戏专属用 `game.`）。
 pub const RUN_TESTS_METHOD: &str = "game.run_tests";
 /// `game.screenshot` 方法名。
@@ -47,6 +72,12 @@ pub const SCREENSHOT_METHOD: &str = "game.screenshot";
 pub const SCREENSHOT_LOG_METHOD: &str = "game.screenshot_log";
 /// `game.launch_level` 方法名（关卡加载，M4 A 案系统席①）。
 pub const LAUNCH_LEVEL_METHOD: &str = "game.launch_level";
+/// `game.move_unit` 方法名（M4 战斗指令，T033）。
+pub const MOVE_UNIT_METHOD: &str = "game.move_unit";
+/// `game.attack` 方法名（M4 战斗指令，T033）。
+pub const ATTACK_METHOD: &str = "game.attack";
+/// `game.end_turn` 方法名（M4 战斗指令，T033）。
+pub const END_TURN_METHOD: &str = "game.end_turn";
 
 /// 自定义方法的资源底座（截图日志；`run_tests` 无状态）。
 pub struct GameRpcPlugin;

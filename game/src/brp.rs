@@ -10,8 +10,9 @@
 //!
 //! 自定义方法（自研件，意向文档 §10 第 3 条）在本插件的 RemotePlugin 上
 //! 组装（SKILL.md §3.2「集中管理」）：`game.run_tests` / `game.screenshot` /
-//! `game.screenshot_log` / `game.launch_level`（M4 A 案系统席①，T032——
-//! 意向文档 §5.3 规划三方法自此齐全），handler 与资源见 [`crate::rpc`]。
+//! `game.screenshot_log` / `game.launch_level`（M4 关卡加载，T032）+
+//! `game.move_unit` / `game.attack` / `game.end_turn`（M4 战斗指令，T033），
+//! handler 与资源见 [`crate::rpc`]；规则面见 [`crate::battle`]。
 
 use bevy::prelude::*;
 use bevy::remote::http::RemoteHttpPlugin;
@@ -29,18 +30,24 @@ impl Plugin for BrpPlugin {
                 .with_method_main(rpc::RUN_TESTS_METHOD, rpc::run_tests::handler)
                 .with_method_main(rpc::SCREENSHOT_METHOD, rpc::screenshot::handler)
                 .with_method_main(rpc::SCREENSHOT_LOG_METHOD, rpc::screenshot::log_handler)
-                .with_method_main(rpc::LAUNCH_LEVEL_METHOD, rpc::launch_level::handler),
+                .with_method_main(rpc::LAUNCH_LEVEL_METHOD, rpc::launch_level::handler)
+                .with_method_main(rpc::MOVE_UNIT_METHOD, rpc::move_unit::handler)
+                .with_method_main(rpc::ATTACK_METHOD, rpc::attack::handler)
+                .with_method_main(rpc::END_TURN_METHOD, rpc::end_turn::handler),
         );
         app.add_plugins(
             RemoteHttpPlugin::default().with_address(std::net::Ipv4Addr::LOCALHOST),
         );
         info!("[BRP] listening on 127.0.0.1:15702 (explicit loopback bind)");
         info!(
-            "[BRP] custom methods: {} / {} / {} / {}",
+            "[BRP] custom methods: {} / {} / {} / {} / {} / {} / {}",
             rpc::RUN_TESTS_METHOD,
             rpc::SCREENSHOT_METHOD,
             rpc::SCREENSHOT_LOG_METHOD,
-            rpc::LAUNCH_LEVEL_METHOD
+            rpc::LAUNCH_LEVEL_METHOD,
+            rpc::MOVE_UNIT_METHOD,
+            rpc::ATTACK_METHOD,
+            rpc::END_TURN_METHOD
         );
     }
 }

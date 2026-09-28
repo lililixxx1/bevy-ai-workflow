@@ -1,0 +1,25 @@
+cargo.exe :    Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ...  $PID).PriorityClass="BelowNormal"; & cargo test -p game 2>&1 | ForEa ...
++                                         ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error[E0499]: cannot borrow `w` as mutable more than once at a time
+   --> game\src\battle.rs:644:71
+    |
+644 |                 if let Some(mut f) = w.get_mut::<ActionFlags>(unit_at(&mut w, 1, 1).unwrap().entity) {
+    |                                      - -------                        ^^^^^^ second mutable borrow occurs here
+    |                                      | |
+    |                                      | first borrow later used by call
+    |                                      first mutable borrow occurs here
+error[E0499]: cannot borrow `w` as mutable more than once at a time
+   --> game\src\battle.rs:773:56
+    |
+773 |         if let Some(mut u) = w.get_mut::<Unit>(unit_at(&mut w, 4, 4).unwrap().entity) {
+    |                              - -------                 ^^^^^^ second mutable borrow occurs here
+    |                              | |
+    |                              | first borrow later used by call
+    |                              first mutable borrow occurs here
+For more information about this error, try `rustc --explain E0499`.
+error: could not compile `game` (bin "game" test) due to 2 previous errors

@@ -23,6 +23,18 @@ impl SplitMix64 {
         (self.next_u64() >> 40) as f32 / (1u64 << 24) as f32
     }
 
+    /// 当前内部状态（M4 战斗回合机：RNG 进度存进 `BattleState` 资源，
+    /// 跨 BRP 请求续跑——同种子 + 同操作序列 → 同抽取序列的基础）。
+    pub fn state(&self) -> u64 {
+        self.0
+    }
+
+    /// 从已保存状态恢复（`from_state(s).state() == s`；与 `new` 无行为差异，
+    /// 语义上是「续跑」而非「重新播种」）。
+    pub fn from_state(state: u64) -> Self {
+        Self(state)
+    }
+
     /// [-half_width, half_width) 均匀 f32。
     pub fn next_range_f32(&mut self, half_width: f32) -> f32 {
         (self.next_f32() * 2.0 - 1.0) * half_width
@@ -63,6 +75,19 @@ mod tests {
     fn same_seed_same_sequence() {
         let mut a = SplitMix64::new(42);
         let mut b = SplitMix64::new(42);
+        for _ in 0..100 {
+            assert_eq!(a.next_u64(), b.next_u64());
+        }
+    }
+
+    #[test]
+    fn from_state_resumes_exact_sequence() {
+        // 跑 3 步 → 存状态 → 两个分叉（原实例 / from_state 恢复实例）序列一致。
+        let mut a = SplitMix64::new(7);
+        for _ in 0..3 {
+            a.next_u64();
+        }
+        let mut b = SplitMix64::from_state(a.state());
         for _ in 0..100 {
             assert_eq!(a.next_u64(), b.next_u64());
         }

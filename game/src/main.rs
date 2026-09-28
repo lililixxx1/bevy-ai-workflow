@@ -1,15 +1,17 @@
 //! demo 与 M4 试金石（A 案网格回合制战术小品）共库：M1 第一役的相机漫游 +
 //! N 动态实体 + BRP 常驻（意向文档 §10 第 5 条），M4 起追加关卡域（[`level`]，
-//! `docs/m4-game-selection.md` 定本 v1.0）。
+//! `docs/m4-game-selection.md` 定本 v1.0）与战斗规则面（[`battle`]，T033）。
 //!
 //! 模块一览：[`cli`]（参数）、[`rng`]（确定性 PRNG）、[`sim`]（实体群与解析式运动）、
 //! [`camera`]（轨道相机）、[`brp`]（127.0.0.1:15702 常驻 + 方法组装）、
-//! [`rpc`]（游戏专属 BRP 方法：run_tests / screenshot / launch_level）、
-//! [`level`]（M4 关卡域：定义与实体组件）、[`bench`]（帧率采集）。
+//! [`rpc`]（游戏专属 BRP 方法：run_tests / screenshot / launch_level /
+//! move_unit / attack / end_turn）、[`level`]（M4 关卡数据面）、
+//! [`battle`]（M4 战斗规则面：回合机/结算/敌方 AI/胜负）、[`bench`]（帧率采集）。
 //!
 //! 基线口径：release 构建、1280x720 窗口化、AutoVsync、种子 20260926——
 //! 全量口径与阶梯数据见 `docs/fps-baseline.md`。
 
+mod battle;
 mod bench;
 mod brp;
 mod camera;
@@ -60,6 +62,7 @@ fn main() -> AppExit {
         .add_plugins(sim::SimPlugin { config: sim_config })
         .add_plugins(camera::OrbitCameraPlugin)
         .add_plugins(level::LevelPlugin)
+        .add_plugins(battle::BattlePlugin)
         .add_plugins(brp::BrpPlugin)
         .add_plugins(bench::BenchPlugin::default())
         .run()
