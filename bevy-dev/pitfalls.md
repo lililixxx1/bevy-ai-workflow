@@ -5,6 +5,7 @@
 - 追加方式：按下方模板在文件末尾追加，`PIT-B-XXX` 三位自增（从 001 起），并在本行更新条数。
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
+- **非代码载体反例（2026-09-28 增补）**：wire 协议请求 / 运行时行为观察类坑无编译面可断言，以 `text` 围栏收录原始请求与报错原文并锚定证据文件（先例 PIT-B-051；口径出处 = 意向文档 §5.2「分型口径细化注记」2026-09-28）。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
 - 当前：51 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/；同日 Block H 净室重跑净新发现 051 证据 docs/evidence/m3-cleanroom/）。
 

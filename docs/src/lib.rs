@@ -24,6 +24,10 @@ pub mod brp_smoke {}
 #[doc = include_str!("../m1-acceptance.md")]
 pub mod m1_acceptance {}
 
+/// 《M3 验收结论》（两层知识资产成型与增值证明）——①-④ 分列证据、局限声明、分块审核汇总。
+#[doc = include_str!("../m3-acceptance.md")]
+pub mod m3_acceptance {}
+
 /// 《M2 自研 RPC 证据》——game.run_tests / game.screenshot 的协议面、全自动判定与全链留证。
 #[doc = include_str!("../evidence/m2-rpc.md")]
 pub mod m2_rpc {}
