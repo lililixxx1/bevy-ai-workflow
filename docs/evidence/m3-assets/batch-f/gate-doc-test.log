@@ -1,0 +1,80 @@
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.84s
+   Doc-tests docs
+
+running 54 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1064) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 112) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1130) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 128) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1426) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1314) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1480) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1366) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1199) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1246) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1526) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1573) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1637) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1004) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1082) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1141) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1214) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1262) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1326) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1379) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1436) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1492) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1538) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1585) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1649) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1326) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1379) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1214) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1690) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 193) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1004) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 225) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 165) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 351) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1141) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1585) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 450) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1082) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 539) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 559) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 587) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 630) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 680) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 701) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1538) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1492) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1649) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 431) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 285) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1262) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 497) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 336) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 982) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 385) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 801) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1436) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 920) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 861) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 735) - compile fail ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1702) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 815) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 880) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 936) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 880) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 936) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 815) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1702) ... ok
+
+test result: ok. 38 passed; 0 failed; 16 ignored; 0 measured; 0 filtered out; finished in 1190.06s
+
+REAL_EXIT=0

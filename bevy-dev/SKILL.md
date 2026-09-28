@@ -1,4 +1,4 @@
-# bevy-dev skill v0.9 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.10 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -255,11 +255,22 @@
 - 无坑确认（记忆写对，探针 r1 编译通过）：`reflect_path("a.b")`、`FromReflect::from_reflect`（trait 存续）、`ReflectSerializer::new(&v, &TypeRegistry)`（`bevy::reflect::serde` 路径，需 serde_json 消费）、`#[reflect(Default)]`、`as_any_mut().downcast_mut`、`dyn Reflect` 上直接 `apply`（trait 上转 coercion 生效）。
 - 序列化形态（探针 r2c 实测）：`ReflectSerializer` 输出 `{"probe_e::MyStruct":{"hp":3.5,...}}`——**外层按 type_path 包裹、内层按字段**；BRP 响应值同源。
 - 探查证据：`docs/evidence/m3-assets/batch-e/`（r1/r1b 失败原文 / r2 正解 check + 修正轮两笔失败原文补录（`probe-r2-attempt1.log`：opaque 需 Clone、守卫 E0716）/ 运行时 r1c 失败轮 + r1c2/r2c/r3/r4c / r1 与 final 双源码快照 / 条目 doctest 失败轮补录 `gate-doc-test-attempt1.log`）。
+### 6.13 资产 / 场景 / 时间 / 输入（M3 批次四探查，2026-09-27 本地源码核实 + 探针双重验证）
+
+- **事件读取全面 Message 化**：`EventReader` 类型已删除（bevy_ecs 0 处）；`AssetEvent<A>` 是 `#[derive(Message)]`（`bevy_asset event.rs:49` derive / :50 enum），读取 = `MessageReader<AssetEvent<T>>`——PIT-B-026。
+- **Handle 形态**：enum `Handle::Strong(Arc<StrongHandle>)` / `Handle::Uuid(Uuid, PhantomData)`（`handle.rs:134-141`）——无 `clone_weak`；「不持活」语义位 = Uuid 变体（运行时 load 默认 Strong + `AssetId::Index`）；`AssetId::Uuid` 是 struct variant（`id.rs:40`）——PIT-B-027。
+- **场景系统重构为 BSN**：`DynamicScene`/`SceneRoot`/`DynamicSceneRoot` 全移除（bevy_scene 内 0 处）；prelude 导出 `bsn, bsn_list, WorldSceneExt, Scene, SceneComponent, ScenePatchInstance...`（`lib.rs:900-906`）；新范式 `world.spawn_scene(bsn! { ... })`（`spawn.rs:56`，Result 语义；依赖未就绪用 `queue_spawn_scene`）。语法（实测）：裸组件名 + 行分隔无逗号、场景组件需 `Clone + Default`（`FromTemplate` blanket impl 要求 `Clone + Default + Unpin`，`bevy_ecs template.rs:390/:404`）——PIT-B-028。`.bsn` 文件格式官方注明 not yet released（spawn.rs:23）。
+- **Time 缩放**：`set_relative_speed`（f32 `virt.rs:188` / f64 :201，getter :148）——旧 `set_scale` 不存在；负值/非有限 panic（:202-203）。运行时确认：`pause()` 后 virtual delta 恰 0 且 `Time<Real>` 不受影响；relative_speed=2 实测显示 2.000（探针断言容差 ±0.3）——PIT-B-029。
+- **prelude 缺口与签名**：`AccumulatedMouseMotion` 不在 prelude（bevy_input prelude 为 Axis/ButtonInput+gamepad/keyboard/按钮/触摸项，`lib.rs:47-66`），完整路径 `bevy::input::mouse::`（`mouse.rs:218`，字段 `delta: Vec2`）；`load_folder(&'static)`（`server/mod.rs:1115`，`&str` 借用实测须 'static，返回 `Handle<LoadedFolder>`）——PIT-B-030。
+- r1 轮无错项（该组记忆形态一次写对，未产生编译错误）：`Time pause/unpause/delta`、`Time<Real>::delta_secs_f64`、`ButtonInput::just_pressed`、`server.load::<Image>()` turbofish、`Assets::contains`、`Timer::new + TimerMode::Repeating`。
+- 探查边界（如实记）：场景序列化（旧 `DynamicScene::serialize` 随类型移除，新 Template 体系未展开）；本域 PAT 记 0（repo 无已验证任务素材，不硬凑）。
+- 探查证据：`docs/evidence/m3-assets/batch-f/`（r1 失败 10 错原文 / r2 正解 check / 修正轮三笔失败复现式补录 `probe-r2-attempt1.log`（AssetId struct variant E0164、bsn 逗号 unexpected token、Clone+Default bound E0277×2）/ 运行时 r1/r2/r3c / r1 与 final 双源码快照）。
 
 ---
 
 ## 变更记录
 
+- **v0.10（2026-09-27）**：新增 §6.13 资产/场景/时间/输入速查（M3 批次四探针双重验证：EventReader 类型删除与 AssetEvent Message 化、Handle enum Strong/Uuid 形态与 AssetId struct variant、bevy_scene 整体重构为 BSN（DynamicScene/SceneRoot 全移除、spawn_scene(bsn!) 语法与 Clone bound、.bsn 未发布）、set_relative_speed 改名与 panic 语义 + pause/倍速运行时实测、AccumulatedMouseMotion prelude 缺口、load_folder 'static 约束；无坑确认 6 项；场景序列化记探查边界、PAT 记 0）。对应 PIT-B-026..030 入库。探针证据 `docs/evidence/m3-assets/batch-f/`。
 - **v0.9（2026-09-27）**：新增 §6.12 反射注册表面速查（M3 批次三探针双重验证：AppTypeRegistry 资源形态与 RwLock 守卫协议、裸 World 注册路径、短名查改名 get_with_short_type_path、register 依赖闭包语义（1 型→20 型实测）、reflect_clone Result 语义、#[reflect(opaque)]+Clone bound、ReflectComponent 注册表取用与三参 insert、ReflectSerializer 输出形态（type_path 外包裹，BRP 响应同源）；对应 PIT-B-021..025 入库、PAT-B-009..010 入库；条目 doctest 断言另抓出两笔并回写：`#[reflect(Component)]` 才注册组件反射数据、opaque 无 reflect_clone 走 apply）。探针证据 `docs/evidence/m3-assets/batch-e/`。
 - **v0.8（2026-09-27）**：新增 §6.11 事件/消息/State 速查（M3 批次二探针双重验证：Event/Message 分流总纲、`On<Add, T>` 生命周期过滤、MessageMutator/Reader 统一 `.read()`、`add_message` 注册与未注册 panic、双缓冲错峰语义、StatesPlugin 不在 prelude 及 `bevy::state::app` 完整路径、init_state 初始 entered 转换与首个 update() 恰一次 OnEnter、NextState::set 一次 update 生效、StateTransitionEvent 走 Message 系；对应 PIT-B-014..020 入库、PAT-B-006..008 入库）。探针证据 `docs/evidence/m3-assets/batch-d/`。
 - **v0.7（2026-09-27）**：新增 §6.10 ECS 查询与调度事实速查（M3 批次一探针双重验证：single 家族 Result 语义、par_iter 无迭代器 trait（固有 for_each/:42/:77）、Commands::queue、组合迭代 fetch_next、add_systems 首参 ScheduleLabel/.in_set、迭代序不保证、Changed 首帧全量、跨系统冲突不 panic、同系统冲突 B0001→ParamSet；对应 PIT-B-005..013 入库）。勘误注 2026-09-27：本条目初版「本仓 game 默认单线程执行器」有误——multi_threaded 经 default→2d/3d/ui→default_platform 链传递启用，实际为 MultiThreadedExecutor（独立审核以 cargo tree 纠正）；「是否启用」命题反转 为「是否强制单线程」。

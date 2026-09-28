@@ -1,0 +1,92 @@
+# probe-r2-attempt1.log —— r2 修正轮失败补录（审核 B4 要求，Block D/E 先例的复现式补录）
+# 性质披露：r2 修正轮（2026-09-27）的三笔失败当时未单独归档日志（仅终态源码留痕注释）。
+# 本文件为 2026-09-28 复现式补录：将三笔失败形按当轮原样重写进探针 crate（临时追加后已复原），
+# 重跑 cargo check 捕获原文。三笔形合并于一份源码态重放，非当轮逐笔时序。
+# 补录中的额外发现（已回写 PIT-B-028）：形3 除 E0277(Clone) 外另有 E0277(Default)——
+# FromTemplate 的 blanket impl 要求 Clone + Default + Unpin（bevy_ecs-0.19.1/src/template.rs:390/:404）。
+# 复现源码态：在终态 lib.rs 末尾追加 f2_wrong_uuid_tuple / f3_wrong_bsn_comma / PingNoClone + f3_wrong_bsn_noclone 三个函数（验证后已删除复原）。
+# 复原后 check：REAL_EXIT=0（见本文件末尾）。
+
+================ 复现 cargo check 输出（REAL_EXIT=101） ================
+    Checking probe-f v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-f)
+error: unexpected token
+   --> src\lib.rs:135:18
+    |
+135 |         Ping(1.0),
+    |                  ^
+
+error[E0164]: expected tuple struct or tuple variant, found struct variant `bevy::asset::AssetId::Uuid`
+   --> src\lib.rs:127:9
+    |
+127 |         bevy::asset::AssetId::Uuid(u) => Some(Handle::Uuid(u, std::marker::PhantomData)),
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not a tuple struct or tuple variant
+    |
+help: the struct variant's field is being ignored
+    |
+127 -         bevy::asset::AssetId::Uuid(u) => Some(Handle::Uuid(u, std::marker::PhantomData)),
+127 +         bevy::asset::AssetId::Uuid { uuid: _ } => Some(Handle::Uuid(u, std::marker::PhantomData)),
+    |
+
+error[E0277]: the trait bound `PingNoClone: Clone` is not satisfied
+   --> src\lib.rs:144:31
+    |
+144 |       let _ = world.spawn_scene(bsn! {
+    |  _______________________________^
+145 | |         PingNoClone(1.0)
+146 | |     });
+    | |_____^ the trait `Clone` is not implemented for `PingNoClone`
+    |
+    = help: the following other types implement trait `FromTemplate`:
+              AnimationGraphHandle
+              Atmosphere
+              AudioPlayer<Source>
+              ChildOf
+              CustomCursor
+              CustomCursorImage
+              DirectionalLightTexture
+              DynamicWorldRoot
+            and 34 others
+    = note: required for `PingNoClone` to implement `FromTemplate`
+    = note: this error originates in the macro `bsn` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `PingNoClone` with `#[derive(Clone)]`
+    |
+141 + #[derive(Clone)]
+142 | pub struct PingNoClone(f32);
+    |
+
+error[E0277]: the trait bound `PingNoClone: std::default::Default` is not satisfied
+   --> src\lib.rs:144:31
+    |
+144 |       let _ = world.spawn_scene(bsn! {
+    |  _______________________________^
+145 | |         PingNoClone(1.0)
+146 | |     });
+    | |_____^ the trait `std::default::Default` is not implemented for `PingNoClone`
+    |
+    = help: the following other types implement trait `FromTemplate`:
+              AnimationGraphHandle
+              Atmosphere
+              AudioPlayer<Source>
+              ChildOf
+              CustomCursor
+              CustomCursorImage
+              DirectionalLightTexture
+              DynamicWorldRoot
+            and 34 others
+    = note: required for `PingNoClone` to implement `FromTemplate`
+    = note: this error originates in the macro `bsn` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider annotating `PingNoClone` with `#[derive(Default)]`
+    |
+141 + #[derive(Default)]
+142 | pub struct PingNoClone(f32);
+    |
+
+Some errors have detailed explanations: E0164, E0277.
+For more information about an error, try `rustc --explain E0164`.
+error: could not compile `probe-f` (lib) due to 4 previous errors
+
+
+================ 复原终态源码后 cargo check（REAL_EXIT=0） ================
+    Checking probe-f v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-f)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.29s
+REAL_EXIT=0

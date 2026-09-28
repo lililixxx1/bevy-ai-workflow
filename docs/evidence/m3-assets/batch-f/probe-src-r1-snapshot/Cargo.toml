@@ -1,0 +1,11 @@
+[package]
+name = "probe-f"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# M3 Block F 探针载体（仓库外临时 crate，docs/m3-plan.md §3.1 时序）。
+[dependencies]
+bevy = { version = "0.19", features = ["bevy_remote"] }
+
+[workspace]

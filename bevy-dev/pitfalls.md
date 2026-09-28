@@ -6,7 +6,7 @@
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：25 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 `docs/evidence/m3-assets/batch-c/`；批次二 014–020 证据 `docs/evidence/m3-assets/batch-d/`；批次三 021–025 证据 `docs/evidence/m3-assets/batch-e/`）。
+- 当前：30 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 docs/evidence/m3-assets/batch-f/）。
 
 ---
 
@@ -1417,3 +1417,261 @@ assert!(n > 1, "依赖闭包一并注册（Outer→Inner/String→primitives）"
 **验证证据**：
 - 复现：`docs/evidence/m3-assets/batch-e/probe-run-r1c.log`（断言失败原文，REAL_EXIT=101）；
 - 修复：`docs/evidence/m3-assets/batch-e/probe-run-r1c2.log`（闭包语义复测 PASS「收录 20 型（含依赖闭包），MyStruct 在册 = true」，REAL_EXIT=0）；本条目正例 fence 即 doctest 机器断言。
+### PIT-B-026：`EventReader` 类型整体不存在——事件读取全面 Message 化（含 `AssetEvent`）
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Event/Message 迁移的读取侧收尾）
+- 标签：`EventReader` `AssetEvent` `MessageReader` `E0425` `资产` `事件`
+
+**现象**：按旧语料给系统挂 `EventReader<AssetEvent<Image>>`，E0425——**类型本身没了**（2026-09-27，`docs/evidence/m3-assets/batch-f/probe-r1-check.log`）：
+
+```text
+error[E0425]: cannot find type `EventReader` in this scope
+  --> src\lib.rs:17:38
+   |
+17 | fn f1_asset_event_reader(mut events: EventReader<AssetEvent<Image>>) {
+   |                                      ^^^^^^^^^^^ not found in this scope
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn read_asset_events(mut events: EventReader<AssetEvent<Image>>) { // E0425：类型不存在
+    for _e in events.read() {}
+}
+```
+
+**根因**：0.19 的缓冲事件体系全面 Message 化——`EventReader` 类型在 bevy_ecs 0.19.1 中已删除（`pub struct EventReader` 全库 0 处）；`AssetEvent<A>` 直接 `#[derive(Message)]`（derive `bevy_asset-0.19.1/src/event.rs:49`、enum :50；同文件 `AssetLoadFailedEvent` :9-10、`UntypedAssetLoadFailedEvent` :27-28 同族，核实 2026-09-27）。读取侧统一 `MessageReader`（与 PIT-B-014/017 的分流总纲相接：写侧 `*_event` API 移除是同一迁移的另一半）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::prelude::*;
+
+fn read_asset_events(mut events: MessageReader<AssetEvent<Image>>) {
+    for _e in events.read() {}
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0425 原文）；
+- 修复：`docs/evidence/m3-assets/batch-f/probe-r2-check.log`（f1c 形态编译通过，REAL_EXIT=0）；本条目正例 fence 即 doctest 编译验证。
+
+### PIT-B-027：`Handle` 无 `clone_weak`——弱语义位是 `Handle::Uuid` 变体（且 `AssetId::Uuid` 是 struct variant）
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（Handle 重构后的形态）
+- 标签：`Handle` `clone_weak` `Uuid` `AssetId` `E0599` `资产`
+
+**现象**：按旧语料 `handle.clone_weak()`，E0599（2026-09-27，`docs/evidence/m3-assets/batch-f/probe-r1-check.log`）：
+
+```text
+error[E0599]: no method named `clone_weak` found for reference `&bevy::bevy_asset::Handle<bevy::bevy_image::Image>` in the current scope
+  --> src\lib.rs:23:12
+   |
+23 |     handle.clone_weak()
+   |            ^^^^^^^^^^
+...
+help: there is a method `clone` with a similar name
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn weak_wrong(handle: &Handle<Image>) -> Handle<Image> {
+    handle.clone_weak() // E0599：clone_weak 不存在
+}
+```
+
+**根因**：0.19 的 `Handle` 是 enum——`Handle::Strong(Arc<StrongHandle>)`（持活资产）/ `Handle::Uuid(Uuid, PhantomData)`（跨运行稳定标识，drop 不释放资产）（`bevy_asset-0.19.1/src/handle.rs:134-141`，核实 2026-09-27）。「不持活」的语义位是 **Uuid 变体**而非 clone 方法；运行时 `load` 默认得 Strong + `AssetId::Index`，Uuid 变体仅显式注册时存在。附带形态细节：`AssetId::Uuid` 是 **struct variant**（`id.rs:40` `Uuid { uuid: Uuid }`，非 tuple variant——match 须 `AssetId::Uuid { uuid }`，r2 修正轮实测）。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::asset::AssetId;
+use bevy::prelude::*;
+
+fn uuid_handle(handle: &Handle<Image>) -> Option<Handle<Image>> {
+    match handle.id() {
+        AssetId::Uuid { uuid } => Some(Handle::Uuid(uuid, std::marker::PhantomData)),
+        _ => None, // 运行时 load 默认 Index id，无 Uuid 弱形态
+    }
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0599 原文）+ r2 修正轮 E0164（tuple 形态 match 失败——复现式补录 `probe-r2-attempt1.log`）；
+- 修复：`docs/evidence/m3-assets/batch-f/probe-r2-check.log`（REAL_EXIT=0）；本条目正例 fence 即 doctest 编译验证。
+
+### PIT-B-028：`DynamicScene` / `SceneRoot` / `DynamicSceneRoot` 全部移除——0.19 场景系统重构为 BSN 范式
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（场景系统代际更替）
+- 标签：`DynamicScene` `SceneRoot` `bsn!` `spawn_scene` `场景` `E0425` `重构`
+
+**现象**：按旧语料写 `DynamicScene::from_world(&world)`、`commands.spawn(SceneRoot(handle))`——类型全部 E0425（2026-09-27，`docs/evidence/m3-assets/batch-f/probe-r1-check.log`，共 4 处）：
+
+```text
+error[E0425]: cannot find type `DynamicScene` in this scope
+...
+error[E0425]: cannot find function, tuple struct or tuple variant `SceneRoot` in this scope
+...
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn scene_wrong(commands: &mut Commands, scene: Handle<DynamicScene>) {
+    commands.spawn(SceneRoot(scene)); // E0425：两者均不存在
+}
+```
+
+**根因**：bevy_scene 0.19 **整体重构**为 BSN（Bevy Scene Notation）体系：prelude 导出面为 `bsn, bsn_list, on, template_value, CommandsSceneExt, EntityCommandsSceneExt, EntityWorldMutSceneExt, ..., WorldSceneExt`（`bevy_scene-0.19.1/src/lib.rs:900-906`）——`DynamicScene`/`SceneRoot`/`DynamicSceneRoot` 在 crate 内无定义（`pub struct DynamicScene` 全库 0 处，核实 2026-09-27）。新范式 = `World::spawn_scene(bsn! { ... })`（`WorldSceneExt::spawn_scene`，`spawn.rs:56`，返回 `Result<EntityWorldMut, SpawnSceneError>`；依赖未就绪用 `queue_spawn_scene`）。语法要点（r2 修正轮实测）：项 = 裸组件名 + **行分隔无逗号**（`crate::Ping(1.0),` 报「unexpected token」）；场景内组件需 `Clone + Default`（E0277 ×2：`FromTemplate` blanket impl 要求 `Clone + Default + Unpin`，`bevy_ecs-0.19.1/src/template.rs:390/:404`——Default 缺口由 2026-09-28 审核复现补录发现，见 `probe-r2-attempt1.log`）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+use bevy::scene::prelude::*;
+
+#[derive(Component, Reflect, Clone, Default)]
+#[reflect(Component)]
+struct Marker(f32);
+
+let mut app = App::new();
+app.add_plugins((
+    bevy::app::TaskPoolPlugin::default(),
+    bevy::asset::AssetPlugin::default(),
+    bevy::scene::ScenePlugin,
+));
+app.register_type::<Marker>();
+let world = app.world_mut();
+let n0 = world.query::<&Marker>().iter(world).count();
+let spawned = world
+    .spawn_scene(bsn! {
+        Marker(1.0)
+    })
+    .expect("场景应可解析");
+let _ = spawned.id();
+let world = app.world_mut();
+let n1 = world.query::<&Marker>().iter(world).count();
+assert_eq!(n1 - n0, 1); // BSN 单实体场景即时生成
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0425 ×4）+ r2 修正轮两笔（bsn 逗号语法、Clone/Default bound——复现式补录 `probe-r2-attempt1.log`）；
+- 修复：`docs/evidence/m3-assets/batch-f/probe-r2-check.log`（REAL_EXIT=0）+ `probe-run-r3c.log`（「BSN spawn 前后 Ping 计数 0 -> 1」，REAL_EXIT=0）；本条目正例 fence 即 doctest 机器断言。
+
+### PIT-B-029：`Time<Virtual>` 缩放改名 `set_relative_speed`——且负值/非有限直接 panic
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（bevy_time API 命名）
+- 标签：`Time` `Virtual` `set_scale` `set_relative_speed` `E0599` `缩放`
+
+**现象**：按旧语料 `time.set_scale(2.0)`，E0599（2026-09-27，`docs/evidence/m3-assets/batch-f/probe-r1-check.log`）：
+
+```text
+error[E0599]: no method named `set_scale` found for mutable reference `&mut bevy::bevy_time::Time<bevy::bevy_time::Virtual>` in the current scope
+  --> src\lib.rs:40:10
+   |
+40 |     time.set_scale(2.0);
+   |          ^^^^^^^^^ method not found in `&mut bevy::bevy_time::Time<bevy::bevy_time::Virtual>`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn scale_wrong(time: &mut Time<Virtual>) {
+    time.set_scale(2.0); // E0599：已改名
+}
+```
+
+**根因**：现名 `set_relative_speed`（f32 版 `bevy_time-0.19.1/src/virt.rs:188`、f64 版 :201）——语义为「相对系统时钟的推进速率」；getter `relative_speed` :148。**panic 语义**：负值或非有限直接 assert（:202-203「tried to go infinitely fast」/「tried to go back in time」），不是 Err。同族 `pause()`/`unpause()`/`delta()` 名称未变（r1 编译通过实证）。
+
+**修复**（已过编译 + 运行验证）：
+
+```rust
+use bevy::prelude::*;
+
+let mut app = App::new();
+app.add_plugins(MinimalPlugins);
+app.update();
+let mut v = app.world_mut().resource_mut::<Time<Virtual>>();
+v.set_relative_speed(2.0);
+assert_eq!(v.relative_speed(), 2.0);
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0599 原文）；
+- 修复：`docs/evidence/m3-assets/batch-f/probe-run-r2.log`（「relative_speed=2：virtual=0.001508800 real=0.000754400 比值=2.000」，REAL_EXIT=0；探针断言容差 |比值−2|<0.3、打印三位小数）；本条目正例 fence 即 doctest 机器断言。
+- doctest 首跑失手留痕（`gate-doc-test-attempt1.log` E0596）：fix fence 初稿写 `let v`（非 mut）——`resource_mut` 返回 `Mut<T>`，经 DerefMut 调 `&mut self` 方法要求绑定本身为 mut；改 `let mut v` 后通过。该 Rust 层约束已并入 fence 本体。
+
+### PIT-B-030：`AccumulatedMouseMotion` 不在 prelude + `load_folder` 的 `&str` 参数要求 `'static`
+
+- 日期：2026-09-27
+- 适用版本：bevy 0.19.1
+- 分型：错题
+- 通用性分级：bevy-specific（输入资源与资产服务器的导出面/签名）
+- 标签：`AccumulatedMouseMotion` `prelude` `load_folder` `E0425` `E0521` `鼠标` `资产`
+
+**现象**：两笔独立坑（2026-09-27，`docs/evidence/m3-assets/batch-f/probe-r1-check.log`）：
+
+```text
+error[E0425]: cannot find type `AccumulatedMouseMotion` in this scope
+  --> src\lib.rs:55:28
+   |
+55 | fn f8_mouse_motion(mouse: &AccumulatedMouseMotion) -> Vec2 {
+   |                            ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+...
+error[E0521]: borrowed data escapes outside of function
+81 |     let _ = server.load_folder(path);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^
+   |             argument requires that `'1` must outlive `'static`
+```
+
+**最小复现**：
+
+```rust,compile_fail
+use bevy::prelude::*;
+
+fn read_mouse_wrong(mouse: &AccumulatedMouseMotion) -> f32 { // E0425：不在 prelude
+    mouse.delta.x
+}
+```
+
+**根因**：①`bevy_input` 的 prelude 导出 `Axis, ButtonInput` 及 gamepad/keyboard/按钮/触摸项（`MouseButton` :61、`TouchInput`/`Touches` :65 等）——`AccumulatedMouseMotion`（`mouse.rs:218`，字段 `delta: Vec2`）须完整路径 `bevy::input::mouse::AccumulatedMouseMotion`（`bevy_input lib.rs:47-66` prelude 清单，核实 2026-09-27）；②`AssetServer::load_folder(path: impl Into<AssetPath<'a>>)`（`server/mod.rs:1115`）返回 `Handle<LoadedFolder>`——但 `&str` → `AssetPath` 的借用转换实测要求 `'static`（E0521），传字面量（满足 'static）或 `AssetPath::from(owned_string)` / `AssetPath::parse("dir").into_owned()`。
+
+**修复**（已过编译验证）：
+
+```rust
+use bevy::input::mouse::AccumulatedMouseMotion;
+
+fn read_mouse(mouse: &AccumulatedMouseMotion) -> f32 {
+    mouse.delta.x
+}
+
+fn folder(server: &bevy::prelude::AssetServer) -> bevy::asset::Handle<bevy::asset::LoadedFolder> {
+    server.load_folder("some/dir") // &'static str 字面量满足 'static
+}
+```
+
+**验证证据**：
+- 复现：`docs/evidence/m3-assets/batch-f/probe-r1-check.log`（E0425 + E0521 原文）；
+- 修复：`docs/evidence/m3-assets/batch-f/probe-r2-check.log`（f8c/f13c 形态编译通过，REAL_EXIT=0）；本条目正例 fence 即 doctest 编译验证。

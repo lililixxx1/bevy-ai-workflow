@@ -1,0 +1,85 @@
+    Updating `rsproxy-sparse` index
+     Locking 562 packages to latest compatible versions
+    Checking probe-f v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-probe-f)
+error[E0425]: cannot find type `EventReader` in this scope
+  --> src\lib.rs:17:38
+   |
+17 | fn f1_asset_event_reader(mut events: EventReader<AssetEvent<Image>>) {
+   |                                      ^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `DynamicScene` in this scope
+  --> src\lib.rs:27:57
+   |
+27 | fn f3_scene_root(commands: &mut Commands, scene: Handle<DynamicScene>) {
+   |                                                         ^^^^^^^^^^^^ not found in this scope
+   |
+help: you might be missing a type parameter
+   |
+27 | fn f3_scene_root<DynamicScene>(commands: &mut Commands, scene: Handle<DynamicScene>) {
+   |                 ++++++++++++++
+
+error[E0425]: cannot find type `DynamicScene` in this scope
+  --> src\lib.rs:32:50
+   |
+32 | fn f4_dynamic_scene_from_world(world: &World) -> DynamicScene {
+   |                                                  ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `AccumulatedMouseMotion` in this scope
+  --> src\lib.rs:55:28
+   |
+55 | fn f8_mouse_motion(mouse: &AccumulatedMouseMotion) -> Vec2 {
+   |                            ^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find type `DynamicScene` in this scope
+  --> src\lib.rs:75:32
+   |
+75 | fn f12_scene_serialize(scene: &DynamicScene, registry: &bevy::reflect::TypeRegistry) -> String {
+   |                                ^^^^^^^^^^^^ not found in this scope
+
+error[E0599]: no method named `clone_weak` found for reference `&bevy::bevy_asset::Handle<bevy::bevy_image::Image>` in the current scope
+  --> src\lib.rs:23:12
+   |
+23 |     handle.clone_weak()
+   |            ^^^^^^^^^^
+   |
+help: there is a method `clone` with a similar name
+   |
+23 -     handle.clone_weak()
+23 +     handle.clone()
+   |
+
+error[E0425]: cannot find function, tuple struct or tuple variant `SceneRoot` in this scope
+  --> src\lib.rs:28:20
+   |
+28 |     commands.spawn(SceneRoot(scene));
+   |                    ^^^^^^^^^ not found in this scope
+
+error[E0433]: cannot find type `DynamicScene` in this scope
+  --> src\lib.rs:33:5
+   |
+33 |     DynamicScene::from_world(world)
+   |     ^^^^^^^^^^^^ use of undeclared type `DynamicScene`
+
+error[E0599]: no method named `set_scale` found for mutable reference `&mut bevy::bevy_time::Time<bevy::bevy_time::Virtual>` in the current scope
+  --> src\lib.rs:40:10
+   |
+40 |     time.set_scale(2.0);
+   |          ^^^^^^^^^ method not found in `&mut bevy::bevy_time::Time<bevy::bevy_time::Virtual>`
+
+error[E0521]: borrowed data escapes outside of function
+  --> src\lib.rs:81:13
+   |
+80 | fn f13_load_folder(server: &AssetServer, path: &str) {
+   |                                          ----  - let's call the lifetime of this reference `'1`
+   |                                          |
+   |                                          `path` is a reference that is only valid in the function body
+81 |     let _ = server.load_folder(path);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^
+   |             |
+   |             `path` escapes the function body here
+   |             argument requires that `'1` must outlive `'static`
+
+Some errors have detailed explanations: E0425, E0433, E0521, E0599.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `probe-f` (lib) due to 10 previous errors
+REAL_EXIT=101
