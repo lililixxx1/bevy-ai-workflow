@@ -6,7 +6,8 @@
 //! [`camera`]（轨道相机）、[`brp`]（127.0.0.1:15702 常驻 + 方法组装）、
 //! [`rpc`]（游戏专属 BRP 方法：run_tests / screenshot / launch_level /
 //! move_unit / attack / end_turn）、[`level`]（M4 关卡数据面）、
-//! [`battle`]（M4 战斗规则面：回合机/结算/敌方 AI/胜负）、[`bench`]（帧率采集）。
+//! [`battle`]（M4 战斗规则面：回合机/结算/敌方 AI/胜负）、[`present`]
+//!（M4 表现层：棋盘/棋子渲染，只读规则不作验收面）、[`bench`]（帧率采集）。
 //!
 //! 基线口径：release 构建、1280x720 窗口化、AutoVsync、种子 20260926——
 //! 全量口径与阶梯数据见 `docs/fps-baseline.md`。
@@ -17,6 +18,7 @@ mod brp;
 mod camera;
 mod cli;
 mod level;
+mod present;
 mod rng;
 mod rpc;
 mod sim;
@@ -63,6 +65,7 @@ fn main() -> AppExit {
         .add_plugins(camera::OrbitCameraPlugin)
         .add_plugins(level::LevelPlugin)
         .add_plugins(battle::BattlePlugin)
+        .add_plugins(present::PresentPlugin)
         .add_plugins(brp::BrpPlugin)
         .add_plugins(bench::BenchPlugin::default())
         .run()

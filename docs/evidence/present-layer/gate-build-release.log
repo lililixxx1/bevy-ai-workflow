@@ -1,0 +1,8 @@
+cargo.exe :    Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ... rityClass="BelowNormal"; & cargo build --release -p game 2>&1 | ForEa ...
++                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (   Compiling ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+    Finished `release` profile [optimized] target(s) in 14.49s

@@ -1,0 +1,36 @@
+cargo.exe :     Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+所在位置 行:1 字符: 156
++ ... ).PriorityClass="BelowNormal"; & cargo check --workspace 2>&1 | ForEa ...
++                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (    Checking ga...-workflow\game):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+warning: variable does not need to be mutable
+  --> game\src\present.rs:68:5
+   |
+68 |     mut old: Query<(Entity, &GridPiece)>,
+   |     ----^^^
+   |     |
+   |     help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+warning: variable does not need to be mutable
+   --> game\src\present.rs:128:5
+    |
+128 |     mut pieces: Query<(Entity, &GridPiece)>,
+    |     ----^^^^^^
+    |     |
+    |     help: remove this `mut`
+warning: field `goal` is never read
+  --> game\src\present.rs:39:5
+   |
+38 | struct PresentMaterials {
+   |        ---------------- field in this struct
+39 |     goal: Handle<StandardMaterial>,
+   |     ^^^^
+   |
+   = note: `PresentMaterials` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead c
+ode analysis
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+warning: `game` (bin "game") generated 3 warnings (run `cargo fix --bin "game" -p game` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.92s
