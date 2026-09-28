@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":9,"error":{"code":-23402,"message":"Unknown component type: `demo::sim::NoSuchType`"}}

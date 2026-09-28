@@ -1,0 +1,7 @@
+=== tasklist before kill ===
+demo.exe                     23892 Console                    1    450,152 K
+BEFORE_EXIT=0
+成功: 已终止进程 "demo.exe"，其 PID 为 23892。
+TASKKILL_EXIT=0
+=== tasklist after kill ===
+AFTER_EXIT=1

@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.mutate_components","id":14,"params":{"entity":4294965877,"component":"demo::sim::Velocity","path":"linear","value":[3.0,0.0,0.0]}}

@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.mutate_resources","id":36,"params":{"resource":"demo::sim::NoSuchResource","path":"x","value":1}}

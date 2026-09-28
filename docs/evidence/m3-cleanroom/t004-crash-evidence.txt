@@ -1,0 +1,63 @@
+# T004 净室重跑净新发现：BRP `world.mutate_components` 坏实体 panic 证据摘录（PIT-B-051 证据面）
+
+- 来源：M3 Block H 净室重跑 T004 错误探针 R15（2026-09-28）。原始全档位于净室工作区
+  `C:\Users\Administrator\Desktop\ccc\cleanroom\t004\logs\`（repo 外留痕指针，本机路径仅留痕用）；
+  本文件为入库摘录，内容逐字取自归档原文，未改写。
+- 裁判复核：`docs/evidence/m3-cleanroom/judge-t004.md` §二（含裁判对本地 registry 源码行的
+  亲自 sed 复核记录与错误码全量普查）。
+- 被验对象：净室重跑 T003 产物 demo（bevy 0.19.1 + bevy_remote，BRP 显式绑定 127.0.0.1:15702）。
+
+## 1. 请求原文（logs/15-probe-mutate-bad-entity.req，逐字）
+
+{"jsonrpc":"2.0","method":"world.mutate_components","id":15,"params":{"entity":123456,"component":"demo::sim::Velocity","path":"linear","value":[1.0,0.0,0.0]}}
+
+## 2. 客户端侧（逐字）
+
+- logs/15-probe-mutate-bad-entity.exit → REAL_EXIT=52（Empty reply from server）
+- logs/15-probe-mutate-bad-entity.json → 0 字节（空响应）
+- logs/901-alive-after-15.exit → REAL_EXIT=7（进程死亡后连接拒绝；.json 同为 0 字节）
+
+## 3. 服务端 panic 原文（logs/demo-run.log:120-128，去 ANSI 后逐字）
+
+thread 'main' (4424) panicked at C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_remote-0.19.1\src\builtin_methods.rs:1194:28:
+Entity not yet spawned: The entity with ID 4294843839v0 is not spawned; enable `track_location` feature for more details.
+Note that interacting with a not-yet-spawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_remote::process_remote_requests`!
+Encountered a panic in system `bevy_app::main_schedule::Main::run_main`!
+
+（进程随之退出——退出码 101 为推断口径：Rust panic 默认值，归档未直接落进程退出码，以 901 拒连互证死亡；日志此前 [STATS] 行正常推进至 tick=6777。）
+
+## 4. 源码对照（bevy_remote-0.19.1/src/builtin_methods.rs；裁判 sed 亲验 2026-09-28）
+
+- :1194（mutate，裸 panic 路径）：`.reflect_mut(world.entity_mut(entity))`
+- :1129（insert，温和）：`insert_reflected_components(get_entity_mut(world, entity)?, reflect_components)`
+- :1304（remove，温和）：`let mut entity_world_mut = get_entity_mut(world, entity)?;`
+- :1341（despawn，温和）：`get_entity_mut(world, entity)?.despawn();`
+- :1359/:1370（reparent 挂父/解除，温和）：`get_entity_mut(world, parent).map_err(...)` / `get_entity_mut(world, entity)?.remove::<ChildOf>();`
+- get_entity_mut 定义 :1811 → `-23401 Entity ... not found`（对照行号经 2026-09-28 审核轮复核修正）
+
+## 5. 对照探针（坏实体 → 温和 -23401，净室档 11-*/19-*/25-*；错误码 -23401 共 3 例）
+
+{"code":-23401,"message":"Entity 4294843839v0 not found"}（insert/remove/despawn 三方法同码；
+错误消息中实体呈 Display 形态 index+generation——请求原文裸整数 123456 按位重释后的显示值。）
+
+## 6. 守卫序列成功证据（先验证存在 → mutate → 读回；净室档 14-*/17-*/18-*）
+
+- 14-*：对已验证存在实体 mutate（linear→[3,0,0]）→ 200 result:null（后因 15 号探针崩溃重启，
+  以重启后 17-*/18-* 复证）；
+- 17-*：重启后重立实体再 mutate → 200 result:null；
+- 18-*：get_components 读回 linear === [3.0,0.0,0.0]——写→存→读闭环，守卫序列成立。
+
+## 7. 净新性声明
+
+该破坏性语义不在任何注入知识资产（SKILL.md §6.1/6.2/6.4/6.9、PIT-B-004、台账 T004 行）中，
+由本净室重跑错误探针首次触发并三重留档；原任务 9 方法存证是否曾触发不可考（净室禁读原证据，
+如实标注）。附加净新观察 4 项（同役，未入条目、记于 judge-t004.md §二）：remove_components 移除
+实体上不存在的已注册组件 → 幂等 result:null（非 -23403）；缺 jsonrpc 的 wire 错误码 -32600；
+registry.schema 的 with_crates 过滤对无 crate 名类型不生效；schedule.graph 未知 label 与
+trigger_event 未知事件 = -23501。另：错误消息实体 Display 形态（4294843839v0）系台账 T011
+既有同形记载的本役复现，非净新（2026-09-28 审核必改 3 归类修正）。

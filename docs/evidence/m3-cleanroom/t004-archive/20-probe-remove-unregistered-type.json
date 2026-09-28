@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":20,"error":{"code":-23402,"message":"Component `demo::sim::NoSuchType` isn't registered or used in the world"}}

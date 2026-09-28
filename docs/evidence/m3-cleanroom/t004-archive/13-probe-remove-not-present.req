@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.remove_components","id":13,"params":{"entity":4294965877,"components":["demo::camera::OrbitCamera"]}}

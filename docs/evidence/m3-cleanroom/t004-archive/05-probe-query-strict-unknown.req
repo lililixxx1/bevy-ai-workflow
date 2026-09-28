@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.query","id":5,"params":{"data":{"components":["demo::sim::NotAComponent"]},"strict":true}}

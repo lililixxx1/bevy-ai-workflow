@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.insert_components","id":11,"params":{"entity":123456,"components":{"demo::sim::Wanderer":{"index":1,"origin":[0,0.8,0],"phase":0.0}}}}

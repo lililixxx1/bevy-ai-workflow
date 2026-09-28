@@ -1,0 +1,11 @@
+=== residue cleanup (2026-09-28T08:08:50Z) ===
+--- pre-kill tasklist (ours) ---
+grep_rc=1 (1 = none)
+--- taskkill dx.exe ---
+错误: 没有找到进程 "dx.exe"。
+RC=128
+--- taskkill hotpatch-smoke app (find exact image) ---
+APPIMG=
+no hotpatch-smoke image found
+--- post-kill residue check ---
+grep_rc=1 (1 = no residue)

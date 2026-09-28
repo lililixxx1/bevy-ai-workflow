@@ -6,7 +6,7 @@
 - 反例代码统一用 `rust,compile_fail` 围栏标记（doctest 断言其编译失败）；语义不符时用 `rust,ignore` 并附理由（先例见 assets-methodology/pitfalls.md PIT-M-001 的 shell 命令处理）。
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：50 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/）。
+- 当前：51 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/；同日 Block H 净室重跑净新发现 051 证据 docs/evidence/m3-cleanroom/）。
 
 ---
 
@@ -2725,3 +2725,35 @@ fn val() -> Val {
 **验证证据**：
 - 复现：`docs/evidence/m3-assets/batch-g/probe-r1c-lib-check.log`（G43 E0599 原文）；
 - 修复：探针 g43c 编译通过（`probe-r2b-check-final.log` REAL_EXIT=0）；`Val::Px`/`Val::Percent`/`Val::Auto` 未变（G37 r1 编译通过，`probe-r1b-lib-check.log` 无 G37 错）。
+
+### PIT-B-051：BRP `world.mutate_components` 对不存在实体直接 panic 杀死整个游戏进程——内置写方法中唯一无优雅错误分支
+
+- 日期：2026-09-28
+- 适用版本：bevy 0.19.1
+- 分型：错题（运行时行为；反例载体为 wire 请求与 panic 栈，非编译面——无 compile_fail 反例，用 `text` 围栏）
+- 通用性分级：bevy-specific（bevy_remote handler 实现细节）
+- 标签：`BRP` `world.mutate_components` `entity_mut` `panic` `进程崩溃` `-23401` `可用性` `净室重跑`
+
+**现象**：M3 Block H 净室重跑 T004 错误探针首触发（2026-09-28；摘录 `docs/evidence/m3-cleanroom/t004-crash-evidence.txt`，裁判源码级复核 `docs/evidence/m3-cleanroom/judge-t004.md` §二）：
+
+```text
+{"jsonrpc":"2.0","method":"world.mutate_components","id":15,
+ "params":{"entity":123456,"component":"demo::sim::Velocity","path":"linear","value":[1.0,0.0,0.0]}}
+→ curl 退出码 52（Empty reply，响应 0 字节）
+thread 'main' panicked at ...bevy_remote-0.19.1\src\builtin_methods.rs:1194:28:
+Entity not yet spawned: The entity with ID 4294843839v0 is not spawned
+Encountered a panic in system `bevy_remote::process_remote_requests`
+（进程退出码 101；死后后续 BRP 调用连接拒绝，curl exit 7）
+```
+
+**根因**：handler 取组件反射前裸调 `world.entity_mut(entity)`（`builtin_methods.rs:1194`，`.reflect_mut(world.entity_mut(entity))`）——实体不存在时 `entity_mut` 直接 panic（非 Result 路径），panic 在 `process_remote_requests` 系统内未被捕获，沿 Main 调度击穿整个进程。对照同文件其余写方法的坏实体分支均温和（经 `get_entity_mut` → `-23401 Entity ... not found`，函数定义 `:1811`）：insert `:1129`、remove `:1304`、despawn `:1341`、reparent 挂父/解除 `:1359`/`:1370`——净室重跑 3 个对照探针（insert/remove/despawn，档 11-*/19-*/25-*）实测同码；reparent 据源码同型（其探针为自父 -23404，未做坏实体探针）。
+
+**修复**（调用方防御；引擎侧属上游缺陷——正确修法应与同类方法一致改走 `get_entity_mut`）：
+
+1. 工具/断言侧**禁止向 `world.mutate_components` 透传未验证实体号**：先 `world.get_components`（strict）或 `world.query` 确认目标存在，再发起 mutate；
+2. 无预验证环境须有失败重启兜底；客户端侧坑指纹 = curl **52（空响应）+ 后续 7（拒连）**组合，服务端日志 panic 于 builtin_methods.rs。
+
+**验证证据**（净室重跑 T004，2026-09-28；全档指针见 `docs/evidence/m3-cleanroom/t004-crash-evidence.txt`）：
+- 复现：坏实体 mutate → 进程崩溃三重留档（请求原文 / curl 52 + 0 字节响应 / demo-run.log panic 栈，进程 101 + 死后拒连 exit 7）；
+- 守卫序列运行验证：对先验证存在的实体 mutate 成功（200 result:null）+ 读回 `linear == [3,0,0]` 注入驻留（净室档 14-*/17-*/18-*）；
+- 源码对照行由裁判 sed 亲验（judge-t004.md §二）；净新性声明：该语义不在任何注入资产（SKILL §6.1/6.2/6.4/6.9、PIT-B-004、台账 T004 行）中，原任务是否曾触发不可考（净室禁读原证据）。

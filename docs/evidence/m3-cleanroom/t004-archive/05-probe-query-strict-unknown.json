@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":5,"error":{"code":-23402,"message":"Component `demo::sim::NotAComponent` isn't registered or used in the world"}}

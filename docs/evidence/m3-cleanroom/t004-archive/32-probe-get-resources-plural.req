@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.get_resources","id":32,"params":{"resources":["demo::sim::SimStats"]}}

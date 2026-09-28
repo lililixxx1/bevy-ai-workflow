@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.reparent_entities","id":23,"params":{"entities":[4294965876],"parent":4294965876}}

@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.trigger_event","id":42,"params":{"event":"demo::sim::NoSuchEvent"}}

@@ -1,0 +1,128 @@
+[CLI] demo (t003 cleanroom rerun) count=1000 seed=20260926 max_speed=2 bench_secs=0 no_vsync=false
+[2m2026-09-28T08:19:10.259227Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-28T08:19:10.662972Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-28T08:19:11.334104Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-28T08:19:11.334160Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-28T08:19:11.334731Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window t003 cleanroom demo (65v0)
+[2m2026-09-28T08:19:12.421339Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=54 elapsed=1.010 frame_count=54 fps_1s=53.4
+[2m2026-09-28T08:19:13.456803Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=111 elapsed=2.017 frame_count=111 fps_1s=56.7
+[2m2026-09-28T08:19:14.473861Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=172 elapsed=3.033 frame_count=172 fps_1s=60.0
+[2m2026-09-28T08:19:15.473481Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=232 elapsed=4.034 frame_count=232 fps_1s=60.0
+[2m2026-09-28T08:19:16.473789Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=292 elapsed=5.034 frame_count=292 fps_1s=60.0
+[2m2026-09-28T08:19:17.490297Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=353 elapsed=6.050 frame_count=353 fps_1s=60.0
+[2m2026-09-28T08:19:18.507347Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=414 elapsed=7.067 frame_count=414 fps_1s=60.0
+[2m2026-09-28T08:19:19.524209Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=475 elapsed=8.083 frame_count=475 fps_1s=60.0
+[2m2026-09-28T08:19:20.524597Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=535 elapsed=9.083 frame_count=535 fps_1s=59.9
+[2m2026-09-28T08:19:21.540027Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=596 elapsed=10.100 frame_count=596 fps_1s=60.0
+[2m2026-09-28T08:19:22.557311Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=657 elapsed=11.117 frame_count=657 fps_1s=60.0
+[2m2026-09-28T08:19:23.573968Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=718 elapsed=12.133 frame_count=718 fps_1s=60.0
+[2m2026-09-28T08:19:24.574149Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=778 elapsed=13.133 frame_count=778 fps_1s=60.0
+[2m2026-09-28T08:19:25.590387Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=839 elapsed=14.150 frame_count=839 fps_1s=60.0
+[2m2026-09-28T08:19:26.607334Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=900 elapsed=15.167 frame_count=900 fps_1s=60.0
+[2m2026-09-28T08:19:27.623663Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=961 elapsed=16.184 frame_count=961 fps_1s=60.0
+[2m2026-09-28T08:19:28.640534Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1022 elapsed=17.200 frame_count=1022 fps_1s=60.0
+[2m2026-09-28T08:19:29.657803Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1083 elapsed=18.217 frame_count=1083 fps_1s=60.0
+[2m2026-09-28T08:19:30.673664Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1144 elapsed=19.234 frame_count=1144 fps_1s=60.0
+[2m2026-09-28T08:19:31.674117Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1204 elapsed=20.234 frame_count=1204 fps_1s=60.0
+[2m2026-09-28T08:19:32.690632Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1265 elapsed=21.250 frame_count=1265 fps_1s=60.1
+[2m2026-09-28T08:19:33.690948Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1325 elapsed=22.250 frame_count=1325 fps_1s=60.0
+[2m2026-09-28T08:19:34.707393Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1386 elapsed=23.266 frame_count=1386 fps_1s=60.0
+[2m2026-09-28T08:19:35.707504Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1446 elapsed=24.266 frame_count=1446 fps_1s=60.0
+[2m2026-09-28T08:19:36.706981Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1506 elapsed=25.267 frame_count=1506 fps_1s=60.0
+[2m2026-09-28T08:19:37.723926Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1567 elapsed=26.283 frame_count=1567 fps_1s=60.0
+[2m2026-09-28T08:19:38.740198Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1628 elapsed=27.300 frame_count=1628 fps_1s=60.0
+[2m2026-09-28T08:19:39.740060Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1688 elapsed=28.300 frame_count=1688 fps_1s=60.0
+[2m2026-09-28T08:19:40.757582Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1749 elapsed=29.317 frame_count=1749 fps_1s=60.0
+[2m2026-09-28T08:19:41.756948Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1809 elapsed=30.317 frame_count=1809 fps_1s=60.0
+[2m2026-09-28T08:19:42.773485Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1870 elapsed=31.333 frame_count=1870 fps_1s=60.0
+[2m2026-09-28T08:19:43.790506Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1931 elapsed=32.350 frame_count=1931 fps_1s=60.0
+[2m2026-09-28T08:19:44.807002Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=1992 elapsed=33.367 frame_count=1992 fps_1s=60.0
+[2m2026-09-28T08:19:45.824081Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2053 elapsed=34.384 frame_count=2053 fps_1s=60.0
+[2m2026-09-28T08:19:46.840691Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2114 elapsed=35.399 frame_count=2114 fps_1s=60.1
+[2m2026-09-28T08:19:47.840424Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2174 elapsed=36.400 frame_count=2174 fps_1s=60.0
+[2m2026-09-28T08:19:48.857201Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2235 elapsed=37.416 frame_count=2235 fps_1s=60.0
+[2m2026-09-28T08:19:49.857061Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2295 elapsed=38.417 frame_count=2295 fps_1s=59.9
+[2m2026-09-28T08:19:50.873582Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2356 elapsed=39.433 frame_count=2356 fps_1s=60.0
+[2m2026-09-28T08:19:51.890532Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2417 elapsed=40.450 frame_count=2417 fps_1s=60.0
+[2m2026-09-28T08:19:52.907386Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2478 elapsed=41.467 frame_count=2478 fps_1s=60.0
+[2m2026-09-28T08:19:53.906931Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2538 elapsed=42.467 frame_count=2538 fps_1s=60.0
+[2m2026-09-28T08:19:54.924359Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2599 elapsed=43.484 frame_count=2599 fps_1s=60.0
+[2m2026-09-28T08:19:55.940244Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2660 elapsed=44.500 frame_count=2660 fps_1s=60.0
+[2m2026-09-28T08:19:56.940212Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2720 elapsed=45.500 frame_count=2720 fps_1s=60.0
+[2m2026-09-28T08:19:57.957064Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2781 elapsed=46.517 frame_count=2781 fps_1s=60.0
+[2m2026-09-28T08:19:58.973855Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2842 elapsed=47.533 frame_count=2842 fps_1s=60.0
+[2m2026-09-28T08:19:59.974220Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2902 elapsed=48.534 frame_count=2902 fps_1s=60.0
+[2m2026-09-28T08:20:00.973789Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=2962 elapsed=49.534 frame_count=2962 fps_1s=60.0
+[2m2026-09-28T08:20:01.990953Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3023 elapsed=50.549 frame_count=3023 fps_1s=60.1
+[2m2026-09-28T08:20:02.990117Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3083 elapsed=51.550 frame_count=3083 fps_1s=59.9
+[2m2026-09-28T08:20:04.007229Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3144 elapsed=52.566 frame_count=3144 fps_1s=60.1
+[2m2026-09-28T08:20:05.008241Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3204 elapsed=53.566 frame_count=3204 fps_1s=60.0
+[2m2026-09-28T08:20:06.024532Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3265 elapsed=54.582 frame_count=3265 fps_1s=60.0
+[2m2026-09-28T08:20:07.023434Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3325 elapsed=55.584 frame_count=3325 fps_1s=59.9
+[2m2026-09-28T08:20:08.040101Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3386 elapsed=56.600 frame_count=3386 fps_1s=60.0
+[2m2026-09-28T08:20:09.057066Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3447 elapsed=57.616 frame_count=3447 fps_1s=60.0
+[2m2026-09-28T08:20:10.073473Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3508 elapsed=58.633 frame_count=3508 fps_1s=60.0
+[2m2026-09-28T08:20:11.074383Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3568 elapsed=59.634 frame_count=3568 fps_1s=60.0
+[2m2026-09-28T08:20:12.090585Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3629 elapsed=60.650 frame_count=3629 fps_1s=60.0
+[2m2026-09-28T08:20:13.107109Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3690 elapsed=61.667 frame_count=3690 fps_1s=60.0
+[2m2026-09-28T08:20:14.123551Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3751 elapsed=62.683 frame_count=3751 fps_1s=60.1
+[2m2026-09-28T08:20:15.123853Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3811 elapsed=63.684 frame_count=3811 fps_1s=60.0
+[2m2026-09-28T08:20:16.140091Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3872 elapsed=64.700 frame_count=3872 fps_1s=60.0
+[2m2026-09-28T08:20:17.156786Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3933 elapsed=65.717 frame_count=3933 fps_1s=60.0
+[2m2026-09-28T08:20:18.174352Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=3994 elapsed=66.733 frame_count=3994 fps_1s=60.0
+[2m2026-09-28T08:20:19.173320Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4054 elapsed=67.734 frame_count=4054 fps_1s=60.0
+[2m2026-09-28T08:20:20.191042Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4115 elapsed=68.750 frame_count=4115 fps_1s=60.0
+[2m2026-09-28T08:20:21.191204Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4175 elapsed=69.751 frame_count=4175 fps_1s=60.0
+[2m2026-09-28T08:20:22.207845Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4236 elapsed=70.766 frame_count=4236 fps_1s=60.1
+[2m2026-09-28T08:20:23.207502Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4296 elapsed=71.767 frame_count=4296 fps_1s=60.0
+[2m2026-09-28T08:20:24.207447Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4356 elapsed=72.767 frame_count=4356 fps_1s=60.0
+[2m2026-09-28T08:20:25.223478Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4417 elapsed=73.783 frame_count=4417 fps_1s=60.1
+[2m2026-09-28T08:20:26.223494Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4477 elapsed=74.784 frame_count=4477 fps_1s=60.0
+[2m2026-09-28T08:20:27.240394Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4538 elapsed=75.800 frame_count=4538 fps_1s=60.0
+[2m2026-09-28T08:20:28.257352Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4599 elapsed=76.817 frame_count=4599 fps_1s=60.0
+[2m2026-09-28T08:20:29.274198Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4660 elapsed=77.833 frame_count=4660 fps_1s=60.0
+[2m2026-09-28T08:20:30.290918Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4721 elapsed=78.850 frame_count=4721 fps_1s=60.0
+[2m2026-09-28T08:20:31.290408Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4781 elapsed=79.851 frame_count=4781 fps_1s=60.0
+[2m2026-09-28T08:20:32.290410Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4841 elapsed=80.851 frame_count=4841 fps_1s=60.0
+[2m2026-09-28T08:20:33.307069Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4902 elapsed=81.867 frame_count=4902 fps_1s=60.1
+[2m2026-09-28T08:20:34.307371Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=4962 elapsed=82.867 frame_count=4962 fps_1s=60.0
+[2m2026-09-28T08:20:35.323401Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5023 elapsed=83.883 frame_count=5023 fps_1s=60.0
+[2m2026-09-28T08:20:36.324749Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5083 elapsed=84.884 frame_count=5083 fps_1s=60.0
+[2m2026-09-28T08:20:37.340625Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5144 elapsed=85.900 frame_count=5144 fps_1s=60.0
+[2m2026-09-28T08:20:38.356722Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5205 elapsed=86.916 frame_count=5205 fps_1s=60.0
+[2m2026-09-28T08:20:39.357357Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5265 elapsed=87.917 frame_count=5265 fps_1s=60.0
+[2m2026-09-28T08:20:40.373357Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5326 elapsed=88.933 frame_count=5326 fps_1s=60.1
+[2m2026-09-28T08:20:41.374120Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5386 elapsed=89.933 frame_count=5386 fps_1s=60.0
+[2m2026-09-28T08:20:42.374022Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5446 elapsed=90.934 frame_count=5446 fps_1s=60.0
+[2m2026-09-28T08:20:43.374328Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5506 elapsed=91.934 frame_count=5506 fps_1s=60.0
+[2m2026-09-28T08:20:44.374263Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5566 elapsed=92.934 frame_count=5566 fps_1s=60.0
+[2m2026-09-28T08:20:45.390279Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5627 elapsed=93.950 frame_count=5627 fps_1s=60.1
+[2m2026-09-28T08:20:46.390808Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5687 elapsed=94.951 frame_count=5687 fps_1s=59.9
+[2m2026-09-28T08:20:47.390370Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5747 elapsed=95.951 frame_count=5747 fps_1s=60.0
+[2m2026-09-28T08:20:48.390431Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5807 elapsed=96.951 frame_count=5807 fps_1s=60.0
+[2m2026-09-28T08:20:49.407144Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5868 elapsed=97.967 frame_count=5868 fps_1s=60.1
+[2m2026-09-28T08:20:50.407002Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5928 elapsed=98.967 frame_count=5928 fps_1s=60.0
+[2m2026-09-28T08:20:51.407074Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=5988 elapsed=99.967 frame_count=5988 fps_1s=60.0
+[2m2026-09-28T08:20:52.423730Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6049 elapsed=100.983 frame_count=6049 fps_1s=60.0
+[2m2026-09-28T08:20:53.423794Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6109 elapsed=101.984 frame_count=6109 fps_1s=60.0
+[2m2026-09-28T08:20:54.440041Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6170 elapsed=103.000 frame_count=6170 fps_1s=60.0
+[2m2026-09-28T08:20:55.440400Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6230 elapsed=104.000 frame_count=6230 fps_1s=60.0
+[2m2026-09-28T08:20:56.456919Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6291 elapsed=105.016 frame_count=6291 fps_1s=60.0
+[2m2026-09-28T08:20:57.457652Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6351 elapsed=106.016 frame_count=6351 fps_1s=60.0
+[2m2026-09-28T08:20:58.473629Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6412 elapsed=107.034 frame_count=6412 fps_1s=60.0
+[2m2026-09-28T08:20:59.473791Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6472 elapsed=108.034 frame_count=6472 fps_1s=60.0
+[2m2026-09-28T08:21:00.490784Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6533 elapsed=109.051 frame_count=6533 fps_1s=60.0
+[2m2026-09-28T08:21:01.507038Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6594 elapsed=110.068 frame_count=6594 fps_1s=60.0
+[2m2026-09-28T08:21:02.524073Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6655 elapsed=111.084 frame_count=6655 fps_1s=60.0
+[2m2026-09-28T08:21:03.540346Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6716 elapsed=112.100 frame_count=6716 fps_1s=60.0
+[2m2026-09-28T08:21:04.557593Z[0m [32m INFO[0m [2mdemo::bench[0m[2m:[0m [STATS] n=1000 tick=6777 elapsed=113.117 frame_count=6777 fps_1s=60.0
+
+thread 'main' (4424) panicked at C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_remote-0.19.1\src\builtin_methods.rs:1194:28:
+Entity not yet spawned: The entity with ID 4294843839v0 is not spawned; enable `track_location` feature for more details.
+Note that interacting with a not-yet-spawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Encountered a panic in system `bevy_remote::process_remote_requests`!
+Encountered a panic in system `bevy_app::main_schedule::Main::run_main`!

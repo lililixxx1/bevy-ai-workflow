@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","method":"world.remove_components","id":19,"params":{"entity":123456,"components":["demo::sim::Velocity"]}}
