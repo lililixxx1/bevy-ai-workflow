@@ -40,6 +40,10 @@ pub mod m1_phase2 {}
 #[doc = include_str!("../m3-plan.md")]
 pub mod m3_plan {}
 
+/// 《M4 选品备忘录》——候选案对照（A 战术小品 / B 推箱子 / C 卡组 roguelike）与三固化项草案，待 owner 拍板转正（M4 验收①）。
+#[doc = include_str!("../m4-game-selection.md")]
+pub mod m4_game_selection {}
+
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}
