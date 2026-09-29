@@ -48,6 +48,10 @@ pub mod m4_game_selection {}
 #[doc = include_str!("../m4-acceptance.md")]
 pub mod m4_acceptance {}
 
+/// 《窗口前置增强方案（定案版）》——grill 七项定案、A 级三项任务卡（claim-lint / game.snapshot / MCP 薄桥）、B/C/D 级处置与时序红线。
+#[doc = include_str!("../pre-window-plan.md")]
+pub mod pre_window_plan {}
+
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}
