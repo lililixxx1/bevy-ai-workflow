@@ -1,0 +1,10 @@
+# PIT-M-010 原子性实证（T040）：时序 = 冷启动进程（--count 100 --seed 20260926）
+# → game.run_tests ts-17（套件内 launch+还原，handler 独占执行内原子完成）
+# → 隔 1.5s（给 Update 帧边界表现层观察窗口）→ game.run_tests ts-08。
+# 判定：ts-08 相位 A 仍见 radius==90（|Δ|=0.000e0）⇒ 套件内中间态对帧边界不可见。
+# 命令本体：node -e "<下述内联脚本>"（脚本文本见 docs/evidence/ts-17-brp.md 与 pitfalls.md PIT-M-010 引述）
+ts-17: 6/6 failed=0
+PASS ts-08 camera_singleton | Camera3d + Transform 实体 1 个（清单要求恰 1）
+PASS ts-08 orbit_distance_matches_radius | 相位 A(默认90)：XZ 距离 90.000000000 ≈ radius 90（|Δ|=0.000e0 ≤ 0.1；mutate 随动经帧间生效）
+PASS ts-08 rig_defaults_and_transition | 相位 A（首次调用）：radius == 90 且 height == 45（CameraRig::default 字面）成立=true；已改写 radius=
+REAL_EXIT=0

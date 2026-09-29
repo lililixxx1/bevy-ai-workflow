@@ -9,10 +9,11 @@
 //! 套件约定（两阶段判定第二阶段，M1 校准口径）：
 //! - **无净副作用**：套件返回时世界须与调用前状态等价（计数/资源值/初值还原；
 //!   实体号允许变化——回归口径禁止断言绝对 entity id）。只读型套件
-//!   （01/02/03/09/11）天然满足；写通路型套件（05/06/07/10/12）以 ECS 直写
+//!   （01/02/03/09/11/17）天然满足；写通路型套件（05/06/07/10/12）以 ECS 直写
 //!   （`World::spawn`/`despawn`/`get_mut`/`resource_mut`/`trigger`——与 BRP
 //!   handler 同一 `&mut World` 通路）复测判定语义，断言完成即自恢复；08 为
-//!   两连调状态机（首次改 radius=60，第二次断言随动并还原 90）。
+//!   两连调状态机（首次改 radius=60，第二次断言随动并还原 90）；17 只读快照
+//!   断言（T040），其 launch 建场面在出场时清还原。
 //! - BRP 反射序列化通路（spawn_entity/mutate_components/trigger_event 的
 //!   JSON 形态与错误面）属第一阶段已验证面，套件不重复覆盖。
 //! - 跨帧采样断言（tick 递增、相机随动生效窗口）归工具端（task-runner
@@ -32,6 +33,7 @@ pub mod ts10;
 pub mod ts11;
 pub mod ts12;
 pub mod ts14;
+pub mod ts17;
 
 use bevy::prelude::*;
 
@@ -64,6 +66,7 @@ pub fn all() -> Vec<(&'static str, SuiteFn)> {
         ("ts-11", ts11::run),
         ("ts-12", ts12::run),
         ("ts-14", ts14::run),
+        ("ts-17", ts17::run),
     ]
 }
 

@@ -1,0 +1,38 @@
+[CONFIG] game demo | count=100 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.19 (workspace locked)
+[2m2026-09-29T07:39:22.089045Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-09-29T07:39:22.401575Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: false }
+[2m2026-09-29T07:39:22.953365Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-09-29T07:39:22.953422Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] custom methods: game.run_tests / game.screenshot / game.screenshot_log / game.launch_level / game.move_unit / game.attack / game.end_turn / game.snapshot
+[2m2026-09-29T07:39:22.971017Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-09-29T07:39:22.971081Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-09-29T07:39:22.971810Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (65v0)
+[2m2026-09-29T07:39:23.062609Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=100 | seed=20260926
+[2m2026-09-29T07:39:23.062692Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 100 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-09-29T07:39:23.063004Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-09-29T07:39:24.151605Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.1s tick=53 fps_1s=48.9 avg_fps=0.0
+[2m2026-09-29T07:39:25.192630Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.1s tick=116 fps_1s=62.0 avg_fps=59.3
+[2m2026-09-29T07:39:26.209867Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.1s tick=177 fps_1s=60.1 avg_fps=60.0
+[2m2026-09-29T07:39:27.209351Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.1s tick=237 fps_1s=59.8 avg_fps=60.0
+[2m2026-09-29T07:39:28.226369Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=5.1s tick=298 fps_1s=60.1 avg_fps=60.0
+[2m2026-09-29T07:39:29.243210Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=6.1s tick=359 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:30.242467Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=7.2s tick=419 fps_1s=59.8 avg_fps=60.0
+[2m2026-09-29T07:39:31.259697Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=8.2s tick=480 fps_1s=60.1 avg_fps=60.0
+[2m2026-09-29T07:39:32.259937Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=9.2s tick=540 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:32.326551Z[0m [33m WARN[0m [2mbevy_ecs::world[0m[2m:[0m Could not despawn entity: Entity despawned: The entity with ID 530v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+[2m2026-09-29T07:39:32.393344Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=true
+[2m2026-09-29T07:39:32.393373Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=false
+[2m2026-09-29T07:39:33.259944Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=10.2s tick=600 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:34.275938Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=11.2s tick=661 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:35.276289Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=12.2s tick=721 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:36.293495Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=13.2s tick=782 fps_1s=60.1 avg_fps=60.0
+[2m2026-09-29T07:39:37.293033Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=14.2s tick=842 fps_1s=59.9 avg_fps=60.0
+[2m2026-09-29T07:39:38.310394Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=15.2s tick=903 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:39.309397Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=16.2s tick=963 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:40.326102Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=17.2s tick=1024 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:41.325937Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=18.2s tick=1084 fps_1s=59.9 avg_fps=60.0
+[2m2026-09-29T07:39:42.343112Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=19.2s tick=1145 fps_1s=60.0 avg_fps=60.0
+[2m2026-09-29T07:39:43.344574Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=20.3s tick=1205 fps_1s=59.9 avg_fps=60.0
+[2m2026-09-29T07:39:44.342975Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=21.3s tick=1265 fps_1s=59.9 avg_fps=60.0
+[2m2026-09-29T07:39:45.360088Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=22.3s tick=1326 fps_1s=60.2 avg_fps=60.0
+[2m2026-09-29T07:39:46.366968Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=23.3s tick=1385 fps_1s=58.5 avg_fps=59.9

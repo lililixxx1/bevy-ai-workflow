@@ -10,7 +10,9 @@
 //! - [`MOVE_UNIT_METHOD`] / [`ATTACK_METHOD`] / [`END_TURN_METHOD`]
 //!   （[`move_unit`] / [`attack`] / [`end_turn`]）：M4 战斗指令三通路（系统席
 //!   ④⑤⑥⑦，T033；规则面见 [`crate::battle`]——回合机/移动/攻击结算/敌方
-//!   AI/胜负判定，全部整数运算）。
+//!   AI/胜负判定，全部整数运算）；
+//! - [`SNAPSHOT_METHOD`]（[`snapshot`]）：稳定 id 世界状态快照（窗口前置增强
+//!   T040 / A4；业务键布阵 + 战斗态 + 模拟确定性初值面，实体号零出现）。
 //!
 //! handler 形态（SKILL.md §6.2 首次仓库内落地）：`fn(In(params): In<Option<Value>>,
 //! world: &mut World) -> BrpResult`，由 bevy_remote 经 `world.run_system_with`
@@ -31,6 +33,7 @@ pub mod launch_level;
 pub mod move_unit;
 pub mod run_tests;
 pub mod screenshot;
+pub mod snapshot;
 pub mod suites;
 
 use bevy::prelude::*;
@@ -78,6 +81,8 @@ pub const MOVE_UNIT_METHOD: &str = "game.move_unit";
 pub const ATTACK_METHOD: &str = "game.attack";
 /// `game.end_turn` 方法名（M4 战斗指令，T033）。
 pub const END_TURN_METHOD: &str = "game.end_turn";
+/// `game.snapshot` 方法名（稳定 id 世界状态快照，窗口前置增强 T040 / A4）。
+pub const SNAPSHOT_METHOD: &str = "game.snapshot";
 
 /// 自定义方法的资源底座（截图日志；`run_tests` 无状态）。
 pub struct GameRpcPlugin;

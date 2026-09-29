@@ -38,12 +38,16 @@ stdout 即证据日志（请求/响应逐字留痕，重定向保存）。依赖
 台账实测「计数/口径」系审核返工第一大来源 + 外部教训 SpawnForge 380 注册 vs 2 proven）。
 两类断言：**真值断言** 8 条（PIT-B / PIT-M / PAT-B / taskset / 台账行 / `game.*` 方法 /
 进程内套件 / BRP 总数——BRP 总数的 23 内置基数为常量输入，判别力等价于 `game.*` 方法条）
-+ **运行时真值** 1 条（doctest 门禁计数，解析 mtime 最新 `gate-doc-test*.log`；日志缺失
-时该条 SKIP 且退出码仍 0——「门禁跑过」是前提约定，负控/复核时此条不得为 SKIP）+
++ **运行时真值** 1 条（doctest 门禁计数，候选 `gate-doc-test*.log` 按 mtime 降序**回退式
+挑选**——须能同时解析出计数与 `REAL_EXIT=` 才入选，防 mtime 重排选中历史残缺日志致假红；
+被跳过的更新日志在明细中披露；有候选但零份可解析 → FAIL（非自含门禁日志，T037 教训）；
+日志缺失时该条 SKIP 且退出码仍 0——「门禁跑过」是前提约定，负控/复核时此条不得为 SKIP）+
 **一致性断言**（自述头「当前：N 条」×3、意向文档阈值 ×1）。**以上为首批受管面（T038）**，
 扩展随任务按联动规则增补。期望值硬编码于 `src/main.rs` 的 `expect` 模块——**联动规则：
 实况变化（新增条目/方法/套件/台账行）必须同步期望值**，否则收尾即红。行内
 `<!-- claim-lint:ignore 理由 -->` 豁免历史性数字（豁免清单在审核面内）。零第三方依赖。
+方法数锚定口径（T040 S3）：`pub const` + `"game.` 字面量——不按常量名后缀过滤（T002
+同型：无 `_METHOD` 后缀的方法名常量会被漏计且整体仍绿）。
 
 ```bash
 cargo run -p claim-lint   # 退出码 0=无 FAIL（doctest 日志缺失时该条 SKIP 亦 0，见上）
@@ -53,4 +57,7 @@ cargo run -p claim-lint   # 退出码 0=无 FAIL（doctest 日志缺失时该条
   claim-lint-negative-control.log（自述头路负控）/ claim-lint-run2.log /
   claim-lint-run-final.log——终跑为台账 T038 行写入后 `expect::LEDGER` 37→38 联动口径；
   四份均自含 REAL_EXIT）。T039 开源批复跑双档：claim-lint-t039-run1/run2.log
-  （LEDGER 38→39 联动 + 新 doctest 日志选源自证）。
+  （LEDGER 38→39 联动 + 新 doctest 日志选源自证）。T040 加固批复跑：`docs/evidence/ts-17/`
+  claim-lint-t040-run1 / -negative-control（S5 真值路负控：临时改 `expect` 值 → 红 → 复原）/
+  -run2 / -s1-fallback（S1 演示：mtime 最新的残缺日志被回退跳过并在明细披露，仍绿；演示
+  用残缺日志跑毕删除）/ -final 档（四处联动 8/13/17/40）。

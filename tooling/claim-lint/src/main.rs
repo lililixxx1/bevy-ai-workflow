@@ -10,10 +10,13 @@
 //!    （「≥ N 条」）必须与真值一致；行内 `<!-- claim-lint:ignore 理由 -->` 豁免
 //!    历史性数字，豁免行本身留在审核面内。
 //!
-//! doctest 门禁计数为运行时真值：解析 `docs/evidence/**/gate-doc-test*.log` 中
-//! mtime 最新一份的 `test result:` 行与 `REAL_EXIT=` 行；找不到日志时 SKIP（不算过，
-//! 汇总单独计数，要求门禁跑过才算全绿口径——本条 SKIP 不使退出码非零，但会在
-//! 输出显式标注，负控/复核时人工核对此条不得为 SKIP）。
+//! doctest 门禁计数为运行时真值：候选 `docs/evidence/**/gate-doc-test*.log`
+//! 按 mtime 降序**回退式挑选**（T040 S1：须能同时解析出 `test result:` 计数与
+//! `REAL_EXIT=` 行才入选，防 mtime 重排选中历史残缺日志致假红；比选中日志
+//! 更新的不可解析日志在报告明细中披露，不静默吞掉）。无候选日志时 SKIP
+//! （不算过，汇总单独计数，要求门禁跑过才算全绿口径——本条 SKIP 不使退出码
+//! 非零，但会在输出显式标注，负控/复核时人工核对此条不得为 SKIP）；有候选
+//! 但零份可解析时 FAIL（非自含门禁日志，T037 教训）。
 //!
 //! 退出码：0 = 无 FAIL；1 = 存在 FAIL。留痕沿门禁惯例由外层追加
 //! `echo "REAL_EXIT=$?" >> log`；程序自身末行亦打印 `REAL_EXIT=`（与退出码同值）——
@@ -26,15 +29,19 @@ use std::process::ExitCode;
 /// 期望值表（= 受管宣称）。联动规则：实况变化时同步改这里。
 mod expect {
     pub const PIT_B: usize = 51;
-    pub const PIT_M: usize = 9;
+    /// T040 PIT-M-010 入库后 9→10（ts-08 进程史耦合，docs/evidence/ts-17/ 复现）。
+    pub const PIT_M: usize = 10;
     pub const PAT_B: usize = 20;
-    pub const TASKSET: usize = 16;
-    /// T039 行写入后 38→39（开源任务插队；联动规则：实况 +1 行，期望同步）。
-    pub const LEDGER: usize = 39;
-    pub const GAME_METHODS: usize = 7;
+    /// T040 TS-17 任务书入库后 16→17（ts-17-snapshot.md）。
+    pub const TASKSET: usize = 17;
+    /// T040 行写入后 39→40（联动规则：实况 +1 行，期望同步）。
+    pub const LEDGER: usize = 40;
+    /// T040 `game.snapshot` 落地后 7→8（联动规则：每新增 `game.*` 方法同步）。
+    pub const GAME_METHODS: usize = 8;
     /// 0.19.1 内置 BRP 方法数（docs/brp-smoke.md 实测口径）。
     pub const BRP_BUILTIN: usize = 23;
-    pub const IN_PROC_SUITES: usize = 12;
+    /// T040 ts-17 套件注册后 12→13（rpc/suites/mod.rs all() 注册表）。
+    pub const IN_PROC_SUITES: usize = 13;
     /// doctest 门禁计数（passed, failed, ignored）。
     pub const DOCTEST: (usize, usize, usize) = (77, 0, 17);
 }
@@ -73,7 +80,9 @@ fn main() -> ExitCode {
         l.starts_with("| T0")
     });
     let methods = count_lines("game/src/rpc/mod.rs", &root, |l| {
-        l.contains("pub const ") && l.contains("_METHOD: &str = \"game.")
+        // S3（T040）：锚 `pub const` + `"game.` 字面量——不按常量名后缀过滤
+        // （T002 同型教训：无 `_METHOD` 后缀的方法名常量会被漏计且整体仍绿）。
+        l.contains("pub const ") && l.contains("\"game.")
     });
     let suites = count_lines("game/src/rpc/suites/mod.rs", &root, |l| {
         l.trim_start().starts_with("(\"ts-")
@@ -86,7 +95,7 @@ fn main() -> ExitCode {
         ("pat-b", "PAT-B 条数（bevy-dev/patterns/PAT-B-*.md 文件计数）".into(), pat_b, expect::PAT_B),
         ("taskset", "taskset 条目数（assets-methodology/taskset/ts-*.md）".into(), taskset, expect::TASKSET),
         ("ledger", "台账任务行数（task-ledger.md 行首 | T0xx）".into(), ledger, expect::LEDGER),
-        ("game-methods", "game.* 自定义方法数（rpc/mod.rs pub const *_METHOD 锚定）".into(), methods, expect::GAME_METHODS),
+        ("game-methods", "game.* 自定义方法数（rpc/mod.rs pub const + \"game. 字面量锚定，S3/T040）".into(), methods, expect::GAME_METHODS),
         ("suites", "进程内套件数（rpc/suites/mod.rs all() 注册表）".into(), suites, expect::IN_PROC_SUITES),
         ("brp-total", "BRP 方法总数（23 内置 + game.* 推算）".into(), brp_total, expect::BRP_BUILTIN + expect::GAME_METHODS),
     ];
@@ -234,59 +243,70 @@ fn check_intent_thresholds(root: &Path, pit_b: usize, pat_b: usize) -> Report {
     }
 }
 
-/// doctest 门禁计数：取 `docs/evidence/**/gate-doc-test*.log` mtime 最新一份，
-/// 解析最后一处 `test result:` 与 `REAL_EXIT=` 行。
+/// doctest 门禁计数（S1/T040 回退式挑选）：候选日志按 mtime 降序逐一尝试
+/// 解析（末处 `test result:` 计数 + `REAL_EXIT=` 行均在且可读），第一份可解析
+/// 者入选；被跳过的更新日志（mtime 更大但不可解析）在明细中披露。
 fn check_doctest_log(root: &Path) -> Report {
-    let Some((path, text)) = latest_gate_log(root) else {
+    let mut candidates = gate_log_candidates(root);
+    if candidates.is_empty() {
         return Report {
             id: "doctest-gate",
-            desc: "doctest 门禁计数（最新 gate-doc-test*.log 解析）".into(),
+            desc: "doctest 门禁计数（gate-doc-test*.log 回退式挑选）".into(),
             status: Status::Skip("docs/evidence 下未找到 gate-doc-test*.log——门禁跑过后此条不得为 SKIP".into()),
         };
-    };
-    let rel = path.strip_prefix(root).unwrap_or(&path).to_string_lossy().to_string();
-    let last_result = text
-        .lines()
-        .filter(|l| l.starts_with("test result:"))
-        .next_back()
-        .map(|l| l.to_string());
-    let real_exit = text
-        .lines()
-        .filter(|l| l.starts_with("REAL_EXIT="))
-        .next_back()
-        .map(|l| l.to_string());
-    let (Some(res), Some(exit)) = (last_result, real_exit) else {
+    }
+    let mut skipped: Vec<String> = Vec::new();
+    for (path, text) in &mut candidates {
+        let rel = path.strip_prefix(root).unwrap_or(path).to_string_lossy().to_string();
+        let Some(((p, f, i), exit)) = parse_gate_summary(text) else {
+            skipped.push(rel);
+            continue;
+        };
+        let want = expect::DOCTEST;
+        let ok = (p, f, i) == want && exit == "REAL_EXIT=0";
+        let skip_note = if skipped.is_empty() {
+            String::new()
+        } else {
+            format!("；跳过 mtime 更新的不可解析日志 {} 份：{}", skipped.len(), skipped.join(", "))
+        };
         return Report {
             id: "doctest-gate",
-            desc: "doctest 门禁计数（最新 gate-doc-test*.log 解析）".into(),
-            status: Status::Fail(format!("{rel} 缺 test result/REAL_EXIT 行（非自含门禁日志，T037 教训）")),
+            desc: "doctest 门禁计数（gate-doc-test*.log 回退式挑选）".into(),
+            status: if ok {
+                Status::Pass(format!("{rel}：{p} passed / {f} failed / {i} ignored，REAL_EXIT=0{skip_note}"))
+            } else {
+                Status::Fail(format!("{rel}：{p}/{f}/{i} + REAL_EXIT={exit} ≠ 期望 {want:?} + REAL_EXIT=0{skip_note}"))
+            },
         };
-    };
-    let parsed = parse_test_result(&res);
-    let Some((p, f, i)) = parsed else {
-        return Report {
-            id: "doctest-gate",
-            desc: "doctest 门禁计数（最新 gate-doc-test*.log 解析）".into(),
-            status: Status::Fail(format!("{rel} test result 行无法解析：{res}")),
-        };
-    };
-    let want = expect::DOCTEST;
-    let ok = (p, f, i) == want && exit.trim() == "REAL_EXIT=0";
+    }
     Report {
         id: "doctest-gate",
-        desc: "doctest 门禁计数（最新 gate-doc-test*.log 解析）".into(),
-        status: if ok {
-            Status::Pass(format!("{rel}：{p} passed / {f} failed / {i} ignored，REAL_EXIT=0"))
-        } else {
-            Status::Fail(format!("{rel}：{p}/{f}/{i} + {exit} ≠ 期望 {want:?} + REAL_EXIT=0"))
-        },
+        desc: "doctest 门禁计数（gate-doc-test*.log 回退式挑选）".into(),
+        status: Status::Fail(format!(
+            "候选 {} 份全部不可解析（缺 test result/REAL_EXIT 或计数不可读——非自含门禁日志，T037 教训）：{}",
+            skipped.len(),
+            skipped.join(", ")
+        )),
     }
 }
 
-fn latest_gate_log(root: &Path) -> Option<(PathBuf, String)> {
-    let evidence = root.join("docs/evidence");
-    let mut best: Option<(std::time::SystemTime, PathBuf)> = None;
-    let mut stack = vec![evidence];
+/// 从日志文本提取（计数三元组, REAL_EXIT 值）；任一缺失或不可解析 → `None`。
+fn parse_gate_summary(text: &str) -> Option<((usize, usize, usize), String)> {
+    let res = text.lines().filter(|l| l.starts_with("test result:")).next_back()?;
+    let exit = text
+        .lines()
+        .filter(|l| l.starts_with("REAL_EXIT="))
+        .next_back()?
+        .trim()
+        .to_string();
+    let (p, f, i) = parse_test_result(res)?;
+    Some(((p, f, i), exit))
+}
+
+/// 收集 `docs/evidence/**/gate-doc-test*.log`（mtime 降序——回退序即此序）。
+fn gate_log_candidates(root: &Path) -> Vec<(PathBuf, String)> {
+    let mut found: Vec<(std::time::SystemTime, PathBuf)> = Vec::new();
+    let mut stack = vec![root.join("docs/evidence")];
     while let Some(dir) = stack.pop() {
         let Ok(entries) = fs::read_dir(&dir) else { continue };
         for e in entries.flatten() {
@@ -299,17 +319,19 @@ fn latest_gate_log(root: &Path) -> Option<(PathBuf, String)> {
                 .unwrap_or(false)
             {
                 if let Ok(m) = fs::metadata(&p).and_then(|m| m.modified()) {
-                    if best.as_ref().map(|(t, _)| m > *t).unwrap_or(true) {
-                        best = Some((m, p));
-                    }
+                    found.push((m, p));
                 }
             }
         }
     }
-    best.map(|(_, p)| {
-        let text = fs::read_to_string(&p).unwrap_or_default();
-        (p, text)
-    })
+    found.sort_by(|a, b| b.0.cmp(&a.0)); // mtime 降序
+    found
+        .into_iter()
+        .map(|(_, p)| {
+            let text = fs::read_to_string(&p).unwrap_or_default();
+            (p, text)
+        })
+        .collect()
 }
 
 /// 解析 `test result: ok. 77 passed; 0 failed; 17 ignored; ...` 形态。

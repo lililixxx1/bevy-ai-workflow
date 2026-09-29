@@ -1,0 +1,6 @@
+# 命令：grep -c panicked docs/evidence/ts-17/run-a-game.log docs/evidence/ts-17/run-b-game.log（T040 终版复算，B2(a) 自含化——原档仅存退出码行，计数行未落档）
+$ grep -c panicked run-a-game.log run-b-game.log
+docs/evidence/ts-17/run-b-game.log:0
+docs/evidence/ts-17/run-a-game.log:0
+PANIC_GREP_EXIT=1
+# grep 退出 1 = 两档零命中（0 panic 判定成立）；计数行 0/0 为双进程实测

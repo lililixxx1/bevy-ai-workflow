@@ -92,6 +92,11 @@ pub struct SimMetadata {
 }
 
 /// 动态实体标记：index 与确定性初值（BRP `world.query` 的过滤组件）。
+///
+/// **初值不变量**：`origin`/`phase`（及 [`Velocity::linear`]）Startup 生成后
+/// 不再改写（`move_swarm` 只写 `Transform`）——`game.snapshot` 的「同 seed
+/// 跨进程逐字节一致」面即建在此不变量上（T040）；改写初值的代码会静默
+/// 破坏快照确定性基线，须连带重采证据。
 #[derive(Component, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[reflect(Component, Serialize, Deserialize)]
 pub struct Wanderer {

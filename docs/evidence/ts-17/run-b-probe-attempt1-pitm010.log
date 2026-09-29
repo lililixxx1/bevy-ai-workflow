@@ -1,0 +1,20 @@
+[probe:b] BRP ready
+PASS: discover 含 game.snapshot（总 31 = 23 内置 + 8 game.*：game.attack,game.end_turn,game.launch_level,game.move_unit,game.run_tests,game.screenshot,game.screenshot_log,game.snapshot）
+PASS: 未加载关卡 battle=null、sim.paused=false（wanderers=100）
+PASS: params 负控 -32602（params 须为空对象或缺省（game.snapshot 无参数））
+PASS: launch(1,20260928) 后逐字段等价：units 6 行、battle 四字段（turn=1/winner=-1/phase=0/rng_state=20260928）、paused=false、wanderers 100 行四元组（< 2^53 值域内严格相等，PIT-M-009）
+[probe:b] raw snapshot -> ts-17-snapshot-b.raw（16756 bytes）
+PASS: 套件 ts-01：5/5 PASS
+PASS: 套件 ts-02：2/2 PASS
+PASS: 套件 ts-03：2/2 PASS
+PASS: 套件 ts-05：4/4 PASS
+PASS: 套件 ts-06：2/2 PASS
+PASS: 套件 ts-07：3/3 PASS
+FAIL: 套件 ts-08 failed=1
+PASS: 套件 ts-09：3/3 PASS
+PASS: 套件 ts-10：3/3 PASS
+PASS: 套件 ts-11：2/2 PASS
+PASS: 套件 ts-12：4/4 PASS
+PASS: 套件 ts-14：6/6 PASS
+PASS: 套件 ts-17：6/6 PASS
+[probe:b] failures=1

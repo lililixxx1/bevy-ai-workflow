@@ -1,7 +1,7 @@
 # 窗口前置增强方案（定案版）
 
 - 适用 Bevy 版本：**0.19**（本方案三项任务全部落在 0.19 上；版本升级时对照官方 migration guide 批量修订后重过 doctest）。
-- 状态：**owner 已批准**（2026-09-29，grill 七项定案）。T038 已完成并通过 plan-code-reviewer 审核（通过，0 必改；文档级建议即轮落实，代码级 S1/S3/S5 固化进 T040 任务卡）；**T039 = 开源准备与发布（owner 2026-09-29 决策插队，意向文档 v0.3.3）**，完成后 T040 待启。
+- 状态：**owner 已批准**（2026-09-29，grill 七项定案）。T038 已完成并通过 plan-code-reviewer 审核（通过，0 必改；文档级建议即轮落实，代码级 S1/S3/S5 固化进 T040 任务卡）；**T039 = 开源准备与发布（owner 2026-09-29 决策插队，意向文档 v0.3.3）已完成**；**T040 `game.snapshot` 已完成**（含 S1/S3/S5 加固与 PAT-M-008/009 入库，审核记录见 §六）；T041 待启。
 - 依据：外部调研件《Bevy-AI同类项目调研报告》（未入库，2026-09-28/29，四项目公开面核读 + 独立复核 + plan-code-reviewer 终审 5 必改全落实）；意向文档 v0.3.2/0.3.3（调研增补与桥政策边界 / 开源决策与编号勘误）。
 - 定位：M4 收官（T037，344d002）之后、0.20 升级窗口开启之前的**窗口前置增强（pre-window）**序列——不立新里程碑（意向文档无 M5 定义，grill 定案不设立），台账类型标「窗口前置增强」。
 
@@ -43,7 +43,7 @@
 - **前提**：T004 实测 `bevy_brp_mcp 0.22.7 ↔ bevy 0.19.1` 协议级兼容（32 次 tools/call：19 成功、13 失败无一为协议不兼容）——缺口不是可行性是「没接」。意向文档 v0.3.2 已修订 §5.3/§9 放开「自有方法窄白名单薄转发」。
 - **落点**：`tooling/mcp-bridge/`（crate 成员，**不链 bevy**，SKILL §3.6；依赖面沿 task-runner 口径：仅 serde_json + std TCP）。
 - **形态**：stdio MCP（`initialize`/`ping`/`tools/list`/`tools/call`，capabilities `{"tools":{}}`，`protocolVersion` 回显），每工具 = 一次到 `127.0.0.1:15702` 的 HTTP POST；**不新增监听端口**（仅出站连接，硬约束 4 无衰减）；工具面白名单：7 个 `game.*` + 只读 BRP 子集（`rpc.discover` / `world.query` / `world.get_components` / `registry.schema`）——**排除 `world.mutate_components`**（PIT-B-051 进程击穿面）等写通道。MCP stdio 帧格式以规范与 Plinth `mcp.rs` 参照核实，禁凭记忆（SKILL §2）。
-- **判定基准（机器面）**：由 MCP agent 驱动，判定 = `game.run_tests` 返回的 pass/fail 字段 + taskset 断言清单逐条 + 错误码原文——agent 只作驱动，不作判定。
+- **判定基准（机器面）**：由 MCP agent 驱动，判定 = `game.run_tests` 返回的 pass/fail 字段 + taskset 断言清单逐条 + 错误码原文——agent 只作驱动，不作判定。注（T040 审核轮 S2，2026-09-29 实测）：`game.snapshot` 对 `"params": null` 报 -32602（serde 落 `Some(Null)` 走严格拒绝面）——桥侧工具调用须**省略 params 或显式 `{}`**。
 - **验收**：全链路会话留痕（沿 T004 transcript 先例）；tools/list 输出与白名单清单**逐项相等**；错误码透传干净（`-32602` 原样到达）；依赖面零新增。
 
 ## 三、B/C/D 级处置
@@ -59,8 +59,8 @@
 
 ```text
 T038 A2 claim-lint（已完成，审核通过；首个用例 = 意向文档 v0.3.2 与本方案的口径一致性）
-  → T039 开源准备与发布（owner 2026-09-29 决策插队：LICENSE + README + 可公开态终审 + gh 公开仓全历史 push）
-    → T040 A4 game.snapshot（收编 T035 快照字段集 + claim-lint 加固三件）
+  → T039 开源准备与发布（owner 2026-09-29 决策插队：LICENSE + README + 可公开态终审 + gh 公开仓全历史 push；已完成）
+    → T040 A4 game.snapshot（收编 T035 快照字段集 + claim-lint 加固三件；已完成，审核记录见 §六）
       → T041 A1 MCP 薄桥（工具面收录 game.snapshot）
         → 0.20 窗口开启：T043 B2 待重核清单（A2/A4/A1 全部转为窗口回归工具）
 ```
@@ -75,7 +75,7 @@ T038 A2 claim-lint（已完成，审核通过；首个用例 = 意向文档 v0.3
 2. 本方案归档 `docs/` + doctest（**本文件**）。
 3. T038：claim-lint 登记 SKILL §4.1 门禁清单、AGENTS.md 常用命令、`tooling/README.md`。
 4. T040/T041 落地后：SKILL §6 事实速查新增条目（带本地源码行号 + 核实日期），变更记录升版。
-5. PAT-M「宣称-实证对照」「计数机器门禁」两条：**必须等 A2 实际执行留痕后才可入库**（`pitfalls-schema.md` 过程型门禁：≥1 任务实际执行并留痕）——之前只在台账「原因」列记「待验证教训」。
+5. PAT-M「宣称-实证对照」「计数机器门禁」两条：**必须等 A2 实际执行留痕后才可入库**（`pitfalls-schema.md` 过程型门禁：≥1 任务实际执行并留痕）——之前只在台账「原因」列记「待验证教训」。（**已入库**：PAT-M-008/009，T040，2026-09-29——A2 = T038 已四档留痕。）
 6. 台账 T038–T041（及窗口期 T043）按现有体例记录，返工如实计。
 
 ## 六、审核记录
@@ -85,3 +85,4 @@ T038 A2 claim-lint（已完成，审核通过；首个用例 = 意向文档 v0.3
 | v1 终审（plan-code-reviewer，2026-09-29） | 有条件通过（5 必改 + 8 建议 + 8 备注） | 5B 全落实后出定案版：B1 UnitId 失实剔除、B2 tick 步进降级 B4、B3 §9/§5.3 走修订、B4 §2.1 定位纠正、B5 claim-lint crate 形态 |
 | owner grill（2026-09-29） | 七项定案（见 §一） | 本文件即定案产物 |
 | T038 审核轮（plan-code-reviewer，2026-09-29） | **通过（0 必改 + 6 建议 + 12 备注）** | 独立复算 13/13 断言、独立重跑 doctest 77/0/17、独立全新编译 0 警告；文档级 6 项即轮落实（S2/S4/S6/N1/N5/N12），代码级 S1/S3/S5 移交 T040 任务卡（开源任务 T039 插队致 game.snapshot 顺延），N11 SKILL v0.14 预留 |
+| T040 审核轮（2026-09-29；plan-code-reviewer 通道 Provider 故障，独立上下文按同一章程代行） | **有条件通过（2 必改 + 3 建议 + 5 备注）→ 必改全落实** | 代码面 0 缺陷；B1 final 档补跑 / B2 证据保真自含化；S1 小档前言 / S2 params:null→-32602 入 T041 卡注 / S3 sim.rs 初值不变量钉注；审核侧独立复现第三进程快照 md5 同值 + 全门禁复跑绿；返工 2→3 如实计（台账 T040 行） |

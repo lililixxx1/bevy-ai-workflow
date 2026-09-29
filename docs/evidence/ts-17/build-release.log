@@ -1,0 +1,5 @@
+# 命令：cargo build --release -p game（T040 终版树重编，B2(b) 自含化——原档无 REAL_EXIT 行）
+$ cargo build --release -p game
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+    Finished `release` profile [optimized] target(s) in 11.40s
+REAL_EXIT=0
