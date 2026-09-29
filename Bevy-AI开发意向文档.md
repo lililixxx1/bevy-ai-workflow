@@ -1,7 +1,7 @@
 # 意向文档：AI 驱动的 Bevy 游戏开发工作流
 
-- 版本：v0.3.1（审核修订版）
-- 日期：2026-09-26
+- 版本：v0.3.2（调研增补与桥政策边界修订版）
+- 日期：2026-09-29
 - 状态：方向已定，关键决策已 grill 定案，plan-code-reviewer 审核必改项已修订
 - 本文档用途：作为项目的最高层上下文，喂给一切参与本项目的 AI 工具（ZCode / Claude Code / Cursor / MCP agent 等），约束它们的目标、边界与纪律。
 - 用词口径：**知识资产** = §6 两层资产；**自研件** = `tooling/` 下的代码产出；**工作流** = 三条流程本身。
@@ -20,7 +20,7 @@
 - 性能潜力强：纯 Rust + ECS，GPU 驱动渲染（0.16 起）。官方以 Activision Caldera 场景做基准：帧时间较 0.15 提升约 3 倍（移动版 RTX 4090 上 10.16ms ≈ 100fps），数万对象的大场景 CPU 开销普遍降低 3 倍以上——CPU 密集场景（海量实体模拟）是其甜点区。
 - 架构对 AI 天然友好：万物皆代码。0.19 的 BSN 场景系统当前以 `bsn!` 宏形态存在——场景是类型安全、可 diff、可编译验证的 Rust 代码，本就是 AI 擅长操作的形态；官方规划的 `.bsn` 纯文本资产格式（可 diff、可版本控制、免编译）尚未发布，预计随后续版本落地，届时再引入。
 - 零成本零锁定：MIT/Apache 双协议，无分成、无授权费、无黑盒。
-- **AI 工具生态是洼地**（对照 Godot 阵营 11+ 个严肃工具、Unity 侧 9500+ star 的 MCP for Unity，Bevy 侧仅有的两个早期 MCP 见 §3）——洼地意味着自建的工作流与资产有稀缺价值，也意味着什么都得自己动手，与「生态要自己建」的判断互相印证。
+- **AI 工具生态是洼地**（对照 Godot 阵营 11+ 个严肃工具、Unity 侧 9500+ star 的 MCP for Unity；Bevy 侧 2026-09-28/29 四项目实测：≥3 条 BRP 桥 + 若干非 BRP 的 MCP 面，但全部为早期 / 低星（≤72★）/ 单作者项目，明细见 §3）——洼地意味着自建的工作流与资产有稀缺价值，也意味着什么都得自己动手，与「生态要自己建」的判断互相印证。（v0.3.2 修订：原「仅有的两个早期 MCP」系 2026-09-26 时点表述，已被调研证伪。）
 
 ### 2.2 已知短板（不回避，写进风险清单管理）
 - 无官方编辑器（社区原型 Jackdaw 被官方六周年博文评为 "dangerously functional"；官方编辑器连 baseline 都未落地，保守估计仍需 1-2 年）。
@@ -32,11 +32,17 @@
 
 ## 3. 同类方案调研对照（2026-09-26）
 
-**结论先行：桥不稀缺，闭环 + 知识资产才稀缺。** 各阵营已把「MCP 桥接引擎」卷成红海，但没有人把「文档流 + 代码流 + 验证流」连同**可带走的知识资产**做成一个整体闭环——这是本项目的差异化位置。
+**结论先行：桥不稀缺，闭环 + 知识资产才稀缺。** 各阵营已把「MCP 桥接引擎」卷成红海，但没有人把「文档流 + 代码流 + 验证流」连同**可带走的知识资产**做成一个整体闭环——这是本项目的差异化位置。（2026-09-29 注：Bevy 侧桥规模实测升为 ≥3 条 BRP 桥 + 非 BRP MCP 面——前半句仅规模更新、方向不变，后半句结论被 4 个实测样本反而加强。）
 
 | 方案 | 是什么 | 对本项目的含义 |
 |---|---|---|
-| [bevy_brp_mcp](https://mcpservers.org/servers/natepiano/bevy_brp_mcp) | BRP 的 MCP 封装（launch / inspect / mutate），早期项目，活跃开发，已迁统一 workspace，bevy 0.16 起有版本兼容表 | **M2 直接复用**（已定案）。对 0.19 的兼容性是 M2 首个验证任务；不兼容则小幅修补或触发 fork |
+| [bevy_brp](https://github.com/natepiano/bevy_brp) workspace（含 `bevy_brp_mcp`，2026-09 归档迁入） | BRP 工具 workspace：MCP 封装 + extras（截图/输入，需游戏侧加装 bevy_brp_extras）；72★、2,532 commit、活跃；crates.io `bevy_brp_mcp` 0.22.7（依赖 bevy ^0.19.1） | **通用桥复用对象**（已定案）。T004 实测 0.22.7 ↔ bevy 0.19.1 协议级兼容（32 次 tools/call 无一协议性失败）；仓库 license 未检出，引代码前须核许可 |
+| [bevy_mcp](https://github.com/Nub/bevy_mcp) | BRP→MCP 单作者桥：13 工具、bevy 0.18、2 commit，2026-02 起休眠 | 佐证「桥不稀缺」；无额外借鉴面 |
+| [Plinth](https://github.com/Luminary-Analytics/plinth) | Bevy 门面 + agent 工具链：MCP 薄桥（7 工具）/ 精确 tick 步进 / 稳定 id 快照；pre-0.1、休眠约 3 月、crate 为 stub；MIT OR Apache-2.0 | **机制层最高价值参照**（稳定 id 快照与 MCP 薄桥形态；机制引用不引代码）；不作依赖 |
+| [SpawnForge](https://github.com/Tristan578/project-forge) | 浏览器 Bevy/WASM 引擎 + React 编辑器 + MCP 面（**非 BRP**：本机 relay + 页内桥）；9★ 活跃；380 命令注册 vs 2 proven、外部 MCP 生产不通；BSL 1.1（non-production，2030-02-11 转 Apache-2.0） | 方法论参照：把宣称钉在机器门禁上（能力矩阵）；反面教材：宣称 > 实证 |
+| [Axiom](https://github.com/cats2333/bevy_ai_editor) | egui 桌面编辑器 + BRP 写通道（组件代理技法：Reflect 组件 + `Added<T>` handler）；13★、休眠约 7 月；声明 MIT/Apache 但仓库无 LICENSE 文件 | 组件代理作 0.20 自定义方法签名变更时的逃生通道预案；编辑器路线不翻案（§9） |
+| [bevy-agent](https://github.com/jbuehler23/bevy-agent) | CLI 单次 LLM 生成 Rust：无编译回灌 / 无运行时验证 / 版本硬编码 0.12；12★、废弃 | 反面教材：无验证闭环的代码生成（本项目工作流二的严格子集） |
+| [Jackdaw](https://github.com/jbuehler23/jackdaw) | 社区编辑器原型（520★、活跃、非 AI） | 佐证 §2.2「dangerously functional」评价与官方编辑器空窗 |
 | [bevy_debugger_mcp](https://github.com/ladvien/bevy_debugger_mcp) | Claude Code + MCP + BRP 调试器，11 个工具，有测试但 vibe coded | 备选与参照，其工具清单可借鉴 |
 | [bevy 官方讨论 #20042](https://github.com/bevyengine/bevy/discussions/20042) | 社区提案：游戏内可插拔 MCP Server | 佐证「AI 操控 Bevy」方向获社区关注；也提醒未来官方/半官方方案可能吸收自建件 |
 | Godot / Unity MCP 阵营 | Godot 11+ 工具（Godot-MCP、tomyud1/godot-mcp、Godot MCP Pro 162 工具、Fennara 的诊断+截图+patch-and-rerun）；Unity 侧 MCP for Unity 9500+ star，同团队产品已上架 Godot 官方商店 | 同类能力的成熟参照系：场景/脚本操作、截图、跑测试、运行时错误反馈、patch-and-rerun 是业界收敛的能力面；自研件应对标此能力面设计，勿低于水位 |
@@ -74,7 +80,7 @@
 - 每次踩坑在**同一任务收尾前、最迟下次会话开始前**回写错题本，并标注通用性分级（引擎特定 / 方法论级），分级决定条目落入哪层（§6）。
 
 ### 5.3 工作流三：AI 操控 Bevy（验证闭环）
-- 技术底座：官方 `bevy_remote`（BRP）常驻游戏（`RemotePlugin` + `RemoteHttpPlugin`）+ **复用 bevy_brp_mcp 作为通用桥**（已定案，不自建通用桥）。
+- 技术底座：官方 `bevy_remote`（BRP）常驻游戏（`RemotePlugin` + `RemoteHttpPlugin`）+ **通用桥复用 bevy_brp_mcp / bevy_brp workspace**（已定案，不自建通用桥；fork 仅在其实测不满足时触发）。**例外（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发（stdio→BRP，工具面白名单窄且可枚举、不含任意 RPC 载荷与写通道）属允许的自研形态**——自研件 `tooling/mcp-bridge`（T040）：复用 BRP 传输而非重造，不是通用桥。
 - **安全约束：BRP 仅监听回环地址（127.0.0.1），禁止绑定 0.0.0.0 或局域网地址**（BRP 无鉴权，暴露即等于交出游戏操控权）；远程调试需求如出现，单独立项评估。
 - 分三步走：
   1. 人工用 curl/脚本直调 BRP 内置方法（`world.query` / `world.spawn_entity` / `world.mutate_components` / `registry.schema`），验证通路；
@@ -136,7 +142,7 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 ## 9. 明确不做的事（当前版本）
 
 - 不做移动端——不适配、不打包、不设评估里程碑；未来若想法变化按新立项处理。
-- 不自建通用 MCP 桥（复用 bevy_brp_mcp；fork/自建仅在其实测不满足时触发）。
+- 不自建通用 MCP 桥（通用面复用 bevy_brp_mcp / bevy_brp workspace；fork 仅在其实测不满足时触发）。**边界（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发属允许的自研形态**（见 §5.3 修订与 `docs/pre-window-plan.md` T040）——白名单窄且可枚举、无任意 RPC 载荷与文件/shell 写通道。
 - 不等官方编辑器，不做编辑器二次开发。
 - 不做网络多人功能（除非选品强制要求，届时单独立项评审）。
 - 不向 Bevy 上游承诺维护职责。
@@ -156,6 +162,7 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 
 ## 变更记录
 
+- **v0.3.2（2026-09-29，同类项目调研增补 + 桥政策边界修订，七项 grill 定案）**：①§2.1「Bevy 侧仅有的两个早期 MCP」失实表述改写（2026-09-28/29 四项目实测：≥3 条 BRP 桥 + 非 BRP MCP 面，全部早期/低星（≤72★）/单作者）；②§3 表格以 bevy_brp workspace 行**继任合并**原 bevy_brp_mcp 行（含 T004 兼容实测结论与许可标注）并增补 6 行（bevy_mcp / Plinth / SpawnForge / Axiom / bevy-agent / Jackdaw），结论句追加规模更新注记（「桥不稀缺，闭环 + 知识资产才稀缺」后半句保留并加强）；③§5.3/§9 同步修订：自有 `game.*` 方法的窄白名单 MCP 薄转发列为允许的自研形态（解锁 T040 `tooling/mcp-bridge`），通用桥复用对象更新为 bevy_brp_mcp / bevy_brp workspace；④关键事实信源增补。同批 grill 七项定案（详见 `docs/pre-window-plan.md`）：A 级三项 T038–T040 批准立项（台账标「窗口前置增强」，不立 M5）；B4 精确 tick 步进维持记录项；B1 端口收口不做记档；优化方案归档 docs/ 挂 doctest 门禁。依据：`q-novel/Bevy-AI同类项目调研报告.md`（2026-09-28/29，公开面核读 + 独立复核 + plan-code-reviewer 终审 5 必改全落实）。
 - **2026-09-28（M3 §5.2 分型口径细化注记）**：M3 Block H 净室重跑产出运行时行为型错题（PIT-B-051：BRP `world.mutate_components` 对不存在实体裸 panic 击穿进程——反例载体为 wire 请求与 panic 栈，非代码），§5.2「资产入库门禁（Voyager 原则，按条目类型分型）」追加带日期注记（原文未动）：非代码载体错题以 `text` 围栏 + 证据锚定入库。M3 验收结论见 `docs/m3-acceptance.md`。
 - **2026-09-26（Hotpatching 冒烟结论回写，§10 第 6 条）**：冒烟通过，§5.3 Hotpatching 条目末尾追加带日期结论注记（原文未动）；新增 `tooling/hotpatch-smoke/`（最小冒烟 crate + 运行证据）；修复根 Cargo.toml 的 `tooling/*` glob 成员误吸入 `tooling/brp-logs`（无 Cargo.toml 的证据目录）导致 workspace 解析失败的问题（加 `exclude`）。
 - **v0.3.1（2026-09-26）**：plan-code-reviewer 审核（裁决：有条件通过）后修订，6 项必改全部落实：B1 M1「一次通过」定义与两阶段判定机制、§10 依赖序修正；B2 M3 ④ 样本池改为「台账返工 ≥1 任务」并规定 M1 失败快照不可重做；B3 M2 截图口径与「无人工点击」可核查定义；B4 自研件 run_tests/screenshot 纳入 M2 验收③；B5 错题/模式门禁分型（反例 `compile_fail` 标记）+ 方法论级条目落点（assets-methodology/pitfalls.md、patterns.md）；B6 帧率基线采集口径。同时采纳审核建议：S1 版本锁写法更正（`"0.19"` + Cargo.lock，`=` 精确锁不适用于 x 范围）；S2 新增「资产不增值」风险与未达标处置规则、升级窗口完成判定；S3 M4 可玩性定义与选品备忘录固化项；S4 doctest 机制指定（include_str! 薄封装、no_run 规范）；S5 「24 小时回写」改为可执行的会话口径；S6 PR 文档纪律收窄（豁免纯重构/格式化）；S7 BRP 仅监听回环地址；G1 补 SKILL.md v0 冷启动步骤；G2 里程碑执行规则（依赖序/并行/时间盒待定）；G3 游戏核心系统入测试集；G4 变更记录补注 v0.2 的 M5 移动端评估里程碑已随移动端移除而删除；G5 统一「知识资产/自研件/工作流」用词口径。复核（裁决：通过）后处理两条非阻断备注：台账 schema 补「耗时」字段（升级窗口的工时量化有出处）；台账启用上移至骨架后首位、序号措辞改为「建议次序，前置/并行以各条内注为准」、Hotpatching 冒烟标注可并行。
@@ -171,7 +178,9 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 - Bevy 0.16 发布文（GPU-driven / Caldera 基准数字）：<https://bevy.org/news/bevy-0-16>
 - docs.rs `bevy_remote`（BRP 方法集 `world.*` / `registry.schema` / `with_method`）：<https://docs.rs/bevy_remote/latest/bevy_remote/>
 - Bevy 六周年博文（Jackdaw / no-AI 政策重写中 / .bsn 即将入 main）：<https://bevy.org/news/bevys-sixth-birthday>
-- bevy_brp_mcp（BRP 的 MCP 封装，本项目 M2 复用对象）：<https://mcpservers.org/servers/natepiano/bevy_brp_mcp>
+- bevy_brp_mcp（BRP 的 MCP 封装，本项目通用桥复用对象）：<https://mcpservers.org/servers/natepiano/bevy_brp_mcp>
+- bevy_brp workspace（bevy_brp_mcp 2026-09 归档迁入处；license 未检出，引代码前须核）：<https://github.com/natepiano/bevy_brp>
+- 同类项目实测四项（2026-09-28/29 调研，公开面核读 + 独立复核）：Plinth <https://github.com/Luminary-Analytics/plinth> · SpawnForge <https://github.com/Tristan578/project-forge> · Axiom <https://github.com/cats2333/bevy_ai_editor> · bevy-agent <https://github.com/jbuehler23/bevy-agent>
 - bevy_debugger_mcp（备选参照）：<https://github.com/ladvien/bevy_debugger_mcp>
 - bevy 官方讨论：游戏内可插拔 MCP 提案：<https://github.com/bevyengine/bevy/discussions/20042>
 - Voyager（技能库范式）：<https://arxiv.org/abs/2305.16291>
