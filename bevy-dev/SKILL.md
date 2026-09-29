@@ -1,4 +1,4 @@
-# bevy-dev skill v0.12 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.13 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -107,6 +107,7 @@
 
 - `cargo check --workspace` 通过（真实退出码；全量编译可能超 10 分钟，后台跑 + 轮询）。失败即修，禁止带错提交。
 - 涉及 `docs/` 或 `bevy-dev/pitfalls.md` 变更：另跑 `cargo test --doc -p docs`，全绿才合并（意向文档 §5.1；v0.6 起 pitfalls.md 亦在门禁内，见 §2.3）。
+- 涉及**计数/口径类宣称**（错题/模式/taskset/台账行/`game.*` 方法/套件/doctest 计数的任何增删）：`cargo run -p claim-lint` 全绿（T038 起纳入收尾门禁；期望值联动规则与豁免标记见 `tooling/claim-lint/src/main.rs` 模块文档——实况变化必须同步 `expect` 表，否则收尾即红）。
 
 ### 4.2 运行时行为 → 工作流三（BRP 闭环）
 
@@ -290,6 +291,7 @@
 
 ## 变更记录
 
+- **v0.13（2026-09-29）**：§4.1 门禁清单增第三条——claim-lint 计数机器门禁（窗口前置增强 T038 / A2，`docs/pre-window-plan.md`；动因 = 台账实测「计数/口径」系审核返工第一大来源——T002/T004/T020/T023/T029/T034/T037，外部教训 SpawnForge 380 注册 vs 2 proven）。13 条断言（8 真值 + 3 自述头一致性 + 1 意向文档阈值 + 1 doctest 门禁计数运行时真值）；crate 成员落点规避 PIT-M-003 复发；首跑 13/13 PASS + 负控自证红（REAL_EXIT=1）+ 复原绿，证据 `docs/evidence/pre-window/`。同批：意向文档 v0.3.2（§9/§5.3 放开自有方法窄白名单 MCP 薄转发，T040 前提）。
 - **v0.12（2026-09-28）**：§6.2 增补 BRP 破坏性语义速查——`world.mutate_components` 对不存在实体无优雅错误分支（handler 裸调 `world.entity_mut`，`builtin_methods.rs:1194`），panic 击穿整个进程（101；客户端指纹 curl 52 空响应 + 后续 7 拒连）；对照 insert/despawn/remove/reparent 走 `get_entity_mut` → `-23401`。来源：M3 Block H 净室重跑 T004 错误探针首触发（注入资产此前无记载，净新发现），对应 PIT-B-051 入库（错题本 50→51 条）；证据 `docs/evidence/m3-cleanroom/`（t004-crash-evidence.txt + judge-t004.md）。
 - **v0.11（2026-09-28）**：新增 §6.14 渲染/窗口/UI/数学速查（M3 批次五探针双重验证，三批编译探针 g1-g44 + 运行时探针 R1-R5：bundle 终结、Mesh3d/MeshMaterial3d、相机配置伴生组件化（Hdr/RenderTarget/Msaa per-Camera 默认 Sample4）、AmbientLight 组件化+GlobalAmbientLight、Color 常量收窄+emissive LinearRgba、UI 重构（Style 并入 Node/px-percent/TextSpan 子实体/ImageNode/BorderColor 每边/Val 视口单位）、CursorOptions、prelude 缺口两批清单、shadow_maps_enabled、Dir3::new Result、single() Result、Startup 延迟复踩；无坑确认 12 项 + sRGB 传递函数/looking_at dot=1 运行时口径）。对应 PIT-B-031..050（20 条）+ PAT-B-011..020（10 条，窗口/相机/PBR/反射资源/组装/观测/套件/回环/CLI/驱动脚本）入库。探针证据 `docs/evidence/m3-assets/batch-g/`。
 - **v0.10（2026-09-27）**：新增 §6.13 资产/场景/时间/输入速查（M3 批次四探针双重验证：EventReader 类型删除与 AssetEvent Message 化、Handle enum Strong/Uuid 形态与 AssetId struct variant、bevy_scene 整体重构为 BSN（DynamicScene/SceneRoot 全移除、spawn_scene(bsn!) 语法与 Clone bound、.bsn 未发布）、set_relative_speed 改名与 panic 语义 + pause/倍速运行时实测、AccumulatedMouseMotion prelude 缺口、load_folder 'static 约束；无坑确认 6 项；场景序列化记探查边界、PAT 记 0）。对应 PIT-B-026..030 入库。探针证据 `docs/evidence/m3-assets/batch-f/`。

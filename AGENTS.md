@@ -4,12 +4,12 @@
 
 搭建并验证一套「AI 长期驻场」的 Bevy 游戏开发工作流。**主产出是工作流本身与两层知识资产**，游戏只是试金石（逼出真实约束、喂真实教训），不是产品野心。任何任务的优先级判断都以这一标尺为准。
 
-**最高上下文：[`Bevy-AI开发意向文档.md`](./Bevy-AI开发意向文档.md)（v0.3.1）**。改动仓库结构、里程碑、版本策略、范围边界等敏感区域前，必须先读该文档对应章节；与其冲突时以该文档为准。
+**最高上下文：[`Bevy-AI开发意向文档.md`](./Bevy-AI开发意向文档.md)（v0.3.2）**。改动仓库结构、里程碑、版本策略、范围边界等敏感区域前，必须先读该文档对应章节；与其冲突时以该文档为准。
 
-## 当前状态（2026-09-26）
+## 当前状态（2026-09-29）
 
-- 仓库仅有意向文档，**代码骨架尚未创建**（意向文档 §10 第 1 条）。不要因为找不到 `Cargo.toml`、`game/`、`tooling/` 而困惑——它们还不存在，首次受命时应按 §6 结构初始化。
-- 尚非 git 仓库。
+- M1–M4 已完成（台账 T001–T037；M4 验收见 `docs/m4-acceptance.md`）。骨架早已就绪：`game/`（bevy 0.19 锁版本）、`docs/`（doctest 门禁内）、`assets-methodology/`、`bevy-dev/`、`tooling/` 均在——仓库实况以 git log 与台账为准，勿依赖本节快照。
+- 进行中：**窗口前置增强**序列（T038 起，`docs/pre-window-plan.md`；grill 七项定案 2026-09-29：claim-lint / game.snapshot / MCP 薄桥三项已批，0.20 窗口开启即冻结未完项）。
 
 ## 目标仓库结构（意向文档 §6，已定案）
 
@@ -35,6 +35,7 @@ tooling/               # 自研件：游戏专属 RPC（launch_level / run_tests
 
 - `cargo check` — 每次代码变更的门禁
 - `cargo test --doc` — `docs/` 的 Markdown 经 `include_str!` 薄封装纳入 crate 文档后的 doctest 门禁；长运行示例标 `no_run` 并注明理由，禁止无理由 `ignore`
+- `cargo run -p claim-lint` — 计数与宣称的机器门禁（错题/模式/taskset/台账/方法/套件/doctest 计数钉在真值再计算上；实况变化须同步 `tooling/claim-lint/src/main.rs` 的 `expect` 表，T038 起）
 - `cargo run --release` — 运行游戏（帧率基线采集有固定口径：release 构建、固定分辨率/vsync、记录 CPU/GPU/驱动、固定随机种子）
 
 ## 知识资产纪律

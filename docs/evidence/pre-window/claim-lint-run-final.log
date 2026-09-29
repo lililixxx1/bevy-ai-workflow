@@ -1,0 +1,33 @@
+   Compiling claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\claim-lint)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.91s
+     Running `target\debug\claim-lint.exe`
+[PASS] pit-b          PIT-B 条数（bevy-dev/pitfalls.md 标题计数，模板行扣除）
+         实际 51 = 期望 51
+[PASS] pit-m          PIT-M 条数（assets-methodology/pitfalls.md 标题计数）
+         实际 9 = 期望 9
+[PASS] pat-b          PAT-B 条数（bevy-dev/patterns/PAT-B-*.md 文件计数）
+         实际 20 = 期望 20
+[PASS] taskset        taskset 条目数（assets-methodology/taskset/ts-*.md）
+         实际 16 = 期望 16
+[PASS] ledger         台账任务行数（task-ledger.md 行首 | T0xx）
+         实际 38 = 期望 38
+[PASS] game-methods   game.* 自定义方法数（rpc/mod.rs pub const *_METHOD 锚定）
+         实际 7 = 期望 7
+[PASS] suites         进程内套件数（rpc/suites/mod.rs all() 注册表）
+         实际 12 = 期望 12
+[PASS] brp-total      BRP 方法总数（23 内置 + game.* 推算）
+         实际 30 = 期望 30
+[PASS] self-pit-b     PIT-B 自述头一致性（bevy-dev/pitfalls.md）
+         bevy-dev/pitfalls.md 自述头 1 处 = 真值 51
+[PASS] self-pit-m     PIT-M 自述头一致性（assets-methodology/pitfalls.md）
+         assets-methodology/pitfalls.md 自述头 1 处 = 真值 9
+[PASS] self-pat-b     PAT-B 自述头一致性（bevy-dev/patterns/README.md）
+         bevy-dev/patterns/README.md 自述头 1 处 = 真值 20
+[PASS] intent-threshold 意向文档 M3 阈值断言（错题本 ≥ 50 / 模式库 ≥ 20）
+         PIT-B 51 ≥ 50，PAT-B 20 ≥ 20
+[PASS] doctest-gate   doctest 门禁计数（最新 gate-doc-test*.log 解析）
+         docs\evidence\pre-window\gate-doc-test-t038.log：77 passed / 0 failed / 17 ignored，REAL_EXIT=0
+
+claim-lint 汇总：13 条断言，PASS 13 / FAIL 0 / SKIP 0
+REAL_EXIT=0
+REAL_EXIT=0

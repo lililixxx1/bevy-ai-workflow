@@ -1,0 +1,12 @@
+# 自研件：计数与宣称的机器门禁（窗口前置增强 T038 / A2，docs/pre-window-plan.md）。
+# 把文档与资产中的关键计数钉在真值再计算上——「宣称 > 实证」的机制化对冲
+# （Voyager 原则从态度变机制；外部教训 = SpawnForge 380 注册 vs 2 proven、营销写 350）。
+# crate 成员（随 tooling/* glob 入 workspace——规避 PIT-M-003 非 crate 目录复发）；
+# 零第三方依赖：纯 std 文本处理，不引入版本解析面。
+[package]
+name = "claim-lint"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]

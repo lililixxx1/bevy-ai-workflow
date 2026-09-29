@@ -31,3 +31,20 @@ stdout 即证据日志（请求/响应逐字留痕，重定向保存）。依赖
 - 全 12 任务脚本化重跑（run/pause/bench-judge + 字面值绑定）：`docs/evidence/m1-phase2.md`
   （T020，驱动脚本 `docs/evidence/m1-phase2/run-all.sh`——必须以后台任务运行，见
   PIT-M-007；套件侧约定「无净副作用」见 `game/src/rpc/suites/mod.rs` 模块文档）。
+
+## claim-lint/
+
+计数与宣称的机器门禁（窗口前置增强 T038 / A2，`docs/pre-window-plan.md`；动因 =
+台账实测「计数/口径」系审核返工第一大来源 + 外部教训 SpawnForge 380 注册 vs 2 proven）。
+两类断言：**真值断言**（PIT-B / PIT-M / PAT-B / taskset / 台账行 / `game.*` 方法 / 进程内
+套件 / BRP 总数 / doctest 门禁计数，共 9 条）+ **一致性断言**（自述头「当前：N 条」×3、
+意向文档阈值 ×1）。期望值硬编码于 `src/main.rs` 的 `expect` 模块——**联动规则：实况变化
+（新增条目/方法/套件/台账行）必须同步期望值**，否则收尾即红。行内
+`<!-- claim-lint:ignore 理由 -->` 豁免历史性数字（豁免清单在审核面内）。零第三方依赖。
+
+```bash
+cargo run -p claim-lint   # 退出码 0=全绿；留痕：> log 2>&1; echo "REAL_EXIT=$?" >> log
+```
+
+- 首跑 13/13 PASS + 负控自证红 + 复原绿三档证据：`docs/evidence/pre-window/`
+  （claim-lint-run1.log / claim-lint-negative-control.log / claim-lint-run2.log，均自含 REAL_EXIT）。
