@@ -1,6 +1,6 @@
 # 意向文档：AI 驱动的 Bevy 游戏开发工作流
 
-- 版本：v0.3.2（调研增补与桥政策边界修订版）
+- 版本：v0.3.3（开源决策与编号勘误版）
 - 日期：2026-09-29
 - 状态：方向已定，关键决策已 grill 定案，plan-code-reviewer 审核必改项已修订
 - 本文档用途：作为项目的最高层上下文，喂给一切参与本项目的 AI 工具（ZCode / Claude Code / Cursor / MCP agent 等），约束它们的目标、边界与纪律。
@@ -80,7 +80,7 @@
 - 每次踩坑在**同一任务收尾前、最迟下次会话开始前**回写错题本，并标注通用性分级（引擎特定 / 方法论级），分级决定条目落入哪层（§6）。
 
 ### 5.3 工作流三：AI 操控 Bevy（验证闭环）
-- 技术底座：官方 `bevy_remote`（BRP）常驻游戏（`RemotePlugin` + `RemoteHttpPlugin`）+ **通用桥复用 bevy_brp_mcp / bevy_brp workspace**（已定案，不自建通用桥；fork 仅在其实测不满足时触发）。**例外（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发（stdio→BRP，工具面白名单窄且可枚举、不含任意 RPC 载荷与写通道）属允许的自研形态**——自研件 `tooling/mcp-bridge`（T040）：复用 BRP 传输而非重造，不是通用桥。
+- 技术底座：官方 `bevy_remote`（BRP）常驻游戏（`RemotePlugin` + `RemoteHttpPlugin`）+ **通用桥复用 bevy_brp_mcp / bevy_brp workspace**（已定案，不自建通用桥；fork 仅在其实测不满足时触发）。**例外（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发（stdio→BRP，工具面白名单窄且可枚举、不含任意 RPC 载荷与写通道）属允许的自研形态**——自研件 `tooling/mcp-bridge`（T041）：复用 BRP 传输而非重造，不是通用桥。
 - **安全约束：BRP 仅监听回环地址（127.0.0.1），禁止绑定 0.0.0.0 或局域网地址**（BRP 无鉴权，暴露即等于交出游戏操控权）；远程调试需求如出现，单独立项评估。
 - 分三步走：
   1. 人工用 curl/脚本直调 BRP 内置方法（`world.query` / `world.spawn_entity` / `world.mutate_components` / `registry.schema`），验证通路；
@@ -142,11 +142,11 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 ## 9. 明确不做的事（当前版本）
 
 - 不做移动端——不适配、不打包、不设评估里程碑；未来若想法变化按新立项处理。
-- 不自建通用 MCP 桥（通用面复用 bevy_brp_mcp / bevy_brp workspace；fork 仅在其实测不满足时触发）。**边界（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发属允许的自研形态**（见 §5.3 修订与 `docs/pre-window-plan.md` T040）——白名单窄且可枚举、无任意 RPC 载荷与文件/shell 写通道。
+- 不自建通用 MCP 桥（通用面复用 bevy_brp_mcp / bevy_brp workspace；fork 仅在其实测不满足时触发）。**边界（v0.3.2，2026-09-29 grill 定案）：自有 `game.*` 方法的窄白名单 MCP 薄转发属允许的自研形态**（见 §5.3 修订与 `docs/pre-window-plan.md` T041）——白名单窄且可枚举、无任意 RPC 载荷与文件/shell 写通道。
 - 不等官方编辑器，不做编辑器二次开发。
 - 不做网络多人功能（除非选品强制要求，届时单独立项评审）。
 - 不向 Bevy 上游承诺维护职责。
-- 当前不决策开源与否（保持可公开态，M3 后再议）。
+- **已决策开源（2026-09-29，owner）**：GitHub 公开仓 `bevy-ai-workflow`，MIT OR Apache-2.0 双许可，全历史公开；「保持可公开态」纪律持续有效（两层资产不掺私货）。开源准备与发布 = 台账 T039。
 
 ## 10. 下一步（批准后立即执行；序号为建议次序，前置/并行关系以各条内注为准）
 
@@ -162,7 +162,8 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 
 ## 变更记录
 
-- **v0.3.2（2026-09-29，同类项目调研增补 + 桥政策边界修订，七项 grill 定案）**：①§2.1「Bevy 侧仅有的两个早期 MCP」失实表述改写（2026-09-28/29 四项目实测：≥3 条 BRP 桥 + 非 BRP MCP 面，全部早期/低星（≤72★）/单作者）；②§3 表格以 bevy_brp workspace 行**继任合并**原 bevy_brp_mcp 行（含 T004 兼容实测结论与许可标注）并增补 6 行（bevy_mcp / Plinth / SpawnForge / Axiom / bevy-agent / Jackdaw），结论句追加规模更新注记（「桥不稀缺，闭环 + 知识资产才稀缺」后半句保留并加强）；③§5.3/§9 同步修订：自有 `game.*` 方法的窄白名单 MCP 薄转发列为允许的自研形态（解锁 T040 `tooling/mcp-bridge`），通用桥复用对象更新为 bevy_brp_mcp / bevy_brp workspace；④关键事实信源增补。同批 grill 七项定案（详见 `docs/pre-window-plan.md`）：A 级三项 T038–T040 批准立项（台账标「窗口前置增强」，不立 M5）；B4 精确 tick 步进维持记录项；B1 端口收口不做记档；优化方案归档 docs/ 挂 doctest 门禁。依据：`q-novel/Bevy-AI同类项目调研报告.md`（2026-09-28/29，公开面核读 + 独立复核 + plan-code-reviewer 终审 5 必改全落实）。
+- **v0.3.3（2026-09-29，开源决策 + 任务编号勘误）**：①§9「当前不决策开源与否」改写为**已决策开源**（owner 裁决四项参数：GitHub 公开仓 `bevy-ai-workflow` / MIT OR Apache-2.0 双许可 / 全历史公开 / 外部调研件不收编）：新增 LICENSE + LICENSE-MIT + LICENSE-APACHE + 根 README，开源准备与发布 = 台账 T039（含可公开态终审：受管文件零机器路径/零敏感信息、git 全历史统一 bot 身份）；②任务编号勘误——开源任务插队 T039，`game.snapshot` T039→**T040**、MCP 薄桥 T040→**T041**（§5.3/§9 与 `docs/pre-window-plan.md` 内引用同步）；③v0.3.2 entry 中外部调研件的本机路径引用按「不收编」定案改为「未入库」措辞。
+- **v0.3.2（2026-09-29，同类项目调研增补 + 桥政策边界修订，七项 grill 定案）**：①§2.1「Bevy 侧仅有的两个早期 MCP」失实表述改写（2026-09-28/29 四项目实测：≥3 条 BRP 桥 + 非 BRP MCP 面，全部早期/低星（≤72★）/单作者）；②§3 表格以 bevy_brp workspace 行**继任合并**原 bevy_brp_mcp 行（含 T004 兼容实测结论与许可标注）并增补 6 行（bevy_mcp / Plinth / SpawnForge / Axiom / bevy-agent / Jackdaw），结论句追加规模更新注记（「桥不稀缺，闭环 + 知识资产才稀缺」后半句保留并加强）；③§5.3/§9 同步修订：自有 `game.*` 方法的窄白名单 MCP 薄转发列为允许的自研形态（解锁 MCP 薄桥任务 `tooling/mcp-bridge`），通用桥复用对象更新为 bevy_brp_mcp / bevy_brp workspace；④关键事实信源增补。同批 grill 七项定案（详见 `docs/pre-window-plan.md`）：A 级三项批准立项（台账标「窗口前置增强」，不立 M5）；B4 精确 tick 步进维持记录项；B1 端口收口不做记档；优化方案归档 docs/ 挂 doctest 门禁。依据：外部调研件《Bevy-AI同类项目调研报告》（未入库，2026-09-28/29，公开面核读 + 独立复核 + plan-code-reviewer 终审 5 必改全落实；v0.3.3 勘误：原文本机路径引用已按「不收编」定案改为此措辞）。
 - **2026-09-28（M3 §5.2 分型口径细化注记）**：M3 Block H 净室重跑产出运行时行为型错题（PIT-B-051：BRP `world.mutate_components` 对不存在实体裸 panic 击穿进程——反例载体为 wire 请求与 panic 栈，非代码），§5.2「资产入库门禁（Voyager 原则，按条目类型分型）」追加带日期注记（原文未动）：非代码载体错题以 `text` 围栏 + 证据锚定入库。M3 验收结论见 `docs/m3-acceptance.md`。
 - **2026-09-26（Hotpatching 冒烟结论回写，§10 第 6 条）**：冒烟通过，§5.3 Hotpatching 条目末尾追加带日期结论注记（原文未动）；新增 `tooling/hotpatch-smoke/`（最小冒烟 crate + 运行证据）；修复根 Cargo.toml 的 `tooling/*` glob 成员误吸入 `tooling/brp-logs`（无 Cargo.toml 的证据目录）导致 workspace 解析失败的问题（加 `exclude`）。
 - **v0.3.1（2026-09-26）**：plan-code-reviewer 审核（裁决：有条件通过）后修订，6 项必改全部落实：B1 M1「一次通过」定义与两阶段判定机制、§10 依赖序修正；B2 M3 ④ 样本池改为「台账返工 ≥1 任务」并规定 M1 失败快照不可重做；B3 M2 截图口径与「无人工点击」可核查定义；B4 自研件 run_tests/screenshot 纳入 M2 验收③；B5 错题/模式门禁分型（反例 `compile_fail` 标记）+ 方法论级条目落点（assets-methodology/pitfalls.md、patterns.md）；B6 帧率基线采集口径。同时采纳审核建议：S1 版本锁写法更正（`"0.19"` + Cargo.lock，`=` 精确锁不适用于 x 范围）；S2 新增「资产不增值」风险与未达标处置规则、升级窗口完成判定；S3 M4 可玩性定义与选品备忘录固化项；S4 doctest 机制指定（include_str! 薄封装、no_run 规范）；S5 「24 小时回写」改为可执行的会话口径；S6 PR 文档纪律收窄（豁免纯重构/格式化）；S7 BRP 仅监听回环地址；G1 补 SKILL.md v0 冷启动步骤；G2 里程碑执行规则（依赖序/并行/时间盒待定）；G3 游戏核心系统入测试集；G4 变更记录补注 v0.2 的 M5 移动端评估里程碑已随移动端移除而删除；G5 统一「知识资产/自研件/工作流」用词口径。复核（裁决：通过）后处理两条非阻断备注：台账 schema 补「耗时」字段（升级窗口的工时量化有出处）；台账启用上移至骨架后首位、序号措辞改为「建议次序，前置/并行以各条内注为准」、Hotpatching 冒烟标注可并行。

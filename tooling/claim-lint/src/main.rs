@@ -29,8 +29,8 @@ mod expect {
     pub const PIT_M: usize = 9;
     pub const PAT_B: usize = 20;
     pub const TASKSET: usize = 16;
-    /// T038 行写入后 37→38（联动规则首次应用：实况 +1 行，期望同步）。
-    pub const LEDGER: usize = 38;
+    /// T039 行写入后 38→39（开源任务插队；联动规则：实况 +1 行，期望同步）。
+    pub const LEDGER: usize = 39;
     pub const GAME_METHODS: usize = 7;
     /// 0.19.1 内置 BRP 方法数（docs/brp-smoke.md 实测口径）。
     pub const BRP_BUILTIN: usize = 23;
