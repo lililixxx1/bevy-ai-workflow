@@ -52,4 +52,5 @@ cargo run -p claim-lint   # 退出码 0=无 FAIL（doctest 日志缺失时该条
 - 首跑/负控/复原/终跑四档证据：`docs/evidence/pre-window/`（claim-lint-run1.log /
   claim-lint-negative-control.log（自述头路负控）/ claim-lint-run2.log /
   claim-lint-run-final.log——终跑为台账 T038 行写入后 `expect::LEDGER` 37→38 联动口径；
-  四份均自含 REAL_EXIT）。
+  四份均自含 REAL_EXIT）。T039 开源批复跑双档：claim-lint-t039-run1/run2.log
+  （LEDGER 38→39 联动 + 新 doctest 日志选源自证）。

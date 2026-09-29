@@ -1,0 +1,18 @@
+# T039 可公开态终审扫描档（2026-09-29；口径 = grep -F 字面匹配，四变体分别计数 + 并集，范围 docs/evidence + tooling/brp-logs + tooling/hotpatch-smoke）
+
+## 1. 受管文件（game/docs 源与文档、assets-methodology、bevy-dev、tooling 源与文档、AGENTS.md、意向文档、README、LICENSE*）
+- 机器路径四变体（C:\Users\Administrator / C:/Users/Administrator / /c/Users/Administrator / ADMINI~1，grep -rlF）：**0 命中**
+- 敏感词（api key/secret/password/token 私钥模式，大小写不敏感）：**0 命中**（tooling 描述性「无鉴权/密钥明文警示」类措辞除外）
+
+## 2. 证据目录本机痕迹（可复现命令：grep -rlF <变体> docs/evidence tooling/brp-logs tooling/hotpatch-smoke）
+- 反斜杠形式（cargo 编译行）：121 个文件（161 处）
+- 正斜杠形式（运行期路径）：12 个文件
+- msys 形式（/c/Users）：12 个文件
+- 8.3 短名（ADMINI~1）：5 个文件
+- 四变体并集：**128 个文件**
+- 定性：无密钥/token、无个人姓名邮箱（git 身份为 bot@bevy-ai-workflow.invalid）；均为 Windows 通用账户名/本机路径/PID 等环境值——按「历史证据留痕」纪律原样公开。终审核另以正则口径复算得 143（反斜杠）/153（并集）文件，与本档 -F 字面口径差异系模式转义与范围分列所致，以本档命令可复现值为准。
+
+## 3. git 全历史（65 commit）
+- 身份：git log --all --format='%an <%ae>' | sort -u → bevy-ai-workflow <bot@bevy-ai-workflow.invalid>（唯一，无个人信息）
+- 密钥模式（ghp_/github_pat_/AKIA/xox/私钥块）：全历史 blob 与 commit message 零命中
+- 历史中 q-novel 字样：4 个历史 blob + 2 条 commit message（全历史公开的既定取舍，HEAD 树已清零）

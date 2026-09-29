@@ -26,7 +26,7 @@ tooling/               # 自研件：task-runner（BRP 判定驱动）/ claim-li
 
 ```bash
 cargo check                 # 每次代码变更的门禁
-cargo test --doc -p docs    # docs/ 的 doctest 门禁（限流形态见 docs/evidence/ 内 run-doc-gate.ps1）
+cargo test --doc -p docs    # docs/ 的 doctest 门禁（命令本体；作者本机以降优先级+限 4 线程形态运行，脚本见 docs/evidence/m3-assets/batch-g/run-doc-gate.ps1——该脚本含作者本机路径，仅作形态参照）
 cargo run -p claim-lint     # 计数与宣称的机器门禁（13 条断言钉在真值再计算上）
 cargo run --release -p game # 运行游戏（BRP 监听 127.0.0.1:15702）
 ```
@@ -48,4 +48,4 @@ cargo run --release -p game # 运行游戏（BRP 监听 127.0.0.1:15702）
 
 ## License
 
-MIT OR Apache-2.0 双许可，任选其一：[LICENSE-MIT](./LICENSE-MIT) · [LICENSE-APACHE](./LICENSE-APACHE)。
+MIT OR Apache-2.0 双许可，任选其一：[LICENSE-MIT](./LICENSE-MIT) · [LICENSE-APACHE](./LICENSE-APACHE)。向本仓库提交的贡献默认按同一双许可授权，无需附加条款。

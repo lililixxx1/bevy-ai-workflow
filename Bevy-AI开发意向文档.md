@@ -111,7 +111,7 @@ repo/
 
 - 技术硬约束：`Cargo.toml` 中 `bevy = "0.19"`（0.x 语义下等价于锁定 0.19.x 系列），`Cargo.lock` 入库；版本号变更仅允许发生在升级窗口。语言为 Rust（Bevy MSRV 及以上的最新 stable）；主力 agent 为 ZCode / Claude Code / Cursor 任一，MCP 作为工具接入协议；平台仅 PC（Windows）。
 - 仓库纪律：**行为、接口、版本相关的变更必须同步更新 docs/ 或模式库**；纯重构、格式化、补丁版本升级豁免文档同步义务（防止为合规制造垃圾文档）。
-- 分层纪律：一条教训落入哪层，由「换引擎后是否仍成立」判定；两层都不掺私货（密钥/机器路径/内部黑话），**保持随时可公开态**（是否真公开延至 M3 后决策，已定案）。
+- 分层纪律：一条教训落入哪层，由「换引擎后是否仍成立」判定；两层都不掺私货（密钥/机器路径/内部黑话），**保持随时可公开态**（已决策公开：2026-09-29，见 §9）。
 - 版本升级（0.20 起）是 Bevy 特定层的例行迁移演练：migration guide 批量修订 + 全量重编译 + 任务测试集回归重跑，迁移成本以台账量化——这本身就是方法论层数据。
 
 ## 7. 风险与对策
@@ -162,7 +162,7 @@ M2 闭环跑通后、动工 M4 前，从达标品类中选定并写选品备忘�
 
 ## 变更记录
 
-- **v0.3.3（2026-09-29，开源决策 + 任务编号勘误）**：①§9「当前不决策开源与否」改写为**已决策开源**（owner 裁决四项参数：GitHub 公开仓 `bevy-ai-workflow` / MIT OR Apache-2.0 双许可 / 全历史公开 / 外部调研件不收编）：新增 LICENSE + LICENSE-MIT + LICENSE-APACHE + 根 README，开源准备与发布 = 台账 T039（含可公开态终审：受管文件零机器路径/零敏感信息、git 全历史统一 bot 身份）；②任务编号勘误——开源任务插队 T039，`game.snapshot` T039→**T040**、MCP 薄桥 T040→**T041**（§5.3/§9 与 `docs/pre-window-plan.md` 内引用同步）；③v0.3.2 entry 中外部调研件的本机路径引用按「不收编」定案改为「未入库」措辞。
+- **v0.3.3（2026-09-29，开源决策 + 任务编号勘误）**：①§9「当前不决策开源与否」改写为**已决策开源**（owner 裁决四项参数：GitHub 公开仓 `bevy-ai-workflow` / MIT OR Apache-2.0 双许可 / 全历史公开 / 外部调研件不收编）：新增 LICENSE-MIT + LICENSE-APACHE + 根 README（初期另设的说明性 LICENSE 文件后按终审建议删除——GitHub 按标准文件名识别双许可，说明并入 README），开源准备与发布 = 台账 T039（含可公开态终审：受管文件零机器路径/零敏感信息、git 全历史统一 bot 身份）；②任务编号勘误——开源任务插队 T039，`game.snapshot` T039→**T040**、MCP 薄桥 T040→**T041**、B2 窗口清单 T042→**T043**（§5.3/§9 与 `docs/pre-window-plan.md` 内引用同步）；③v0.3.2 entry 中外部调研件的本机路径引用按「不收编」定案改为「未入库」措辞。
 - **v0.3.2（2026-09-29，同类项目调研增补 + 桥政策边界修订，七项 grill 定案）**：①§2.1「Bevy 侧仅有的两个早期 MCP」失实表述改写（2026-09-28/29 四项目实测：≥3 条 BRP 桥 + 非 BRP MCP 面，全部早期/低星（≤72★）/单作者）；②§3 表格以 bevy_brp workspace 行**继任合并**原 bevy_brp_mcp 行（含 T004 兼容实测结论与许可标注）并增补 6 行（bevy_mcp / Plinth / SpawnForge / Axiom / bevy-agent / Jackdaw），结论句追加规模更新注记（「桥不稀缺，闭环 + 知识资产才稀缺」后半句保留并加强）；③§5.3/§9 同步修订：自有 `game.*` 方法的窄白名单 MCP 薄转发列为允许的自研形态（解锁 MCP 薄桥任务 `tooling/mcp-bridge`），通用桥复用对象更新为 bevy_brp_mcp / bevy_brp workspace；④关键事实信源增补。同批 grill 七项定案（详见 `docs/pre-window-plan.md`）：A 级三项批准立项（台账标「窗口前置增强」，不立 M5）；B4 精确 tick 步进维持记录项；B1 端口收口不做记档；优化方案归档 docs/ 挂 doctest 门禁。依据：外部调研件《Bevy-AI同类项目调研报告》（未入库，2026-09-28/29，公开面核读 + 独立复核 + plan-code-reviewer 终审 5 必改全落实；v0.3.3 勘误：原文本机路径引用已按「不收编」定案改为此措辞）。
 - **2026-09-28（M3 §5.2 分型口径细化注记）**：M3 Block H 净室重跑产出运行时行为型错题（PIT-B-051：BRP `world.mutate_components` 对不存在实体裸 panic 击穿进程——反例载体为 wire 请求与 panic 栈，非代码），§5.2「资产入库门禁（Voyager 原则，按条目类型分型）」追加带日期注记（原文未动）：非代码载体错题以 `text` 围栏 + 证据锚定入库。M3 验收结论见 `docs/m3-acceptance.md`。
 - **2026-09-26（Hotpatching 冒烟结论回写，§10 第 6 条）**：冒烟通过，§5.3 Hotpatching 条目末尾追加带日期结论注记（原文未动）；新增 `tooling/hotpatch-smoke/`（最小冒烟 crate + 运行证据）；修复根 Cargo.toml 的 `tooling/*` glob 成员误吸入 `tooling/brp-logs`（无 Cargo.toml 的证据目录）导致 workspace 解析失败的问题（加 `exclude`）。

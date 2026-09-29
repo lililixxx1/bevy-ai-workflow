@@ -9,8 +9,8 @@
 ## 当前状态（2026-09-29）
 
 - M1–M4 已完成（台账 T001–T037；M4 验收见 `docs/m4-acceptance.md`）。骨架早已就绪：`game/`（bevy 0.19 锁版本）、`docs/`（doctest 门禁内）、`assets-methodology/`、`bevy-dev/`、`tooling/` 均在——仓库实况以 git log 与台账为准，勿依赖本节快照。
-- 进行中：**窗口前置增强**序列（`docs/pre-window-plan.md`；grill 七项定案 2026-09-29）：T038 claim-lint 已完成过审，T039 开源准备与发布进行中，T040 `game.snapshot` / T041 MCP 薄桥待启；0.20 窗口开启即冻结未完项。
-- **已决策开源**（2026-09-29，owner）：GitHub 公开仓 `bevy-ai-workflow`，MIT OR Apache-2.0 双许可，全历史公开；「保持可公开态」纪律持续有效。
+- 进行中：**窗口前置增强**序列（`docs/pre-window-plan.md`；grill 七项定案 2026-09-29）：T038 claim-lint、T039 开源准备与发布均已完成过审，T040 `game.snapshot` / T041 MCP 薄桥待启；0.20 窗口开启即冻结未完项。
+- **已开源**（2026-09-29，owner 决策）：GitHub 公开仓 `lililixxx1/bevy-ai-workflow`，MIT OR Apache-2.0 双许可，全历史公开；「保持可公开态」纪律持续有效（扫描档 `docs/evidence/pre-window/open-source-scan.txt`）。
 
 ## 目标仓库结构（意向文档 §6，已定案）
 
