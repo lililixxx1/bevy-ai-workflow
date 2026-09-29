@@ -36,15 +36,20 @@ stdout 即证据日志（请求/响应逐字留痕，重定向保存）。依赖
 
 计数与宣称的机器门禁（窗口前置增强 T038 / A2，`docs/pre-window-plan.md`；动因 =
 台账实测「计数/口径」系审核返工第一大来源 + 外部教训 SpawnForge 380 注册 vs 2 proven）。
-两类断言：**真值断言**（PIT-B / PIT-M / PAT-B / taskset / 台账行 / `game.*` 方法 / 进程内
-套件 / BRP 总数 / doctest 门禁计数，共 9 条）+ **一致性断言**（自述头「当前：N 条」×3、
-意向文档阈值 ×1）。期望值硬编码于 `src/main.rs` 的 `expect` 模块——**联动规则：实况变化
-（新增条目/方法/套件/台账行）必须同步期望值**，否则收尾即红。行内
+两类断言：**真值断言** 8 条（PIT-B / PIT-M / PAT-B / taskset / 台账行 / `game.*` 方法 /
+进程内套件 / BRP 总数——BRP 总数的 23 内置基数为常量输入，判别力等价于 `game.*` 方法条）
++ **运行时真值** 1 条（doctest 门禁计数，解析 mtime 最新 `gate-doc-test*.log`；日志缺失
+时该条 SKIP 且退出码仍 0——「门禁跑过」是前提约定，负控/复核时此条不得为 SKIP）+
+**一致性断言**（自述头「当前：N 条」×3、意向文档阈值 ×1）。**以上为首批受管面（T038）**，
+扩展随任务按联动规则增补。期望值硬编码于 `src/main.rs` 的 `expect` 模块——**联动规则：
+实况变化（新增条目/方法/套件/台账行）必须同步期望值**，否则收尾即红。行内
 `<!-- claim-lint:ignore 理由 -->` 豁免历史性数字（豁免清单在审核面内）。零第三方依赖。
 
 ```bash
-cargo run -p claim-lint   # 退出码 0=全绿；留痕：> log 2>&1; echo "REAL_EXIT=$?" >> log
+cargo run -p claim-lint   # 退出码 0=无 FAIL（doctest 日志缺失时该条 SKIP 亦 0，见上）
 ```
 
-- 首跑 13/13 PASS + 负控自证红 + 复原绿三档证据：`docs/evidence/pre-window/`
-  （claim-lint-run1.log / claim-lint-negative-control.log / claim-lint-run2.log，均自含 REAL_EXIT）。
+- 首跑/负控/复原/终跑四档证据：`docs/evidence/pre-window/`（claim-lint-run1.log /
+  claim-lint-negative-control.log（自述头路负控）/ claim-lint-run2.log /
+  claim-lint-run-final.log——终跑为台账 T038 行写入后 `expect::LEDGER` 37→38 联动口径；
+  四份均自含 REAL_EXIT）。

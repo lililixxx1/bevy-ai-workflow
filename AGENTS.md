@@ -35,7 +35,7 @@ tooling/               # 自研件：游戏专属 RPC（launch_level / run_tests
 
 - `cargo check` — 每次代码变更的门禁
 - `cargo test --doc` — `docs/` 的 Markdown 经 `include_str!` 薄封装纳入 crate 文档后的 doctest 门禁；长运行示例标 `no_run` 并注明理由，禁止无理由 `ignore`
-- `cargo run -p claim-lint` — 计数与宣称的机器门禁（错题/模式/taskset/台账/方法/套件/doctest 计数钉在真值再计算上；实况变化须同步 `tooling/claim-lint/src/main.rs` 的 `expect` 表，T038 起）
+- `cargo run -p claim-lint` — 计数与宣称的机器门禁（错题/模式/taskset/台账/方法/套件/doctest 计数钉在真值再计算上；实况变化须同步 `tooling/claim-lint/src/main.rs` 的 `expect` 表，T038 起；首批 13 条受管面，扩展随任务增补）
 - `cargo run --release` — 运行游戏（帧率基线采集有固定口径：release 构建、固定分辨率/vsync、记录 CPU/GPU/驱动、固定随机种子）
 
 ## 知识资产纪律

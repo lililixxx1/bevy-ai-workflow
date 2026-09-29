@@ -15,8 +15,9 @@
 //! 汇总单独计数，要求门禁跑过才算全绿口径——本条 SKIP 不使退出码非零，但会在
 //! 输出显式标注，负控/复核时人工核对此条不得为 SKIP）。
 //!
-//! 退出码：0 = 无 FAIL；1 = 存在 FAIL。外层留痕沿门禁惯例：
-//! `cargo run -p claim-lint > log 2>&1; echo "REAL_EXIT=$?" >> log`。
+//! 退出码：0 = 无 FAIL；1 = 存在 FAIL。留痕沿门禁惯例由外层追加
+//! `echo "REAL_EXIT=$?" >> log`；程序自身末行亦打印 `REAL_EXIT=`（与退出码同值）——
+//! 日志中两行并存时以最后一行（外层行）为准。
 
 use std::fs;
 use std::path::{Path, PathBuf};
