@@ -6,10 +6,10 @@
 
 **最高上下文：[`Bevy-AI开发意向文档.md`](./Bevy-AI开发意向文档.md)（v0.3.3）**。改动仓库结构、里程碑、版本策略、范围边界等敏感区域前，必须先读该文档对应章节；与其冲突时以该文档为准。
 
-## 当前状态（2026-09-29）
+## 当前状态（2026-09-30）
 
 - M1–M4 已完成（台账 T001–T037；M4 验收见 `docs/m4-acceptance.md`）。骨架早已就绪：`game/`（bevy 0.19 锁版本）、`docs/`（doctest 门禁内）、`assets-methodology/`、`bevy-dev/`、`tooling/` 均在——仓库实况以 git log 与台账为准，勿依赖本节快照。
-- 进行中：**窗口前置增强**序列（`docs/pre-window-plan.md`；grill 七项定案 2026-09-29）：T038 claim-lint、T039 开源准备与发布、T040 `game.snapshot`（含 T038 审核轮移交的代码级 S1/S3/S5 加固）均已完成过审，T041 MCP 薄桥待启；0.20 窗口开启即冻结未完项。
+- **已暂停**：**窗口前置增强**序列（`docs/pre-window-plan.md`；grill 七项定案 2026-09-29）：T038 claim-lint、T039 开源准备与发布、T040 `game.snapshot`（含 T038 审核轮移交的代码级 S1/S3/S5 加固）均已完成过审；**T041 MCP 薄桥已冻结**（2026-09-30 owner 开工 grill：序列暂停、万阵 M0 预验证优先——新独立私有仓，全职三周自 2026-10-05 起；M0 后或 0.20 窗口时重启，任务卡存续 plan §二）。0.20 窗口开启时的冻结规则不变（先迁移后恢复）。
 - **已开源**（2026-09-29，owner 决策）：GitHub 公开仓 `lililixxx1/bevy-ai-workflow`，MIT OR Apache-2.0 双许可，全历史公开；「保持可公开态」纪律持续有效（扫描档 `docs/evidence/pre-window/open-source-scan.txt`）。
 
 ## 目标仓库结构（意向文档 §6，已定案）

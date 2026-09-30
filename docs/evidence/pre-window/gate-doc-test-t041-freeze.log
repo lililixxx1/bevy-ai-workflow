@@ -1,0 +1,39 @@
+# doctest 门禁复跑（T041 冻结标注——仅 Markdown 文本变更、零围栏变化）
+$ cargo test --doc
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.46s
+   Doc-tests docs
+
+running 94 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1081) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1147) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 129) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1443) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 145) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1383) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1231) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1021) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1331) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1263) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1343) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1279) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1453) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1158) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1099) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1396) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1216) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1590) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1543) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1707) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1497) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1654) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1756) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 182) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1807) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1872) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1939) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1990) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2048) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2091) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 210) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2110) ... FAILED
+REAL_EXIT=4
