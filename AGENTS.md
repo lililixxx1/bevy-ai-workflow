@@ -10,6 +10,7 @@
 
 - M1–M4 已完成（台账 T001–T037；M4 验收见 `docs/m4-acceptance.md`）。骨架早已就绪：`game/`（bevy 0.19 锁版本）、`docs/`（doctest 门禁内）、`assets-methodology/`、`bevy-dev/`、`tooling/` 均在——仓库实况以 git log 与台账为准，勿依赖本节快照。
 - **已暂停**：**窗口前置增强**序列（`docs/pre-window-plan.md`；grill 七项定案 2026-09-29）：T038 claim-lint、T039 开源准备与发布、T040 `game.snapshot`（含 T038 审核轮移交的代码级 S1/S3/S5 加固）均已完成过审；**T041 MCP 薄桥已冻结**（2026-09-30 owner 开工 grill：序列暂停、万阵 M0 预验证优先——新独立私有仓，全职三周自 2026-10-05 起；M0 后或 0.20 窗口时重启，任务卡存续 plan §二）。0.20 窗口开启时的冻结规则不变（先迁移后恢复）。
+- **M5 试金石·万阵已立项开工**（2026-10-06）：万阵 M0 预验证收官（私有仓）后 owner 身份决策选「新试金石」，grill 八题定案并批复选品备忘录（`docs/m5-game-selection.md` **定本 v1.0**；意向文档 **v0.3.4**——修订 pre-window 定案 2「不立 M5」）。开发与任务台账在万阵私有仓（跨仓纪律：引用不复制正文）；本仓侧无新任务——T041 保持冻结按需解冻（解冻 = 主动决策非自动触发），0.20 冻结规则不变。
 - **已开源**（2026-09-29，owner 决策）：GitHub 公开仓 `lililixxx1/bevy-ai-workflow`，MIT OR Apache-2.0 双许可，全历史公开；「保持可公开态」纪律持续有效（扫描档 `docs/evidence/pre-window/open-source-scan.txt`）。
 
 ## 目标仓库结构（意向文档 §6，已定案）

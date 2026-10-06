@@ -6,3 +6,11 @@
 test result: ok. 77 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 290.52s
 REAL_EXIT=0
 - 计数与归档基线一致（gate-doc-test-t041-rerun2.log 同 77/0/17）——零新 doctest，符合「选品决策文档不含 API 示例代码」先例（m4-game-selection.md / m3-plan.md）
+
+## 第二段：批复转正轮（同日）
+
+- 变更面：docs/m5-game-selection.md 草案 v0.1 → **定本 v1.0**（状态行 + §七 owner 决定记录回填，零代码围栏）+ Bevy-AI开发意向文档.md §4 M5 行状态更新 + AGENTS.md 当前状态行（后两者不在 doctest 注册面）
+- 命令：cargo run -p claim-lint → 13 条 PASS 13 / FAIL 0 / SKIP 0，REAL_EXIT=0
+- 命令：cargo test --doc -j 3 -- --test-threads 3 →
+test result: ok. 77 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 285.28s
+REAL_EXIT=0
