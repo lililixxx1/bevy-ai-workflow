@@ -52,6 +52,10 @@ pub mod m4_acceptance {}
 #[doc = include_str!("../pre-window-plan.md")]
 pub mod pre_window_plan {}
 
+/// 《M5 选品备忘录》——万阵收缩形态（grill 八题定案）：三固化项、系统席位表、game.* 验证面与薄 BRP host 补课，待 owner 批复转正（意向文档 §4 M5 行验收①）。
+#[doc = include_str!("../m5-game-selection.md")]
+pub mod m5_game_selection {}
+
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}

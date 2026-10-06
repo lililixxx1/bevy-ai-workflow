@@ -1,0 +1,8 @@
+# doctest 门禁——M5 备忘录注册（docs/src/lib.rs 新增 m5_game_selection 模块）
+- 运行日：2026-10-06；窗口：机器空闲独占（PIT-M-011 纪律）
+- 命令：cargo test --doc -j 3 -- --test-threads 3
+- 变更面：docs/m5-game-selection.md（新增，零代码围栏）+ docs/src/lib.rs（注册一行模块）+ Bevy-AI开发意向文档.md（v0.3.4，无围栏）
+- 结果（汇总行逐字）：
+test result: ok. 77 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 290.52s
+REAL_EXIT=0
+- 计数与归档基线一致（gate-doc-test-t041-rerun2.log 同 77/0/17）——零新 doctest，符合「选品决策文档不含 API 示例代码」先例（m4-game-selection.md / m3-plan.md）
