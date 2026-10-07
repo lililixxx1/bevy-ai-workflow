@@ -31,11 +31,11 @@ mod expect {
     pub const PIT_B: usize = 51;
     /// T040 PIT-M-010 入库后 9→10；T041 收官 PIT-M-011 入库（门禁负载敏感假红）10→11。
     pub const PIT_M: usize = 11;
-    pub const PAT_B: usize = 20;
+    pub const PAT_B: usize = 21;
     /// T040 TS-17 任务书入库后 16→17（ts-17-snapshot.md）。
     pub const TASKSET: usize = 17;
     /// T040 行写入后 39→40；T041 冻结标注行写入后 40→41（联动规则：实况 +1 行，期望同步）。
-    pub const LEDGER: usize = 41;
+    pub const LEDGER: usize = 42;
     /// T040 `game.snapshot` 落地后 7→8（联动规则：每新增 `game.*` 方法同步）。
     pub const GAME_METHODS: usize = 8;
     /// 0.19.1 内置 BRP 方法数（docs/brp-smoke.md 实测口径）。

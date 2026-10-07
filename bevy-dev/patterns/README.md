@@ -7,7 +7,7 @@
   2. 复制 `_TEMPLATE.md` → 改名 `PAT-B-XXX-slug.md` → 填完全部必填字段（模板内注释一并删除）；
   3. 在下方索引表加一行；
   4. 反例形态的教训不进本目录——走 `bevy-dev/pitfalls.md`。
-- 当前：20 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008；批次三新增 009–010；2026-09-28 批次五新增 011–020）。
+- 当前：21 条（2026-09-26 起；2026-09-27 M3 批次一新增 002–005；批次二新增 006–008；批次三新增 009–010；2026-09-28 批次五新增 011–020；2026-10-07 跨仓回流批新增 021——过程型分型，万阵试金石仓留痕，门禁见 pitfalls-schema.md 过程型条款）。
 
 ## 索引
 
@@ -33,3 +33,4 @@
 | PAT-B-018 | BRP 安全绑定——显式 with_address(LOCALHOST) 不依赖默认 | bevy 0.19.1 | [PAT-B-018-brp-loopback-bind.md](./PAT-B-018-brp-loopback-bind.md) | 全部 BRP 证据经 127.0.0.1:15702（2026-09-28） |
 | PAT-B-019 | 零依赖 CLI——手写 parse + 退出码协议 + 启动横幅自含口径 | bevy 0.19.1 | [PAT-B-019-std-only-cli-args.md](./PAT-B-019-std-only-cli-args.md) | 12 任务横幅自含口径 + 退出码 2 负例消费（2026-09-28） |
 | PAT-B-020 | 任务集驱动脚本——绝对路径锚定+BRP 业务探针轮询+聚合退出码 | bevy 0.19.1 | [PAT-B-020-taskset-driver-script.md](./PAT-B-020-taskset-driver-script.md) | m1-phase2 全量重跑 12 任务退出码全 0 残留 clean（2026-09-28） |
+| PAT-B-021 | 量测窗口空闲独占 + 冷编分型授权（负载敏感门禁/构建预检/降并行放行） | bevy 0.19.1（万阵仓同锁版本实测） | [PAT-B-021-measurement-window-cold-build-typing.md](./PAT-B-021-measurement-window-cold-build-typing.md) | 万阵 T010/T019/T022/T024 实测留痕（2026-10-07 跨仓回流；证据指针见条目） |
