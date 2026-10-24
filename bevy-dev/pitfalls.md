@@ -739,26 +739,21 @@ assert_eq!(world.resource::<Fired>().0, 1); // 同步执行：trigger 返回前�
 - 复现：`docs/evidence/m3-assets/batch-d/probe-r1-check.log`（E0599 ×3，REAL_EXIT=101）、`probe-r1b-check.log`（register_event E0599）；
 - 修复：`docs/evidence/m3-assets/batch-d/probe-r2-check.log`（`World::trigger` / `Commands::trigger` 形态编译通过，REAL_EXIT=0）；本条目正例 fence 含断言「trigger 后观察者恰执行一次」（doctest 机器断言）。
 
-### PIT-B-015：生命周期观察者过滤写成 `On<Add<T>>`——正解是第二泛型 `On<Add, T>`
+### PIT-B-015：生命周期观察者过滤的泛型形态**跨版本反转**——0.20 正解 `On<Add<T>>`（0.19 曾为第二泛型 `On<Add, T>`）
 
-- 日期：2026-09-27
-- 适用版本：bevy 0.19.1
+- 日期：2026-09-27（0.19 首录）；2026-10-24 升级窗口 0.20 反转修订
+- 适用版本：bevy 0.20.0（0.19 史实保留文内）
 - 分型：错题
 - 通用性分级：bevy-specific（observer 泛型签名）
 - 标签：`observer` `生命周期` `On` `Add` `Remove` `E0107` `Bundle`
 
-**现象**：组件添加/移除的观察者按直觉写 `On<Add<T>>` 泛型过滤，E0107（2026-09-27，`docs/evidence/m3-assets/batch-d/probe-r1-check.log`）：
+**现象（0.20）**：按 0.19 语料写 `On<Add, Health>`（第二泛型过滤），E0107（2026-10-24，`docs/evidence/t042-020-migration/gate-doc-test-run1.log`——本条 0.19 修复围栏在 0.20 doctest 首跑即红，**条目过期检测机制首次实战触发**）：
 
 ```text
-error[E0107]: struct takes 0 generic arguments but 1 generic argument was supplied
-   --> src\lib.rs:59:29
-    |
- 59 | fn p6_on_add_observer(_: On<Add<Health>>) {}
-    |                             ^^^-------- help: remove the unnecessary generics
-...
+error[E0107]: struct takes 1 generic argument but 2 generic arguments were supplied
 ```
 
-**最小复现**：
+**最小复现（0.20 误写形态 = 0.19 正解形态）**：
 
 ```rust,compile_fail
 use bevy::prelude::*;
@@ -766,13 +761,15 @@ use bevy::prelude::*;
 #[derive(Component)]
 struct Health(f32);
 
-// 生命周期过滤的「泛型组件」形态——Add 不是泛型：
-fn on_add_wrong(_: On<Add<Health>>) {} // E0107
+// 0.19 的第二泛型形态——0.20 起 On 只收事件一个泛型：
+fn on_add_wrong(_: On<Add, Health>) {} // E0107
 ```
 
-**根因**：`Add` 是无泛型的事件载荷结构体（`bevy_ecs-0.19.1/src/lifecycle.rs:337` `pub struct Add { pub entity: Entity }`）；组件过滤走 `On` 的**第二泛型** `B: Bundle`（`observer/system_param.rs:38` `pub struct On<'w, 't, E: Event, B: Bundle = ()>`）。官方示例即此形态（`examples/ecs/observers.rs:142` `fn on_add_mine(add: On<Add, Mine>, ...)`，:152 `On<Remove, Mine>`）。
+**根因（0.20，PR #24013）**：`B: Bundle` 泛型从 `On` 移入事件类型——`On<'w, 't, E: EventPattern>`（`bevy_ecs-0.20.0/src/observer/system_param.rs:25`）；`Add` 变为泛型 `Add<B: Bundle>(PhantomData<B>)`（`lifecycle.rs:352`，另有非泛型 `AddEvent :339`）；`IntoObserverSystem` 收归 3 泛型。官方示例即新形态（`bevy-0.20.0/examples/ecs/observers.rs:142` `fn on_add_mine(add: On<Add<Mine>>, ...)`，:152 `On<Remove<Mine>>`；载荷字段 `add.entity` 直读不变，:143）。
 
-**修复**（已过编译 + 运行验证）：
+**0.19 史实（原文存档）**：`Add` 曾是无泛型事件载荷结构体（`bevy_ecs-0.19.1/src/lifecycle.rs:337` `pub struct Add { pub entity: Entity }`）；组件过滤走 `On` 的第二泛型 `B: Bundle`（0.19 `observer/system_param.rs:38` `pub struct On<'w, 't, E: Event, B: Bundle = ()>`）；误写 `On<Add<T>>` 在 0.19 报 E0107「takes 0 generic arguments but 1 was supplied」（复现 `docs/evidence/m3-assets/batch-d/probe-r1-check.log`）。
+
+**修复**（0.20 形态，已过 doctest 机器断言「spawn 后观察者恰执行一次」）：
 
 ```rust
 use bevy::prelude::*;
@@ -783,7 +780,7 @@ struct Health(f32);
 #[derive(Resource, Default)]
 struct Fired(usize);
 
-fn on_add_right(add: On<Add, Health>, mut fired: ResMut<Fired>) {
+fn on_add_right(add: On<Add<Health>>, mut fired: ResMut<Fired>) {
     fired.0 += 1;
     let _who = add.entity; // 载荷字段直读（官方 observers.rs:143 用法）
 }
@@ -796,8 +793,10 @@ assert_eq!(world.resource::<Fired>().0, 1);
 ```
 
 **验证证据**：
-- 复现：`docs/evidence/m3-assets/batch-d/probe-r1-check.log`（E0107 原文）；
-- 修复：`docs/evidence/m3-assets/batch-d/probe-r2-check.log`（`On<Add, Health>` 编译通过，REAL_EXIT=0）；本条目正例 fence 含断言「spawn 后观察者恰执行一次」（doctest 机器断言）。
+- 0.20 复现与修复：`docs/evidence/t042-020-migration/gate-doc-test-*.log`（误写 E0107 + 修复围栏 doctest 通过）；源码锚点按 0.20.0 本地源码核实（2026-10-24）。
+- 0.19 复现：`docs/evidence/m3-assets/batch-d/probe-r1-check.log`；修复：`probe-r2-check.log`（REAL_EXIT=0）。
+
+**升级窗口教训**：同一 API 的「误写/正解」形态可跨大版本整体反转——错题条目在升级窗口必须逐条重核；`compile_fail` doctest 门禁是自动检测面（能编译即红），但「反转」型变更会把修复围栏一并打红，两围栏都要翻。
 
 ### PIT-B-016：`MessageMutator` 没有 `iter_mut`——可变迭代也是 `.read()`
 
@@ -998,7 +997,7 @@ assert_eq!(world.resource::<Count>().0, 1);
 ### PIT-B-019：`init_state` 前未装 `StatesPlugin` 运行时 panic——且 `StatesPlugin` 不在 prelude
 
 - 日期：2026-09-27
-- 适用版本：bevy 0.19.1
+- 适用版本：bevy 0.19.1（**0.20 复核维持**：prelude 清单已按 `bevy_state-0.20.0/src/lib.rs:77` 起重核，仍不含 `StatesPlugin`——2026-10-24，T042）
 - 分型：错题
 - 通用性分级：bevy-specific（States 插件依赖 + 导出面）
 - 标签：`StatesPlugin` `init_state` `StateTransition` `prelude` `E0425` `运行时`
@@ -1516,7 +1515,7 @@ fn uuid_handle(handle: &Handle<Image>) -> Option<Handle<Image>> {
 ### PIT-B-028：`DynamicScene` / `SceneRoot` / `DynamicSceneRoot` 全部移除——0.19 场景系统重构为 BSN 范式
 
 - 日期：2026-09-27
-- 适用版本：bevy 0.19.1
+- 适用版本：bevy 0.19.1（0.20 语法二次变更注记见文内）
 - 分型：错题
 - 通用性分级：bevy-specific（场景系统代际更替）
 - 标签：`DynamicScene` `SceneRoot` `bsn!` `spawn_scene` `场景` `E0425` `重构`
@@ -1541,6 +1540,8 @@ fn scene_wrong(commands: &mut Commands, scene: Handle<DynamicScene>) {
 ```
 
 **根因**：bevy_scene 0.19 **整体重构**为 BSN（Bevy Scene Notation）体系：prelude 导出面为 `bsn, bsn_list, on, template_value, CommandsSceneExt, EntityCommandsSceneExt, EntityWorldMutSceneExt, ..., WorldSceneExt`（`bevy_scene-0.19.1/src/lib.rs:900-906`）——`DynamicScene`/`SceneRoot`/`DynamicSceneRoot` 在 crate 内无定义（`pub struct DynamicScene` 全库 0 处，核实 2026-09-27）。新范式 = `World::spawn_scene(bsn! { ... })`（`WorldSceneExt::spawn_scene`，`spawn.rs:56`，返回 `Result<EntityWorldMut, SpawnSceneError>`；依赖未就绪用 `queue_spawn_scene`）。语法要点（r2 修正轮实测）：项 = 裸组件名 + **行分隔无逗号**（`crate::Ping(1.0),` 报「unexpected token」）；场景内组件需 `Clone + Default`（E0277 ×2：`FromTemplate` blanket impl 要求 `Clone + Default + Unpin`，`bevy_ecs-0.19.1/src/template.rs:390/:404`——Default 缺口由 2026-09-28 审核复现补录发现，见 `probe-r2-attempt1.log`）。
+
+**0.20 迁移注记（2026-10-24，T042 升级窗口）**：0.20 对 BSN 语法**二次变更**（官方迁移指南「BSN syntax improvements」，PR #25318/#25626）：①场景引用一律 `@` 前缀（`@变量` / `@函数()` / `@SceneComponent` / `@{表达式}`）；②`template_value` 包装全面可移除（prelude 0.20 仍导出，`bevy_scene-0.20.0/src/lib.rs:892-894`）；③`VariantDefaults` 移除——枚举须 `Default + Clone` 且**全字段显式**；④子实体列表分隔符 `,` / `()` 弃用，改 `--`；`bsn_list!{}` 为推荐形态（rustfmt 不触碰）。本条 0.19 语法要点中「裸组件值」形态 0.20 维持（本条修复围栏 0.20 doctest 续绿即证——围栏只用裸组件值），「场景引用裸写」形态 0.20 起报错。`.bsn` 文件格式仍未发布（0.20 发布文「What's Next」在途）。`DynamicScene`/`SceneRoot` 0.20 仍不存在（compile_fail 围栏续绿即证）。
 
 **修复**（已过编译 + 运行验证）：
 

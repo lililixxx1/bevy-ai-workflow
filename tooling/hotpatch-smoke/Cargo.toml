@@ -1,5 +1,5 @@
 # Rust Hotpatching Windows 独立冒烟（意向文档 §10 第 6 条 / §5.3）。
-# 运行方式（对齐 bevy 0.19.1 官方 examples/ecs/hotpatching_systems.rs 的说明）：
+# 运行方式（对齐 bevy 官方 examples/ecs/hotpatching_systems.rs 的说明，0.19.1 冒烟时首核、0.20 示例存续）：
 #   dx serve --hot-patch
 [package]
 name = "hotpatch-smoke"

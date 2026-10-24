@@ -34,8 +34,8 @@ mod expect {
     pub const PAT_B: usize = 21;
     /// T040 TS-17 任务书入库后 16→17（ts-17-snapshot.md）。
     pub const TASKSET: usize = 17;
-    /// T040 行写入后 39→40；T041 冻结标注行写入后 40→41（联动规则：实况 +1 行，期望同步）。
-    pub const LEDGER: usize = 42;
+    /// T040 行写入后 39→40；T041 冻结标注行写入后 40→41；T028 跨仓回流行 41→42；T042 迁移行 42→43（联动规则：实况 +1 行，期望同步）。
+    pub const LEDGER: usize = 43;
     /// T040 `game.snapshot` 落地后 7→8（联动规则：每新增 `game.*` 方法同步）。
     pub const GAME_METHODS: usize = 8;
     /// 0.19.1 内置 BRP 方法数（docs/brp-smoke.md 实测口径）。

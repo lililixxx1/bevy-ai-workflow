@@ -1,7 +1,7 @@
 # 文档写法规范（seed）
 
 - 适用范围：`docs/` 下全部文档。
-- 适用 Bevy 版本：**0.19**（版本升级时对照官方 migration guide 批量修订后重过 doctest）。
+- 适用 Bevy 版本：**0.20**（版本升级时对照官方 migration guide 批量修订后重过 doctest）。
 - 本文档自身即按此规范编写，经 `cargo test --doc -p docs` 门禁验证。
 
 ## 规则
@@ -16,8 +16,8 @@
 纯逻辑断言，doctest 直接运行：
 
 ```rust
-let locked_version = "0.19";
-assert_eq!(locked_version, "0.19");
+let locked_version = "0.20";
+assert_eq!(locked_version, "0.20");
 ```
 
 ## 示例：no_run

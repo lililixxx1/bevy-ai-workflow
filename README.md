@@ -7,8 +7,8 @@
 用三条工作流把 AI 开发闭环钉在编译器与运行时事实上：
 
 1. **AI 写文档**（知识生产）——`docs/` 的 Markdown 经 `include_str!` 薄封装纳入 rustdoc，`cargo test --doc` 门禁全绿才可合并：编译器当裁判，过滤 AI 幻觉。
-2. **AI 写代码**（受 skill 约束）——锁版本（bevy 0.19）+ 禁凭记忆写 API（不确定必查源码/官方文档）+ 每次变更过 `cargo check` + 错题本/模式库只在验证后入库（Voyager 原则：未过验证禁止入库）。
-3. **AI 操控运行中的游戏**（验证闭环）——官方 `bevy_remote`（BRP，JSON-RPC over HTTP，仅回环）+ 自研游戏专属 RPC（`run_tests` / `screenshot` / `launch_level` / 战斗指令等 7 个 `game.*` 方法）+ 进程内断言套件，状态断言优先、截图辅助。
+2. **AI 写代码**（受 skill 约束）——锁版本（bevy 0.20）+ 禁凭记忆写 API（不确定必查源码/官方文档）+ 每次变更过 `cargo check` + 错题本/模式库只在验证后入库（Voyager 原则：未过验证禁止入库）。
+3. **AI 操控运行中的游戏**（验证闭环）——官方 `bevy_remote`（BRP，JSON-RPC over HTTP，仅回环）+ 自研游戏专属 RPC（`run_tests` / `screenshot` / `launch_level` / 战斗指令等 8 个 `game.*` 方法）+ 进程内断言套件，状态断言优先、截图辅助。
 
 两层知识资产：`assets-methodology/`（引擎无关、可带走的方法论层）+ `bevy-dev/`（版本绑定的 Bevy 特定层，随升级窗口整体迁移）。
 
@@ -35,7 +35,7 @@ cargo run --release -p game # 运行游戏（BRP 监听 127.0.0.1:15702）
 
 - [`Bevy-AI开发意向文档.md`](./Bevy-AI开发意向文档.md)——最高上下文：定位、三条工作流、里程碑、范围边界（M1–M4 已完成，窗口前置增强进行中）。
 - [`AGENTS.md`](./AGENTS.md)——仓库硬约束（版本锁 / BRP 仅回环 / 平台 PC）与常用命令。
-- [`bevy-dev/SKILL.md`](./bevy-dev/SKILL.md)——Bevy 0.19 开发纪律与已核实事实速查（含源码行号锚点）。
+- [`bevy-dev/SKILL.md`](./bevy-dev/SKILL.md)——Bevy 0.20 开发纪律与已核实事实速查（含源码行号锚点）。
 - [`assets-methodology/task-ledger.md`](./assets-methodology/task-ledger.md)——任务台账（T001 起逐条：类型 / 一次通过 / 返工 / 耗时 / 原因 / 证据），M3 增值证明与升级窗口工时量化的唯一数据源。
 - [`docs/pre-window-plan.md`](./docs/pre-window-plan.md)——窗口前置增强定案（claim-lint / game.snapshot / MCP 薄桥）。
 

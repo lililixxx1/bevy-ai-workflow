@@ -1,4 +1,4 @@
-# 游戏工程（试金石）。bevy 版本经 workspace 统一锁定为 "0.19"，禁止在成员内另行指定。
+# 游戏工程（试金石）。bevy 版本经 workspace 统一锁定为 "0.20"，禁止在成员内另行指定。
 [package]
 name = "game"
 version = "0.1.0"

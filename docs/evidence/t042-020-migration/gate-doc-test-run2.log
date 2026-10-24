@@ -1,0 +1,103 @@
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.65s
+   Doc-tests docs
+
+running 94 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1002) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1084) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1150) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1024) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1161) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1102) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1219) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1266) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 133) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1334) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1234) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1386) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1346) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1446) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1282) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 149) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1500) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1399) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1546) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1456) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1512) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1593) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1657) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1558) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1710) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1669) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1759) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1605) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1810) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1722) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 186) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1875) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1774) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1942) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1828) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1993) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1898) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2051) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1957) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2094) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2008) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 214) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2150) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2063) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2210) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2113) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2262) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2166) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2311) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2225) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2360) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2278) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2426) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2327) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 246) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2476) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2380) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2518) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2441) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2575) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2489) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2626) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2537) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2672) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2587) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2715) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2638) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2764) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2685) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 306) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 357) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 372) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2729) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 406) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 471) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 452) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 560) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 580) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 608) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 651) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 701) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 722) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 518) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 817) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2776) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 881) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 777) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 940) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 833) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 900) ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 956) ... ok
+
+test result: ok. 77 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 217.70s
+
+REAL_EXIT=0

@@ -1,0 +1,1 @@
+{"jsonrpc":"2.0","id":2,"error":{"code":-32602,"message":"缺 params（须为 {\"suite\": \"...\"}）；可用套件：ts-01, ts-02, ts-03, ts-05, ts-06, ts-07, ts-08, ts-09, ts-10, ts-11, ts-12, ts-14, ts-17"}}

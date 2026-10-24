@@ -1,25 +1,25 @@
-# bevy-dev skill v0.14 —— Bevy 0.19 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.15 —— Bevy 0.20 开发纪律与约定（Bevy 特定层）
 
-- 适用版本：**bevy 0.19**（当前 `Cargo.lock` 解析为 0.19.1；本文件全部 API 事实按 0.19.1 本地源码核实，核实日期 2026-09-26）。
+- 适用版本：**bevy 0.20**（当前 `Cargo.lock` 解析为 0.20.0；本文件 API 事实按 0.20.0 本地源码核实，核实日期 2026-10-24——升级窗口 T042 全批重锚，覆盖说明见 §6 头注）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
 - 读者：任何在本仓库写/改 Bevy 代码、做 BRP 验证或回写本层资产的 AI agent。读本文即受其约束。
-- 引用口径：`<reg>` 指 `~/.cargo/registry/src/` 下的 registry 目录（本机实测为 `rsproxy.cn-e3de039b2554c837`；换机/换镜像后以 `ls ~/.cargo/registry/src/` 实际结果为准）。形如 `bevy-0.19.1/Cargo.toml:2695` 的引用均相对该目录。
-- **时效声明：第 6 节事实速查在 bevy 版本号变更（升级窗口）后全部作废，必须逐条重核再更新。**
+- 引用口径：`<reg>` 指 `~/.cargo/registry/src/` 下的 registry 目录（本机实测为 `rsproxy.cn-e3de039b2554c837`；换机/换镜像后以 `ls ~/.cargo/registry/src/` 实际结果为准）。形如 `bevy-0.20.0/Cargo.toml:2817` 的引用均相对该目录。
+- **时效声明：第 6 节事实速查在 bevy 版本号变更（升级窗口）后全部作废，必须逐条重核再更新。0.19→0.20 迁移实例：PIT-B-015 的「误写/正解」形态整体反转（见该条）——反转型变更连修复围栏一起打红，逐条重核不可省。**
 
 ## 0. 任务开场核对（每条都做，按序执行）
 
 1. 读 `AGENTS.md`、本文件、`assets-methodology/sop.md`；涉及仓库结构、里程碑、范围边界的决策，先读《Bevy-AI开发意向文档.md》对应章节。
-2. 确认版本未被擅动：根 `Cargo.toml` 的 `bevy = "0.19"`（`Cargo.toml:9`）与 `Cargo.lock` 一致；发现版本号在本仓库被改动且非升级窗口任务 → 停止并上报。
-3. 确认工具链 ≥ MSRV：`rustc -V` ≥ 1.95.0（`rust-version` 声明于 `bevy-0.19.1/Cargo.toml:14`；低于此 cargo 在解析阶段即拒绝，见 `assets-methodology/pitfalls.md` PIT-M-001）。
+2. 确认版本未被擅动：根 `Cargo.toml` 的 `bevy = "0.20"`（`Cargo.toml:11`）与 `Cargo.lock` 一致；发现版本号在本仓库被改动且非升级窗口任务 → 停止并上报。
+3. 确认工具链 ≥ MSRV：`rustc -V` ≥ 1.97.1（`rust-version` 声明于 `bevy-0.20.0/Cargo.toml:14`；低于此 cargo 在解析阶段即拒绝，见 `assets-methodology/pitfalls.md` PIT-M-001）。
 4. 台账 `assets-methodology/task-ledger.md` 中上一任务已完整登记（缺 → 先补记再开工）。
 5. 长时命令（cargo 全量编译等）后台跑 + 轮询，成败判定看**真实退出码**（`... > log 2>&1; echo REAL_EXIT=$?`），禁止管道末端判码（PIT-M-001 教训）。
 
 ## 1. 版本纪律（硬约束，违反即返工）
 
-1. **版本锁**：`bevy` 的版本号只允许出现在根 `Cargo.toml` 的 `[workspace.dependencies]`（现状 `Cargo.toml:9`）。成员（`game/`、`tooling/*`、`docs/`）一律 `bevy = { workspace = true }`（现状 `game/Cargo.toml:9`），**禁止**在成员 manifest 里写 bevy 版本号。
+1. **版本锁**：`bevy` 的版本号只允许出现在根 `Cargo.toml` 的 `[workspace.dependencies]`（现状 `Cargo.toml:11`）。成员（`game/`、`tooling/*`、`docs/`）一律 `bevy = { workspace = true }`（现状 `game/Cargo.toml:9`），**禁止**在成员 manifest 里写 bevy 版本号。
 2. **feature 追加在成员层**：需要 bevy feature 时（如 BRP 的 `bevy_remote`）在对应成员写 `{ workspace = true, features = ["bevy_remote"] }`；提交信息必须注明动了哪个 feature。feature 是版本敏感面，视同接口变更（见 §4.4）。
 3. **Cargo.lock 入库**：禁止 gitignore；提交前 `git status` 确认 lock 变更与代码同提交。
-4. **版本号变更仅限升级窗口**（0.20 起的例行迁移演练，意向文档 §4/§6）。平时任何提交不得动 bevy 版本号——包括「顺手升级补丁版本」与「临时降级绕 MSRV」（后者正确解法是升工具链，见 PIT-M-001）。
+4. **版本号变更仅限升级窗口**（下一大版本起的例行迁移演练，意向文档 §4/§6）。平时任何提交不得动 bevy 版本号——包括「顺手升级补丁版本」与「临时降级绕 MSRV」（后者正确解法是升工具链，见 PIT-M-001）。0.19→0.20 窗口先例见台账 T042。
 5. 工具链保持 Bevy MSRV 及以上的最新 stable（意向文档 §6）。
 
 ## 2. 查证流程（禁凭记忆写 API）
@@ -28,13 +28,13 @@
 
 ### 2.1 查证优先级（依序降级，前者优先）
 
-1. **本地依赖源码**（最权威——它就是本次编译的目标代码）：`~/.cargo/registry/src/<reg>/<crate>-0.19.1/`。常用落点：
-   - `bevy-0.19.1/src/`（facade 与重导出）、`bevy-0.19.1/examples/`（随包发布的官方示例）；
-   - `bevy_ecs-0.19.1/src/`、`bevy_app-0.19.1/src/`（App/Plugin/schedule）、`bevy_reflect-0.19.1/src/`、`bevy_remote-0.19.1/src/`、`bevy_state-0.19.1/src/`（均已在本地 registry 核实存在）；
-   - feature 定义在各 crate 的 `Cargo.toml [features]`（如 `bevy-0.19.1/Cargo.toml:2585` 起）。
+1. **本地依赖源码**（最权威——它就是本次编译的目标代码）：`~/.cargo/registry/src/<reg>/<crate>-0.20.0/`。常用落点：
+   - `bevy-0.20.0/src/`（facade 与重导出）、`bevy-0.20.0/examples/`（随包发布的官方示例，`examples/remote/` 0.20 扩为 server/app_under_test/client/integration_test 四件）；
+   - `bevy_ecs-0.20.0/src/`、`bevy_app-0.20.0/src/`（App/Plugin/schedule）、`bevy_reflect-0.20.0/src/`、`bevy_remote-0.20.0/src/`、`bevy_state-0.20.0/src/`（均已在本地 registry 核实存在）；
+   - feature 定义在各 crate 的 `Cargo.toml [features]`（`bevy-0.20.0/Cargo.toml`：`2d` :2706 起、`default` :2867 起、`bevy_remote` :2817、`hotpatching` :2928）。
    - 依赖源码未拉取时：在**仓库外**建临时 crate 声明该依赖并 `cargo fetch`（先例见台账 T002 证据），**禁止**为此改动本仓库 manifest。
-2. **docs.rs 对应版本**：URL 必须带精确版本号（如 `docs.rs/bevy_remote/0.19.1/`），**禁用 `latest`**——它指向未来版本，正是要防的语料污染。
-3. **官方 examples**：优先本地 `bevy-0.19.1/examples/`（与编译目标同版本），其次 GitHub 仓库对应 tag。
+2. **docs.rs 对应版本**：URL 必须带精确版本号（如 `docs.rs/bevy_remote/0.20.0/`），**禁用 `latest`**——它指向未来版本，正是要防的语料污染。
+3. **官方 examples**：优先本地 `bevy-0.20.0/examples/`（与编译目标同版本），其次 GitHub 仓库对应 tag。
 
 ### 2.2 留痕规则（查证结论必须可追溯）
 
@@ -57,7 +57,7 @@
 
 ### 3.2 插件组织
 
-- 功能单元 = `Plugin`（trait 方法签名 `fn build(&self, app: &mut App)`，`bevy_app-0.19.1/src/plugin.rs:57-59`）。一组紧密相关的组件 + Resource + system 打成一个自定义 Plugin；`main.rs` 只组装插件，不直接堆系统（官方组装形态参照 `bevy-0.19.1/examples/remote/server.rs:16-23`）。
+- 功能单元 = `Plugin`（trait 方法签名 `fn build(&self, app: &mut App)`，`bevy_app-0.20.0/src/plugin.rs:59`）。一组紧密相关的组件 + Resource + system 打成一个自定义 Plugin；`main.rs` 只组装插件，不直接堆系统（官方组装形态参照 `bevy-0.20.0/examples/remote/server.rs:16-23`）。
 - 插件依赖的 Resource 在自己的 `build` 里 `init_resource`，不得假设「别的插件恰好插过」。
 - BRP 常驻插件（`RemotePlugin` + `RemoteHttpPlugin`）在 game 侧单独成一个模块/插件组，集中管理监听地址（§6.1）。
 
@@ -70,7 +70,7 @@
 ### 3.4 组件设计（含 BRP 反射注册约定，M1 起强制）
 
 - 数据放组件，纯每帧可推导的量不落组件。
-- **凡需被 BRP 查询/操控的组件或 Resource：derive `Reflect` + 对应 `#[reflect(...)]`，并在插件 build 中显式 `app.register_type::<T>()`**（`register_type` 签名：`bevy_app-0.19.1/src/app.rs:677`）。derive 形态逐字对齐官方 BRP 示例（`bevy-0.19.1/examples/remote/server.rs:69-70` Resource、`:89-91` Component）：
+- **凡需被 BRP 查询/操控的组件或 Resource：derive `Reflect` + 对应 `#[reflect(...)]`，并在插件 build 中显式 `app.register_type::<T>()`**（`register_type` 签名：`bevy_app-0.20.0/src/app.rs:664`）。derive 形态逐字对齐官方 BRP 示例（`bevy-0.20.0/examples/remote/server.rs:69-70` Resource、`:89-91` Component，0.20 行号同 0.19）：
 
   ```rust
   use bevy::prelude::*;
@@ -87,15 +87,15 @@
   ```
 
   （片段抄自上述官方示例同形态，**未在本仓库过编译**；首次写入 `game/` 时必须过 `cargo check`。）
-- 为什么显式 `register_type` 仍强制：0.19 默认 feature 链（`default` → `2d`/`3d` → `default_app` → `reflect_auto_register`，`bevy-0.19.1/Cargo.toml:2742-2754`）会经 `inventory` 自动注册**非泛型**的 `#[derive(Reflect)]` 类型（`bevy_ecs-0.19.1/src/reflect/mod.rs:58-63`；`bevy_reflect-0.19.1/src/type_registry.rs:126-131`，Windows 在支持平台列表）；但**泛型类型不覆盖、`default-features = false` 即失效**。显式注册无条件成立且自文档化。
-- 需要显式注册成为**唯一**通路时（如验证「未注册类型 BRP 拿不到」的反证实验），用容器属性 `#[reflect(..., no_auto_register)]` 退出自动链：属性语义 `bevy_reflect_derive-0.19.1/src/lib.rs:329-335`，标注后不发 `inventory::submit`（`bevy_reflect_derive-0.19.1/src/impls/common.rs:174-177`）。**已验证**（TS-09/T014，2026-09-26：标注 + 显式注册 → BRP 可见；注释显式注册 → `list_components` 立即不含该类型，312→311）。
-- 未注册类型 BRP 拿不到：解析走 `AppTypeRegistry`，未注册报 `Unknown component type: ...`（`bevy_remote-0.19.1/src/builtin_methods.rs:608-613, 686`）。
+- 为什么显式 `register_type` 仍强制：0.20 默认链**直接**含 `reflect_auto_register`（`default` :2867 体、:2878——0.19 是经 `2d`/`3d`→`default_app` 间接链，0.20 收直），会经 `inventory` 自动注册**非泛型**的 `#[derive(Reflect)]` 类型（收集机制文档 `bevy_reflect-0.20.0/src/lib.rs:516-527`，支持平台含 Windows；泛型类型不覆盖、`default-features = false` 即失效两条沿 0.19 结论，0.20 未重验）。显式注册无条件成立且自文档化。
+- 需要显式注册成为**唯一**通路时（如验证「未注册类型 BRP 拿不到」的反证实验），用容器属性 `#[reflect(..., no_auto_register)]` 退出自动链（属性在 0.20 仍存在：`bevy_reflect_derive-0.20.0/src/lib.rs:344` 文档）。**0.19 已验证**（TS-09/T014：标注 + 显式注册 → BRP 可见；注释显式注册 → `list_components` 立即不含该类型，312→311）；0.20 行为未重验，首次使用须复验。
+- 未注册类型 BRP 拿不到：解析走 `AppTypeRegistry`，未注册报 `Unknown component type: ...`（`bevy_remote-0.20.0/src/builtin_methods.rs:686`、`:698`——与 0.19 同行号）。
 
 ### 3.5 Resource / State 使用边界
 
 - Resource：全局唯一、与实体无关的状态（配置、随机源、资产句柄缓存）。禁止把实体数据放 Resource；Resource 里存 `Entity` 引用时必须处理悬垂（实体可能已被 despawn）。
 - State：流程阶段（加载 → 菜单 → 对局……），只用于「阶段切换 + 进入/退出批量启停逻辑」。与阶段无关的单系统启停用普通 run condition，不为此造 State。
-- State API 细节（derive 形态、调度集名称）**首次使用前**按 §2.1 查证 `bevy_state-0.19.1/src/`，禁止凭记忆写。
+- State API 细节（derive 形态、调度集名称）**首次使用前**按 §2.1 查证 `bevy_state-0.20.0/src/`，禁止凭记忆写。
 
 ### 3.6 tooling 边界
 
@@ -146,133 +146,144 @@
 - 本文件只写 Bevy 绑定的内容。写规则时自问：换到 Godot/Unity + 对应验证栈，这条还成立吗？成立 → 移到方法论层，这里只留链接。
 - 两层都不掺私货（密钥、机器路径、内部黑话），保持随时可公开态（意向文档 §6）。`<reg>` 这类本机相关值用「以 `ls` 实测为准」的写法，不硬编码。
 
-## 6. 已核实事实速查（bevy 0.19.1，2026-09-26 全部按 `<reg>` 本地源码核实）
+## 6. 已核实事实速查（bevy 0.20.0，2026-10-24 升级窗口 T042 重锚）
 
 > ⚠️ 升级窗口动版本号后，本节全部条目作废，逐条重核后更新并改此处日期。
+> **0.20 重锚覆盖说明**：§6.1–6.9 与 §3 锚点已逐条按 0.20.0 本地源码重核（正文行号即 0.20 锚）；§6.10–6.14 为抽核——受官方迁移指南点名的变更已逐条重核（正文标注），其余 API 形态结论由 `compile_fail` doctest 机器断言维持（0.20 首跑仅 PIT-B-015 反转被打红，其余 31 处失败均系内存耗尽环境抖动、复跑排除），行号级全量重核归窗口期 T043 待重核清单（`docs/pre-window-plan.md` B2）。
 
 ### 6.1 BRP 常驻与监听
 
-- 启用：成员依赖 `{ workspace = true, features = ["bevy_remote"] }`（feature 定义 `bevy-0.19.1/Cargo.toml:2695`：`bevy_remote = ["bevy_internal/bevy_remote"]`）。
-- 游戏里挂两个插件：`RemotePlugin::default()` + `RemoteHttpPlugin::default()`（官方示例 `examples/remote/server.rs:18-19`；`RemotePlugin` 定义 `bevy_remote-0.19.1/src/lib.rs:572`，`RemoteHttpPlugin` 定义 `src/http.rs:113`）。
+- 启用：成员依赖 `{ workspace = true, features = ["bevy_remote"] }`（feature 定义 `bevy-0.20.0/Cargo.toml:2817`：`bevy_remote = ["bevy_internal/bevy_remote"]`）。
+- 游戏里挂两个插件：`RemotePlugin::default()` + `RemoteHttpPlugin::default()`（官方示例 `examples/remote/server.rs:18-19`；`RemotePlugin` 定义 `bevy_remote-0.20.0/src/lib.rs:572`，`RemoteHttpPlugin` 定义 `src/http.rs:113`——三处行号与 0.19 逐一相同）。
 - 默认监听 `127.0.0.1`（`DEFAULT_ADDR`，`src/http.rs:60`）；主 app 端口 **15702**（`src/http.rs:52`），render 子 app 端口 15703（`src/http.rs:57`，启用 bevy_render 时）。
-- 默认已是回环，但游戏代码仍**显式绑定**：`RemoteHttpPlugin::default().with_address(...)`（builder 方法 `with_address`/`with_port`/`with_headers` 见 `src/http.rs:164-212`）。安全约束（意向文档 §5.3）：仅 127.0.0.1，禁止 0.0.0.0/局域网。传参用 `Ipv4Addr::LOCALHOST`（std 的 `Into<IpAddr>` 转换；此防御性写法尚未在本仓库过编译，首次写入 game/ 时须过 check）。
+- 默认已是回环，但游戏代码仍**显式绑定**：`RemoteHttpPlugin::default().with_address(...)`（builder 方法 `with_address`/`with_port`/`with_headers` 见 `src/http.rs:167/:173/:199`）。安全约束（意向文档 §5.3）：仅 127.0.0.1，禁止 0.0.0.0/局域网。传参用 `Ipv4Addr::LOCALHOST`（std 的 `Into<IpAddr>` 转换；此写法在 game/ 已过编译，0.20 续用）。
 
 ### 6.2 BRP 方法集与自定义方法
 
-- 内置方法共 **23** 个（`RemotePlugin::default()` 经 `add_default_methods` 全量注册，Default impl `src/lib.rs:791-803`；方法名常量表 `src/builtin_methods.rs:45-111`）：
+- 内置方法共 **23** 个（`RemotePlugin::default()` 经 `add_default_methods` 全量注册，fn 定义 `src/lib.rs:672`、Default impl `:794-798`；方法名常量表 `src/builtin_methods.rs:45-111`——`schedule.list` :102 / `schedule.graph` :108 / `rpc.discover` :110-111）：
   `world.get_components` / `world.query` / `world.spawn_entity` / `world.insert_components` / `world.remove_components` / `world.despawn_entity` / `world.reparent_entities` / `world.list_components` / `world.mutate_components` / `world.get_components+watch` / `world.list_components+watch` / `world.get_resources` / `world.insert_resources` / `world.remove_resources` / `world.mutate_resources` / `world.list_resources` / `world.trigger_event` / `world.write_message` / `world.observe+watch` / `registry.schema` / `schedule.list` / `schedule.graph` / `rpc.discover`。
-  检索提示：常量名大多带 `_METHOD` 后缀，但 `schedule.list` / `schedule.graph` 的常量是 `BRP_SCHEDULE_LIST` / `BRP_SCHEDULE_GRAPH`（`src/builtin_methods.rs:102` / `:108`，**无** `_METHOD` 后缀）——grep 常量表时勿按后缀过滤（v0.1 前车之鉴）。两方法随 `bevy_dev_tools`（bevy_remote 的**非 optional** 依赖，`Cargo.toml:76-78`）默认可用，注册处 `src/lib.rs:779` / `:784`；`rpc.discover` 注册于 `src/lib.rs:719`。
-- ⚠️ **破坏性语义（PIT-B-051，净室重跑首触发 2026-09-28）**：`world.mutate_components` 对不存在实体**无优雅错误分支**——handler 裸调 `world.entity_mut(entity)`（`src/builtin_methods.rs:1194`），panic 于 `process_remote_requests` 系统内未捕获，**整个游戏进程崩溃退出（101）**；客户端侧指纹 = curl 退出码 **52**（空响应）+ 后续连接拒绝（**exit 7**）。对照 insert/remove/despawn/reparent 均走 `get_entity_mut` → 温和 `-23401`（`:1129`/`:1304`/`:1341`/`:1359`/`:1370`）。工具侧禁止透传未验证实体号给 mutate（先 get_components/query 验证存在）。证据 `docs/evidence/m3-cleanroom/t004-crash-evidence.txt`。
+  检索提示：常量名大多带 `_METHOD` 后缀，但 `schedule.list` / `schedule.graph` 的常量是 `BRP_SCHEDULE_LIST` / `BRP_SCHEDULE_GRAPH`（`src/builtin_methods.rs:102` / `:108`，**无** `_METHOD` 后缀）——grep 常量表时勿按后缀过滤（v0.1 前车之鉴）。两方法随 `bevy_dev_tools`（bevy_remote 的**非 optional** 依赖）默认可用，注册处 `src/lib.rs:779` / `:784`；`rpc.discover` 注册于 `src/lib.rs:719`（四处行号 0.20 与 0.19 相同）。
+- ⚠️ **破坏性语义（PIT-B-051，0.20 复核维持）**：`world.mutate_components` 对不存在实体**无优雅错误分支**——handler 裸调 `world.entity_mut(entity)`（`src/builtin_methods.rs:1194`；0.20 拆出第二处 `:1252`，strict 双路径），panic 于 `process_remote_requests` 系统内未捕获，**整个游戏进程崩溃退出（101）**；客户端侧指纹 = curl 退出码 **52**（空响应）+ 后续连接拒绝（**exit 7**）。对照 insert/remove/despawn/reparent 均走 `get_entity_mut`（helper `:1811`；调用 `:1129`/`:1304`/`:1341`/`:1359`/`:1370`）→ 温和 `-23401`。工具侧禁止透传未验证实体号给 mutate（先 get_components/query 验证存在）。证据 `docs/evidence/m3-cleanroom/t004-crash-evidence.txt`（0.19 复现；0.20 源码面复核维持，运行时未重踩）。
 - 自定义方法（自研件 `launch_level`/`run_tests`/`screenshot` 的注册通道）公开 API：**`with_method_main` / `with_method_render`**（`src/lib.rs:591` / `:601`）；watch 变体 `with_watching_method_main` / `with_watching_method_render`（`:632` / `:642`）。
-- ⚠️ **常见误写：`with_method`**——0.19.1 中它是私有 `fn`（`src/lib.rs:611`，无 `pub`），外部不可调用。任务种子信息或旧资料出现 `RemotePlugin::default().with_method(...)` 时按本条纠正（本条即查证纪律的实例：种子信息也错，源码为准）。
-- handler 形态：`impl IntoSystem<In<Option<Value>>, BrpResult, M>`（`src/lib.rs:591-599`，name 参数为 `impl Into<String>`），即 `fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult`；`BrpResult<T = Value> = Result<T, BrpError>`（`src/lib.rs:1428`），`Value` = `serde_json::Value`。handler 经 `world.run_system_with(id, message.params)` 独占执行（`src/lib.rs:1501`）——handler 内可直改世界（§3.3 认可的 `&mut World` 场景）。`BrpError` 三字段全公开（code `i16`/message/data，`lib.rs:1304-1312`），错误码复用 `error_codes` 常量模块（`lib.rs:1387` 起，如 `INVALID_PARAMS` = -32602）。**已验证**（T019，2026-09-26：`game/src/rpc/` 三方法注册运行，证据 `docs/evidence/m2-rpc.md`）。自定义方法会进 `rpc.discover` 方法清单（与内置方法同域，实测）。
+- ⚠️ **常见误写：`with_method`**——0.20.0 中它仍是私有 `fn`（`src/lib.rs:611`，无 `pub`），外部不可调用。任务种子信息或旧资料出现 `RemotePlugin::default().with_method(...)` 时按本条纠正（本条即查证纪律的实例：种子信息也错，源码为准）。
+- handler 形态：`impl IntoSystem<In<Option<Value>>, BrpResult, M>`（`src/lib.rs:591-599`，name 参数为 `impl Into<String>`），即 `fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult`；`BrpResult<T = Value> = Result<T, BrpError>`（`src/lib.rs:1428`），`Value` = `serde_json::Value`。handler 经 `world.run_system_with(id, message.params)` 独占执行（`src/lib.rs:1501`；0.20 另有 `:1551` 第二调用点）——handler 内可直改世界（§3.3 认可的 `&mut World` 场景）。`BrpError` 三字段全公开（code `i16`/message/data，`lib.rs:1306/:1308/:1311`），错误码复用 `error_codes` 常量模块（`lib.rs:1387` 起，如 `INVALID_PARAMS` = -32602）。**0.19 已验证 + 0.20 编译维持**（T019 落地 `game/src/rpc/` 三方法并运行，证据 `docs/evidence/m2-rpc.md`；0.20 全仓 check 过 + BRP 运行时复验见 T042 证据）。自定义方法会进 `rpc.discover` 方法清单（与内置方法同域，实测）。
 - 本仓自定义方法集现况（**8** 个，T040 后；`rpc.discover` 总数 31 = 23 内置 + 8）：`game.run_tests` / `game.screenshot` / `game.screenshot_log` / `game.launch_level` / `game.move_unit` / `game.attack` / `game.end_turn` / **`game.snapshot`**（稳定 id 只读快照——battle 面 units `{x,y,team,hp,moved,attacked}` 按 `(x,y)` 业务键序 + `turn/winner/phase/rng_state` ∈ `BattleState`、sim 面 `paused` ∈ `SimConfig` + wanderers `{index,origin,velocity,phase}` 确定性初值按 `Wanderer::index` 序；资源缺失面为 `null`、实体号零出现、不含时间依赖字段——「同 seed 跨进程逐字节一致」在时间无关面上成立）。字段来源逐表指认见 `game/src/rpc/snapshot.rs` 模块文档（handler `snapshot.rs:58`，方法名常量 `rpc/mod.rs:85`，注册 `game/src/brp.rs:38`；核实 2026-09-29，T040）。计数口径由 claim-lint 锚定：`pub const` + `"game.` 字面量，**不按常量名后缀过滤**（T002 同型——无后缀常量漏计且整体仍绿）。
 
 ### 6.3 BRP 与反射注册
 
-- BRP 一切组件/资源操作经 `AppTypeRegistry` 解析（`src/builtin_methods.rs:608-613` get_components、`:626-630` resources）；未注册类型报 `Unknown component type: ...`（`:686`）/ `Unknown component: ...`（`:698`）。
+- BRP 一切组件/资源操作经 `AppTypeRegistry` 解析（`src/builtin_methods.rs:608` get_components、`:618` get_resources——0.20 复核）；未注册类型报 `Unknown component type: ...`（`:686`）/ `Unknown component: ...`（`:698`）。
 - 自动注册的适用条件与局限见 §3.4（默认 feature 链 + 非泛型才自动；显式 `register_type` 无条件）。
 
 ### 6.4 BRP 请求体（JSON-RPC 2.0 over HTTP POST）
 
-- 请求必须含 `"jsonrpc": "2.0"`（缺失报 `missing_field("jsonrpc")`，`src/lib.rs:1145-1146`；值非 "2.0" 报 invalid_value，`:1114-1118`）、`method`（字符串、大小写敏感，crate 文档 `:38`）、`id`（任意 JSON，响应原样带回）；`params` 按方法可省。
-- 响应：成功含 `result`，失败含 `error`（`code`/`message` 恒在，`:65-90`）。
-- 注意：crate 文档自己的请求示例（`src/lib.rs:15-25`）**漏了 `jsonrpc` 字段**，与反序列化器实际行为不符——文档也可能错，编译目标（源码）才是最终依据。
+- 请求必须含 `"jsonrpc": "2.0"`（缺失报 `missing_field("jsonrpc")`，`src/lib.rs:1146`；`method` 缺失 `:1148`；值非 "2.0" 报 invalid_value，`:1115` 起）、`method`（字符串、大小写敏感，crate 文档）、`id`（任意 JSON，响应原样带回）；`params` 按方法可省。
+- 响应：成功含 `result`，失败含 `error`（`code`/`message` 恒在）。
+- 0.19 旧注记作废：0.19 的 crate 文档请求示例曾漏 `jsonrpc` 字段；0.20 文档示例已含（`src/lib.rs:53`/`:162`/`:184`）——「文档也可能错」的原则不变，编译目标（源码）仍是最终依据。
 
-### 6.5 Hotpatching（0.19.1；Windows 冒烟已通过）
+### 6.5 Hotpatching（0.20.0；0.19.1 Windows 冒烟已通过，0.20 未重冒烟）
 
-- feature：`hotpatching = ["bevy_internal/hotpatching"]`（`bevy-0.19.1/Cargo.toml:2802`），作用域为 `bevy_app/hotpatching` + `bevy_ecs/hotpatching` 两个下游 feature（`bevy_internal-0.19.1/Cargo.toml:282-285`）——只覆盖 ECS/app 层；该链经 `bevy_ecs-0.19.1/Cargo.toml:70` 引入 subsecond 0.7.0-rc.0，DefaultPlugins 在该 feature 下自动附带 HotPatchPlugin（`bevy_internal-0.19.1/src/default_plugins.rs:95-97`，bevy_app/src/hotpatch.rs 连接 dx CLI；以上行号核实 2026-09-26，T005）。
-- 运行方式：`dx serve --hot-patch`（dioxus-cli 0.7.10，官方 `examples/ecs/hotpatching_systems.rs` 证实）。
-- **已验证**（T005 冒烟，2026-09-26，Windows 10 19044 / rustc 1.98.1，结论已回写意向文档 §5.3 注记）：无窗口 MinimalPlugins + 显式 HotPatchPlugin + LogPlugin 下，两次热补丁（字符串常量变更 / 控制流变更）各约 1.1s 生效，frame 计数全程连续单调（进程未重启）；证据 `tooling/hotpatch-smoke/evidence/hotpatch-smoke-run.log`。适用边界：仅 system 函数体内改动；结构变更（新增/删除 system、非 system 代码、依赖变更）仍走重启流程。
+- feature：`hotpatching = ["bevy_internal/hotpatching"]`（`bevy-0.20.0/Cargo.toml:2928`），作用域 `bevy_app/hotpatching` + `bevy_ecs/hotpatching`（`bevy_internal-0.20.0/Cargo.toml:287`）——只覆盖 ECS/app 层；该链经 `bevy_ecs-0.20.0/Cargo.toml:71`（`hotpatching = ["dep:subsecond"]`，依赖声明 `:217-219`）引入 subsecond **0.7.0-rc.0（与 0.19 相同版本，未升级）**，DefaultPlugins 在该 feature 下自动附带 HotPatchPlugin（`bevy_internal-0.20.0/src/default_plugins.rs:97`；以上行号核实 2026-10-24）。
+- 运行方式：`dx serve --hot-patch`（dioxus-cli 0.7.10，官方 `examples/ecs/hotpatching_systems.rs` 证实——0.20 示例存续）。
+- **0.19.1 已验证**（T005 冒烟，2026-09-26，Windows 10 19044 / rustc 1.98.1，结论已回写意向文档 §5.3 注记）：无窗口 MinimalPlugins + 显式 HotPatchPlugin + LogPlugin 下，两次热补丁各约 1.1s 生效，frame 计数全程连续单调（进程未重启）；证据 `tooling/hotpatch-smoke/evidence/hotpatch-smoke-run.log`。适用边界：仅 system 函数体内改动；结构变更仍走重启流程。0.20：feature 链与 subsecond 版本面核实未变，运行时冒烟未重跑（编译面随 workspace check 通过）——首次使用前补冒烟。
 - 冒烟期两条编译教训（均失败复现后修复、过 check + 运行验证，T005）：`LogPlugin` 不在 prelude，须 `bevy::log::LogPlugin`（bevy_log prelude 仅 tracing 宏）；inline format 捕获对包装类型（如 `Local`）报 E0277，须解引用后捕获（`*frame`）。
 
 ### 6.6 工具链
 
-- bevy 0.19.1 MSRV = rustc **1.95.0**（`bevy-0.19.1/Cargo.toml:14`，`rust-version` 字段）。
+- bevy 0.20.0 MSRV = rustc **1.97.1**（`bevy-0.20.0/Cargo.toml:14`，`rust-version` 字段）。
 
 ### 6.7 事件与 observer（BRP `world.trigger_event` 通路）
 
+- **0.20 形态变更（PR #24013，反转 PIT-B-015）**：生命周期/组件过滤泛型并入事件类型——observer 系统参数为单泛型 `On<'w, 't, E: EventPattern>`（`bevy_ecs-0.20.0/src/observer/system_param.rs:25`）；`Add` 变为 `Add<B: Bundle>(PhantomData<B>)`（`lifecycle.rs:352`，非泛型事件 `AddEvent` :339）。组件生命周期 observer 写 `On<Add<T>>` / `On<Remove<T>>`（0.19 的第二泛型 `On<Add, T>` 已废止，E0107）。
 - 事件定义：`#[derive(Event, Reflect, Serialize, Deserialize)]` + 容器属性
   `#[reflect(Event, Serialize, Deserialize)]`——`#[reflect(Event)]` 注册 `ReflectEvent` 数据
-  （`bevy_ecs-0.19.1/src/reflect/event.rs:34-36` 文档），缺它时 BRP 报 `Event ... is not
-  reflectable`、类型未注册报 `Unknown event type`（`bevy_remote-0.19.1/src/builtin_methods.rs:1492/1497`）。
-  BRP 端按全路径 `event` + 可选 `value` 触发（`BrpTriggerEventParams`，`builtin_methods.rs:327-333`）；
-  省略 `value` 时 handler 以 `DynamicStruct::default()` 经 `ReflectFromReflect` 构造
-  （`builtin_methods.rs:1481-1516`；derive(Reflect) 自动注册 `ReflectFromReflect`，
-  `bevy_reflect_derive-0.19.1/src/registration.rs:32`）——**0 字段（unit）事件无条件成功**，
-  带字段事件走 TypedReflectDeserializer 需完整形态。
-- observer 形态（0.19 系统参数为 `On<E>`，非旧语料的 `Trigger<E>`）：
-  `fn on_x(_: On<E>, mut r: ResMut<R>)` + `app.add_observer(on_x)`
-  （官方示例 `bevy-0.19.1/examples/ecs/observers.rs:142`；`App::add_observer`
-  `bevy_app-0.19.1/src/app.rs:1474`）。`World::trigger` **同步**执行匹配 observer
-  （`bevy_ecs-0.19.1/src/observer/mod.rs:63`）——BRP `trigger_event` 的 HTTP 响应返回前
+  （缺它时 BRP 报 `Event ... is not reflectable`、类型未注册报 `Unknown event type`）。
+  BRP 端按全路径 `event` + 可选 `value` 触发（`BrpTriggerEventParams`，`builtin_methods.rs:327`）；
+  省略 `value` 时经 `ReflectFromReflect` 构造——**0 字段（unit）事件无条件成功**，
+  带字段事件走 TypedReflectDeserializer 需完整形态（0.19 已验证语义，0.20 未重验，首次使用复验）。
+- observer 形态：`fn on_x(_: On<E>, mut r: ResMut<R>)` + `app.add_observer(on_x)`
+  （官方示例 `bevy-0.20.0/examples/ecs/observers.rs:142`——**新形态 `On<Add<Mine>>`**，:152 `On<Remove<Mine>>`；`App::add_observer`
+  `bevy_app-0.20.0/src/app.rs:1459`）。`World::trigger` **同步**执行匹配 observer
+  （`bevy_ecs-0.20.0/src/observer/mod.rs:63`——与 0.19 同行号）——BRP `trigger_event` 的 HTTP 响应返回前
   副作用已生效，紧接着的 `get_resources` 必读到新值。
-- **已验证**（TS-10/T015，2026-09-26：unit 事件 `game::sim::PauseRequested` + observer 翻转
-  `SimConfig.paused`，经 BRP 空载荷触发两连翻转，false→true→false 闭环；单测用
-  `World::add_observer` + `World::trigger` 直证，`observer/mod.rs:55/63`）。
+- **0.19 已验证 + 0.20 套件回归复验**（TS-10/T015：unit 事件 `game::sim::PauseRequested` + observer 翻转
+  `SimConfig.paused`，经 BRP 空载荷触发两连翻转闭环；0.20 经 ts-10 套件随 T042 回归重跑）。
 
 ### 6.8 Screenshot 捕获管线（`bevy::render::view::screenshot`）
 
-- 导入路径 `bevy::render::view::screenshot` 的实体文件是 `bevy_render-0.19.1/src/view/window/screenshot.rs`（经 `view/mod.rs:10` 的 `pub use window::*` 重导出）——按 `view/screenshot.rs` 路径 grep 会落空。
-- 用法是**组件实体 + observer**（不是挂到相机上）：`world.spawn(Screenshot::primary_window()).observe(save_to_disk(path))`；完成是异步实体事件 `ScreenshotCaptured { entity, image }`（`screenshot.rs:49`），本机实测受理后 +3 帧完成。同一实体可并挂多个 observer（写盘 + 日志回填），相对次序无契约。
-- `save_to_disk(path: impl AsRef<Path>) -> impl FnMut(On<ScreenshotCaptured>)`（`screenshot.rs:134`）：observer 内**同步**写盘（`to_rgb8` + `save_with_format`，格式按扩展名）。捕获实体完成后由 ScreenshotPlugin 的 `clear_screenshots`（First 调度）清理——完成轮询须经自有日志资源，不能靠查实体。
+- 导入路径 `bevy::render::view::screenshot` 的实体文件是 `bevy_render-0.20.0/src/view/window/screenshot.rs`（经 `view/mod.rs` 重导出）——按 `view/screenshot.rs` 路径 grep 会落空。
+- 用法是**组件实体 + observer**（不是挂到相机上）：`world.spawn(Screenshot::primary_window()).observe(save_to_disk(path))`；完成是异步实体事件 `ScreenshotCaptured { entity, image }`（`screenshot.rs:53`），本机 0.19 实测受理后 +3 帧完成。同一实体可并挂多个 observer（写盘 + 日志回填），相对次序无契约。
+- `save_to_disk(path: impl AsRef<Path>) -> impl FnMut(On<ScreenshotCaptured>)`（`screenshot.rs:145`）：observer 内**同步**写盘（`to_rgb8` + `save_with_format`，格式按扩展名）。捕获实体完成后由 ScreenshotPlugin 清理——完成轮询须经自有日志资源，不能靠查实体。
 - 截图为**物理分辨率**：逻辑 1280x720 + DPI 1.25 的本机实得 1600x900——尺寸断言以物理分辨率为准。
-- **已验证**（T019，2026-09-26：`game.screenshot` / `game.screenshot_log` 经此管线，PNG 魔数 + IHDR 尺寸与日志回填互证，证据 `docs/evidence/m2-rpc.md`）。
+- **0.19 已验证 + 0.20 套件回归复验**（T019：`game.screenshot` / `game.screenshot_log` 经此管线，PNG 魔数 + IHDR 尺寸与日志回填互证；0.20 经 screenshot 套件随 T042 回归重跑）。
 
-### 6.9 BRP 内省的进程内等价 API（`run_tests` 套件用，0.19.1 本地源码核实 2026-09-27）
+### 6.9 BRP 内省的进程内等价 API（`run_tests` 套件用；0.19.1 全量核实 2026-09-27，0.20 抽核 2026-10-24）
 
-- BRP `world.list_components` / `world.list_resources` 的数据源是 **AppTypeRegistry 中带 `ReflectComponent` / `ReflectResource` 数据的类型**（`builtin_methods.rs:1377-1400` 与 `:1414-1424` 两 handler 同构判定）——进程内套件直查同一注册表即等价：`world.resource::<AppTypeRegistry>().read().get(TypeId::of::<T>())` 再 `.data::<ReflectComponent>()`（`AppTypeRegistry` 定义 `bevy_ecs/src/reflect/mod.rs:36`；`TypeRegistry::get` `bevy_reflect/src/type_registry.rs:423`、`TypeRegistration::data` `:677`）。
-- BRP `registry.schema` 的同源等价：`TypeRegistration::type_info() -> &'static TypeInfo`（`type_registry.rs:635`）→ `TypeInfo::Struct(&StructInfo)` → `StructInfo::field(name) -> Option<&NamedField>`（`structs.rs:165`）→ `NamedField::type_info()`（`fields.rs:58`）+ `TypeInfo::is::<T>()`（`type_info.rs:295`）可断言「字段存在且类型为 T」。
-- `World::despawn(entity) -> bool`：实体不存在时 **warn + 返回 false**（不 panic；`world/mod.rs:1598-1605`）——进程内等价 BRP 侧 -23401 `ENTITY_NOT_FOUND` 的判定语义。存在性检查用 `World::get_entity`（`Result` 形态，`:951`，Err 即不存在）。
-- `World::trigger`（`observer/mod.rs:63`）在 `run_tests` handler（`world.run_system_with` 上下文）内**实测同步执行 observer**（ts-10 套件：触发即翻转 `paused`，两次触发净零；与 §6.7 的 BRP `world.trigger_event` 行为一致）。
-- 通用形态：`World::spawn` 返回 `EntityWorldMut`（`.id()` 取实体号，`world_mut.rs:181`），spawn/despawn/get_mut 直写**同帧生效**（无 Commands 延迟）——套件内「写→读→还原」无需跨帧。
-- **已验证**（T020，2026-09-27：11 套件 78 断言（套件 33 去重 + 工具侧 45）经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`；本行「77」系初版误记，2026-09-27 勘误）。
+- BRP `world.list_components` / `world.list_resources` 的数据源是 **AppTypeRegistry 中带 `ReflectComponent` / `ReflectResource` 数据的类型**——进程内套件直查同一注册表即等价：`world.resource::<AppTypeRegistry>().read().get(TypeId::of::<T>())` 再 `.data::<ReflectComponent>()`（`AppTypeRegistry` 定义 `bevy_ecs-0.20.0/src/reflect/mod.rs:36`——与 0.19 同行号；`TypeRegistry::get` `bevy_reflect/src/type_registry.rs:448`、`TypeRegistration::data` `:720`、`type_info` `:660`，0.20 重锚）。
+- BRP `registry.schema` 的同源等价：`TypeRegistration::type_info() -> &'static TypeInfo` → `TypeInfo::Struct(&StructInfo)` → `StructInfo::field(name)` → `NamedField::type_info()` + `TypeInfo::is::<T>()` 可断言「字段存在且类型为 T」（0.19 验证语义，0.20 抽核签名未变）。
+- `World::despawn(entity) -> bool`：实体不存在时 **warn + 返回 false**（不 panic；`world/mod.rs:1576`、warn `:1578`）——进程内等价 BRP 侧 -23401 `ENTITY_NOT_FOUND` 的判定语义。存在性检查用 `World::get_entity`（`Result` 形态，Err 即不存在）。
+- `World::trigger`（`observer/mod.rs:63`）在 `run_tests` handler（`world.run_system_with` 上下文）内**0.19 实测同步执行 observer**（ts-10 套件：触发即翻转 `paused`）。
+- 通用形态：`World::spawn` 返回 `EntityWorldMut`（`.id()` 取实体号），spawn/despawn/get_mut 直写**同帧生效**（无 Commands 延迟）——套件内「写→读→还原」无需跨帧。
+- **0.19 已验证 + 0.20 套件回归复验**（T020：套件断言全套（套件去重 + 工具侧）经此组 API 落地并全绿，证据 `docs/evidence/m1-phase2.md`；0.20 十三套件随 T042 回归重跑）。
 
-### 6.10 ECS 查询与调度（M3 批次一探查，2026-09-27 本地源码核实 + 探针双重验证）
+### 6.10 ECS 查询与调度（M3 批次一探查，0.19.1 核实 2026-09-27 + 0.20 抽核 2026-10-24）
 
-- `Query::single()` / `single_mut()` 返回 `Result<_, QuerySingleError>`（`system/query.rs:2097/:2126`）；`get_single` 不存在（全文 0 处）——PIT-B-005。
+- **0.20 变更（迁移指南）**：`Query::iter_many` 家族（`QueryManyIter`/`QueryManyUniqueIter`/`QuerySortedManyIter` 及 par 变体）产出从 `QueryData::Item` 改为 **`Result<_, QueryEntityError>`**——旧行为（跳过不匹配实体）用 `.matched()` 复原，sorted 变体用 `.flat_map(Result::ok)`；本仓代码零使用（T042 盘点）。
+- `Query::single()` / `single_mut()` 返回 `Result<_, QuerySingleError>`（`system/query.rs:2242/:2271`，0.20 重锚）；`get_single` 不存在——PIT-B-005。
 - `Query::par_iter()` 返回的 `QueryParIter` **不实现任何迭代器 trait**（也无 rayon ParallelIterator）；并行面是固有方法 `for_each`/`for_each_init`（`query/par_iter.rs:42/:77`，内部按 feature 与 ComputeTaskPool 线程数选并行/串行 `:86-120`）——PIT-B-006。
-- **multi_threaded 经默认链传递启用（2026-09-27 勘误，独立审核纠正初判「默认单线程」）**：门面 `default=[2d,3d,ui,audio]`（`bevy-0.19.1/Cargo.toml:2742-2747`）本身不含它，但 `2d`/`3d`/`ui` 均含 `default_platform`（`:2762-2774`），后者含 `multi_threaded`（`:2768`）——本仓 game/docs 随默认链实际启用（`cargo tree -e features` 实证），执行器为 **MultiThreadedExecutor**（`executor/mod.rs:49-66` default_executor）。如需强制单线程（确定性调试等）须显式 `default-features = false` 自组 feature——属架构决策，归 owner。
+- **multi_threaded 经默认链传递启用（0.20 复核维持）**：0.20 `default=[2d,3d,...]`（`bevy-0.20.0/Cargo.toml:2867`）本身仍不含它，但 `2d`/`3d`（:2706/:2725）含 `default_platform`（:2887），后者含 `multi_threaded`（:2944）——本仓 game/docs 随默认链实际启用，执行器为 **MultiThreadedExecutor**。如需强制单线程（确定性调试等）须显式 `default-features = false` 自组 feature——属架构决策，归 owner。
 - `Commands` 入队命令 = `queue`（`commands/mod.rs:641`），`add` 不存在——PIT-B-007。
 - 可变组合迭代 = `while let Some([mut a, b]) = it.fetch_next()`（官方示例 `query.rs:796-806`，`fetch_next` `:802`）；for/IntoIterator 仅对只读数据成立——PIT-B-008。
 - `App::add_systems` 首参只收 `ScheduleLabel`（`bevy_app app.rs:321-323`）；系统入集用 `.in_set(Set)`（`schedule/config.rs:322/:493`）+ `configure_sets`——PIT-B-009。
 - query 迭代序不保证（`query.rs:654` 等 8 处文档：654/685/723/762/792/824/1154/1183）；确定性按业务键定位（`Wanderer::index` 先例）——PIT-B-010。`Changed/Added` 首帧全量命中（含 Query 首跑前变更，`query/filter.rs:886-896`）——PIT-B-011。跨系统冲突不 panic、任意序（歧义仅可选项，`schedule/schedule.rs:48-49`），定序须 `.chain()`——PIT-B-012。同系统冲突 Query 编译放行、首帧 panic B0001（`query/state.rs:210-218`），正解 `ParamSet`/`Without`——PIT-B-013。
-- 无坑确认（记忆写对，探针实测编译通过）：`iter_many(&[Entity])` 存在；`Res<T>::is_changed()` 存在；`run_if` 接受捕获环境闭包（`move || -> bool`）。
+- 无坑确认（记忆写对，探针实测编译通过；**0.20 修订**：`iter_many` 语义已变，见本节首条）：`Res<T>::is_changed()` 存在；`run_if` 接受捕获环境闭包（`move || -> bool`）。
 - 探查证据：`docs/evidence/m3-assets/batch-c/`（r1 失败原文 / r2 正解（含 attempt1 两轮留痕）/ 9 个运行时探针日志（含 1 失败轮）+ 探针源码快照 + errata 勘误页）。
 
-### 6.11 事件 / 消息 / State（M3 批次二探查，2026-09-27 本地源码核实 + 探针双重验证）
+### 6.11 事件 / 消息 / State（M3 批次二探查，0.19.1 核实 2026-09-27 + 0.20 抽核 2026-10-24）
 
-**分流总纲（最重要的一个心智模型）**：0.19 把旧「Event」拆成两半——**Event = 纯 observer 触发**（无缓冲存储，`World::trigger`/`Commands::trigger` 即刻同步执行观察者，`bevy_ecs-0.19.1/src/event/mod.rs:16-18`）；**Message = 缓冲队列**（`Messages<M>` 双缓冲资源 + Writer/Reader/Mutator，不可 trigger、无 observer 形态）。旧缓冲事件 API（`write_event`/`read_event`/`register_event`/`add_event`）全部不存在——PIT-B-014/017。
+- **0.20 变更**：生命周期过滤泛型并入事件类型（`On<Add, T>` → **`On<Add<T>>`**，反转 PIT-B-015——详见该条 0.20 修订与 §6.7）；`StatesPlugin` 仍不在 prelude（0.20 prelude 清单复核，`bevy_state-0.20.0/src/lib.rs:77` 起含 `AppExtStates` 但无 `StatesPlugin`——PIT-B-019 维持）；`NextState::set_if_neq` 改名 `set_if_different`（迁移指南；本仓用 `set` 不受影响）。
 
-- **Event 侧**：`On<E>` 可与普通系统参数并用（`observer/system_param.rs:38`）；载荷取值 `on.event()`（或 Deref）；生命周期过滤 = 第二泛型 `On<Add, T>` / `On<Remove, T>`（B: Bundle；载荷字段 `entity` 直读，官方 `examples/ecs/observers.rs:142` 与 :152）——PIT-B-015。
-- **Message 侧**：读写迭代统一叫 `.read()`——`MessageReader::read()` 只读、`MessageMutator::read()` 产可变项（`message_mutator.rs:67`），无 `iter`/`iter_mut`——PIT-B-016。注册入口 `app.add_message::<T>()`（`bevy_app/src/sub_app.rs:390-399`，实体 `MessageRegistry::register_message` 调用 :395，幂等来自 `contains_resource` 守卫 :394-396）；未注册挂 Writer → 运行时 panic「Message not initialized」，裸 World 等价 `init_resource::<Messages<T>>()`——PIT-B-018。**生命周期语义**：双缓冲（`message/messages.rs:95-102`，a=最旧存活（字段 :98）/ b=新（字段 :100））+ 每帧 `update()` 交换清最旧（:193-196）——消息至少活到下一次 update 之后；读者各持游标，新读者隔帧仍可读（错峰读取是设计内行为）——PIT-B-020。World 侧直接写入：`write_message` / `write_message_default` / `write_message_batch`（`world/mod.rs:3015/:3023/:3031`）。
-- **State 侧**：`StatesPlugin` **不在 prelude**，完整路径 `bevy::state::app::StatesPlugin`（`bevy_state/src/lib.rs:77-99` prelude 清单无它；`bevy_internal/src/lib.rs:93-94` `bevy_state as state`）——PIT-B-019（含 E0425 复现）。`init_state` 在装好插件后：注册 State/NextState 资源 + `add_message::<StateTransitionEvent<S>>()`（`bevy_state/src/app.rs:99-101`——**State 转换内部也走 Message 系**）并**当即写入初始 entered 转换**（:107-112），故首个 `update()` 触发 `OnEnter(初始态)` **恰好一次**（探针 R3c 实证）；`NextState::set` 后**一次 `update()`** 完成转换并触发 `OnEnter(新态)` 一次（探针 R4c 实证）。
+**分流总纲（最重要的一个心智模型）**：0.19 把旧「Event」拆成两半——**Event = 纯 observer 触发**（无缓冲存储，`World::trigger`/`Commands::trigger` 即刻同步执行观察者）；**Message = 缓冲队列**（`Messages<M>` 双缓冲资源 + Writer/Reader/Mutator，不可 trigger、无 observer 形态）。旧缓冲事件 API（`write_event`/`read_event`/`register_event`/`add_event`）全部不存在——PIT-B-014/017。0.20 抽核：该分流未变（迁移指南无相关条目；本仓 Event/Message 用法随 check+套件回归维持）。
+
+- **Event 侧（0.20 形态重核）**：`On<E>` 可与普通系统参数并用（`observer/system_param.rs:25`——`On<'w, 't, E: EventPattern>` 单泛型）；载荷取值 `on.event()`（或 Deref）；生命周期过滤 = 事件泛型 **`On<Add<T>>` / `On<Remove<T>>`**（`lifecycle.rs:352` `Add<B: Bundle>(PhantomData<B>)`；载荷字段 `entity` 直读不变，官方 `examples/ecs/observers.rs:142` 与 :152）。**0.19 史实**：曾为 `On` 第二泛型 `On<Add, T>`（B: Bundle，0.19 `system_param.rs:38`）——已废止，误写即 E0107，见 PIT-B-015 0.20 修订。
+- **Message 侧**：读写迭代统一叫 `.read()`——`MessageReader::read()` 只读、`MessageMutator::read()` 产可变项，无 `iter`/`iter_mut`——PIT-B-016。注册入口 `app.add_message::<T>()`（未注册挂 Writer → 运行时 panic「Message not initialized」，裸 World 等价 `init_resource::<Messages<T>>()`——PIT-B-018）。**生命周期语义**：双缓冲 + 每帧 `update()` 交换清最旧——消息至少活到下一次 update 之后；读者各持游标，新读者隔帧仍可读（错峰读取是设计内行为）——PIT-B-020。World 侧直接写入：`write_message` / `write_message_default` / `write_message_batch`。（本条行为结论 0.19 探针验证、0.20 抽核维持；具体行号〔`message_mutator.rs:67`、`sub_app.rs:390-399`、`messages.rs:95-102`、`world/mod.rs:3015-3031`〕系 0.19 锚未重锚，归 T043。）
+- **State 侧**：`StatesPlugin` **不在 prelude**，完整路径 `bevy::state::app::StatesPlugin`（0.20 prelude 清单复核维持，见本节首条）——PIT-B-019（含 E0425 复现）。`init_state` 在装好插件后：注册 State/NextState 资源 + `add_message::<StateTransitionEvent<S>>()`（**State 转换内部也走 Message 系**）并**当即写入初始 entered 转换**，故首个 `update()` 触发 `OnEnter(初始态)` **恰好一次**（探针 R3c 实证）；`NextState::set` 后**一次 `update()`** 完成转换并触发 `OnEnter(新态)` 一次（探针 R4c 实证）。（行为结论 0.19 探针验证、0.20 抽核维持；具体行号〔`bevy_state/src/app.rs:99-112` 等〕系 0.19 锚未重锚，归 T043。）
 - 无坑确认（记忆写对，探针 r1 编译通过）：`MessageReader::read`、`App::add_message`、`RemovedComponents<T>` 系统参数、`On<E>::event()`、`States` derive + `init_state` + `OnEnter(State)` 调度、`State::get()` / `NextState::set`、`App::add_observer` 收带载荷 `On<E>` 系统。
 - 探查证据：`docs/evidence/m3-assets/batch-d/`（r1/r1b 两轮失败原文 / r2 正解 check / 运行时 r1..r4 首试（含 3 panic）+ r1c/r2b/r3c/r4c 正解 / 探针源码 r1 快照与 final 快照 / E0425 复现实验日志）。
-### 6.12 反射注册表面（M3 批次三探查，2026-09-27 本地源码核实 + 探针双重验证）
+### 6.12 反射注册表面（M3 批次三探查，0.19.1 核实 2026-09-27 + 0.20 抽核 2026-10-24）
 
-- **资源形态**：注册表的 Resource 是 `AppTypeRegistry(pub TypeRegistryArc)`（`bevy_ecs/src/reflect/mod.rs:35-41`，Deref→`TypeRegistryArc`=`Arc<RwLock<TypeRegistry>>`）；访问经 `.read()/.write()` 守卫（`type_registry.rs:569/:574`），守卫须显式绑定（内联 `&arc.read()` 传参 E0716）。`TypeRegistry` 本体非 Resource 也无 `len`（计数 `iter().count()` :547）；短名查 = `get_with_short_type_path`（:467，旧名 get_with_short_name 不存在）——PIT-B-024。
+- **0.20 变更（迁移指南）**：`FromType` 被 `CreateTypeData` 取代（`register_type_data` 签名已见 `bevy_app-0.20.0/src/app.rs:691` 用 `CreateTypeData`）；`PartialReflect::to_dynamic` 及各 kind 辅助改返回 `Result`（原 panic 路径转错误，`.unwrap()` 等价旧行为）；`ComponentInfo` 不再存组件 ID。本仓 `run_tests` 套件未用这些面（check+回归维持）。
+- **资源形态**：注册表的 Resource 是 `AppTypeRegistry(pub TypeRegistryArc)`（`bevy_ecs-0.20.0/src/reflect/mod.rs:36`，0.20 重锚）；访问经 `.read()/.write()` 守卫，守卫须显式绑定（内联传参 E0716）。`TypeRegistry` 本体非 Resource 也无 `len`（计数 `iter().count()`）；短名查 = `get_with_short_type_path`（旧名 get_with_short_name 不存在）——PIT-B-024。
 - **注册入口**：`app.register_type::<T>()` 在 App 侧（`bevy_app/src/app.rs:677`）；裸 `World` 无 register_type——手动 `get_resource_or_insert_with::<AppTypeRegistry>(Default::default).write().register::<T>()`——PIT-B-024。**register 注册的是依赖闭包**：递归 `T::register_type_dependencies`（`type_registry.rs:201-207`），注册 1 型实测得 20 型（primitives 全家桶）；BRP `registry.list_components` 可见集合同口径——PIT-B-025。
 - **克隆与不透明**：反射克隆 = `reflect_clone() -> Result<Box<dyn Reflect>, ReflectCloneError>`（`reflect.rs:312`；另有 `reflect_clone_and_take` :321；clone_value 已移除）——PIT-B-021。不透明属性 = `#[reflect(opaque)]` 且要求 `Clone`（`bevy_reflect_derive container_attributes.rs:394`）；**`reflect_clone` 是 `PartialReflect` 的方法（`reflect.rs:101/:312`，默认 NotImplemented）——调用须 `use PartialReflect`，opaque 变体可克隆须再标 `#[reflect(Clone)]`**（`:621-637` 生成实现；官方测试用例走 apply 通路）——PIT-B-023。
 - **组件反射插入**：`ReflectComponent` 从注册表 `TypeRegistration::data::<ReflectComponent>()` 取（BRP get/insert 同源）；`insert(&mut EntityWorldMut, &dyn PartialReflect, &TypeRegistry)` 三参（`bevy_ecs/src/reflect/component.rs:153-159`）；`from_world` 形态 bounds 不满足不可用；**组件须带 `#[reflect(Component)]` 属性**（仅 `derive(Component, Reflect)` 不注册 data，运行时得 None——doctest 抓出，失败轮 `batch-e/gate-doc-test-attempt1.log`）——PIT-B-022。
 - 无坑确认（记忆写对，探针 r1 编译通过）：`reflect_path("a.b")`、`FromReflect::from_reflect`（trait 存续）、`ReflectSerializer::new(&v, &TypeRegistry)`（`bevy::reflect::serde` 路径，需 serde_json 消费）、`#[reflect(Default)]`、`as_any_mut().downcast_mut`、`dyn Reflect` 上直接 `apply`（trait 上转 coercion 生效）。
 - 序列化形态（探针 r2c 实测）：`ReflectSerializer` 输出 `{"probe_e::MyStruct":{"hp":3.5,...}}`——**外层按 type_path 包裹、内层按字段**；BRP 响应值同源。
 - 探查证据：`docs/evidence/m3-assets/batch-e/`（r1/r1b 失败原文 / r2 正解 check + 修正轮两笔失败原文补录（`probe-r2-attempt1.log`：opaque 需 Clone、守卫 E0716）/ 运行时 r1c 失败轮 + r1c2/r2c/r3/r4c / r1 与 final 双源码快照 / 条目 doctest 失败轮补录 `gate-doc-test-attempt1.log`）。
-### 6.13 资产 / 场景 / 时间 / 输入（M3 批次四探查，2026-09-27 本地源码核实 + 探针双重验证）
+### 6.13 资产 / 场景 / 时间 / 输入（M3 批次四探查，0.19.1 核实 2026-09-27 + 0.20 抽核 2026-10-24）
 
-- **事件读取全面 Message 化**：`EventReader` 类型已删除（bevy_ecs 0 处）；`AssetEvent<A>` 是 `#[derive(Message)]`（`bevy_asset event.rs:49` derive / :50 enum），读取 = `MessageReader<AssetEvent<T>>`——PIT-B-026。
-- **Handle 形态**：enum `Handle::Strong(Arc<StrongHandle>)` / `Handle::Uuid(Uuid, PhantomData)`（`handle.rs:134-141`）——无 `clone_weak`；「不持活」语义位 = Uuid 变体（运行时 load 默认 Strong + `AssetId::Index`）；`AssetId::Uuid` 是 struct variant（`id.rs:40`）——PIT-B-027。
-- **场景系统重构为 BSN**：`DynamicScene`/`SceneRoot`/`DynamicSceneRoot` 全移除（bevy_scene 内 0 处）；prelude 导出 `bsn, bsn_list, WorldSceneExt, Scene, SceneComponent, ScenePatchInstance...`（`lib.rs:900-906`）；新范式 `world.spawn_scene(bsn! { ... })`（`spawn.rs:56`，Result 语义；依赖未就绪用 `queue_spawn_scene`）。语法（实测）：裸组件名 + 行分隔无逗号、场景组件需 `Clone + Default`（`FromTemplate` blanket impl 要求 `Clone + Default + Unpin`，`bevy_ecs template.rs:390/:404`）——PIT-B-028。`.bsn` 文件格式官方注明 not yet released（spawn.rs:23）。
-- **Time 缩放**：`set_relative_speed`（f32 `virt.rs:188` / f64 :201，getter :148）——旧 `set_scale` 不存在；负值/非有限 panic（:202-203）。运行时确认：`pause()` 后 virtual delta 恰 0 且 `Time<Real>` 不受影响；relative_speed=2 实测显示 2.000（探针断言容差 ±0.3）——PIT-B-029。
+- **0.20 变更（迁移指南，BSN 语法二次变更——PIT-B-028 文内已加注）**：场景引用一律 `@` 前缀（`@变量`/`@函数()`/`@SceneComponent`/`@{表达式}`）；`template_value` 包装全面可移除（prelude 仍导出，`bevy_scene-0.20.0/src/lib.rs:892-894`）；`VariantDefaults` 移除——枚举须 `Default + Clone` 且**全字段显式**；实体列表分隔符 `,`/`()` 弃用改 **`--`**；`bsn_list!{}` 形态推荐（rustfmt 不触碰）。`.bsn` 文件格式仍未发布（0.20 发布文「What's Next」）。
+- **0.20 其他**：`AssetId::invalid()` / `AssetId::INVALID_UUID` 弃用（迁移指南；PIT-B-027 的 Handle enum / `AssetId::Uuid` struct variant 结论抽核未变）；`Font::from_bytes` 不再收 family name。
+- **事件读取全面 Message 化**：`EventReader` 类型已删除；`AssetEvent<A>` 是 `#[derive(Message)]`，读取 = `MessageReader<AssetEvent<T>>`——PIT-B-026（0.20 抽核维持）。
+- **Handle 形态**：enum `Handle::Strong(Arc<StrongHandle>)` / `Handle::Uuid(Uuid, PhantomData)`——无 `clone_weak`；「不持活」语义位 = Uuid 变体——PIT-B-027。
+- **Time 缩放**：`set_relative_speed`——旧 `set_scale` 不存在；负值/非有限 panic（0.20 抽核：迁移指南无相关条目，签名维持）。
 - **prelude 缺口与签名**：`AccumulatedMouseMotion` 不在 prelude（bevy_input prelude 为 Axis/ButtonInput+gamepad/keyboard/按钮/触摸项，`lib.rs:47-66`），完整路径 `bevy::input::mouse::`（`mouse.rs:218`，字段 `delta: Vec2`）；`load_folder(&'static)`（`server/mod.rs:1115`，`&str` 借用实测须 'static，返回 `Handle<LoadedFolder>`）——PIT-B-030。
 - r1 轮无错项（该组记忆形态一次写对，未产生编译错误）：`Time pause/unpause/delta`、`Time<Real>::delta_secs_f64`、`ButtonInput::just_pressed`、`server.load::<Image>()` turbofish、`Assets::contains`、`Timer::new + TimerMode::Repeating`。
 - 探查边界（如实记）：场景序列化（旧 `DynamicScene::serialize` 随类型移除，新 Template 体系未展开）；本域 PAT 记 0（repo 无已验证任务素材，不硬凑）。
 - 探查证据：`docs/evidence/m3-assets/batch-f/`（r1 失败 10 错原文 / r2 正解 check / 修正轮三笔失败复现式补录 `probe-r2-attempt1.log`（AssetId struct variant E0164、bsn 逗号 unexpected token、Clone+Default bound E0277×2）/ 运行时 r1/r2/r3c / r1 与 final 双源码快照）。
 
 
-### 6.14 渲染 / 窗口 / UI / 数学（M3 批次五探查，2026-09-28 本地源码核实 + 探针双重验证）
+### 6.14 渲染 / 窗口 / UI / 数学（M3 批次五探查，0.19.1 核实 2026-09-28 + 0.20 抽核 2026-10-24）
 
-- **bundle 全面终结（渲染/UI 面）**：Camera3dBundle/SpriteBundle/TextBundle/NodeBundle/VisibilityBundle 均不存在——`Camera3d::default()+Transform`、`Sprite::default()`、`Text::new(..)+TextFont+TextColor` 裸组件 spawn——PIT-B-031。
+- **0.20 变更（迁移指南逐条重核）**：
+  - `Tonemapping` / `DebandDither` 移至 `bevy_render::view`（旧 `bevy::core_pipeline::tonemapping` 路径经 re-export 仍可用；**BRP/场景里的反射类型路径已变**——BRP 组件键引用旧路径的须改）；
+  - **指针事件扁平化**：`On<Pointer<Press>>` → `On<PointerPress>` 等（`Pointer` 不再泛型、改为事件上的字段 `pointer.id`/`pointer.position`）；泛型处理走 `PointerEvent` trait——本条目旧「`On<Pointer<Click>>` 无坑确认」在 0.20 作废；
+  - `ui::widgets::Button` / `ui::Interaction` **弃用**（→ `ui_widgets::Button` / `picking::hover::Hovered` + `Pressed`）——旧「仍在 prelude 无坑」降级为「存在但弃用」；
+  - `TextFont::default()` 字号 `FontSize::Px(20.)` → **`FontSize::Rem(1.)`**（默认 RemSize=20px 时渲染不变；改 `RemSize` 即全局缩放）；`FontSource::SansSerif` 等泛型家族变体改构造函数 `FontSource::sans_serif()`；
+  - `bevy_shape`/`bevy_curve` 从 `bevy_math` 拆分（走 `bevy::prelude::*` 无感；直接路径引用须改）；
+  - **Sprite 渲染后端迁 Mesh2d + Material2d 基建**：`Sprite` 组件兼容（新增 `alpha_mode` 字段，默认 Blend）；自定义精灵材质走 `MaterialExtension2d` + `SpriteMaterial`（组件）/`SpriteMaterialPlugin`；**同 Z 精灵绘制序可能变**——本就非契约，重叠精灵显式给 Z；
+  - `Val::Em` / `Val::Rem` 新增（`em()`/`rem()`）；`Val::resolve` 等签名加 em/rem 两参；`Node` 要求 `EmSize` 组件。
+- **bundle 全面终结（0.20 维持）**：Camera3dBundle/SpriteBundle/TextBundle/NodeBundle/VisibilityBundle 均不存在——裸组件 spawn——PIT-B-031（compile_fail 断言续绿）。
+- 0.19 已核事实（Mesh3d/MeshMaterial3d、相机伴生组件 Hdr/RenderTarget/Msaa per-Camera、AmbientLight 组件化、Color 常量收窄、UI Node 重构、CursorOptions、prelude 缺口清单、shadow_maps_enabled、Dir3::new Result、single() Result 等）由对应 PIT-B 条目与 compile_fail doctest 维持；行号级重核归 T043。
 - **网格/材质组件位**：`Mesh3d(Handle<Mesh>)` / `MeshMaterial3d(Handle<M>)`（Handle 本身不是组件）——PIT-B-032；`Assets::add` 是 &mut self（ResMut 参数须 `mut` 绑定）。
 - **相机配置伴生组件化**：`Hdr`（单元组件，替代 Camera.hdr 字段）、`RenderTarget`（组件，变体 Window(WindowRef)/Image(ImageRenderTarget 包装)/TextureView/None{size}，替代 Camera.target 字段）、`Msaa`（per-Camera 组件，**默认相机自动插入 Msaa(Sample4)**，运行时实测）、`Exposure::INDOOR` 等关联常量、`bevy::camera::visibility::RenderLayers`——PIT-B-033/042/044 邻条。
 - **环境光**：`AmbientLight` = 相机组件（require Camera，覆盖 GlobalAmbientLight）；全局默认资源 `GlobalAmbientLight{color,brightness,affects_lightmapped_meshes}`——PIT-B-035。
@@ -292,6 +303,7 @@
 
 ## 变更记录
 
+- **v0.15（2026-10-24）**：**0.19→0.20 升级窗口全批重锚（T042）**——①头/§0/§1/§2/§3 版本面切 0.20.0（MSRV 1.97.1 `Cargo.toml:14`、版本锁行 :11、feature 表 :2706/:2817/:2867/:2928）；②§6.1–6.9 逐条重锚（bevy_remote API 面行号与 0.19.1 大面积相同：RemotePlugin :572 / with_method_* :591-:642 / 端口 :52/:57/:60 / 常量表 :45-111 / 注册 :719/:779/:784 / jsonrpc 校验 :1146-:1148；漂移项：register_type app.rs:677→664、add_observer :1474→1459、screenshot :49→:53/:134→:145、despawn :1598→:1576、type_registry get/data :423/:677→:448/:720）；③§6.10–6.14 抽核注记（迁移指南点名变更全录：iter_many Result 化、`On<Add<T>>` 反转、BSN 语法二次变更、Tonemapping 移址+BRP 反射路径、指针扁平化、Button/Interaction 弃用、TextFont Rem 默认、bevy_shape 拆分、Sprite Mesh2d 后端、FromType→CreateTypeData、to_dynamic Result 化、AssetId::invalid 弃用），行号级全量重核归 T043 待重核清单；④§3.4 自动注册链改写（reflect_auto_register 0.20 收直进 default :2878，0.19 间接链废止）；⑤crate 文档漏 jsonrpc 的 0.19 注记作废（0.20 文档已含 :53/:162/:184）；⑥PIT-B-051 复核（mutate 裸调 :1194 维持 + 0.20 新增 :1252 双路径）。**条目过期检测首次实战**：PIT-B-015 两围栏被 0.20 doctest 打红（`On<Add, T>`↔`On<Add<T>>` 整体反转），该条已改写为 0.20 口径并保留 0.19 史实。门禁：check 0 错 0 警、单测 20/20、doctest 77/0/17 REAL_EXIT=0（gate-doc-test-run2.log，217.70s，--test-threads=3——首跑 12 线程内存耗尽 31 处环境性假红已复跑排除）。
 - **v0.14（2026-09-29）**：§6.2 增本仓自定义方法集现况条目（T040 `game.snapshot` 落地，8 方法 / discover 31；字段来源逐表指认 + claim-lint 锚定口径 `pub const`+`"game.` 字面量不按后缀过滤——T002 同型）；`BrpError.code` 标注 `i16`（本地源码核）。T040 全貌：TS-17 套件（字段集==T035 / 逐字段等价 / 键序 / 同 seed 重 launch 一致且实体号换血 / null 分支 / 无净副作用）+ claim-lint 加固三件（T038 审核轮移交：S1 日志回退式挑选、S3 锚定改字面量、S5 真值路负控）+ 跨进程快照原始体逐字节一致证据（`docs/evidence/ts-17/`）；同批 PAT-M-008/009 入库（宣称-实证对照 / 计数机器门禁——A2 留痕后解禁）。
 - **v0.13（2026-09-29）**：§4.1 门禁清单增第三条——claim-lint 计数机器门禁（窗口前置增强 T038 / A2，`docs/pre-window-plan.md`；动因 = 台账实测「计数/口径」系审核返工第一大来源——T002/T004/T020/T023/T029/T034/T037，外部教训 SpawnForge 380 注册 vs 2 proven）。13 条断言（8 真值 + 3 自述头一致性 + 1 意向文档阈值 + 1 doctest 门禁计数运行时真值）；crate 成员落点规避 PIT-M-003 复发；首跑 13/13 PASS + 负控自证红（REAL_EXIT=1）+ 复原绿，证据 `docs/evidence/pre-window/`。同批：意向文档 v0.3.2（§9/§5.3 放开自有方法窄白名单 MCP 薄转发，T041 前提——原 T040，开源任务 T039 插队后顺延）。
 - **v0.12（2026-09-28）**：§6.2 增补 BRP 破坏性语义速查——`world.mutate_components` 对不存在实体无优雅错误分支（handler 裸调 `world.entity_mut`，`builtin_methods.rs:1194`），panic 击穿整个进程（101；客户端指纹 curl 52 空响应 + 后续 7 拒连）；对照 insert/despawn/remove/reparent 走 `get_entity_mut` → `-23401`。来源：M3 Block H 净室重跑 T004 错误探针首触发（注入资产此前无记载，净新发现），对应 PIT-B-051 入库（错题本 50→51 条）；证据 `docs/evidence/m3-cleanroom/`（t004-crash-evidence.txt + judge-t004.md）。

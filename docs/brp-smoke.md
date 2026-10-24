@@ -1,6 +1,6 @@
 # BRP 冒烟与断言实录（M1 第一役）
 
-- 适用 Bevy 版本：**0.19**（bevy_remote 0.19.1）
+- 适用 Bevy 版本：**0.19**（bevy_remote 0.19.1；**0.20 复核注 2026-10-24〔T042〕**：回环绑定/端口 15702/23 内置方法口径经 0.20.0 运行时复验不变，`rpc.discover` 的 version 字段现报 `"0.20.0"`、方法总数 31——证据 `docs/evidence/t042-020-migration/brp-runtime.md`。正文断言链与形态结论系 0.19.1 史实原文，未改写）
 - 日期：2026-09-26
 - 角色：工作流三（AI 操控 Bevy，意向文档 §5.3）分步走第 1 步「curl/脚本直调内置方法验证通路」的完成凭证；taskset 各任务 BRP 断言的形态基准
 - 证据：`docs/evidence/brp-smoke-run.log`（游戏运行日志）、`docs/evidence/brp-assert.mjs`（断言脚本）、`docs/evidence/brp-assert-result.txt`（断言结果，11/11 PASS）
