@@ -1,0 +1,36 @@
+   Compiling mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\tooling\mcp-bridge)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.17s
+     Running unittests src\lib.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-507ef79e1984a76d.exe)
+
+running 15 tests
+test tests::brp_addr_accepts_only_loopback_literals ... ok
+test tests::malformed_line_returns_parse_error_with_null_id ... ok
+test tests::ping_returns_empty_result_object ... ok
+test tests::notifications_get_no_response_and_unknown_method_is_32601 ... ok
+test tests::non_object_arguments_are_rejected_without_forwarding ... ok
+test tests::initialize_echoes_protocol_version_and_declares_tools ... ok
+test tests::params_three_states_are_omitted_and_objects_forwarded_verbatim ... ok
+test tests::stdio_loop_handles_multiple_lines_and_skips_notifications ... ok
+test tests::tools_list_is_exactly_the_twelve_allowlisted_names_in_order ... ok
+test tests::whitelist_rejection_does_not_reach_brp ... ok
+test tests::success_response_is_forwarded_byte_for_byte ... ok
+test tests::non_json_response_is_bridge_error ... ok
+test tests::chunked_response_is_decoded ... ok
+test tests::jsonrpc_error_body_is_passed_through_with_iserror_true ... ok
+test tests::connection_refused_is_bridge_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.04s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-9ef392968c94f39a.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests mcp_bridge
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+REAL_EXIT=0

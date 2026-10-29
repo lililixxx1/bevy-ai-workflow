@@ -1,0 +1,12 @@
+# 自研件：MCP 薄桥（stdio → BRP 转发，窗口前置增强 T041 / A1，docs/pre-window-plan.md）。
+# 游戏外进程（SKILL.md §3.6——不链接 bevy）；依赖面刻意最小：仅 serde_json
+# （已在 Cargo.lock 依赖图内）+ std TCP 极简 HTTP（见 src/lib.rs），零新增版本解析面。
+# 不新增监听端口：仅向 127.0.0.1 的 BRP 出站连接。
+[package]
+name = "mcp-bridge"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+serde_json = "1"

@@ -1,0 +1,10 @@
+$ CARGO_TARGET_DIR=<shared-target> cargo test --doc --test-threads=3 -j 3
+error: unexpected argument '--test-threads' found
+
+  tip: a similar argument exists: '--test'
+  tip: to pass '--test-threads' as a value, use '-- --test-threads'
+
+Usage: cargo.exe test --doc --test [<NAME>] [TESTNAME] [-- [ARGS]...]
+
+For more information, try '--help'.
+REAL_EXIT=1

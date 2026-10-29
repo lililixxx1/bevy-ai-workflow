@@ -1,0 +1,16 @@
+$ taskkill /F /T /PID 6920
+�ɹ�: ����ֹ PID 4580 (���� PID 6900 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 6900 (���� PID 6920 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 6920 (���� PID 22632 �ӽ���)�Ľ��̡�
+REAL_EXIT=0
+$ tasklist /FI "IMAGENAME eq game.exe" /FO CSV /NH
+��Ϣ: û�����е�����ƥ��ָ����׼��
+REAL_EXIT=0
+$ taskkill /F /T /PID 20148
+�ɹ�: ����ֹ PID 22704 (���� PID 12804 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 12804 (���� PID 20148 �ӽ���)�Ľ��̡�
+�ɹ�: ����ֹ PID 20148 (���� PID 4296 �ӽ���)�Ľ��̡�
+REAL_EXIT=0
+$ tasklist /FI "IMAGENAME eq game.exe" /FO CSV /NH
+��Ϣ: û�����е�����ƥ��ָ����׼��
+REAL_EXIT=0

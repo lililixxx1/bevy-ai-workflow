@@ -1,0 +1,18 @@
+{
+  "rpc_discover": {
+    "method_count": 31,
+    "missing_allowlisted": []
+  },
+  "world_query": {
+    "result_len": 1000,
+    "first_entity": 4294965793
+  },
+  "world_get_components": {
+    "entity": 4294965793,
+    "ok": true
+  },
+  "registry_schema": {
+    "key_count": 55,
+    "ok": true
+  }
+}

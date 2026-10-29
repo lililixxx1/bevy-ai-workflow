@@ -1,0 +1,24 @@
+{
+  "screenshot_response": {
+    "jsonrpc": "2.0",
+    "id": 22,
+    "result": {
+      "id": 0,
+      "note": "捕获异步完成：轮询 game.screenshot_log 至 status=captured，再核验 PNG 文件",
+      "path": "docs/evidence/t041-mcp-bridge/mcp-shot.png",
+      "queued": true
+    }
+  },
+  "screenshot_log_entry": {
+    "frame_captured": 301,
+    "frame_requested": 298,
+    "height": 900,
+    "id": 0,
+    "path": "docs/evidence/t041-mcp-bridge/mcp-shot.png",
+    "status": "captured",
+    "width": 1600
+  },
+  "png_path": "docs/evidence/t041-mcp-bridge/mcp-shot.png",
+  "png_bytes": 1368500,
+  "png_magic": true
+}

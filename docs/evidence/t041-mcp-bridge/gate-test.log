@@ -1,0 +1,984 @@
+$ CARGO_TARGET_DIR=<shared-target> cargo test --workspace -j 3
+   Compiling unicode-ident v1.0.26
+   Compiling serde_core v1.0.229
+   Compiling windows-link v0.2.1
+   Compiling cfg-if v1.0.5
+   Compiling proc-macro2 v1.0.107
+   Compiling equivalent v1.0.2
+   Compiling pin-project-lite v0.2.17
+   Compiling libm v0.2.16
+   Compiling quote v1.0.47
+   Compiling syn v3.0.6
+   Compiling syn v2.0.119
+   Compiling num-traits v0.2.19
+   Compiling foldhash v0.2.0
+   Compiling once_cell v1.21.4
+   Compiling futures-core v0.3.34
+   Compiling indexmap v2.14.2
+   Compiling windows-sys v0.61.2
+   Compiling serde_derive v1.0.229
+   Compiling bytemuck_derive v1.12.1
+   Compiling bytemuck v1.25.2
+   Compiling bitflags v2.13.2
+   Compiling thiserror-impl v2.0.21
+   Compiling log v0.4.34
+   Compiling toml_edit v0.25.15+spec-1.1.0
+   Compiling serde v1.0.229
+   Compiling thiserror v2.0.21
+   Compiling parking v2.2.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling smallvec v1.16.2
+   Compiling bevy_macro_utils v0.20.0
+   Compiling hashbrown v0.17.1
+   Compiling allocator-api2 v0.2.21
+   Compiling slab v0.4.12
+   Compiling memchr v2.8.3
+   Compiling hashbrown v0.16.1
+   Compiling concurrent-queue v2.5.0
+   Compiling zerocopy-derive v0.8.59
+   Compiling fastrand v2.5.0
+   Compiling futures-io v0.3.34
+   Compiling futures-lite v2.6.1
+   Compiling event-listener v5.4.2
+   Compiling raw-window-handle v0.6.2
+   Compiling static_assertions v1.1.0
+   Compiling rustc-hash v1.1.0
+   Compiling unicode-segmentation v1.13.3
+   Compiling naga-types v30.0.1
+   Compiling event-listener-strategy v0.5.4
+   Compiling getrandom v0.4.3
+   Compiling errno v0.3.14
+   Compiling uuid v1.26.1
+   Compiling tracing-core v0.1.36
+   Compiling zerocopy v0.8.59
+   Compiling libloading v0.8.9
+   Compiling rustc-hash v2.1.3
+   Compiling rustix v1.1.5
+   Compiling wgpu-types v30.0.1
+   Compiling convert_case v0.10.0
+   Compiling polling v3.11.0
+   Compiling tracing-attributes v0.1.31
+   Compiling encase_derive_impl v0.12.1
+   Compiling typewit v1.15.2
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling const_panic v0.2.17
+   Compiling tracing v0.1.44
+   Compiling async-io v2.6.0
+   Compiling derive_more-impl v2.1.1
+   Compiling parking_lot_core v0.9.12
+   Compiling async-channel v2.5.0
+   Compiling rand_core v0.10.1
+   Compiling arrayvec v0.7.8
+   Compiling rand v0.10.3
+   Compiling parking_lot v0.12.5
+   Compiling encase_derive v0.12.1
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+   Compiling windows-result v0.4.1
+   Compiling windows-strings v0.5.1
+   Compiling spin v0.12.3
+   Compiling bevy_platform v0.20.0
+   Compiling windows-core v0.62.2
+   Compiling encase v0.12.1
+   Compiling derive_more v2.1.1
+   Compiling serde_json v1.0.151
+   Compiling typeid v1.0.3
+   Compiling smol_str v0.2.2
+   Compiling approx v0.5.1
+   Compiling thread_local v1.1.10
+   Compiling memmap2 v0.9.11
+   Compiling foldhash v0.1.5
+   Compiling unsynn v0.3.0
+   Compiling hashbrown v0.15.5
+   Compiling glam v0.33.12
+   Compiling libc v0.2.189
+   Compiling typenum v1.20.1
+   Compiling fixedbitset v0.5.7
+   Compiling atomic-waker v1.1.2
+   Compiling disqualified v1.1.0
+   Compiling bytes v1.12.1
+   Compiling generic-array v0.14.7
+   Compiling http v1.5.0
+   Compiling bevy_utils v0.20.0
+   Compiling petgraph v0.8.3
+   Compiling slotmap v1.1.1
+   Compiling variadics_please v2.0.0
+   Compiling erased-serde v0.4.10
+   Compiling bevy_reflect_derive v0.20.0
+   Compiling subsecond-types v0.7.10
+   Compiling assert_type_match v0.1.1
+   Compiling futures-channel v0.3.34
+   Compiling windows-threading v0.2.1
+   Compiling konst_macro_rules v0.2.19
+   Compiling bevy_ptr v0.20.0
+   Compiling inventory v0.3.24
+   Compiling downcast-rs v2.0.2
+   Compiling async-task v4.7.1
+   Compiling konst v0.2.20
+   Compiling windows-future v0.3.2
+   Compiling subsecond v0.7.10
+   Compiling getrandom v0.3.4
+   Compiling windows-numerics v0.3.1
+   Compiling bevy_reflect v0.20.0
+   Compiling windows-collections v0.3.2
+   Compiling const_format_proc_macros v0.2.34
+   Compiling futures-macro v0.3.34
+   Compiling futures-task v0.3.34
+   Compiling const_format v0.2.36
+   Compiling futures-util v0.3.34
+   Compiling windows v0.62.2
+   Compiling rand_core v0.9.5
+   Compiling httparse v1.10.1
+   Compiling anyhow v1.0.104
+   Compiling crypto-common v0.1.7
+   Compiling block-buffer v0.10.4
+   Compiling generational-box v0.7.10
+   Compiling ppv-lite86 v0.2.21
+   Compiling pin-project-internal v1.1.13
+   Compiling dioxus-core-types v0.7.10
+   Compiling longest-increasing-subsequence v0.1.0
+   Compiling dioxus-core v0.7.10
+   Compiling pin-project v1.1.13
+   Compiling rand_chacha v0.9.0
+   Compiling digest v0.10.7
+   Compiling async-executor v1.14.0
+   Compiling bevy_ecs_macro_logic v0.20.0
+   Compiling warnings-macro v0.2.0
+   Compiling cpufeatures v0.2.17
+   Compiling sha1 v0.10.7
+   Compiling warnings v0.2.1
+   Compiling rand v0.9.5
+   Compiling crossbeam-queue v0.3.14
+   Compiling nonmax v0.5.5
+   Compiling data-encoding v2.11.1
+   Compiling utf-8 v0.7.6
+   Compiling tungstenite v0.28.0
+   Compiling bevy_tasks v0.20.0
+   Compiling dioxus-signals v0.7.10
+   Compiling bevy_ecs_macros v0.20.0
+   Compiling dioxus-devtools-types v0.7.10
+   Compiling dioxus-cli-config v0.7.10
+   Compiling bumpalo v3.20.3
+   Compiling dioxus-devtools v0.7.10
+   Compiling bevy_ecs v0.20.0
+   Compiling bevy_derive v0.20.0
+   Compiling crossbeam-channel v0.5.17
+   Compiling ctrlc v3.5.2
+   Compiling either v1.18.0
+   Compiling half v2.7.1
+   Compiling winapi v0.3.9
+   Compiling bevy_math v0.20.0
+   Compiling ntapi v0.4.3
+   Compiling piper v0.2.5
+   Compiling blocking v1.7.0
+   Compiling async-lock v3.4.2
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling constant_time_eq v0.4.2
+   Compiling cpufeatures v0.3.1
+   Compiling blake3 v1.8.7
+   Compiling async-fs v2.2.0
+   Compiling ron v0.12.2
+   Compiling bevy_app v0.20.0
+   Compiling bevy_time v0.20.0
+   Compiling sysinfo v0.39.6
+   Compiling bevy_diagnostic v0.20.0
+   Compiling stackfuture v0.3.1
+   Compiling async-broadcast v0.7.2
+   Compiling bevy_asset_macros v0.20.0
+   Compiling atomicow v1.2.0
+   Compiling bevy_asset v0.20.0
+   Compiling simd-adler32 v0.3.10
+   Compiling aho-corasick v1.1.5
+   Compiling adler2 v2.0.1
+   Compiling regex-syntax v0.8.11
+   Compiling regex-automata v0.4.18
+   Compiling crc32fast v1.5.2
+   Compiling miniz_oxide v0.9.1
+   Compiling itertools v0.14.0
+   Compiling flate2 v1.1.10
+   Compiling miniz_oxide v0.8.9
+   Compiling bevy_curve v0.20.0
+   Compiling fdeflate v0.3.7
+   Compiling pxfm v0.1.30
+   Compiling const_soft_float v0.1.4
+   Compiling constgebra v0.1.4
+   Compiling png v0.18.1
+   Compiling moxcms v0.8.1
+   Compiling bevy_color v0.20.0
+   Compiling bevy_transform v0.20.0
+   Compiling rand_distr v0.6.0
+   Compiling synstructure v0.14.0
+   Compiling euclid v0.22.14
+   Compiling byteorder-lite v0.1.0
+   Compiling twox-hash v2.1.4
+   Compiling ruzstd v0.8.3
+   Compiling image v0.25.10
+   Compiling guillotiere v0.7.0
+   Compiling bevy_shape v0.20.0
+   Compiling hexasphere v19.0.0
+   Compiling bevy_encase_derive v0.20.0
+   Compiling ktx2 v0.5.0
+   Compiling rectangle-pack v0.4.2
+   Compiling bevy_mikktspace v1.0.0
+   Compiling lazy_static v1.5.0
+   Compiling bevy_mesh v0.20.0
+   Compiling bevy_image v0.20.0
+   Compiling zerofrom-derive v0.1.8
+   Compiling bevy_input v0.20.0
+   Compiling zerofrom v0.1.8
+   Compiling sharded-slab v0.1.7
+   Compiling yoke-derive v0.8.3
+   Compiling matchers v0.2.0
+   Compiling tracing-log v0.2.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling unicode-width v0.2.2
+   Compiling stable_deref_trait v1.2.1
+   Compiling yoke v0.8.3
+   Compiling tracing-subscriber v0.3.23
+   Compiling bevy_window v0.20.0
+   Compiling bevy_log v0.20.0
+   Compiling zerovec-derive v0.11.6
+   Compiling bevy_camera v0.20.0
+   Compiling lexical-util v1.0.7
+   Compiling zerovec v0.11.8
+   Compiling displaydoc v0.2.7
+   Compiling fnv v1.0.7
+   Compiling writeable v0.6.4
+   Compiling lexical-write-integer v1.0.6
+   Compiling lexical-parse-integer v1.0.6
+   Compiling anstyle v1.0.14
+   Compiling lexical-parse-float v1.0.6
+   Compiling lexical-write-float v1.0.6
+   Compiling logos-codegen v0.16.1
+   Compiling tinystr v0.8.4
+   Compiling bit-vec v0.9.1
+   Compiling litemap v0.8.3
+   Compiling icu_locale_core v2.3.0
+   Compiling logos-derive v0.16.1
+   Compiling bit-set v0.10.0
+   Compiling lexical-core v1.0.6
+   Compiling potential_utf v0.1.6
+   Compiling zerotrie v0.2.5
+   Compiling codespan-reporting v0.13.1
+   Compiling itertools v0.15.0
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling once_cell_polyfill v1.70.2
+   Compiling utf8parse v0.2.2
+   Compiling winnow v1.0.4
+   Compiling anstyle-parse v1.0.0
+   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling anstyle-wincon v3.0.11
+   Compiling wgsl-types v0.6.0
+   Compiling naga v30.0.1
+   Compiling icu_provider v2.3.1
+   Compiling lexical v7.0.5
+   Compiling ash v0.38.0+1.3.281
+   Compiling logos v0.16.1
+   Compiling lalrpop-util v0.23.2
+   Compiling annotate-snippets v0.12.17
+   Compiling font-types v0.12.5
+   Compiling anstyle-query v1.1.5
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling serde_spanned v1.1.2
+   Compiling is_terminal_polyfill v1.70.2
+   Compiling utf8_iter v1.0.4
+   Compiling toml_writer v1.1.3+spec-1.1.0
+   Compiling colorchoice v1.0.5
+   Compiling presser v0.3.1
+   Compiling anstream v1.0.0
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling gpu-allocator v0.28.0
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling icu_collections v2.3.0
+   Compiling read-fonts v0.41.0
+   Compiling wgsl-parse v0.6.0
+   Compiling wesl-macros v0.6.0
+   Compiling ordered-float v5.5.0
+   Compiling wesl-core v0.1.0
+   Compiling profiling v1.0.18
+   Compiling renderdoc-sys v1.1.0
+   Compiling glob v0.3.4
+   Compiling range-alloc v0.1.5
+   Compiling wgpu-hal v30.0.1
+   Compiling wesl v0.6.0
+   Compiling icu_properties_data v2.3.0
+   Compiling icu_locale_fallback_data v2.3.0
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling bevy_material_macros v0.20.0
+   Compiling bevy_extract_macros v0.20.0
+   Compiling bevy_gizmos_macros v0.20.0
+   Compiling bevy_gizmos v0.20.0
+   Compiling wgpu-core v30.0.1
+   Compiling bevy_shader v0.20.0
+   Compiling bevy_material v0.20.0
+   Compiling icu_locale_fallback v2.3.0
+   Compiling icu_properties v2.3.0
+   Compiling icu_normalizer_data v2.3.0
+   Compiling icu_segmenter_data v2.3.0
+   Compiling skrifa v0.44.0
+   Compiling enumn v0.1.14
+   Compiling parlance v0.1.0
+   Compiling linebender_resource_handle v0.1.1
+   Compiling fontique v0.11.1
+   Compiling accesskit v0.24.1
+   Compiling icu_segmenter v2.3.0
+   Compiling icu_normalizer v2.3.0
+   Compiling parley_data v0.11.1
+   Compiling wgpu v30.0.1
+   Compiling bevy_light v0.20.0
+   Compiling bevy_render_macros v0.20.0
+   Compiling bevy_extract v0.20.0
+   Compiling harfrust v0.12.0
+   Compiling bevy_picking v0.20.0
+   Compiling offset-allocator v0.2.0
+   Compiling weak-table v0.4.0
+   Compiling zeno v0.3.3
+   Compiling yazi v0.2.1
+   Compiling byteorder v1.5.0
+   Compiling swash v0.2.10
+   Compiling bevy_render v0.20.0
+   Compiling parley v0.11.1
+   Compiling bevy_clipboard v0.20.0
+   Compiling sys-locale v0.3.2
+   Compiling bevy_text v0.20.0
+   Compiling tap v1.0.1
+   Compiling radsort v0.1.1
+   Compiling bevy_sprite v0.20.0
+   Compiling bevy_core_pipeline v0.20.0
+   Compiling wyz v0.5.1
+   Compiling gltf-derive v1.4.1
+   Compiling radium v0.7.0
+   Compiling funty v2.0.0
+   Compiling bitvec v1.1.1
+   Compiling gltf-json v1.4.1
+   Compiling bevy_input_focus v0.20.0
+   Compiling bevy_a11y v0.20.0
+   Compiling bevy_animation_macros v0.20.0
+   Compiling num-integer v0.1.47
+   Compiling num-bigint v0.4.8
+   Compiling bevy_animation v0.20.0
+   Compiling gltf v1.4.1
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling ogg v0.8.0
+   Compiling bevy_world_serialization v0.20.0
+   Compiling taffy v0.14.0
+   Compiling tinyvec v1.13.3
+   Compiling base64 v0.23.1
+   Compiling percent-encoding v2.3.2
+   Compiling dasp_sample v0.11.0
+   Compiling cpal v0.17.3
+   Compiling bevy_gltf v0.20.0
+   Compiling lewton v0.10.2
+   Compiling bevy_ui v0.20.0
+   Compiling windows-targets v0.52.6
+   Compiling num-rational v0.4.2
+   Compiling bevy_sprite_render v0.20.0
+   Compiling http-body v1.1.0
+   Compiling rodio v0.22.2
+   Compiling windows-sys v0.52.0
+   Compiling bevy_pbr v0.20.0
+   Compiling accesskit_consumer v0.38.0
+   Compiling bevy_state_macros v0.20.0
+   Compiling tokio v1.53.1
+   Compiling dpi v0.1.2
+   Compiling cursor-icon v1.2.0
+   Compiling httpdate v1.0.3
+   Compiling winit v0.30.13
+   Compiling hyper v1.11.1
+   Compiling bevy_state v0.20.0
+   Compiling accesskit_windows v0.34.0
+   Compiling bevy_audio v0.20.0
+   Compiling bevy_ui_widgets v0.20.0
+   Compiling bevy_ui_render v0.20.0
+   Compiling gilrs-core v0.6.8
+   Compiling vec_map v0.8.2
+   Compiling gilrs v0.11.2
+   Compiling bevy_dev_tools v0.20.0
+   Compiling accesskit_winit v0.33.2
+   Compiling smol-hyper v0.1.1
+   Compiling http-body-util v0.1.5
+   Compiling bevy_scene_macros v0.20.0
+   Compiling bevy_scene v0.20.0
+   Compiling bevy_remote v0.20.0
+   Compiling bevy_winit v0.20.0
+   Compiling bevy_gilrs v0.20.0
+   Compiling bevy_gizmos_render v0.20.0
+   Compiling bevy_anti_alias v0.20.0
+   Compiling bevy_post_process v0.20.0
+   Compiling mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\tooling\mcp-bridge)
+   Compiling task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\tooling\task-runner)
+   Compiling bevy_internal v0.20.0
+   Compiling bevy v0.20.0
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\docs)
+   Compiling claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\tooling\claim-lint)
+   Compiling hotpatch-smoke v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\tooling\hotpatch-smoke)
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\t041\w1\game)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5m 05s
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\claim_lint-8910f178cf797c61.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\docs-527d3d80776a44d8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\game-581a4f857b8ee8d9.exe)
+
+running 20 tests
+test cli::tests::defaults_match_baseline_caliber ... ok
+test camera::tests::orbit_distance_is_constant ... ok
+test rng::tests::from_state_resumes_exact_sequence ... ok
+test bench::tests::warmup_constant_is_calibrated ... ok
+test rng::tests::next_f32_in_unit_interval ... ok
+test rng::tests::same_seed_same_sequence ... ok
+test rng::tests::splitmix64_reference_vectors ... ok
+test sim::tests::analytic_motion_is_deterministic_per_seed_and_time ... ok
+test sim::tests::max_speed_only_scales_speed_draw_order_untouched ... ok
+test sim::tests::same_seed_and_count_same_initial_state ... ok
+test sim::tests::simconfig_deserializes_legacy_json_with_default_max_speed ... ok
+test sim::tests::pause_requested_event_flips_paused ... ok
+test battle::tests::player_annihilation_loses ... ok
+test battle::tests::move_rules_and_flags ... ok
+test battle::tests::reach_goal_wins_on_move ... ok
+test battle::tests::attack_kill_and_annihilate_victory ... ok
+test battle::tests::attack_distance_once_per_turn_and_empty_target ... ok
+test battle::tests::end_turn_resets_flags_advances_turn_and_rng ... ok
+test battle::tests::greedy_ai_closes_distance_and_prefers_killable ... ok
+test battle::tests::end_turn_deterministic_across_spawn_order ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\hotpatch_smoke-5c4df2c60291b00b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-32e11fa3baee9c8c.exe)
+
+running 15 tests
+test tests::brp_addr_accepts_only_loopback_literals ... ok
+test tests::malformed_line_returns_parse_error_with_null_id ... ok
+test tests::non_object_arguments_are_rejected_without_forwarding ... ok
+test tests::ping_returns_empty_result_object ... ok
+test tests::notifications_get_no_response_and_unknown_method_is_32601 ... ok
+test tests::initialize_echoes_protocol_version_and_declares_tools ... ok
+test tests::stdio_loop_handles_multiple_lines_and_skips_notifications ... ok
+test tests::params_three_states_are_omitted_and_objects_forwarded_verbatim ... ok
+test tests::tools_list_is_exactly_the_twelve_allowlisted_names_in_order ... ok
+test tests::whitelist_rejection_does_not_reach_brp ... ok
+test tests::jsonrpc_error_body_is_passed_through_with_iserror_true ... ok
+test tests::chunked_response_is_decoded ... ok
+test tests::success_response_is_forwarded_byte_for_byte ... ok
+test tests::non_json_response_is_bridge_error ... ok
+test tests::connection_refused_is_bridge_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.03s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-9ab87fbf6cc09c43.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\task_runner-1460c8fba1a11b85.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests docs
+
+running 94 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1002) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1084) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1150) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 133) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1446) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1266) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 149) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1334) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1234) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1102) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1024) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1161) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1219) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1346) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1386) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1593) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1500) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1761) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1659) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1546) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1558) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1399) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1282) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1456) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1712) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1512) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1671) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1812) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 186) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1607) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1877) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1944) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 214) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1995) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2053) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2096) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2152) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2212) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2264) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2313) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1724) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1776) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1830) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1900) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1959) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2010) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2065) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2115) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2168) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2227) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2280) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2329) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2227) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2362) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2382) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2428) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2443) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 246) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2478) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2491) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2520) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2539) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2577) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2589) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2628) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2640) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2674) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2687) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2717) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2731) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2766) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2778) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 306) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 357) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 372) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 406) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 452) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 471) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 518) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 560) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 580) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 608) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 651) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 701) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 722) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 777) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 817) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 833) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 881) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 900) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 940) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 956) ... FAILED
+test docs\src\lib.rs - doc_conventions (line 29) has been running for over 60 seconds
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2280) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1776) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1900) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2168) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1959) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1830) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2329) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2010) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1724) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2115) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2065) ... ok
+
+failures:
+
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1234) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1235:5
+     |
+1235 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1102) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1103:5
+     |
+1103 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1024) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1025:5
+     |
+1025 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1161) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1162:5
+     |
+1162 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1346) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1347:5
+     |
+1347 | use bevy::reflect::{PartialReflect, Reflect};
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1558) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1560:5
+     |
+1560 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1399) stdout ----
+error: crate `gilrs` required to be available in rlib format, but was not found in this form
+
+error: crate `gilrs_core` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 2 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1282) stdout ----
+error: crate `ogg` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1456) stdout ----
+error: crate `bevy_clipboard` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1512) stdout ----
+error: crate `bevy_text` required to be available in rlib format, but was not found in this form
+
+error: crate `fontique` required to be available in rlib format, but was not found in this form
+
+error: crate `parlance` required to be available in rlib format, but was not found in this form
+
+error: crate `bevy_ui_render` required to be available in rlib format, but was not found in this form
+
+error: crate `bevy_ui_widgets` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 5 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1671) stdout ----
+error: crate `ash` required to be available in rlib format, but was not found in this form
+
+error: crate `read_fonts` required to be available in rlib format, but was not found in this form
+
+error: crate `font_types` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 3 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1607) stdout ----
+error: crate `bevy_light` required to be available in rlib format, but was not found in this form
+
+error: crate `bevy_gizmos` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 2 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2227) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestBJLcZP\\rustcVpRHBP\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestBJLcZP\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestBJLcZP\\rustcVpRHBP\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestBJLcZP\\rustcVpRHBP\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestBJLcZP\\rustcVpRHBP\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2382) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2387:5
+     |
+2387 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2443) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2444:5
+     |
+2444 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2491) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2493:5
+     |
+2493 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2539) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2541:5
+     |
+2541 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2589) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2592:5
+     |
+2592 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2640) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2641:5
+     |
+2641 | use bevy::math::{Dir3, Vec3};
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2687) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2688:5
+     |
+2688 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2731) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2732:5
+     |
+2732 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2778) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2779:5
+     |
+2779 | use bevy::ui::Val;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 777) stdout ----
+error[E0463]: can't find crate for `bevy`
+   --> docs\src\lib.rs:778:5
+    |
+778 | use bevy::prelude::*;
+    |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 833) stdout ----
+error[E0463]: can't find crate for `bevy`
+   --> docs\src\lib.rs:834:5
+    |
+834 | use bevy::prelude::*;
+    |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 900) stdout ----
+error[E0463]: can't find crate for `bevy`
+   --> docs\src\lib.rs:901:5
+    |
+901 | use bevy::prelude::*;
+    |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 956) stdout ----
+error[E0463]: can't find crate for `bevy`
+   --> docs\src\lib.rs:957:5
+    |
+957 | use bevy::prelude::*;
+    |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2280) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestAUVLGg\\rustcQjYIXO\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestAUVLGg\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestAUVLGg\\rustcQjYIXO\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestAUVLGg\\rustcQjYIXO\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestAUVLGg\\rustcQjYIXO\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1776) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestx7kVJS\\rustcLihwcY\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestx7kVJS\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestx7kVJS\\rustcLihwcY\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestx7kVJS\\rustcLihwcY\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestx7kVJS\\rustcLihwcY\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1900) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestuRhLTH\\rustctwU8TX\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestuRhLTH\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestuRhLTH\\rustctwU8TX\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestuRhLTH\\rustctwU8TX\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestuRhLTH\\rustctwU8TX\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2168) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestDnRxAQ\\rustcPbRd0r\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestDnRxAQ\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestDnRxAQ\\rustcPbRd0r\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestDnRxAQ\\rustcPbRd0r\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestDnRxAQ\\rustcPbRd0r\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1959) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctest99BI3o\\rustc3tYQ0Z\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctest99BI3o\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctest99BI3o\\rustc3tYQ0Z\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctest99BI3o\\rustc3tYQ0Z\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctest99BI3o\\rustc3tYQ0Z\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1830) stdout ----
+error: linking with `link.exe` failed: exit code: 1102
+  |
+  = note: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestEKblPt\\rustcLwtahv\\symbols.o" "<2 object files omitted>" "C:\\Users\\Administrator\\Desktop\\ccc\\bevy-ai-workflow\\target\\debug\\deps/{libbevy-a35224f8e485a867,libbevy_internal-427f96237f3f3a0a,libbevy_winit-176f2e893ffb2a5c,libaccesskit_winit-03f5830fafa585c7,libaccesskit_windows-9d534a4317ceaa2b,libaccesskit_consumer-5579e29a4ce9339a,libwinit-3b86aa25aea98a3a,libunicode_segmentation-4d22a3f7cb0ab0fa,libwindows_sys-bbb6d934ff7c71b3,libwindows_targets-44c005a22dda159d,libcursor_icon-114168f2bf81728f,libdpi-6848d7c1dcf713c0,libbevy_scene-4d46452f93eca637,libbevy_remote-aee9de6be14d281f,libsmol_hyper-d9f02a94f337ac46,libhyper-68bef7f83c56e52a,libtokio-03b6be12538da77e,libhttpdate-5b70fddd43fb09be,libhttp_body_util-a6d4544e691eac91,libhttp_body-5391373dd8547349,libbevy_dev_tools-9ea7368a05d07a2c,libbevy_state-2d8c97b08f1c2d77,libbevy_ui_widgets-b05a84ae0d8370f5,libbevy_ui_render-4c1b65fcedd9ecce,libbevy_ui-0723e4e76194dcb9,libtaffy-e15ed8dc78d71423,libbevy_post_process-a056a1235034709f,libbevy_input_focus-0543e3743e7dd324,libbevy_gizmos_render-66befe7f6c9cd4b7,libbevy_sprite_render-002ce2a1cdbb26e5,libbevy_sprite-06977b685023d8e0,libradsort-cd84171a71f031e3,libbevy_text-64a70288346eeac9,libswash-07b1f78fa4eb95d8,libyazi-4b91900237028226,libzeno-275506429577e530,libparley-f382d09243618dbd,libskrifa-017066f8459816cf,libharfrust-6db8c3efdb57d4e8,libparley_data-153a65469570cd31,libicu_segmenter-7dbcf6b7ffc121c1,libicu_locale_fallback-c94ae5dd3e50912d,libicu_locale_fallback_data-e3fab4d6f7a3cf98,libicu_segmenter_data-f82c2c81af834513,libicu_properties-c6020e214b33e17b,libicu_properties_data-a6bd2ffc8da729fc,libicu_normalizer-c80ddbc7be6c9623,libicu_normalizer_data-dd11eced451eb35d,libicu_collections-f4aa0b8c3c1691c5,libutf8_iter-2a14d849263544ef,libpotential_utf-6755cafdde050764,libicu_provider-e6ef8b44e5b30d63,libicu_locale_core-f2be2917914abcba,libtinystr-037c1c418af65d6c,liblitemap-ad9522af15f3e85e,libwriteable-1dabccb0835d0e3b,libzerovec-a5c8170523e19619,libzerotrie-8b5bcd3c68bbc069,libyoke-0c9048ca5f6493e8,libstable_deref_trait-c6c0b14a1e6a6a04,libzerofrom-dc3488d8a4bb475f,libfontique-f32803868977a20a,libmemmap2-941f5ac37120f854,liblinebender_resource_handle-bd1dc7219fe33991,libread_fonts-c73d4dafc78104ea,libfont_types-13ce3a1e434ae9b1,libparlance-b800259cf888f7be,libbevy_picking-b67ed95b63b1ec20,libbevy_pbr-230352b812e22925,libbevy_gltf-d222a787ebd69993,libpercent_encoding-c95f8ba67fbc3d93,libbase64-f3d134e86f97802b,libgltf-5b20c2f089cf384c,libgltf_json-f18ee55377f35d1b,libbevy_world_serialization-71fcf5b6489e1fb9,libbevy_gilrs-107db7c484737f4c,libgilrs-4583ccc26e6c6831,libvec_map-7266118665c99981,libfnv-36728eea275fa207,libgilrs_core-2f34b2f497d72850,libbevy_clipboard-c6f31f3ada342bdb,libbevy_audio-b053a6589ee7b596,librodio-764bb2f3396f99c9,liblewton-9d353c3ae00f81a8,libogg-9a48ba89e9921c15,libtinyvec-93be37db84c465bf,libbyteorder-2039fa7114d7586e,libnum_rational-fe1b573c856be62f,libnum_bigint-8a5d832fc149a1f7,libnum_integer-4bbf328b110b0c85,libcpal-f921dc3a813f320e,libdasp_sample-1563c770813abb41,libbevy_anti_alias-513a97d305f6ab20,libbevy_core_pipeline-afce8dd3a40885d9,libbevy_light-df0f87512ac524f9,libbevy_gizmos-57e7a4bc5db7ea8f,libbevy_render-b0ade8694b2e0b63,liboffset_allocator-ace85a7fdbb3e64f,libweak_table-c68c2ec85b1ce0cd,libbevy_extract-16aebbe0f7a9b171,libwgpu-aa73dc978513aee3,libwgpu_core-0270c23961f185ba,libwgpu_hal-5e0eae4634f6dda2,librenderdoc_sys-d63e638d7504b786,libprofiling-8b42bc40e6596574,libwgpu_naga_bridge-01e84df8a192d71e,libgpu_allocator-c2971ae516faa1c4,libpresser-4477216f961ccdb0,libash-06e7435c714048db,libordered_float-3b4bc44a05095a40,libnaga-b213353f3f87cc94,liblibm-a91c2d837b89e6d2,libcodespan_reporting-c4c2545c607c1dd9,libspirv-f531ec6bb3eee9a7,librange_alloc-d3b8473de27ac4bf,libbit_set-3fef02ada20274cf,libbit_vec-412b32981464a453,libbevy_log-5275c2fd88d0664b,libtracing_subscriber-c6658412a7421404,libsharded_slab-a3abef586a70bce7,liblazy_static-f5ce520619b7341f,libmatchers-2cc6f02aa3b25fea,libnu_ansi_term-5b11080de72ac38f,libtracing_log-c8b8fb15ebe61f32,libbevy_material-9815802cb0545d37,libbevy_shader-6b177f4f04519a2a,libwesl-93bd29977af8b4cb,libanstream-24ad1b326835de83,libanstyle_query-bbbce64633874a4b,libis_terminal_polyfill-cdb048deae4b2d48,libanstyle_wincon-2cec2d73b4a3db53,libonce_cell_polyfill-7bb3dfaa9e9cdee2,libcolorchoice-629df1351d9cb954,libanstyle_parse-7c16c5b23aaf0ebf,libutf8parse-f9f3fdc5514c9119,libglob-50dcde514bfff47c,libtoml-c301fe879143034c,libtoml_writer-eaf56a945e075d33,libtoml_parser-4b0b09daa9998649,libwinnow-dd8a3c76132adbb0,libserde_spanned-712a54a068519da0,libtoml_datetime-05333b8da6eb1ab7,libwgsl_parse-3f9ffe1ba1daa020,liblexical-cc06cec0cf578dc2,liblexical_core-ca5cddbdb7d69e76,liblexical_write_float-2516b225b574b634,liblexical_write_integer-739b53c5d09cffe4,liblexical_parse_float-412eebc016f74c0d,liblexical_parse_integer-c817ce60f975f986,liblexical_util-7a8502e93a98da2b,liblalrpop_util-b804259045d4fd4d,libregex_automata-0bb4838addcf4fd0,libaho_corasick-828acb0de4216f19,libregex_syntax-18dd1d13110033d9,libwgsl_types-80ff0271b00175e0,liblogos-e23b5668ebba8f80,libannotate_snippets-7581a69a38c74618,libunicode_width-edf6c9706bd38dc6,libanstyle-90b6f53ab1e24462,libitertools-3ecbe9982ea67dc1,libwesl_core-c9b88c0c6232fb40,libbevy_camera-ab6265dae1d42b68,libbevy_window-c79896f642a61f4a,libbevy_input-11cf7ca7f82c2392,libbevy_image-680419abe1e179bc,libruzstd-4667017560321d57,libtwox_hash-db4182320f701100,librectangle_pack-7ac567757852984f,libktx2-9c09c5b5a08e9861,libimage-3dfda02db57e6545,libbyteorder_lite-90288b06cee30e3a,libmoxcms-8e5fda6196f57bf4,libpxfm-e0be486b1369087d,libpng-d1b30f46bcb3d1c9,libflate2-c900c795b1b525d7,libminiz_oxide-52469954bcf8a525,libfdeflate-c1bcf1522a45f0d7,libsimd_adler32-4a6476f0f6badc56,libcrc32fast-8dd73d345c6f1325,libguillotiere-9978ee589e152c95,libeuclid-0888ba1eff079961,libbevy_animation-2904d2141c23844d,libbevy_mesh-a1037e7214e4b770,libhalf-8f5aa5ba9a5de950,libbevy_mikktspace-20f6e81cb1a0ee87,libhexasphere-3dc7fa4f69582ad9,libconstgebra-c546b0678c7b3664,libconst_soft_float-831b59c552528e1e,libbevy_shape-b423058ad00fffb9,librand_distr-17a15697f9b040c8,libbitvec-508b561192569430,libwyz-0899a11a03d4b69b,libtap-73f7d28c1ce7b402,libradium-2ff1a10c876442f3,libfunty-cce6ddf6b53cd175,libbevy_asset-841e43707d954ff9,libblake3-ea7c7d211190da78,libconstant_time_eq-b94a8bc07d82fc42,libcpufeatures-4aa4e28e91108f7e,libbevy_diagnostic-f9ac9399418422fe,libsysinfo-ff801f4ad6a75768,libntapi-f534b3e7c3f459f3,libwinapi-c4fab3668da14cb8,liblibc-ecf7ab9b034b1f4d,libwindows-ecb8c9d68e454bb4,libwindows_numerics-d639a2a0f5dbaff6,libwindows_collections-2cc053b04fa4a2ed,libwindows_future-bb450797c87bd657,libwindows_threading-9238c75069383f48,libwindows_core-0cdc89a393f2d928,libwindows_strings-32c730d1db7e5ad3,libwindows_result-ca4f5f9fc2914b52,libbevy_time-81e3a02dc7df323e,libconst_fnv1a_hash-d8fe92e178c2babe,libasync_broadcast-2b18115b214fa193,libron-170dc78371a50d30,libunicode_ident-9c8040fb8dc47209,libstackfuture-6ae7ecb573968b4a,libatomicow-dc636566fc08e9cd,libasync_fs-a0c775d1903de578,libblocking-5ac2e19f265a4c58,libpiper-588419d90e9c225e,libatomic_waker-76124146948e8a41,libasync_lock-ece4488c8d8313a5,libbevy_transform-9a82eeccc48d552e,libbevy_color-175afd0b939edb5c,libbevy_curve-d3fc8b956bb529ae,libitertools-e3ef0735cc64921d,libeither-c5eaa8d0d4acd2ef,libbevy_math-9afc466b48ad0edf,libbevy_a11y-2f0213b73ad795d5,libaccesskit-1cf45c885d138df2,libbevy_app-b984da5384cff175,libcrossbeam_channel-d195815590e87368,libdioxus_devtools-35d86cb6a488d477,libserde_json-911304403706a8df,libmemchr-99b291cbb84a2499,libzmij-d03a7e6b8d728323,libtungstenite-3c12e21f104d9e56,libdata_encoding-1889c71738f85665,librand-c6b6f862a8553d07,librand_chacha-724e8e062964ee0a,libppv_lite86-6057b82609d4af87,libzerocopy-9fbf531d57639b50,librand_core-9e59bbdf84422fcd,libgetrandom-0219bd3058f1538e,libutf8-1d5d2d1bca73f365,libsha1-33657ebb73092d5d,libcpufeatures-9efc4bb3f3475f4e,libdigest-f6f29a293d7d48bc,libblock_buffer-a9bafd7c46d247b6,libcrypto_common-da4a00e77e4f7974,libgeneric_array-b203c82676866d82,libtypenum-5110f8eb8199350f,libhttparse-3a160304ad5c9ad7,libhttp-e29adb7554c969a1,libitoa-dbb0a97f4f35ec31,libbytes-670c64085c294ea8,libdioxus_cli_config-d6e80c24202173ea,libdioxus_devtools_types-8b596c0970301572,libdioxus_signals-843b383fd1bbfc3b,libwarnings-d34a3aca6f796231,libpin_project-304ee2d38b4d8ba5,libdioxus_core-1d944c116c7e3dd1,liblongest_increasing_subsequence-3465a6d4f717a60f,libconst_format-a5a24e6dd1d611d2,libkonst-df44f8f16df0f7af,libkonst_macro_rules-43ac198c17eb5e41,libanyhow-a00cfbe1b3746a87,libfutures_channel-447c3287d7ae8884,libdioxus_core_types-881f1a27d471622c,libgenerational_box-aacbc5ebc57f37ee,libtracing-07ddadb6c1d14528,libtracing_core-ac24225d4cbd6464,libonce_cell-a370ef70151a782e,libparking_lot-8f89b46b339f8638,libparking_lot_core-aa3136c9a8f32295,liblock_api-aabca05385a81b91,libscopeguard-9676f3a15593b57d,libfutures_util-7dce0b20f5941f28,libfutures_task-a06dd19a546b38a4,librustc_hash-36a9deac07d9b1e9,libctrlc-dfafbd10317e7562,libbevy_ecs-b1a3978793b0774a,libsubsecond-3cad1ab7a1ca3a45,liblibloading-91a8bbb4d8de9b35,libsubsecond_types-2fccff51f9c3401a,libslotmap-0aad3b59624ec7bf,libbevy_tasks-ee35376e81f1a836,libasync_executor-d8d44db88c454f83,libasync_task-722d66e37f45997a,libarrayvec-37727d9d5e4c5bfd,libbevy_reflect-39ebd67c6b1ea511,libwgpu_types-7f8e0f4b0ce0f48d,libraw_window_handle-457681b07d4ae0d3,libstatic_assertions-04d3029df4c49038,liblog-466ff0603d99f8ba,libnaga_types-d074b4a3370be702,librustc_hash-23a7f32b5b27b28c,libuuid-fec113934be32c08,libgetrandom-90af86e7a7ef5bc5,libsmol_str-6a3063680575edcb,libpetgraph-34edeac53f3497ea,libhashbrown-e4ae1485ca4b73c1,libfoldhash-0f1788bbe43ea89b,libfixedbitset-0195bbcfaf57ab4a,libinventory-301069f2ba8ab384,liberased_serde-e930eb3a3c47d952,libtypeid-216a312e4f9da2c8,libsmallvec-114d867c95507925,libglam-f63164ea91ca0a73,librand-f7bf7702f0b78455,librand_core-6d296d618071e5a5,libencase-63d88881d7ed53f8,libconst_panic-fa0a9c7fa8d3178a,libtypewit-eedf8ad3ecaffcbc,libapprox-746f73a9b6ea6609,libnum_traits-b43483a48eef49a6,libdowncast_rs-b534c630487caa2b,libderive_more-f3f365f83ec679f8,libthiserror-92495d31ac0accc1,libbumpalo-54c3aa773d158abe,libbevy_utils-0cd41ebb3575b7e4,libthread_local-8b712c6720a0e467,libasync_channel-09d142b4c4a04ba5,libevent_listener_strategy-2866ac68689f089b,libevent_listener-8972235e5673ba81,libindexmap-3ea332ab5ac78613,libhashbrown-d8d66ca70fdb3f6d,libdisqualified-bfe36aa23e8952f4,libbevy_ptr-5e91cf6b9247cd5f,libnonmax-9067f7dc693dfcef,libbevy_platform-f8fad71a6ac33867,libserde-e8254295c2317980,libhashbrown-c9f7f1fddaf6dfdd,libequivalent-24fa4381730418e2,liballocator_api2-381ba9bb63ce6761,libasync_io-d2c68465d5914ec2,libslab-b29243ff93f579a9,libpolling-8b4edc330af301d9,libcfg_if-9e0e1ebe0465657b,libconcurrent_queue-87880b01f1b3ef25,libcrossbeam_utils-18a282ba645b7a95,librustix-ecb91c3d4f6a50ba,libbitflags-a79f659a8e39ae14,libbytemuck-14dec6019013dee4,libserde_core-d032c7c0931344b4,liberrno-e10f8c13c74ec61c,libwindows_sys-d059d532329d9314,libwindows_link-7a8a0afead3b0c82,libfutures_lite-bb2ffc76ba97d442,libfutures_core-c40b7baca8921e86,libparking-f2b512258c6ab779,libpin_project_lite-0322403ad7038c93,libfastrand-b2d335aed0bf022b,libfutures_io-3600faa84dd07c03,libfoldhash-dd3390fd6109bc2c}.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib\\windows.0.52.0.lib" "ntdll.lib" "advapi32.lib" "credui.lib" "kernel32.lib" "secur32.lib" "legacy_stdio_definitions.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/LIBPATH:C:\\Users\\Administrator\\.cargo\\registry\\src\\rsproxy.cn-e3de039b2554c837\\windows_x86_64_msvc-0.52.6\\lib" "/LIBPATH:C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\\debug\\build\\blake3-311c29d46f331d6d\\out" "/OUT:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestEKblPt\\rust_out.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestEKblPt\\rustcLwtahv\\rust_out-0.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestEKblPt\\rustcLwtahv\\rust_out-1.natvis" "/NATVIS:C:\\Users\\ADMINI~1\\AppData\\Local\\Temp\\rustdoctestEKblPt\\rustcLwtahv\\rust_out-2.natvis"
+  = note: some arguments are omitted. use `--verbose` to show all linker arguments
+  = note: LINK : fatal error LNK1102: 内存不足
+          
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+
+failures:
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1024)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1102)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1161)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1234)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1282)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1346)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1399)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1456)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1512)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1558)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1607)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1671)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1776)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1830)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1900)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1959)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2168)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2227)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2280)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2382)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2443)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2491)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2539)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2589)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2640)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2687)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2731)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2778)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 777)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 833)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 900)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 956)
+
+test result: FAILED. 45 passed; 32 failed; 17 ignored; 0 measured; 0 filtered out; finished in 7837.51s
+
+error: doctest failed, to rerun pass `-p docs --doc`
+REAL_EXIT=101

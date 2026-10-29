@@ -61,3 +61,22 @@ cargo run -p claim-lint   # 退出码 0=无 FAIL（doctest 日志缺失时该条
   claim-lint-t040-run1 / -negative-control（S5 真值路负控：临时改 `expect` 值 → 红 → 复原）/
   -run2 / -s1-fallback（S1 演示：mtime 最新的残缺日志被回退跳过并在明细披露，仍绿；演示
   用残缺日志跑毕删除）/ -final 档（四处联动 8/13/17/40）。
+
+## mcp-bridge/
+
+MCP 薄桥（窗口前置增强 T041 / A1，`docs/pre-window-plan.md`；SKILL.md §6.15）：stdio MCP
+服务器，白名单 12 工具（8 个 `game.*` + 4 个只读内置）逐次转发为本机 BRP 的 HTTP POST。
+不链 bevy；依赖面仅 serde_json + std；仅出站 `127.0.0.1` 连接、零新增监听（BRP 无鉴权，
+硬约束 4；`MCP_BRIDGE_BRP_ADDR` 可覆盖目标地址，主机限回环字面）。
+
+```bash
+cargo run -p mcp-bridge   # stdio MCP 循环；游戏未启动时桥存活，逐调用报 bridge_error（不探测）
+```
+
+- 转发契约：MCP arguments 缺失/null/`{}` 三态省略 BRP `params` 键；BRP 响应体逐字节原文进
+  工具结果 text（错误码原样透传）；白名单外方法（含一切写通道与 +watch 流式）-32602 拒转发。
+- 注册形态：仓根 `.mcp.json`（通用 MCP 客户端；ZCode 工作区 = `.zcode/config.json` 的
+  `mcp.servers` 本地手动配置——`.zcode/` 按仓 .gitignore 不入库，且新会话才加载）。
+  以 `cargo run` 注册故首次 spawn 有冷编延迟（此后增量缓存、常驻会话无感）。
+- 帧格式/规范摘录/双源互证与全链路断言面：`docs/evidence/t041-mcp-bridge/`
+  （spec-quotes.md + mcp-drive.mjs + transcript）。

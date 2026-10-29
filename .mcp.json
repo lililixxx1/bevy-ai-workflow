@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "bevy-brp-bridge": {
+      "command": "cargo",
+      "args": ["run", "-p", "mcp-bridge", "--quiet"]
+    }
+  }
+}

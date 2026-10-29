@@ -1,0 +1,29 @@
+{
+  "battle_null_before_probes": true,
+  "probes": [
+    {
+      "method": "game.launch_level",
+      "arguments": {},
+      "isError": true,
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":26,\"error\":{\"code\":-32602,\"message\":\"缺 params（须为 {\\\"level\\\": 1}）\"}}"
+    },
+    {
+      "method": "game.move_unit",
+      "arguments": {},
+      "isError": true,
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":27,\"error\":{\"code\":-32602,\"message\":\"缺 params（须为 {\\\"from_x\\\":..,\\\"from_y\\\":..,\\\"to_x\\\":..,\\\"to_y\\\":..}）\"}}"
+    },
+    {
+      "method": "game.attack",
+      "arguments": {},
+      "isError": true,
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":28,\"error\":{\"code\":-32602,\"message\":\"缺 params（须为 {\\\"from_x\\\":..,\\\"from_y\\\":..,\\\"target_x\\\":..,\\\"target_y\\\":..}）\"}}"
+    },
+    {
+      "method": "game.end_turn",
+      "arguments": {},
+      "isError": true,
+      "text": "{\"jsonrpc\":\"2.0\",\"id\":29,\"error\":{\"code\":-32602,\"message\":\"未加载关卡（先 game.launch_level）\"}}"
+    }
+  ]
+}

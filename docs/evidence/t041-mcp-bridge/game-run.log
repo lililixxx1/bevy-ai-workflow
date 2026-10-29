@@ -1,0 +1,28 @@
+$ cargo run --release -p game -j 1
+    Finished `release` profile [optimized] target(s) in 0.60s
+     Running `C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\release\game.exe`
+[CONFIG] game demo | count=1000 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.19 (workspace locked)
+[2m2026-10-29T01:32:29.005280Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-29T01:32:29.258735Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-29T01:32:29.680844Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-29T01:32:29.680864Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] custom methods: game.run_tests / game.screenshot / game.screenshot_log / game.launch_level / game.move_unit / game.attack / game.end_turn / game.snapshot
+[2m2026-10-29T01:32:29.681293Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-29T01:32:29.681324Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-29T01:32:29.681883Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (67v0)
+[2m2026-10-29T01:32:29.755276Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=1000 | seed=20260926
+[2m2026-10-29T01:32:29.755336Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 1000 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-10-29T01:32:29.755948Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-10-29T01:32:30.758068Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.0s tick=57 fps_1s=57.0 avg_fps=0.0
+[2m2026-10-29T01:32:31.774471Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.0s tick=118 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T01:32:32.791144Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.0s tick=179 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T01:32:33.807734Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.1s tick=240 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T01:32:34.442407Z[0m [33m WARN[0m [2mbevy_ecs::world[0m[2m:[0m Could not despawn entity: Entity despawned: The entity with ID 1491v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+[2m2026-10-29T01:32:34.509204Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=true
+[2m2026-10-29T01:32:34.509227Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] PauseRequested observed -> paused=false
+[2m2026-10-29T01:32:34.775678Z[0m [32m INFO[0m [2mgame::rpc::screenshot[0m[2m:[0m [RPC] screenshot #0 queued -> docs/evidence/t041-mcp-bridge/mcp-shot.png (entity 1547v0)
+[2m2026-10-29T01:32:34.807775Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=5.1s tick=300 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T01:32:34.824300Z[0m [32m INFO[0m [2mgame::rpc::screenshot[0m[2m:[0m [RPC] screenshot #0 captured (1600x900, frame Some(301))
+[2m2026-10-29T01:32:34.839971Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to docs/evidence/t041-mcp-bridge/mcp-shot.png
+
+REAL_EXIT=1

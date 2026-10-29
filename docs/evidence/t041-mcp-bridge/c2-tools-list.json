@@ -1,0 +1,128 @@
+{
+  "expected_order": [
+    "game.run_tests",
+    "game.screenshot",
+    "game.screenshot_log",
+    "game.launch_level",
+    "game.move_unit",
+    "game.attack",
+    "game.end_turn",
+    "game.snapshot",
+    "rpc.discover",
+    "world.query",
+    "world.get_components",
+    "registry.schema"
+  ],
+  "actual_order": [
+    "game.run_tests",
+    "game.screenshot",
+    "game.screenshot_log",
+    "game.launch_level",
+    "game.move_unit",
+    "game.attack",
+    "game.end_turn",
+    "game.snapshot",
+    "rpc.discover",
+    "world.query",
+    "world.get_components",
+    "registry.schema"
+  ],
+  "tools": [
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.run_tests（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.run_tests"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.screenshot（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.screenshot"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.screenshot_log（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.screenshot_log"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.launch_level（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.launch_level"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.move_unit（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.move_unit"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.attack（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.attack"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.end_turn（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.end_turn"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 game.snapshot（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "game.snapshot"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 rpc.discover（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "rpc.discover"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 world.query（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "world.query"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 world.get_components（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "world.get_components"
+    },
+    {
+      "description": "原样转发到本机 Bevy BRP 方法 registry.schema（arguments 即 params；缺省或空对象省略 params）",
+      "inputSchema": {
+        "properties": {},
+        "type": "object"
+      },
+      "name": "registry.schema"
+    }
+  ]
+}

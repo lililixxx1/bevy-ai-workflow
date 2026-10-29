@@ -1,0 +1,86 @@
+.mcp.json 注册条目（驱动 spawn 逐字同源）：command="cargo" args=["run","-p","mcp-bridge","--quiet"]
+BRP 就绪：attempts=5 elapsed_ms=2043
+[PASS] C1.initialize.protocolVersion 回显: 实际 "2025-06-18"
+[PASS] C1.initialize.capabilities.tools 存在: capabilities={"tools":{}}
+[PASS] C1.initialize.serverInfo: serverInfo={"name":"bevy-brp-bridge","version":"0.1.0"}
+[PASS] C1.notifications/initialized 无响应: 通知后到 ping 响应之间收到 1 条（期望仅 ping 一条）
+[PASS] C1.ping result 为空对象: result={}
+[PASS] C2.tools/list 计数 12: 实际 12
+[PASS] C2.tools/list 顺序逐项相等: actual=["game.run_tests","game.screenshot","game.screenshot_log","game.launch_level","game.move_unit","game.attack","game.end_turn","game.snapshot","rpc.discover","world.query","world.get_components","registry.schema"]
+[PASS] C2.tools/list 集合相等: missing=[]
+[PASS] C3.套件名读取与 claim-lint IN_PROC_SUITES 双盲: 源码注册表 13 / claim-lint 13
+[PASS] C3.台账 T042 行预注册 45 断言可解析: 台账未找到「13/13 套件 45 断言」锚点
+[PASS] C3.ts-01.isError=false: isError=false
+[PASS] C3.ts-01.passed==results.length: passed=5 results.length=5
+[PASS] C3.ts-01.failed==0: failed=0
+[PASS] C3.ts-02.isError=false: isError=false
+[PASS] C3.ts-02.passed==results.length: passed=2 results.length=2
+[PASS] C3.ts-02.failed==0: failed=0
+[PASS] C3.ts-03.isError=false: isError=false
+[PASS] C3.ts-03.passed==results.length: passed=2 results.length=2
+[PASS] C3.ts-03.failed==0: failed=0
+[PASS] C3.ts-05.isError=false: isError=false
+[PASS] C3.ts-05.passed==results.length: passed=4 results.length=4
+[PASS] C3.ts-05.failed==0: failed=0
+[PASS] C3.ts-06.isError=false: isError=false
+[PASS] C3.ts-06.passed==results.length: passed=2 results.length=2
+[PASS] C3.ts-06.failed==0: failed=0
+[PASS] C3.ts-07.isError=false: isError=false
+[PASS] C3.ts-07.passed==results.length: passed=3 results.length=3
+[PASS] C3.ts-07.failed==0: failed=0
+[PASS] C3.ts-08.isError=false: isError=false
+[PASS] C3.ts-08.passed==results.length: passed=3 results.length=3
+[PASS] C3.ts-08.failed==0: failed=0
+[PASS] C3.ts-09.isError=false: isError=false
+[PASS] C3.ts-09.passed==results.length: passed=3 results.length=3
+[PASS] C3.ts-09.failed==0: failed=0
+[PASS] C3.ts-10.isError=false: isError=false
+[PASS] C3.ts-10.passed==results.length: passed=3 results.length=3
+[PASS] C3.ts-10.failed==0: failed=0
+[PASS] C3.ts-11.isError=false: isError=false
+[FAIL] C3.ts-11.passed==results.length: passed=1 results.length=2
+[FAIL] C3.ts-11.failed==0: failed=1
+[PASS] C3.ts-12.isError=false: isError=false
+[PASS] C3.ts-12.passed==results.length: passed=4 results.length=4
+[PASS] C3.ts-12.failed==0: failed=0
+[PASS] C3.ts-14.isError=false: isError=false
+[PASS] C3.ts-14.passed==results.length: passed=6 results.length=6
+[PASS] C3.ts-14.failed==0: failed=0
+[PASS] C3.ts-17.isError=false: isError=false
+[PASS] C3.ts-17.passed==results.length: passed=6 results.length=6
+[PASS] C3.ts-17.failed==0: failed=0
+[PASS] C3.断言总数 45（运行值）: 实际 45
+[PASS] C4.snapshot arguments 缺省 → 成功: text 前 120 字：{"jsonrpc":"2.0","id":14,"result":{"battle":null,"sim":{"paused":false,"wanderers":[{"index":0,"origin":[59.203605651855
+[PASS] C4.snapshot arguments={} → 成功: text 前 120 字：{"jsonrpc":"2.0","id":15,"result":{"battle":null,"sim":{"paused":false,"wanderers":[{"index":0,"origin":[59.203605651855
+[PASS] C4.snapshot arguments=null → 成功（B5 三态省略 params 契约）: text 前 160 字：{"jsonrpc":"2.0","id":16,"result":{"battle":null,"sim":{"paused":false,"wanderers":[{"index":0,"origin":[59.20360565185547,0.800000011920929,40.68254470825195],
+[PASS] C4.snapshot 非空 arguments → 游戏侧 -32602 原文透传: isError=true text 前 200 字：{"jsonrpc":"2.0","id":17,"error":{"code":-32602,"message":"params 须为空对象或缺省（game.snapshot 无参数）"}}
+[FAIL] C4.直调 BRP params:null → -32602（S2 注前提，非桥转发）: status=200 text 前 200 字：{"jsonrpc":"2.0","id":9001,"result":{"battle":null,"sim":{"paused":false,"wanderers":[{"index":0,"origin":[59.20360565185547,0.800000011920929,40.68254470825195],"phase":0.6825083494186401,"velocity":
+[PASS] C5.rpc.discover methods 总数 31: 实际 31
+[PASS] C5.rpc.discover 总数与 claim-lint 23+8 双盲: claim-lint BRP_BUILTIN=23 GAME_METHODS=8
+[PASS] C5.rpc.discover 含全部 12 白名单名: missing=[]
+[PASS] C5.world.query 透传结构符合先例: result_len=1000
+[PASS] C5.world.get_components 透传结构符合先例: entity=4294965793
+[PASS] C5.registry.schema 透传结构符合先例: keys=55
+[PASS] C6.game.screenshot 受理: result={"jsonrpc":"2.0","id":22,"result":{"id":0,"note":"捕获异步完成：轮询 game.screenshot_log 至 status=captured，再核验 PNG 文件","path":"docs/evidence/t041-mcp-bridge/mcp-shot.png
+[PASS] C6.game.screenshot_log 轮询到 captured: entry={"frame_captured":94,"frame_requested":91,"height":900,"id":0,"path":"docs/evidence/t041-mcp-bridge/mcp-shot.png","status":"captured","width":1600}
+[PASS] C6.PNG 魔数: bytes=1364820
+[PASS] C6.PNG 非空且尺寸与日志一致: width=1600 height=900 bytes=1364820
+[PASS] C6.写方法探针前未加载关卡（battle=null）: battle 非 null，拒绝继续（可能污染现场）
+[PASS] C6.game.launch_level 无效参数探针 -32602 透传: isError=true text 前 160 字：{"jsonrpc":"2.0","id":26,"error":{"code":-32602,"message":"缺 params（须为 {\"level\": 1}）"}}
+[PASS] C6.game.move_unit 无效参数探针 -32602 透传: isError=true text 前 160 字：{"jsonrpc":"2.0","id":27,"error":{"code":-32602,"message":"缺 params（须为 {\"from_x\":..,\"from_y\":..,\"to_x\":..,\"to_y\":..}）"}}
+[PASS] C6.game.attack 无效参数探针 -32602 透传: isError=true text 前 160 字：{"jsonrpc":"2.0","id":28,"error":{"code":-32602,"message":"缺 params（须为 {\"from_x\":..,\"from_y\":..,\"target_x\":..,\"target_y\":..}）"}}
+[PASS] C6.game.end_turn 无效参数探针 -32602 透传: isError=true text 前 160 字：{"jsonrpc":"2.0","id":29,"error":{"code":-32602,"message":"未加载关卡（先 game.launch_level）"}}
+[PASS] C7.world.mutate_components 白名单拒绝: error={"code":-32602,"message":"白名单拒绝：world.mutate_components 不在 12 工具白名单内（桥不转发）"}
+[PASS] C7.MCP 未知方法 -32601: error={"code":-32601,"message":"Method not found: foo/bar"}
+[PASS] C7.拒绝后游戏仍存活（探针未达 BRP）: isError=false
+[PASS] C8.transcript 每行 JSON: lines=71
+[PASS] C8.transcript 零机器绝对路径: lines=71
+[PASS] C8.桥 stdout 协议零污染: 
+[PASS] C8.清杀后 game.exe 无残留: tasklist 无 game.exe
+[PASS] C8.清杀后 15702 不再监听: 连接失败（端口已释放）
+
+判定行（脚本计算）：ASSERTIONS=78 PASS=75 FAIL=3
+FAILED: C3.ts-11.passed==results.length: passed=1 results.length=2
+FAILED: C3.ts-11.failed==0: failed=1
+FAILED: C4.直调 BRP params:null → -32602（S2 注前提，非桥转发）: status=200 text 前 200 字：{"jsonrpc":"2.0","id":9001,"result":{"battle":null,"sim":{"paused":false,"wanderers":[{"index":0,"origin":[59.20360565185547,0.800000011920929,40.68254470825195],"phase":0.6825083494186401,"velocity":
+REAL_EXIT=1

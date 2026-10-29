@@ -1,0 +1,8 @@
+$ CARGO_TARGET_DIR=<shared-target> cargo test --doc -j 3 -- --test-threads=3
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.32s
+   Doc-tests docs
+
+running 94 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1002) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1084) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1150) ... ignored

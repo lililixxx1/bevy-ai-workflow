@@ -1,0 +1,168 @@
+{
+  "suites": [
+    {
+      "suite": "ts-01",
+      "total": 5,
+      "passed": 5,
+      "failed": 0,
+      "assertions": 5,
+      "names": [
+        "wanderer_count_matches_config",
+        "config_metadata_consistent",
+        "sim_ticking",
+        "wanderers_have_velocity",
+        "initial_state_matches_seed_redraw"
+      ]
+    },
+    {
+      "suite": "ts-02",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 2,
+      "names": [
+        "velocity_within_configured_cap",
+        "origin_invariant_to_max_speed"
+      ]
+    },
+    {
+      "suite": "ts-03",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 2,
+      "names": [
+        "metadata_reflect_visible",
+        "metadata_fields_consistent"
+      ]
+    },
+    {
+      "suite": "ts-05",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "assertions": 4,
+      "names": [
+        "wanderer_baseline_matches_config",
+        "spawn_velocity_readback",
+        "velocity_only_isolation",
+        "world_restored_after_suite"
+      ]
+    },
+    {
+      "suite": "ts-06",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 2,
+      "names": [
+        "despawn_removes_entity",
+        "double_despawn_fails"
+      ]
+    },
+    {
+      "suite": "ts-07",
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 3,
+      "names": [
+        "index0_located",
+        "velocity_write_accepted_and_restored",
+        "transforms_match_analytic_formula"
+      ]
+    },
+    {
+      "suite": "ts-08",
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 3,
+      "names": [
+        "camera_singleton",
+        "orbit_distance_matches_radius",
+        "rig_defaults_and_transition"
+      ]
+    },
+    {
+      "suite": "ts-09",
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 3,
+      "names": [
+        "tagged_reflect_visible",
+        "tagged_schema_has_tag_field",
+        "tagged_first_ten_count"
+      ]
+    },
+    {
+      "suite": "ts-10",
+      "total": 3,
+      "passed": 3,
+      "failed": 0,
+      "assertions": 3,
+      "names": [
+        "paused_initially_false",
+        "first_trigger_pauses",
+        "second_trigger_resumes"
+      ]
+    },
+    {
+      "suite": "ts-11",
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "assertions": 2,
+      "names": [
+        "bench_stats_alive",
+        "sim_ticking_at_scale"
+      ]
+    },
+    {
+      "suite": "ts-12",
+      "total": 4,
+      "passed": 4,
+      "failed": 0,
+      "assertions": 4,
+      "names": [
+        "baseline_matches_checklist",
+        "batch_loop_ops_succeed",
+        "batch_net_change_exact",
+        "world_restored_after_suite"
+      ]
+    },
+    {
+      "suite": "ts-14",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "assertions": 6,
+      "names": [
+        "battle_state_initial",
+        "move_accept_and_reject",
+        "attack_kill_annihilate_and_lock",
+        "end_turn_twin_deterministic",
+        "reach_goal_wins_on_move",
+        "world_restored_after_suite"
+      ]
+    },
+    {
+      "suite": "ts-17",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "assertions": 6,
+      "names": [
+        "battle_null_when_unloaded",
+        "field_set_matches_t035",
+        "snapshot_equivalent_to_world_query",
+        "business_key_ordering",
+        "relaunch_same_seed_same_snapshot",
+        "world_restored_after_suite"
+      ]
+    }
+  ],
+  "assertion_total": 45,
+  "expected": 45
+}

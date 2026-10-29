@@ -1,0 +1,40 @@
+{
+  "initialize_request": {
+    "protocolVersion": "2025-06-18",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "t041-mcp-drive",
+      "version": "1.0.0"
+    }
+  },
+  "initialize_response": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "capabilities": {
+        "tools": {}
+      },
+      "protocolVersion": "2025-06-18",
+      "serverInfo": {
+        "name": "bevy-brp-bridge",
+        "version": "0.1.0"
+      }
+    }
+  },
+  "notification": {
+    "method": "notifications/initialized",
+    "params": {}
+  },
+  "messages_after_notification_until_ping": [
+    {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  ],
+  "ping_response": {
+    "id": 2,
+    "jsonrpc": "2.0",
+    "result": {}
+  }
+}

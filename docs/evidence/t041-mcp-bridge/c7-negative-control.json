@@ -1,0 +1,19 @@
+{
+  "whitelist_rejection": {
+    "error": {
+      "code": -32602,
+      "message": "白名单拒绝：world.mutate_components 不在 12 工具白名单内（桥不转发）"
+    },
+    "id": 33,
+    "jsonrpc": "2.0"
+  },
+  "unknown_method": {
+    "error": {
+      "code": -32601,
+      "message": "Method not found: foo/bar"
+    },
+    "id": 34,
+    "jsonrpc": "2.0"
+  },
+  "game_alive_after_rejection": true
+}

@@ -1,0 +1,4 @@
+轮询 rpc.discover 就绪：attempts=5 elapsed_ms=2043
+REAL_EXIT=0
+轮询 rpc.discover 就绪：attempts=4 elapsed_ms=1572
+REAL_EXIT=0

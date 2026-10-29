@@ -1,4 +1,4 @@
-# bevy-dev skill v0.15 —— Bevy 0.20 开发纪律与约定（Bevy 特定层）
+# bevy-dev skill v0.16 —— Bevy 0.20 开发纪律与约定（Bevy 特定层）
 
 - 适用版本：**bevy 0.20**（当前 `Cargo.lock` 解析为 0.20.0；本文件 API 事实按 0.20.0 本地源码核实，核实日期 2026-10-24——升级窗口 T042 全批重锚，覆盖说明见 §6 头注）。
 - 层归属：Bevy 特定层（`bevy-dev/`），随升级窗口整体迁移（意向文档 §6）。引擎无关的纪律在 `assets-methodology/sop.md`，本文件不重复。
@@ -299,10 +299,19 @@
 - 探查边界（如实记）：自定义 Material/AsBindGroup、渲染图（RenderGraph）、后处理管线自定义未展开；`bevy_ui_widgets`（button/checkbox/menu/slider/text_input 等新官方 widget 库）未探查。
 - 探查证据：`docs/evidence/m3-assets/batch-g/`（r1 lib 30 错 + bin 9 错原文 / r2 修正轮 attempt1-4 逐轮归档 / r1b/r1c 批次二三 + r2b 修正 / 运行时 r2 失败-r3 失败-r4-r5 全链 / 双源码快照 + r1 快照误覆盖恢复留痕）。
 
+### 6.15 MCP stdio 薄桥（T041，2026-10-29）
+
+- 本仓 `tooling/mcp-bridge`：stdio MCP 服务器（initialize/ping/tools/list/tools/call）→ 白名单工具逐次转成本机 BRP 的 HTTP POST。工具面精确 **12** = 8 个 `game.*`（§6.2 现况清单）+ 4 个只读内置（`rpc.discover` / `world.query` / `world.get_components` / `registry.schema`，§6.2 常量表）；白名单外一律 **-32602 拒转发**（含一切写通道与 `+watch` 流式——PIT-B-051 进程击穿面隔绝）；不链 bevy、仅 serde_json + std、仅出站 `127.0.0.1` 连接零新增监听（`MCP_BRIDGE_BRP_ADDR` 可覆盖，主机限回环字面，其余启动即拒）。
+- **MCP stdio 帧格式**（规范 2025-06-18 revision + T004 transcript `tooling/brp-logs/10-mcp-session-transcript.jsonl` 双源核实，2026-10-29）：换行分隔 JSON-RPC、UTF-8、单消息禁内嵌换行、**无 Content-Length 帧头**（规范原文摘录与双源对照表 `docs/evidence/t041-mcp-bridge/spec-quotes.md`）；`notifications/*` 一律无响应；未知请求方法 -32601；initialize 回显客户端 protocolVersion + capabilities `{"tools":{}}` + serverInfo；ping 回空 result。
+- **工具名语法**：2025-06-18 schema 的 `Tool.name` 仅声明 `string`、未限字符集——**点号合法，工具名 = BRP 方法名原样**（T004 实录 rmcp 自选下划线名是服务端命名自由，非「点号被禁」反证）。
+- **转发契约**：MCP `arguments` 缺失 / null / `{}` 三态 → BRP 请求体**省略 `params` 键**；非空对象原样作 params 不增删改键。**BRP 侧 params 语义（T041 验收实测 + 双版本源码核，2026-10-29）**：bevy_remote 反序列化 `params.flatten()`（`lib.rs:1150`，0.19.1/0.20.0 同款）把线上 `"params": null` 归一为缺省 `None`，handler 收不到 `Some(Null)`——null 与缺省在 BRP 侧不可区分、均成功（T040 审核轮 S2 注「params:null 报 -32602」前提失实系推断，勘误留痕 `docs/pre-window-plan.md` §二；非空对象 → -32602 拒绝面维持）。响应映射：BRP HTTP 响应体**逐字节原文**进 `content[0].text`（错误码如 -32602 逐字符到达），`isError` = 响应体为含 `error` 键的 JSON；桥传输失败（连接拒绝/超时/非 JSON/非 200）→ `{"bridge_error":…,"code":-32000}` 桥侧命名空间。启动不探测 BRP（未起游戏时桥存活、逐调用报 bridge_error——会话自连形态健壮性）。
+- 注册形态：仓根 `.mcp.json`（通用 MCP 客户端，command/args 与全链路 driver spawn 逐字同源自证）；ZCode 工作区注册 = `.zcode/config.json` 的 `mcp.servers` 本地手动配置（该目录按仓 .gitignore 不入库、新会话才加载）。
+
 ---
 
 ## 变更记录
 
+- **v0.16（2026-10-29）**：新增 §6.15 MCP stdio 薄桥速查（T041 落地：`tooling/mcp-bridge`，12 工具白名单 = 8 `game.*` + 4 只读内置、白名单外 -32602 拒转发；MCP stdio 帧格式规范 2025-06-18 + T004 transcript 双源核实——无 Content-Length 帧头、notifications 无响应、未知方法 -32601；Tool.name 未限字符集→点号合法、工具名 = BRP 方法名原样；转发契约三态省略 params + 响应逐字节透传 + bridge_error -32000 桥侧命名空间；注册形态仓根 `.mcp.json` / ZCode 本地 `.zcode/config.json`）。**S2 注勘误**：T040 审核轮「params:null 报 -32602」前提失实——bevy_remote `params.flatten()`（`lib.rs:1150`，0.19.1/0.20.0 同款）把 null 归一为缺省、均成功；非空对象 -32602 拒绝面维持（T041 验收 run1 假红根因，勘误同步 `docs/pre-window-plan.md` §二）。门禁与全链路证据：driver C1–C8 78 断言 run2 78/78 REAL_EXIT=0（`docs/evidence/t041-mcp-bridge/`，含 run1 3 假红留痕）。
 - **v0.15（2026-10-24）**：**0.19→0.20 升级窗口全批重锚（T042）**——①头/§0/§1/§2/§3 版本面切 0.20.0（MSRV 1.97.1 `Cargo.toml:14`、版本锁行 :11、feature 表 :2706/:2817/:2867/:2928）；②§6.1–6.9 逐条重锚（bevy_remote API 面行号与 0.19.1 大面积相同：RemotePlugin :572 / with_method_* :591-:642 / 端口 :52/:57/:60 / 常量表 :45-111 / 注册 :719/:779/:784 / jsonrpc 校验 :1146-:1148；漂移项：register_type app.rs:677→664、add_observer :1474→1459、screenshot :49→:53/:134→:145、despawn :1598→:1576、type_registry get/data :423/:677→:448/:720）；③§6.10–6.14 抽核注记（迁移指南点名变更全录：iter_many Result 化、`On<Add<T>>` 反转、BSN 语法二次变更、Tonemapping 移址+BRP 反射路径、指针扁平化、Button/Interaction 弃用、TextFont Rem 默认、bevy_shape 拆分、Sprite Mesh2d 后端、FromType→CreateTypeData、to_dynamic Result 化、AssetId::invalid 弃用），行号级全量重核归 T043 待重核清单；④§3.4 自动注册链改写（reflect_auto_register 0.20 收直进 default :2878，0.19 间接链废止）；⑤crate 文档漏 jsonrpc 的 0.19 注记作废（0.20 文档已含 :53/:162/:184）；⑥PIT-B-051 复核（mutate 裸调 :1194 维持 + 0.20 新增 :1252 双路径）。**条目过期检测首次实战**：PIT-B-015 两围栏被 0.20 doctest 打红（`On<Add, T>`↔`On<Add<T>>` 整体反转），该条已改写为 0.20 口径并保留 0.19 史实。门禁：check 0 错 0 警、单测 20/20、doctest 77/0/17 REAL_EXIT=0（gate-doc-test-run2.log，217.70s，--test-threads=3——首跑 12 线程内存耗尽 31 处环境性假红已复跑排除）。
 - **v0.14（2026-09-29）**：§6.2 增本仓自定义方法集现况条目（T040 `game.snapshot` 落地，8 方法 / discover 31；字段来源逐表指认 + claim-lint 锚定口径 `pub const`+`"game.` 字面量不按后缀过滤——T002 同型）；`BrpError.code` 标注 `i16`（本地源码核）。T040 全貌：TS-17 套件（字段集==T035 / 逐字段等价 / 键序 / 同 seed 重 launch 一致且实体号换血 / null 分支 / 无净副作用）+ claim-lint 加固三件（T038 审核轮移交：S1 日志回退式挑选、S3 锚定改字面量、S5 真值路负控）+ 跨进程快照原始体逐字节一致证据（`docs/evidence/ts-17/`）；同批 PAT-M-008/009 入库（宣称-实证对照 / 计数机器门禁——A2 留痕后解禁）。
 - **v0.13（2026-09-29）**：§4.1 门禁清单增第三条——claim-lint 计数机器门禁（窗口前置增强 T038 / A2，`docs/pre-window-plan.md`；动因 = 台账实测「计数/口径」系审核返工第一大来源——T002/T004/T020/T023/T029/T034/T037，外部教训 SpawnForge 380 注册 vs 2 proven）。13 条断言（8 真值 + 3 自述头一致性 + 1 意向文档阈值 + 1 doctest 门禁计数运行时真值）；crate 成员落点规避 PIT-M-003 复发；首跑 13/13 PASS + 负控自证红（REAL_EXIT=1）+ 复原绿，证据 `docs/evidence/pre-window/`。同批：意向文档 v0.3.2（§9/§5.3 放开自有方法窄白名单 MCP 薄转发，T041 前提——原 T040，开源任务 T039 插队后顺延）。
