@@ -52,9 +52,9 @@ impl Plugin for BenchPlugin {
     }
 }
 
-/// 依据: AppExit 事件写入形态 `MessageWriter<AppExit>`——0.19 官方示例
-/// `bevy-0.19.1/examples/app/custom_loop.rs:36-38`（`EventWriter` 已并入
-/// Message 系列命名，bevy_ecs-0.19.1/src/lib.rs:80 prelude 导出；核实 2026-09-26）。
+/// 依据: AppExit 事件写入形态 `MessageWriter<AppExit>`——官方示例
+/// `bevy-0.20.0/examples/app/custom_loop.rs:36`（`EventWriter` 已并入
+/// Message 系列命名，bevy_ecs-0.20.0/src/lib.rs:83 prelude 导出；初核 2026-09-26、0.20 复核 2026-10-29）。
 fn bench_sample(
     time: Res<Time>,
     config: Res<SimConfigImport>,
@@ -65,7 +65,7 @@ fn bench_sample(
     if state.finished {
         return;
     }
-    let dt = time.delta_secs_f64(); // 依据: bevy_time-0.19.1/src/time.rs:290（核实 2026-09-26）
+    let dt = time.delta_secs_f64(); // 依据: bevy_time-0.20.0/src/time.rs:290（0.20 同行号复核 2026-10-29；初核 2026-09-26）
     state.wall_secs += dt;
     state.window_secs += dt;
     state.window_frames += 1;

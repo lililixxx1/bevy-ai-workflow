@@ -871,6 +871,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bevy_ecs_tilemap"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe378ed0c15f25301581be657291ba007cdda75d01616b9522a8addddf2cb175"
+dependencies = [
+ "bevy",
+ "log",
+]
+
+[[package]]
 name = "bevy_encase_derive"
 version = "0.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3018,6 +3028,16 @@ name = "game"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "game-td"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+ "bevy_ecs_tilemap",
  "serde",
  "serde_json",
 ]

@@ -14,13 +14,13 @@
 //! `save_to_disk` 同信任域（本地进程可写任意路径），不另设路径白名单。
 //!
 //! 依据: `Screenshot(pub RenderTarget)` 组件与 spawn+observer 用法（含 doctest）
-//! `bevy_render-0.19.1/src/view/window/screenshot.rs:68-101`；`ScreenshotCaptured`
-//! `EntityEvent`（字段 entity / image）`:49-53`；`primary_window()` `:98`；
+//! `bevy_render-0.20.0/src/view/window/screenshot.rs:84-102`；`ScreenshotCaptured`
+//! `EntityEvent`（字段 entity / image）`:53-57`；`primary_window()` `:102`；
 //! `save_to_disk(impl AsRef<Path>) -> impl FnMut(On<ScreenshotCaptured>)`
-//! （内部 `to_rgb8().save_with_format` 同步落盘）`:134`；Captured 实体清理
-//! `clear_screenshots` 定义 `:197`、First 调度注册 `:416-418`；官方示例
-//! `bevy-0.19.1/examples/window/screenshot.rs:26-27`；`EntityWorldMut::observe`
-//! `bevy_ecs-0.19.1/src/world/entity_access/world_mut.rs:1966`（核实 2026-09-26）。
+//! （内部 `to_rgb8().save_with_format` 同步落盘）`:145`；Captured 实体清理
+//! `clear_screenshots` 定义 `:255`、First 调度注册 `:473-479`；官方示例
+//! `bevy-0.20.0/examples/window/screenshot.rs:25-27`；`EntityWorldMut::observe`
+//! `bevy_ecs-0.20.0/src/world/entity_access/world_mut.rs:2052`（初核 2026-09-26、0.20 复核 2026-10-29）。
 
 use bevy::prelude::*;
 use bevy::remote::BrpResult;

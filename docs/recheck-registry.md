@@ -2,7 +2,7 @@
 
 > T043 执行批交付（2026-10-29；立项卡见 `docs/pre-window-plan.md` §二 T043 / §三 B2）：把「重核什么、怎么核、上版是什么、期望是什么」固化为机器可查的窗口回归工具。逐条目行号级重核**执行**归本窗口空闲档或下一版本窗口，不随本清单交付（卡内执行注）。
 
-- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.15 = 15 节（SKILL v0.16 现行结构）。
+- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.16 = 16 节（SKILL v0.17 现行结构）。
 - **表体自校**：文末 doctest 解析三表行首计数并断言 == 51 / 21 / 15，另校验「验证方式」列分型词表——计数漂移或分型值非法即 doctest 门禁红。
 
 ## 分型定义（验证方式四型）
@@ -98,7 +98,7 @@
 | PAT-B-020 | 行号锚 | 0.19.1 运行验证入档（2026-09-27 全量重跑），0.20 未另注 | run-all.sh:10-48 脚本段同行命中，漂移则重锚 |
 | PAT-B-021 | 计数 | 跨仓回流 2026-10-07，留痕在万阵仓 | 台账/证据档留痕可查（过程型） |
 
-## 三、SKILL §6.1–6.15（15 节；来源 `bevy-dev/SKILL.md` §6，未挂 doctest 门禁——禁围栏型）
+## 三、SKILL §6.1–6.16（16 节；来源 `bevy-dev/SKILL.md` §6，未挂 doctest 门禁——禁围栏型）
 
 | 条目 id | 验证方式 | 上版结论 | 期望结果 |
 |---|---|---|---|
@@ -117,6 +117,7 @@
 | §6.13 | 行号锚 | 0.19.1 全量核实 + 0.20 抽核 2026-10-24 | 0.20 行号全量同形态命中，漂移则重锚 |
 | §6.14 | 行号锚 | 0.19.1 全量核实 + 0.20 抽核；行号级重核归 T043 | 0.20 行号全量同形态命中，漂移则重锚 |
 | §6.15 | 探针 | T041 新增（2026-10-29），driver 78/78 | 重跑 driver C1–C8 78 断言全绿（REAL_EXIT=0） |
+| §6.16 | 行号锚 | T044 新增（2026-10-29），spike 实测入档（P2↔P3 等价 + BRP 面） | bevy_ecs_tilemap-0.20.0 锚同行命中（tiles/map/storage/anchor/render 五面），漂移则重锚 |
 
 ## 使用说明（重核执行口径）
 
@@ -133,7 +134,7 @@
 # let count = |p: &str| text.lines().filter(|l| l.starts_with(p)).count();
 assert_eq!(count("| PIT-B-0"), 51, "PIT-B 条目数漂移（claim-lint expect::PIT_B 镜像）");
 assert_eq!(count("| PAT-B-0"), 21, "PAT-B 条目数漂移（claim-lint expect::PAT_B 镜像）");
-assert_eq!(count("| §6."), 15, "SKILL §6 小节数漂移");
+assert_eq!(count("| §6."), 16, "SKILL §6 小节数漂移");
 # let vocab_all = ["围栏", "探针", "行号锚", "计数"];
 # let vocab_no_fence = ["探针", "行号锚", "计数"];
 # let bad = text

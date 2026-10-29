@@ -66,10 +66,10 @@ pub fn handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
 
     // 清场：先收集实体号再逐个 despawn（不在迭代中改动世界结构）。
     // `World::despawn` 返回 bool——false 的语义面不止并发（实体不存在/未构造
-    // 均为 false，`bevy_ecs-0.19.1/src/world/mod.rs:1570-1580` doc）；本流程
+    // 均为 false，`bevy_ecs-0.20.0/src/world/mod.rs:1568-1574` doc）；本流程
     // 不可达 false 的真实理由：列表取自当次 query 且实体号唯一、当前世界无
     // despawn 钩子/关系级联、BRP 经 `world.run_system_with` 独占执行（无并发
-    // 写世界）。返回 bool 签名依据 `world/mod.rs:1598`（T020 核）。
+    // 写世界）。返回 bool 签名依据 `world/mod.rs:1576`（T020 核；0.20 复核 2026-10-29）。
     let old: Vec<Entity> = {
         let mut q = world.query_filtered::<Entity, With<Unit>>();
         q.iter(world).collect()

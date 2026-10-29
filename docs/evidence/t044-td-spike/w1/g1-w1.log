@@ -1,0 +1,63 @@
+# T044-W1 批 G1 复验记录（Lead；2026-10-29）
+
+按 TEAM_PROMPT G1「先回先验」：门禁复跑 + BRP 全链路重跑 + 截图视觉/像素复核 +
+可公开态扫描。全部在本隔离树（t044/w1）执行；共享 CARGO_TARGET_DIR 指主仓 target。
+
+## 1. 门禁复跑
+
+| 命令（树根，CARGO_TARGET_DIR=主仓 target，-j 3） | 结果 | REAL_EXIT |
+|---|---|---|
+| `cargo check -p game-td` | Finished `dev` 0.58s（缓存命中，无新警告） | 0 |
+| `cargo check --workspace` | Finished `dev` 0.58s | 0 |
+
+## 2. Cargo.lock 增量核对（对照主仓 424a079 基线）
+
+- 包数 628 → 630：新增恰为 `bevy_ecs_tilemap` 与 `game-td` 两项，**零删除**（comm 双向核对）。
+- 行数 7089 → 7109（+20，与派工单宣称一致）。
+
+## 3. 证据档自检（V8 脚本复跑）
+
+`node docs/evidence/t044-td-spike/w1/self-check.mjs` → `SUMMARY: 17/17 PASS`，
+`SELF_CHECK_PASS`，REAL_EXIT=0（含 32 件零机器绝对路径、tilesheet sha256/字节钉死）。
+
+## 4. BRP 全链路重跑（独立于 worker 留档的全新一轮）
+
+1. `cargo run -p game-td`（后台）→ BRP 6s 内就绪（127.0.0.1:15702）。
+2. `assert-td.mjs --phase p3 --shot …/g1-shot.png` → **17/17 PASS** REAL_EXIT=0：
+   discover 24 方法（无 `game.*` 前缀）、MapTile=150 / PathTile=45、TilePos 15×10
+   覆盖恰一次、逐格 texture_index 与 P2 规格一致、道路行 {4,5,6}、
+   `td.screenshot` capture→status→文件闭环（g1-shot.png 64454B、PNG 魔数、
+   IHDR 1600×900 与日志一致）。g1-shot.png 与 p3-shot.png **字节数相同（64454）**
+   = 确定性渲染第三次佐证。
+3. 手工抽查（脚本外路径）：`world.query`（data.components 形态）
+   PathTile+TilePos → 45 行，恰为 x∈0..14 × y∈{4,5,6} 全组合，几何与规格吻合。
+4. 清杀：TaskStop 收 cargo 包装进程后 `game-td.exe` 无实例、端口 15702 释放，零残留。
+
+## 5. 截图视觉 + 像素复核（Lead 通道：视觉模型判读 + PIL 像素运算）
+
+- p1-shot.png：深灰底 + 正中纯红方块、无其他元素（红方块 ~125 物理px = 100 逻辑px
+  ×1.25 DPI，底色为 bevy 0.20 默认深灰非纯黑，属引擎默认行为）。
+- p3-shot vs p3-final-shot：**逐位一致（360k 采样点 0 差异）**。
+- p2-shot vs p3-shot：0.04% 采样像素差异（>8 通道差 160/360000，max 108），全部落在
+  道路带内（y 352–462 = 行 4–6）而非瓦片边界——图集页与纹理数组两条渲染路径在
+  高频土路细节上的采样差异，无行为影响（组件级索引已由断言逐格钉死）。
+- 道路区 2× 放大裁剪（g1-road-crop.png）判读：草/上沿/路面/下沿/草 五层结构清晰，
+  上下沿与草地呈波浪过渡（边缘瓦片形态）、中间路面带石子纹理（与上下沿形态不同）、
+  像素级纹理细节可见、瓦片无错位拉伸。三种瓦片形态渲染成立。
+- 道路位置：视觉模型测得道路中心在画面高度 45% 处 = 行 4–6 几何预期
+  （(4+7)/2/10=55% 自底=45% 自顶）精确吻合。
+
+## 6. 可公开态扫描（Lead 独立扫，模式宽于 worker 自检）
+
+三处命中，全部落在既有公开前例内，无需整改（详 `g1-w1-rulings.md` R6）：
+- `v1-check-p1.log`：`rsproxy-sparse`（cargo 输出中的 registry 别名，主仓公开日志同形态）。
+- `claim-lint-supplementary-mtimes.log`：ls 属主列 `Administrator 197121`
+  （内置账户名，m1-phase2 公开日志同前例；路径已由 worker 以 `<main-repo>` 占位替换）。
+- `self-check.mjs:70`：`["C:", "Users", "Administrator"].join(BS)` 构造式拆分
+  = 扫描器必含模式字面的 PAT-M-010 合规写法。
+
+## 7. 结论
+
+W1 批 G1 **通过**：代码面（main.rs/brp.rs 0.20 源锚密集、无凭记忆 API）、门禁面、
+运行时面（BRP 重跑 + 像素级视觉等价）、证据面（17/17 自检 + REAL_EXIT 纪律）、
+可公开态面全部核实。5+1 项上报事项裁决见 `g1-w1-rulings.md`。

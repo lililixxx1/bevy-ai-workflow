@@ -1,0 +1,36 @@
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 28.55s
+     Running `target\debug\game.exe`
+[CONFIG] game demo | count=1000 seed=20260926 max_speed=3 bench_secs=0 vsync=on(AutoVsync) | bevy 0.20 (workspace locked)
+[2m2026-10-29T16:46:36.637522Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-29T16:46:37.280385Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-29T16:46:38.272005Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-29T16:46:38.272045Z[0m [32m INFO[0m [2mgame::brp[0m[2m:[0m [BRP] custom methods: game.run_tests / game.screenshot / game.screenshot_log / game.launch_level / game.move_unit / game.attack / game.end_turn / game.snapshot
+[2m2026-10-29T16:46:38.274404Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-29T16:46:38.274544Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-29T16:46:38.277470Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window bevy-ai-workflow demo (67v0)
+[2m2026-10-29T16:46:39.232492Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] metadata ready | version=0.1.0 | entity_count=1000 | seed=20260926
+[2m2026-10-29T16:46:39.232694Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] spawned 1000 wanderers | seed=20260926 | area=120 | max_speed=3
+[2m2026-10-29T16:46:39.241294Z[0m [32m INFO[0m [2mgame::sim[0m[2m:[0m [SIM] tagged 10 wanderers (index < 10)
+[2m2026-10-29T16:46:41.156859Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=1.0s tick=29 fps_1s=28.6 avg_fps=0.0
+[2m2026-10-29T16:46:42.172901Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=2.0s tick=90 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:43.189059Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=3.0s tick=151 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:44.189409Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=4.0s tick=211 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:45.205995Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=5.1s tick=272 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:46.207012Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=6.1s tick=332 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:47.222188Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=7.1s tick=393 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:48.238960Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=8.1s tick=454 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:49.239039Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=9.1s tick=514 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:50.255464Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=10.1s tick=575 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:51.255221Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=11.1s tick=635 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:52.273033Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=12.1s tick=696 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:53.272758Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=13.1s tick=756 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:54.288530Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=14.1s tick=817 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:55.288837Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=15.1s tick=877 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:56.304872Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=16.2s tick=938 fps_1s=60.0 avg_fps=60.0
+[2m2026-10-29T16:46:57.321442Z[0m [32m INFO[0m [2mgame::bench[0m[2m:[0m [STATS] t=17.2s tick=999 fps_1s=60.0 avg_fps=60.0
+error: process didn't exit successfully: `target\debug\game.exe` (exit code: 1)
+1
+BANNER_GREP_EXIT=0
+RESIDUE_GREP_EXIT=1
+REAL_EXIT=0

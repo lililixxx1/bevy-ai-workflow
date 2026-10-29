@@ -1,0 +1,20 @@
+PASS | 必备文件齐备 | count=32
+PASS | v4-assert-p1.log SUMMARY 全 PASS | 15/15
+PASS | v5-assert-p2.log SUMMARY 全 PASS | 16/16
+PASS | v6-assert-p3.log SUMMARY 全 PASS | 17/17
+PASS | v6b-assert-p3-final.log SUMMARY 全 PASS | 17/17
+PASS | 每个 .log 含退出码/证据行 | logs=23
+PASS | p1-shot.png PNG 魔数/尺寸 | magic=89504e470d0a1a0a IHDR=1600x900 bytes=23348
+PASS | p2-shot.png PNG 魔数/尺寸 | magic=89504e470d0a1a0a IHDR=1600x900 bytes=63592
+PASS | p3-shot.png PNG 魔数/尺寸 | magic=89504e470d0a1a0a IHDR=1600x900 bytes=64454
+PASS | p3-final-shot.png PNG 魔数/尺寸 | magic=89504e470d0a1a0a IHDR=1600x900 bytes=64454
+PASS | discover-p1.json methods==24 + td.screenshot | len=24 custom=1
+PASS | discover-p2.json methods==24 + td.screenshot | len=24 custom=1
+PASS | discover-p3.json methods==24 + td.screenshot | len=24 custom=1
+PASS | 零机器绝对路径 | scanned=32
+PASS | tilesheet sha256/字节数 | sha256=3681f42ae963aa4e... bytes=91302
+PASS | README 含 tilemap 判定行
+PASS | README 含验收 V1-V8 索引
+SUMMARY: 17/17 PASS
+SELF_CHECK_PASS
+REAL_EXIT=0

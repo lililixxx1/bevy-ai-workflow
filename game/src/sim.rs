@@ -427,7 +427,7 @@ mod tests {
         // 奇数次触发后 true，偶数次回 false）。world.trigger 同步执行 observer，
         // 无需推进调度即可断言。
         // 依据: World::add_observer / World::trigger
-        // bevy_ecs-0.19.1/src/observer/mod.rs:55 / :63（核实 2026-09-26）。
+        // bevy_ecs-0.20.0/src/observer/mod.rs:55 / :63（0.20 同行号复核 2026-10-29；初核 2026-09-26）。
         let mut world = World::new();
         world.insert_resource(SimConfig {
             entity_count: 0,

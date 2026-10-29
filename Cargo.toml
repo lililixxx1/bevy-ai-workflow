@@ -3,9 +3,10 @@
 # Cargo.lock 入库。成员统一经 workspace.dependencies 继承版本。
 [workspace]
 resolver = "2"
-members = ["game", "docs", "tooling/*"]
+members = ["game", "docs", "game-td", "tooling/*"]
 # brp-logs 是 T004 的证据日志目录（无 Cargo.toml），须排除出 glob 成员，否则 workspace 解析失败。
 exclude = ["tooling/brp-logs"]
 
 [workspace.dependencies]
 bevy = "0.20"
+bevy_ecs_tilemap = "0.20"

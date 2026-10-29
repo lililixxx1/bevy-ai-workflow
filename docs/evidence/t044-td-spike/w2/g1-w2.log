@@ -1,0 +1,21 @@
+# G1 复验档（Lead，T044-W2 批，2026-10-29）
+复验人=Lead；树=t044/w2；复验项与结果：
+
+1. count.sh 复跑（树内 w2 证据目录）：REAL_EXIT=0；stdout 末行 SELF_CHECK_PASS；
+   外推区间逐位一致 minutes=939~1564 midpoint=1250 hours=15.7~26.1。
+2. 独立第三路径行数复核：grep -c "^| " api-drift.md = 174；174 − 26 表头 = 148 数据行
+   （与 worker 报告 148 一致；worker 算式 200−26−26=148 亦成立——分隔行 "|---" 不匹配 "^| "）。
+3. 部覆盖：grep -c "^## Part " api-drift.md = 26。
+4. 源码锚抽核 6/6 逐位属实（registry 镜像目录实读）：
+   - bevy_text-0.20.0/src/text.rs:688 = "pub font_size: FontSize," ✓
+   - bevy_ecs-0.20.0/src/hierarchy.rs:107 = "pub struct ChildOf(#[entities] pub Entity);" ✓
+   - bevy_time-0.20.0/src/fixed.rs:76 = DEFAULT_TIMESTEP = Duration::from_micros(15625)（=64Hz）✓
+   - bevy_ecs-0.20.0/src/schedule/condition.rs:135 = and_then / :191 = and_eager ✓
+   - bevy_ecs_tilemap-0.20.0/examples/basic.rs:52 = "commands.entity(tilemap_entity).insert(TilemapBundle {" ✓
+   - bevy_ui-0.20.0/src/focus.rs:65 = "pub type Interaction = DeprecatedInteraction;"
+     / widget/button.rs:30 = "pub type Button = DeprecatedButton;" ✓（#[deprecated] 别名）
+5. 可公开态扫描：grep -rE "C:\|C:/Users|/c/Users|Administrator" . 命中 0 行。
+
+G1 结论：T044-W2 批通过（计数三路一致、锚点抽核全真、可公开态零命中）。
+L1 裁决与 SKILL 冲突处置见同目录 g1-w2-rulings.md（随后落档）。
+REAL_EXIT=0

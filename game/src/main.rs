@@ -44,9 +44,9 @@ fn main() -> AppExit {
     App::new()
         // 窗口口径（基线五要素之二）：1280x720 窗口化 + vsync 开关（默认 AutoVsync，
         // `--no-vsync` 切换 AutoNoVsync）。
-        // 依据: WindowPlugin/Window 设置形态 `bevy-0.19.1/examples/window/window_settings.rs:18-23`；
-        // WindowResolution 默认 1280x720（bevy_window-0.19.1/src/window.rs:895-912）、
-        // PresentMode 枚举（window.rs:1219 起，AutoVsync/AutoNoVsync 均「处处支持」）（核实 2026-09-26）。
+        // 依据: WindowPlugin/Window 设置形态 `bevy-0.20.0/examples/window/window_settings.rs:18-24`；
+        // WindowResolution 默认 1280x720（bevy_window-0.20.0/src/window.rs:910-919）、
+        // PresentMode 枚举（window.rs:1219 起，AutoVsync/AutoNoVsync 均「处处支持」；0.20 同行号）（初核 2026-09-26、0.20 复核 2026-10-29）。
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "bevy-ai-workflow demo".into(),

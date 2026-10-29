@@ -1,0 +1,565 @@
+   Compiling mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\mcp-bridge)
+   Compiling bevy_ecs_tilemap v0.20.0
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\docs)
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+   Compiling claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\claim-lint)
+   Compiling game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game-td)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 33.48s
+     Running unittests src\main.rs (target\debug\deps\claim_lint-8910f178cf797c61.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\docs-527d3d80776a44d8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\game-581a4f857b8ee8d9.exe)
+
+running 20 tests
+test bench::tests::warmup_constant_is_calibrated ... ok
+test cli::tests::defaults_match_baseline_caliber ... ok
+test camera::tests::orbit_distance_is_constant ... ok
+test rng::tests::from_state_resumes_exact_sequence ... ok
+test rng::tests::next_f32_in_unit_interval ... ok
+test rng::tests::same_seed_same_sequence ... ok
+test rng::tests::splitmix64_reference_vectors ... ok
+test sim::tests::analytic_motion_is_deterministic_per_seed_and_time ... ok
+test sim::tests::max_speed_only_scales_speed_draw_order_untouched ... ok
+test sim::tests::same_seed_and_count_same_initial_state ... ok
+test sim::tests::simconfig_deserializes_legacy_json_with_default_max_speed ... ok
+test sim::tests::pause_requested_event_flips_paused ... ok
+test battle::tests::player_annihilation_loses ... ok
+test battle::tests::move_rules_and_flags ... ok
+test battle::tests::reach_goal_wins_on_move ... ok
+test battle::tests::attack_kill_and_annihilate_victory ... ok
+test battle::tests::attack_distance_once_per_turn_and_empty_target ... ok
+test battle::tests::greedy_ai_closes_distance_and_prefers_killable ... ok
+test battle::tests::end_turn_resets_flags_advances_turn_and_rng ... ok
+test battle::tests::end_turn_deterministic_across_spawn_order ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\main.rs (target\debug\deps\game_td-b3e78c91bef5de0a.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\hotpatch_smoke-5c4df2c60291b00b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\debug\deps\mcp_bridge-32e11fa3baee9c8c.exe)
+
+running 15 tests
+test tests::brp_addr_accepts_only_loopback_literals ... ok
+test tests::malformed_line_returns_parse_error_with_null_id ... ok
+test tests::notifications_get_no_response_and_unknown_method_is_32601 ... ok
+test tests::ping_returns_empty_result_object ... ok
+test tests::initialize_echoes_protocol_version_and_declares_tools ... ok
+test tests::non_object_arguments_are_rejected_without_forwarding ... ok
+test tests::params_three_states_are_omitted_and_objects_forwarded_verbatim ... ok
+test tests::stdio_loop_handles_multiple_lines_and_skips_notifications ... ok
+test tests::tools_list_is_exactly_the_twelve_allowlisted_names_in_order ... ok
+test tests::whitelist_rejection_does_not_reach_brp ... ok
+test tests::non_json_response_is_bridge_error ... ok
+test tests::chunked_response_is_decoded ... ok
+test tests::jsonrpc_error_body_is_passed_through_with_iserror_true ... ok
+test tests::success_response_is_forwarded_byte_for_byte ... ok
+test tests::connection_refused_is_bridge_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.03s
+
+     Running unittests src\main.rs (target\debug\deps\mcp_bridge-9ab87fbf6cc09c43.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (target\debug\deps\task_runner-1460c8fba1a11b85.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests docs
+
+running 95 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1002) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1084) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1150) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 133) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1446) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1024) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 149) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1266) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1219) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1334) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1102) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1456) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1399) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1346) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1282) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1386) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1161) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1671) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1724) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1500) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1659) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1812) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1776) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1761) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1712) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1607) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1877) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1944) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 186) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1593) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2065) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1959) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2010) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 214) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2053) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1995) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1234) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1512) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1558) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2280) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2313) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2264) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2227) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2152) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2115) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 246) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2168) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2212) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2096) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1830) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1900) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1546) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2628) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2577) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2478) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2443) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2382) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2717) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2428) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2491) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2362) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2640) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 372) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2674) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2766) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 471) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2687) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 560) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2778) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 306) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2731) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 580) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 608) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 651) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 701) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 722) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2520) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 406) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2539) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2589) ... FAILED
+test docs\src\lib.rs - bevy_dev_pitfalls (line 357) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 452) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 817) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 518) - compile fail ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 881) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 940) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 756) - compile fail ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - recheck_registry (line 196) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2329) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 777) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 833) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 900) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 956) has been running for over 60 seconds
+test docs\src\lib.rs - bevy_dev_pitfalls (line 900) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 956) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 777) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2329) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 833) ... ok
+
+failures:
+
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1024) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1025:5
+     |
+1025 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1102) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1103:5
+     |
+1103 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1456) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1458:5
+     |
+1458 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1399) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1401:5
+     |
+1401 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1346) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1347:5
+     |
+1347 | use bevy::reflect::{PartialReflect, Reflect};
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1282) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1284:5
+     |
+1284 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1161) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1162:5
+     |
+1162 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1671) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1672:5
+     |
+1672 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1724) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1725:5
+     |
+1725 | use bevy::input::mouse::AccumulatedMouseMotion;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1776) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1777:5
+     |
+1777 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1607) stdout ----
+error: only metadata stub found for `rlib` dependency `core` please provide path to the corresponding .rmeta file with full metadata
+    --> docs\src\lib.rs:1611:21
+     |
+1611 | #[derive(Component, Reflect, Clone, Default)]
+     |                     ^^^^^^^
+     |
+     = note: this error originates in the derive macro `Reflect` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2065) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2067:5
+     |
+2067 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1959) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:1960:5
+     |
+1960 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2010) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2011:5
+     |
+2011 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1234) stdout ----
+error: crate `bevy_sprite_render` required to be available in rlib format, but was not found in this form
+
+error: crate `bevy_sprite` required to be available in rlib format, but was not found in this form
+
+error: crate `bevy_picking` required to be available in rlib format, but was not found in this form
+
+error: crate `font_types` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 4 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1512) stdout ----
+error: crate `bevy_sprite_render` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1558) stdout ----
+error: crate `bevy_pbr` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2280) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2281:5
+     |
+2281 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2227) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2228:5
+     |
+2228 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2115) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2116:5
+     |
+2116 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2168) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2169:5
+     |
+2169 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1830) stdout ----
+error: crate `wesl` required to be available in rlib format, but was not found in this form
+
+error: crate `skrifa` required to be available in rlib format, but was not found in this form
+
+error: crate `swash` required to be available in rlib format, but was not found in this form
+
+error: crate `zeno` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 4 previous errors
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 1900) stdout ----
+error: crate `ash` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2443) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2444:5
+     |
+2444 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2382) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2387:5
+     |
+2387 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2491) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2493:5
+     |
+2493 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2640) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2641:5
+     |
+2641 | use bevy::math::{Dir3, Vec3};
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2687) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2688:5
+     |
+2688 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2778) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2779:5
+     |
+2779 | use bevy::ui::Val;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2731) stdout ----
+error[E0463]: can't find crate for `bevy`
+    --> docs\src\lib.rs:2732:5
+     |
+2732 | use bevy::prelude::*;
+     |     ^^^^ can't find crate
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0463`.
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2539) stdout ----
+error: crate `tracing_log` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+---- docs\src\lib.rs - bevy_dev_pitfalls (line 2589) stdout ----
+error: crate `blake3` required to be available in rlib format, but was not found in this form
+
+error: aborting due to 1 previous error
+
+Couldn't compile the test.
+
+failures:
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1024)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1102)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1161)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1234)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1282)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1346)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1399)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1456)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1512)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1558)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1607)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1671)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1724)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1776)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1830)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1900)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 1959)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2010)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2065)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2115)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2168)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2227)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2280)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2382)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2443)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2491)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2539)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2589)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2640)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2687)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2731)
+    docs\src\lib.rs - bevy_dev_pitfalls (line 2778)
+
+test result: FAILED. 46 passed; 32 failed; 17 ignored; 0 measured; 0 filtered out; finished in 513.80s
+
+error: doctest failed, to rerun pass `-p docs --doc`
+REAL_EXIT=101

@@ -1,0 +1,22 @@
+# CMD: ls -lt --time-style=full-iso <main-repo>/docs/evidence/*/gate-doc-test*.log | head -6
+-rw-r--r-- 1 Administrator 197121   6550 2026-10-29 22:25:31.098661000 +0800 <main-repo>/docs/evidence/t043-recheck-registry/gate-doc-test-t043-exec.log
+-rw-r--r-- 1 Administrator 197121   6576 2026-10-29 21:47:17.198575500 +0800 <main-repo>/docs/evidence/t043-recheck-registry/gate-doc-test-t043-init.log
+-rw-r--r-- 1 Administrator 197121    356 2026-10-29 18:33:38.068221400 +0800 <main-repo>/docs/evidence/t041-mcp-bridge/gate-doc-test-attempt1-syntax.log
+-rw-r--r-- 1 Administrator 197121   6573 2026-10-29 18:33:38.062221100 +0800 <main-repo>/docs/evidence/t041-mcp-bridge/gate-doc-test-t041-impl.log
+-rw-r--r-- 1 Administrator 197121    381 2026-10-29 18:33:38.045221000 +0800 <main-repo>/docs/evidence/t041-mcp-bridge/gate-doc-test.log
+-rw-r--r-- 1 Administrator 197121   6576 2026-10-24 20:19:15.506631400 +0800 <main-repo>/docs/evidence/t042-020-migration/gate-doc-test-final.log
+LS_EXIT=0
+
+# CMD: ls -lt --time-style=full-iso <tree>/docs/evidence/*/gate-doc-test*.log | head -6
+-rw-r--r-- 1 Administrator 197121   6730 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m3-acceptance/gate-doc-test-final.log
+-rw-r--r-- 1 Administrator 197121   6729 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m3-acceptance/gate-doc-test.log
+-rw-r--r-- 1 Administrator 197121   6730 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m3-cleanroom/gate-doc-test.log
+-rw-r--r-- 1 Administrator 197121   7066 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m4-acceptance/gate-doc-test-final.log
+-rw-r--r-- 1 Administrator 197121   6995 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m4-acceptance/gate-doc-test-final2.log
+-rw-r--r-- 1 Administrator 197121   6730 2026-10-29 22:38:43.000000000 +0800 docs/evidence/m4-launch/gate-doc-test-t031.log
+LS_EXIT=0
+
+# 结论（观察）：主仓 mtime 有序（T043 exec 档最新 -> 78/0/17 会被选中）；
+# 隔离树导出时 mtime 全部压平为同一时刻（22:38:43），mtime 排序失效，
+# claim-lint 回退式挑选落到旧的 77/0/17 档 -> doctest-gate 假红。非基线缺陷、非本卡改动所致。
+REAL_EXIT=0

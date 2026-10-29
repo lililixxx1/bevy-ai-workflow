@@ -1,0 +1,38 @@
+STAT|01|10|0||0
+STAT|02|10|0||0
+STAT|03|15|0||0
+STAT|04|2|0||0
+STAT|05|1|0||1
+STAT|06|2|0||0
+STAT|07|12|0||0
+STAT|08|9|0||0
+STAT|09|7|1|Parent / Children(1)|0
+STAT|10|1|0||0
+STAT|11|3|0||0
+STAT|12|15|1|TextFont.font_size(1)|0
+STAT|13|2|0||0
+STAT|14|4|0||0
+STAT|15|3|0||0
+STAT|16|1|0||1
+STAT|17|7|1|Interaction(1)|0
+STAT|18|5|0||0
+STAT|19|2|0||0
+STAT|20|5|0||0
+STAT|21|4|1|.and() 组合子(1)|0
+STAT|22|4|0||0
+STAT|23|5|2|Button(1)、Interaction 三态(1)|0
+STAT|24|4|0||0
+STAT|25|6|0||0
+STAT|26|9|8|SpatialAudioBundle(2)、DynamicScene(3)、Observer(1)、嵌入资产特性(2)|0
+META|rows=148|nconcl=146|nexplicit=2
+CONCL|同形直用|136
+CONCL|改名/小形态差|7
+CONCL|重写调用面|2
+CONCL|无对应需路线变更|1
+CHECK_018_SUMMARY_MAXLEN=15 (limit 15)
+CHECK_ROWS api_drift_rows=148 summary_sigma_n=148
+CHECK_TOTAL_FRICTION summary_sigma_s=14
+CHECK_TIERS S=23 M=2 L=1
+CHECK_EXTRAPOLATION minutes=939~1564 midpoint=1250 hours=15.7~26.1 (中值 20.8)
+SELF_CHECK_PASS
+REAL_EXIT=0

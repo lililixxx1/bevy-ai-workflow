@@ -1,0 +1,20 @@
+NOTE logical_window=1280x720 physical_png=1600x900 dpi_scale=1.25
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==24 | len=24
+PASS | discover contains td.screenshot
+PASS | discover no game.* prefix | (none)
+PASS | P3 MapTile count==150 | len=150
+PASS | P3 PathTile count==45 | len=45
+PASS | P3 no per-tile Sprite (replaced by tilemap) | len=0
+PASS | P3 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P3 texture index per cell matches P2 spec | bad=0
+PASS | P3 PathTile set == {index != 129} | markers=45 idx=45
+PASS | P3 road rows y in {4,5,6} | rows=4,5,6
+PASS | screenshot queued | id=0 baseId=0 path=docs/evidence/t044-td-spike/w1/p3-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"docs/evidence/t044-td-spike/w1/p3-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=64454
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG size positive | 1600x900
+SUMMARY: 17/17 PASS
+REAL_EXIT=0

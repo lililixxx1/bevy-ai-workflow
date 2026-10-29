@@ -95,7 +95,7 @@ impl CliArgs {
     /// 启动横幅（一行，便于日志归档解析）。
     pub fn banner(&self) -> String {
         format!(
-            "[CONFIG] game demo | count={} seed={} max_speed={} bench_secs={} vsync={} | bevy 0.19 (workspace locked)",
+            "[CONFIG] game demo | count={} seed={} max_speed={} bench_secs={} vsync={} | bevy 0.20 (workspace locked)",
             self.count,
             self.seed,
             self.max_speed,

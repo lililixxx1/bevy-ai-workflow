@@ -1,0 +1,16 @@
+# V7 进程收尾与残留检查（T044-W1）
+# 说明：两次收尾各执行一次 taskkill（P3 阶段验证结束后 / 终态复跑验证结束后）；
+#       taskkill 输出逐字保留。本档为整理后版本，原始快照见 v7-tasklist-full.log。
+
+# CMD: taskkill /F /IM game-td.exe   （P3 阶段验证结束后）
+成功: 已终止进程 "game-td.exe"，其 PID 为 24472。
+TASKKILL_EXIT=0
+
+# CMD: taskkill /F /IM game-td.exe   （终态复跑验证结束后）
+成功: 已终止进程 "game-td.exe"，其 PID 为 25288。
+TASKKILL_EXIT=0
+
+# CMD: sleep 2; tasklist | grep -i game-td   （终态收尾后的残留检查）
+（无输出 = 无匹配进程）
+GREP_EXIT=1
+RESIDUE_COUNT=0

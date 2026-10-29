@@ -60,7 +60,7 @@ pub mod m5_game_selection {}
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}
 
-/// 《窗口回归重核清单（B2）》——T043 执行批：PIT-B 51 + PAT-B 21 + SKILL §6.1–6.15 共 87 条机器可读核对表，
+/// 《窗口回归重核清单（B2）》——T043 执行批 + T044 扩节：PIT-B 51 + PAT-B 21 + SKILL §6.1–6.16 共 88 条机器可读核对表，
 /// 内嵌 doctest 自校（表体计数 == claim-lint expect 镜像 + 分型词表校验）。
 #[doc = include_str!("../recheck-registry.md")]
 pub mod recheck_registry {}

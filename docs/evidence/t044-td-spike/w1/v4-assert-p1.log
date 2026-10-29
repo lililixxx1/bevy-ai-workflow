@@ -1,0 +1,18 @@
+NOTE logical_window=1280x720 physical_png=1600x900 dpi_scale=1.25
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==24 | len=24
+PASS | discover contains td.screenshot
+PASS | discover no game.* prefix | (none)
+PASS | P1 camera count==1 | len=1
+PASS | P1 sprite count==1 | len=1
+PASS | P1 sprite color==srgb(1,0,0,1) | {"Srgba":{"alpha":1,"blue":0,"green":0,"red":1}}
+PASS | P1 sprite size==100x100 | [100,100]
+PASS | P1 sprite at world origin | [0,0,0]
+PASS | screenshot queued | id=1 baseId=1 path=docs/evidence/t044-td-spike/w1/p1-shot.png
+PASS | screenshot status==captured | {"height":900,"id":1,"path":"docs/evidence/t044-td-spike/w1/p1-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=23348
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG size positive | 1600x900
+SUMMARY: 15/15 PASS
+REAL_EXIT=0

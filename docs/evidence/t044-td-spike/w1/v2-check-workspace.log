@@ -1,0 +1,10 @@
+    Checking mcp-bridge v0.1.0 (<tree>\tooling\mcp-bridge)
+    Checking task-runner v0.1.0 (<tree>\tooling\task-runner)
+    Checking bevy_ecs_tilemap v0.20.0
+    Checking hotpatch-smoke v0.1.0 (<tree>\tooling\hotpatch-smoke)
+    Checking game v0.1.0 (<tree>\game)
+    Checking docs v0.1.0 (<tree>\docs)
+    Checking claim-lint v0.1.0 (<tree>\tooling\claim-lint)
+    Checking game-td v0.1.0 (<tree>\game-td)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.29s
+REAL_EXIT=0  # 当次 shell $? 捕获（2026-10-29 23:14:35）；证据整理期补录，原始输出零改动
