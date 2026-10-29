@@ -1,0 +1,328 @@
+# T043X-W2 self-check log (T043 执行批：PAT-B × SKILL §6 重核清单片段)
+# CWD for all commands: 隔离树根 t043x/w2（baseline b620bf7899e57d3b14c5b160c4544f0d9891b0fc，派工单登记）
+# Comparison rule: output value (ACTUAL) vs EXPECTED; exit code is NOT the criterion.
+# Commands below are executed one command line at a time, in order.
+
+## A. 源双盲（写 fragments 前已核；本 log 复跑同命令取证）
+### A1
+$ ls bevy-dev/patterns/PAT-B-*.md | wc -l
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+21
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=21
+ACTUAL=21
+COMPARE=EQUAL
+
+### A2
+$ grep -c '^### 6\.' bevy-dev/SKILL.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+15
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=15
+ACTUAL=15
+COMPARE=EQUAL
+
+## B. 产出断言（PAT-B 表）
+### B1
+$ grep -c '^| PAT-B-0' work/fragments/patb-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+21
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=21
+ACTUAL=21
+COMPARE=EQUAL
+
+### B2
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort -u | wc -l
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+21
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=21
+ACTUAL=21
+COMPARE=EQUAL
+
+### B3
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort | uniq -d
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+(0 bytes: empty output)
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=0
+EXPECTED=(empty)
+ACTUAL=(empty)
+COMPARE=EQUAL
+
+### B4
+$ grep -cE '^\| PAT-B-0[0-9][0-9] \| (探针|行号锚|计数) \|' work/fragments/patb-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+21
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=21
+ACTUAL=21
+COMPARE=EQUAL
+
+### B5a
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort -u | head -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| PAT-B-001 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=12
+EXPECTED=| PAT-B-001 
+ACTUAL=| PAT-B-001 
+COMPARE=EQUAL
+
+### B5b
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort -u | tail -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| PAT-B-021 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=12
+EXPECTED=| PAT-B-021 
+ACTUAL=| PAT-B-021 
+COMPARE=EQUAL
+
+### B6a
+$ grep -c '^| PAT-B-0[0-9][0-9] | 探针 |' work/fragments/patb-entries.md
+--- RAW OUTPUT (exit=1; exit code is not the criterion) ---
+0
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=1
+EXPECTED=0
+ACTUAL=0
+COMPARE=EQUAL
+
+### B6b
+$ grep -c '^| PAT-B-0[0-9][0-9] | 行号锚 |' work/fragments/patb-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+20
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=20
+ACTUAL=20
+COMPARE=EQUAL
+
+### B6c
+$ grep -c '^| PAT-B-0[0-9][0-9] | 计数 |' work/fragments/patb-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+1
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=1
+EXPECTED=1
+ACTUAL=1
+COMPARE=EQUAL
+
+### B6d
+$ echo $(( $(grep -c "^| PAT-B-0[0-9][0-9] | 探针 |" work/fragments/patb-entries.md) + $(grep -c "^| PAT-B-0[0-9][0-9] | 行号锚 |" work/fragments/patb-entries.md) + $(grep -c "^| PAT-B-0[0-9][0-9] | 计数 |" work/fragments/patb-entries.md) ))
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+21
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=21
+ACTUAL=21
+COMPARE=EQUAL
+
+### B5c (informational, no comparison)
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort -u
+--- RAW OUTPUT (exit=0) ---
+| PAT-B-001 
+| PAT-B-002 
+| PAT-B-003 
+| PAT-B-004 
+| PAT-B-005 
+| PAT-B-006 
+| PAT-B-007 
+| PAT-B-008 
+| PAT-B-009 
+| PAT-B-010 
+| PAT-B-011 
+| PAT-B-012 
+| PAT-B-013 
+| PAT-B-014 
+| PAT-B-015 
+| PAT-B-016 
+| PAT-B-017 
+| PAT-B-018 
+| PAT-B-019 
+| PAT-B-020 
+| PAT-B-021 
+--- END RAW OUTPUT ---
+
+## C. 产出断言（SKILL §6 表）
+### C1
+$ grep -c '^| §6\.' work/fragments/skill6-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+15
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=15
+ACTUAL=15
+COMPARE=EQUAL
+
+### C2
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -u | wc -l
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+15
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=15
+ACTUAL=15
+COMPARE=EQUAL
+
+### C3
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort | uniq -d
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+(0 bytes: empty output)
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=0
+EXPECTED=(empty)
+ACTUAL=(empty)
+COMPARE=EQUAL
+
+### C4
+$ grep -cE '^\| §6\.[0-9]+ \| (探针|行号锚|计数) \|' work/fragments/skill6-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+15
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=15
+ACTUAL=15
+COMPARE=EQUAL
+
+### C5a
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -u | head -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.1 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=8
+EXPECTED=| §6.1 
+ACTUAL=| §6.1 
+COMPARE=EQUAL
+
+### C5b
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -u | tail -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.9 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=8
+EXPECTED=| §6.15 
+ACTUAL=| §6.9 
+COMPARE=NOT_EQUAL
+
+### C5c-AUX
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | head -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.1 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=8
+EXPECTED=| §6.1 
+ACTUAL=| §6.1 
+COMPARE=EQUAL
+
+### C5d-AUX
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | tail -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.15 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=9
+EXPECTED=| §6.15 
+ACTUAL=| §6.15 
+COMPARE=EQUAL
+
+### C6a
+$ grep -c '^| §6\.[0-9]* | 探针 |' work/fragments/skill6-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+2
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=1
+EXPECTED=2
+ACTUAL=2
+COMPARE=EQUAL
+
+### C6b
+$ grep -c '^| §6\.[0-9]* | 行号锚 |' work/fragments/skill6-entries.md
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+13
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=13
+ACTUAL=13
+COMPARE=EQUAL
+
+### C6c
+$ grep -c '^| §6\.[0-9]* | 计数 |' work/fragments/skill6-entries.md
+--- RAW OUTPUT (exit=1; exit code is not the criterion) ---
+0
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=1
+EXPECTED=0
+ACTUAL=0
+COMPARE=EQUAL
+
+### C6d
+$ echo $(( $(grep -c "^| §6\.[0-9]* | 探针 |" work/fragments/skill6-entries.md) + $(grep -c "^| §6\.[0-9]* | 行号锚 |" work/fragments/skill6-entries.md) + $(grep -c "^| §6\.[0-9]* | 计数 |" work/fragments/skill6-entries.md) ))
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+15
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=2
+EXPECTED=15
+ACTUAL=15
+COMPARE=EQUAL
+
+### C5e-AUX (informational, no comparison)
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u
+--- RAW OUTPUT (exit=0) ---
+| §6.1 
+| §6.2 
+| §6.3 
+| §6.4 
+| §6.5 
+| §6.6 
+| §6.7 
+| §6.8 
+| §6.9 
+| §6.10 
+| §6.11 
+| §6.12 
+| §6.13 
+| §6.14 
+| §6.15 
+--- END RAW OUTPUT ---
+
+## D. 分型分布（由上述 grep -c 输出汇总，供 Lead 复核）
+PAT-B: 探针=0 行号锚=20 计数=1 围栏=0; SUM=21
+SKILL §6: 探针=2 行号锚=13 计数=0 围栏=0; SUM=15
+
+# NOTE on C5b: card requires plain 'sort -u' last line = '| §6.15 '; lexicographic sort yields '| §6.9 '.
+#   Auxiliary C5c/C5d use 'sort -V -u' and show the numeric sequence 6.1..6.15; the id set is complete (C2=15, C3 empty).
+
+SUMMARY: checks=24 EQUAL=23 NOT_EQUAL=1
+SELF_CHECK_BLOCKED: 1 comparison(s) NOT_EQUAL (C5b id-order last line); PASS line withheld per contract.
+CORRECTION C5b (2026-10-29, Lead): 派工单判据笔误——'sort -u' 为字典序（'9'>'1'），末行应为 '| §6.9 '；按选项 B 改用 'sort -V -u'（版本序）保留原判据意图（末行 = '| §6.15 '）。归因 = 派工单，非交付物。
+
+### C5a (corrected: sort -V -u)
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | head -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.1 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=8
+EXPECTED=| §6.1 
+ACTUAL=| §6.1 
+COMPARE=EQUAL
+
+### C5b (corrected: sort -V -u)
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | tail -1
+--- RAW OUTPUT (exit=0; exit code is not the criterion) ---
+| §6.15 
+--- END RAW OUTPUT ---
+ACTUAL_BYTES=9
+EXPECTED=| §6.15 
+ACTUAL=| §6.15 
+COMPARE=EQUAL
+
+SUMMARY: checks=26 EQUAL=26
+# Updated summary = 24 original checks + 2 corrected re-runs; original C5b NOT_EQUAL line retained as history per Lead ruling.
+SELF_CHECK_PASS REAL_EXIT=0

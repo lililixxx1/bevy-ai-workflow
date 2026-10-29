@@ -1,0 +1,4 @@
+    Checking claim-lint v0.1.0 (<REPO>/tooling/claim-lint)
+    Checking docs v0.1.0 (<REPO>/docs)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.64s
+REAL_EXIT=0

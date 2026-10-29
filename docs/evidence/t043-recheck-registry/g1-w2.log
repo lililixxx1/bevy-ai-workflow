@@ -1,0 +1,46 @@
+G1-W2 复验（Lead 独立重跑，2026-10-29；树 = trees/t043x/w2，批次 = T043X-W2 PAT-B 21 + SKILL §6 15 条片段）
+
+命令与原始输出（Git Bash，cd 树根后执行；首轮 && 链因 grep 0 命中退 1 中断——探针在 PAT-B 表恰为 0 属期望，改 ; 分隔复跑）：
+
+$ grep -c '^| PAT-B-0' work/fragments/patb-entries.md
+21
+
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort -u | wc -l
+21
+
+$ grep -o '^| PAT-B-0[0-9][0-9] ' work/fragments/patb-entries.md | sort | uniq -d | wc -c
+0
+
+$ grep -c '| 行号锚 |' work/fragments/patb-entries.md
+20
+
+$ grep -c '| 探针 |' work/fragments/patb-entries.md
+0
+
+$ grep -c '| 计数 |' work/fragments/patb-entries.md
+1
+
+分布核对：20 + 0 + 1 = 21 ✓（PAT-B-021 = 唯一计数型，期望结果尾带（过程型）✓）
+
+$ grep -c '^| §6\.' work/fragments/skill6-entries.md
+15
+
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | head -1
+| §6.1 
+
+$ grep -o '^| §6\.[0-9]* ' work/fragments/skill6-entries.md | sort -V -u | tail -1
+| §6.15 
+
+分布核对：§6 表 行号锚 13 + 探针 2（§6.5 0.20 未重冒烟 / §6.15 driver 需运行时复跑）= 15 ✓
+
+抽查——行号锚对源：
+- §6.4 表行引 lib.rs:1146/:1148/:1115 → SKILL.md §6.4 源文（:177-183）逐一相符：missing_field jsonrpc `src/lib.rs:1146`、method 缺失 `:1148`、invalid_value `:1115` 起 ✓
+- §6.5 探针归型依据 → §6.5 小节头注「0.19.1 Windows 冒烟已通过，0.20 未重冒烟」✓
+- PAT-B-018 表行引 game/src/brp.rs:23-41 → 源文 :23 起 BrpPlugin/RemotePlugin 组装形态在位 ✓
+- PAT-B-017 表行引 suites/mod.rs:46-67 → 源文 :46 起 SuiteResult/注册表区在位 ✓
+- PAT-B-021 表行「跨仓回流 2026-10-07，留痕在万阵仓」→ 条目头「日期：2026-10-07（跨仓回流…）」+ 过程型分型 ✓
+
+L1 裁决记录：C5b 派工单判据笔误（sort -u 字典序 '9'>'1'，末行实为 §6.9）——选 B 改 sort -V -u 版本序复跑，worker 已留痕修正并补 SELF_CHECK_PASS（SUMMARY checks=26 EQUAL=26）；归因「派工单」，worker 表内容零改动。
+
+G1-W2 判定：PASS（计数全等、锚点对源相符、修正已留痕）
+REAL_EXIT=0

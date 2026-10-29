@@ -59,3 +59,8 @@ pub mod m5_game_selection {}
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}
+
+/// 《窗口回归重核清单（B2）》——T043 执行批：PIT-B 51 + PAT-B 21 + SKILL §6.1–6.15 共 87 条机器可读核对表，
+/// 内嵌 doctest 自校（表体计数 == claim-lint expect 镜像 + 分型词表校验）。
+#[doc = include_str!("../recheck-registry.md")]
+pub mod recheck_registry {}

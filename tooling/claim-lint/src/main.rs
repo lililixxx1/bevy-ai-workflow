@@ -34,16 +34,16 @@ mod expect {
     pub const PAT_B: usize = 21;
     /// T040 TS-17 任务书入库后 16→17（ts-17-snapshot.md）。
     pub const TASKSET: usize = 17;
-    /// T040 行写入后 39→40；T041 冻结标注行写入后 40→41；T028 跨仓回流行 41→42；T042 迁移行 42→43；T041 实现行 43→44；T043 立项批行 44→45（联动规则：实况 +1 行，期望同步）。
-    pub const LEDGER: usize = 45;
+    /// T040 行写入后 39→40；T041 冻结标注行写入后 40→41；T028 跨仓回流行 41→42；T042 迁移行 42→43；T041 实现行 43→44；T043 立项批行 44→45；T043 执行批行 45→46（联动规则：实况 +1 行，期望同步）。
+    pub const LEDGER: usize = 46;
     /// T040 `game.snapshot` 落地后 7→8（联动规则：每新增 `game.*` 方法同步）。
     pub const GAME_METHODS: usize = 8;
     /// 0.19.1 内置 BRP 方法数（docs/brp-smoke.md 实测口径）。
     pub const BRP_BUILTIN: usize = 23;
     /// T040 ts-17 套件注册后 12→13（rpc/suites/mod.rs all() 注册表）。
     pub const IN_PROC_SUITES: usize = 13;
-    /// doctest 门禁计数（passed, failed, ignored）。
-    pub const DOCTEST: (usize, usize, usize) = (77, 0, 17);
+    /// doctest 门禁计数（passed, failed, ignored）。T043 执行批 recheck-registry 自校 fence 落地后 77→78（随批联动规则：docs 面新增可运行围栏即同步）。
+    pub const DOCTEST: (usize, usize, usize) = (78, 0, 17);
 }
 
 #[derive(Debug)]

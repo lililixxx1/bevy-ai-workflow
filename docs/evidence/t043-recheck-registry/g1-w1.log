@@ -1,0 +1,34 @@
+G1-W1 复验（Lead 独立重跑，2026-10-29；树 = trees/t043x/w1，批次 = T043X-W1 PIT-B 51 条片段）
+
+命令与原始输出（Git Bash，cd 树根后执行）：
+
+$ grep -c '^| PIT-B-0' work/fragments/pitb-entries.md
+51
+
+$ grep -o '^| PIT-B-0[0-9][0-9] ' work/fragments/pitb-entries.md | sort -u | wc -l
+51
+
+$ grep -o '^| PIT-B-0[0-9][0-9] ' work/fragments/pitb-entries.md | sort | uniq -d | wc -c
+0
+
+$ grep -c '| 围栏 |' work/fragments/pitb-entries.md
+50
+
+$ grep -c '| 探针 |' work/fragments/pitb-entries.md
+1
+
+分布核对：50 + 1 = 51 ✓（PIT-B-051 = 唯一探针型：text 围栏、核心为 BRP 运行时行为，sed 抽段证实其首围栏为 ```text ✓）
+
+抽查 1——0.20 注记条目对源（PIT-B-015/019/028）：
+- PIT-B-015 源头 :745 「适用版本：bevy 0.20.0（0.19 史实保留文内）」→ 表行「0.20 反转修订：两围栏互换（T042）」✓
+- PIT-B-019 源头「适用版本：bevy 0.19.1（**0.20 复核维持**：prelude 清单已按 bevy_state-0.20.0/src/lib.rs:77 起重核，仍不含 StatesPlugin——2026-10-24，T042）」→ 表行「0.20 复核维持：prelude 仍不含 StatesPlugin（T042）」✓
+- PIT-B-028 源头「适用版本：bevy 0.19.1（0.20 语法二次变更注记见文内）」→ 表行「0.20 BSN 语法二次变更注记，两围栏续绿（T042）」✓
+
+抽查 2——围栏型期望结果与 doctest 实测形态一致：本批 doctest 终档（gate-doc-test-t043-init.log）中 bevy_dev_pitfalls 各行 passed / compile fail ok / ignored 与表内「compile_fail 仍失败 / ignore 仍忽略 / 正例仍通过」期望逐类对应 ✓
+
+L1 裁决记录（两条上报）：
+1. 派工单行号引用笔误（写 main.rs:34，树内实为 :31）——接受值锚定（常量值 51 与 A 步推导一致），修正留痕归因「派工单」，worker 零返工。
+2. 分布 50 围栏 / 0 行号锚——维持契约判定顺序（条目含围栏 → 围栏：围栏即 pitfalls 面机器可验主断言，条目内行号事实由围栏持续失败覆盖），不改契约。
+
+G1-W1 判定：PASS（计数全等、抽查相符、上报已裁）
+REAL_EXIT=0
