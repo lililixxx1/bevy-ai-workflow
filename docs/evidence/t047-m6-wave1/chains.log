@@ -1,0 +1,17 @@
+$ md5sum docs/evidence/t047-m6-wave1/p4-shot2.png docs/evidence/t047-m6-wave1/p5-shot.png docs/evidence/t047-m6-wave1/p6-shot.png docs/evidence/t047-m6-wave1/p7-shot.png   # 2026-10-30T19:26:05+08:00
+fb6798b75998071bbd94ee8d67973448 *docs/evidence/t047-m6-wave1/p4-shot2.png
+fb6798b75998071bbd94ee8d67973448 *docs/evidence/t047-m6-wave1/p5-shot.png
+fb6798b75998071bbd94ee8d67973448 *docs/evidence/t047-m6-wave1/p6-shot.png
+3a1ee02eadf195ccd913ad881eccc2b6 *docs/evidence/t047-m6-wave1/p7-shot.png
+REAL_EXIT=0
+
+$ grep -h GRID_DIGEST docs/evidence/t047-m6-wave1/p4-assert2.log docs/evidence/t047-m6-wave1/p5-assert.log docs/evidence/t047-m6-wave1/p6-assert.log docs/evidence/t047-m6-wave1/p7-assert.log
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+REAL_EXIT=0
+$ md5sum docs/evidence/t047-m6-wave1/p4-shot.png; stat -c '%s bytes' docs/evidence/t047-m6-wave1/p4-shot.png   # 上午 1x1 失败件留存
+4a1fb170d03ed6a5917be21506665cbb *docs/evidence/t047-m6-wave1/p4-shot.png
+72 bytes
+REAL_EXIT=0

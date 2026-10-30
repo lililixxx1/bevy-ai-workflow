@@ -1,0 +1,50 @@
+# G1 · Lead 复验档（T047-W1R 批）
+
+日期 2026-10-30（晚）；复验人 Lead；对象 = 树 `<tree>` 批次 T047-W1R（game-td Part 4-7 行为等价 + BRP 断言锚）。
+
+## G1-scope 写范围核查
+
+`diff -qr --strip-trailing-cr <tree> <main-repo>`（主仓 HEAD = 2a68294，含并行落地的 T045）过滤已知并行差异面后，剩余差异**恰为本卡声明写面**：
+
+- game-td/Cargo.toml（differ）、game-td/src/{main,brp}.rs（differ）、game-td/src/{map,tiling,level,enemy}.rs（only-in 新增）、game-td/assets/levels/（only-in 新增）
+- 根 Cargo.lock（differ）
+- docs/evidence/t047-m6-wave1/（only-in）
+
+game/src 14 文件 differ = T045 并行收获面（主仓侧前进，树侧未动）——非本卡所写，无越界。**范围核查通过**。
+
+## G1-a 门禁一 check 独立复跑（缓存命中档）
+
+```
+$ CARGO_TARGET_DIR=<shared-target> cargo check --workspace -j 3
+REAL_EXIT=0
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
+```
+
+## G1-b 五 phase 断言链（对档逐条）
+
+| 档 | SUMMARY | REAL_EXIT |
+| --- | --- | --- |
+| p4-assert2.log | 21/21 PASS | 0 |
+| p5-assert.log | 21/21 PASS | 0 |
+| p6-assert.log | 21/21 PASS | 0 |
+| p6b-assert.log | 12/12 PASS | 0 |
+| p7-assert.log | 25/25 PASS | 0 |
+
+## G1-c 零漂移链独立复验
+
+- GRID_DIGEST：`grep GRID_DIGEST *.log | uniq -c` → `70282f80f5c61a46…37a07` × 9（P4/P5/P6/P7 各档逐字相同）——**跨四部零漂移成立**
+- 截图 md5：`fb6798b7…`（64454 B，1600×900）× 3 = P4/P5/P6 逐位一致；`3a1ee02e…`（65287 B）× 1 = P7 与 P6 字节差异（⑪）；`4a1fb170…`（72 B，1×1）× 1 = 上午环境性假红对照件（保留）
+
+## Lead 裁决（worker 上报项 + 未决点）
+
+- **U1**（assert-td.mjs p6b 期望值参数化 = 预建脚本 bug 修复）：**接受**。缺省路径（p4/p5/p6）判定值修复前后逐字相同（measured 缺省 == PATH_TILE == 45），卡面「除非修 bug 勿重写」本即授权修 bug。
+- **U2**（P5 模块化而非插件化）：**接受**。教程 05 明确 "deliberately avoided" Plugin——行为规格以教程为准，真插件化属教程外架构不做。
+- **U3**（基线 d035230 vs 主仓 HEAD 2a68294）：**确认无交集**（T047 写面 game-td/** + 根 Cargo.lock + t047 证据目录；T045 写面 game/src + t045 证据目录），收获按当前 HEAD 应用。
+- **U4**（p6b 修复前首跑 10/12 档被重跑覆盖）：**采信 README §十.2 披露为留痕**。原始档已亡不可复原，禁止补录伪档；重跑档（12/12）为判定档。
+- **O1**（P7 断言时序窗 4.67s 偏紧）：**登记为后续波次设计约束**——敌人 4.67s 到终点回收，p7 断言须在起跑 ~4s 内执行（本批首采样 3.3s 在窗内）。后续 m6-all 终局判定面设计时采用 spawn 延迟或长路径关卡，本单不动。
+- **O2**（p4-shot.png 1×1 对照件保留）：**保留**——环境性假红判定的证据件。
+- **O3**（变体 TOML 仅存证据档不入 assets/levels）：**接受**——仓库不留无消费方死数据；后续部件需要变体关卡时再升格。
+
+## G1 结论
+
+**通过**（范围零越界、五 phase 断言全绿、零漂移链独立复验成立、双门禁 REAL_EXIT=0；四上报三未决均已裁决）。进 G2 完整轮（节点卡）。

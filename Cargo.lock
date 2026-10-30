@@ -3040,6 +3040,7 @@ dependencies = [
  "bevy_ecs_tilemap",
  "serde",
  "serde_json",
+ "toml",
 ]
 
 [[package]]

@@ -15,3 +15,7 @@ bevy_ecs_tilemap = { workspace = true }
 serde = { version = "1", features = ["derive"] }
 # BRP 自定义方法（td.screenshot）的响应构造与 params 解析。
 serde_json = "1"
+# 教程 06 Step 1：外部关卡 TOML 反序列化（`toml::from_str`）。
+# 版本主号由 Lead 裁决（T047-W1 派工单：toml = "1"，其余新依赖须上报）；
+# 锁定版本见根 Cargo.lock（1.1.8，此前已因其他成员在锁内）。
+toml = "1"

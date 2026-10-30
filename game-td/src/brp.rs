@@ -55,10 +55,15 @@ pub struct BrpPlugin;
 
 impl Plugin for BrpPlugin {
     fn build(&self, app: &mut App) {
-        // 组件反射注册（SKILL.md §3.4）：MapTile / PathTile 需被 BRP 查询，显式注册
-        // 无条件成立且自文档化（`register_type` `bevy_app-0.20.0/src/app.rs:664`）。
-        app.register_type::<crate::MapTile>()
-            .register_type::<crate::PathTile>();
+        // 组件反射注册（SKILL.md §3.4）：MapTile / PathTile / TileType 需被 BRP 查询，
+        // 显式注册无条件成立且自文档化（`register_type` `bevy_app-0.20.0/src/app.rs:664`）。
+        // P5 模块化后类型移入 `crate::map`，但反射类型路径由 `#[type_path = "game_td"]`
+        // 冻结在 crate 根形态（见 map.rs 同项注释），BRP 组件名不变。
+        app.register_type::<crate::map::MapTile>()
+            .register_type::<crate::map::PathTile>()
+            .register_type::<crate::map::TileType>()
+            // P7：Enemy 标记需被 BRP 查询（p7 断言 Enemy count==1），同一注册纪律。
+            .register_type::<crate::enemy::Enemy>();
         app.init_resource::<ScreenshotLog>();
         app.add_plugins(
             RemotePlugin::default()

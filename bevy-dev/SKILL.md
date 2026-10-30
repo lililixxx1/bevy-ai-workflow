@@ -315,9 +315,17 @@
 - **BRP 面**：`TilePos`/`TileTextureIndex` 可反射可查询；瓦片标记组件 derive `Reflect` + `#[reflect(Component)]` 并 `register_type` 后即可 `world.query`（逐格索引断言路径，data 形态 `{"components":[...]}`）。反例：Sprite 路径的 `TextureAtlas` 含 `Arc<StrongHandle>` 字段不可反射序列化——**图集索引不能经 BRP 查**（PIT-B 候条，回灌清单）。
 - 等价性实测锚：P2（150 个 Sprite + `TextureAtlasLayout`）↔ P3（tilemap 单 draw call）像素级等价 99.96%（差异 0.04% 采样点全在高频细节区、瓦片边界零差异 = 两路径采样差异）；P3 同构建双截图**逐位一致**（确定性渲染）。证据 `docs/evidence/t044-td-spike/w1/`。
 
+### 6.17 BRP 类型路径冻结 `#[type_path]`（M6 波次 1 T047 实测，2026-10-30）
+
+- **事实**：BRP 组件/资源按**完整 TypePath 字符串**查类型注册表——`bevy_remote-0.20.0` 多处经 `get_with_type_path` 解析（调用点散布 `src/builtin_methods.rs` 各 handler：`:1183`/`:1202`/`:1257`/`:1490`/`:1528`/`:1594`/`:1915`/`:1935`/`:1978`/`:2002` 共十处；`world.query` 主路径另走 `get_component_ids` `:857-940`），**短名/别名不参与**。默认 TypePath 随模块路径走：单文件拆多模块的「模块化重构」后 `game_td::TileType` 漂移为 `game_td::map::TileType`，BRP 断言脚本的组件名当场破裂——**编译期零提示的运行期断裂**（与 §6.12 短名查询改名 `get_with_short_type_path` 互补：短名面与完整路径面是两套口径）。
+- **做法**：模块化同时给 BRP 面组件加 `#[type_path = "game_td"]` 冻结为 crate 根形态（属性语义 `bevy_reflect_derive-0.20.0/src/derive_data.rs:211`）；derive 形态仍按 §3.4（`Reflect` + `#[reflect(Component)]` + 注册）。
+- **等价性实测锚**：T047 P4→P5 模块化重构 `GRID_DIGEST` 网格指纹**逐位零漂移**（`70282f80…37a07`，P4/P5/P6/P7 四部 × 9 档同值）+ 截图 md5 链 P4/P5/P6 逐位一致；不冻结则 `world.query` 组件名与脚本口径不符。证据 `docs/evidence/t047-m6-wave1/`。
+
 ---
 
 ## 变更记录
+
+- **v0.18（2026-10-30）**：T047 M6 首波次（P4-7）收官随批——新增 **§6.17 BRP 类型路径冻结 `#[type_path]`**（`get_with_type_path` 调用点全景十处 + 默认 TypePath 随模块漂移的运行期断裂面 + 冻结做法 + P4→P5 模块化 GRID_DIGEST 零漂移实测锚；证据 `docs/evidence/t047-m6-wave1/`）。G2 完整轮通过（1 Minor = map.rs 注锚把 `:1183` 引作 query 专属查表点、措辞泛化，收获批采纳并 Lead 复验 grep 十处 ≥2）。
 
 - **v0.17（2026-10-29）**：T044 塔防 spike 两批合并更新——①新增 **§6.16 bevy_ecs_tilemap 0.20**（三步实体契约逐锚 + 纹理数组默认路径 + BRP 反射面含 StrongHandle 查询盲区反例 + P2↔P3 像素级等价实测锚；证据 `docs/evidence/t044-td-spike/`）；②**§6.14 自相矛盾修正**：UI 重构 bullet 尾「`Interaction`/`Button` 仍在 prelude（无坑）」与同节 0.20 变更 bullet「弃用」矛盾——0.20 实况 = 仍在 prelude 但 `#[deprecated]` + `#[doc(hidden)]`、官方注 0.20 后移除（`bevy_ui-0.20.0/src/lib.rs:64-69`），改为「勿新用」口径（W2 批 G1 发现，:280/:291 两 bullet 互斥）。
 

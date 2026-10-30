@@ -1,0 +1,13 @@
+$ RUST_LOG=bevy_window=debug,winit=debug cargo run -p game-td -j 3   # 诊断跑（不属证据档）2026-10-30T10:38:46+08:00
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.60s
+     Running `<main-repo>/target\debug\game-td.exe`
+[2m2026-10-30T02:38:47.166539Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T02:38:47.460151Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T02:38:47.963984Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T02:38:47.964028Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot
+[2m2026-10-30T02:38:47.965929Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T02:38:47.966060Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T02:38:47.969197Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T02:38:47.969272Z[0m [34mDEBUG[0m [2mbevy_winit::winit_windows[0m[2m:[0m Display information:  Window physical resolution: 1280x720  Window logical resolution: 1280x720  Monitor name:   Scale factor: 0  Refresh rate (Hz): 0.000
+[2m2026-10-30T02:44:09.231018Z[0m [32m INFO[0m [2mbevy_window::system[0m[2m:[0m No windows are open, exiting
+[2m2026-10-30T02:44:09.231723Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Closing window 67v0

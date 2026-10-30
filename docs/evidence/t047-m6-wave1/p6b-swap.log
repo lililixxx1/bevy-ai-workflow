@@ -1,0 +1,3 @@
+$ cp docs/evidence/t047-m6-wave1/levels/variant-level_01.toml.txt game-td/assets/levels/level_01.toml   # 2026-10-30T19:15:23+08:00
+REAL_EXIT=0
+30da6e6e5f2c15e087913cfafe98c781 *game-td/assets/levels/level_01.toml

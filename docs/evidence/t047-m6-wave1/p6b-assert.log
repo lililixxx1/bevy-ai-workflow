@@ -1,0 +1,16 @@
+$ node docs/evidence/t047-m6-wave1/assert-td.mjs --phase p6b --expect-path 57   # 2026-10-30T19:16:15+08:00 重跑（脚本 p6b 参数化 bug 已修，见 README）
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==24 | len=24
+PASS | discover contains td.screenshot
+PASS | discover no game.* prefix | (none)
+PASS | P6-variant MapTile count==150 | len=150
+INFO | TileType histogram = Grass:93 Path:57
+PASS | P6-variant TileType total==150 | len=150
+PASS | P6-variant TileType Grass==93 | grass=93
+PASS | P6-variant TileType Path==57 | path=57
+PASS | P6-variant PathTile count==57 | len=57
+PASS | P6-variant PathTile subset of MapTile | len=57
+PASS | P6-variant PathTile == independent toml expansion count | measured=57 expected=57
+PASS | P6-variant TileType Grass == 150-Path | grass=93 expected=93
+SUMMARY: 12/12 PASS
+REAL_EXIT=0

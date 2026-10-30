@@ -1,0 +1,14 @@
+$ node docs/evidence/t047-m6-wave1/toml-path-count.mjs docs/evidence/t047-m6-wave1/levels/variant-level_01.toml.txt   # 2026-10-30T19:15:06+08:00
+y= 9 | .PPP...........
+y= 8 | .PPP...........
+y= 7 | .PPP...........
+y= 6 | .PPPPPPPPPPPPP.
+y= 5 | .PPPPPPPPPPPPP.
+y= 4 | .PPPPPPPPPPPPP.
+y= 3 | ...........PPP.
+y= 2 | ...........PPP.
+y= 1 | ...........PPP.
+y= 0 | ...............
+path 'main_road' waypoints = [[2,9],[2,5],[12,5],[12,1]]
+EXPECTED_PATH=57 EXPECTED_GRASS=93 EXPECTED_TOTAL=150
+REAL_EXIT=0

@@ -1,0 +1,4 @@
+$ grep -h 'Display information' docs/evidence/t047-m6-wave1/diag-run.log docs/evidence/t047-m6-wave1/p5-run.log   # 上午失败跑 vs 今晚通过跑
+2026-10-30T11:08:57.761636Z DEBUG bevy_winit::winit_windows: Display information:  Window physical resolution: 1280x720  Window logical resolution: 1280x720  Monitor name:   Scale factor: 0  Refresh rate (Hz): 0.000
+2026-10-30T02:38:47.969272Z DEBUG bevy_winit::winit_windows: Display information:  Window physical resolution: 1280x720  Window logical resolution: 1280x720  Monitor name:   Scale factor: 0  Refresh rate (Hz): 0.000
+REAL_EXIT=0

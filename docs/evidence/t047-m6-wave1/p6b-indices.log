@@ -1,0 +1,4 @@
+$ node -e '<world.query PathTile+TileTextureIndex 读数>'   # 2026-10-30T19:16:30+08:00 变体内角规则生效旁证（非门禁断言）
+path tile count=57 distinct indices=79,80,81,83,102,103,104,105,125,126,127
+inner-corner indices present: 82:0 83:1 105:1 106:0
+REAL_EXIT=0

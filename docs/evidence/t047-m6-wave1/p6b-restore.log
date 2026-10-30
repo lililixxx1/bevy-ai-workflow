@@ -1,0 +1,4 @@
+$ cp docs/evidence/t047-m6-wave1/levels/default-level_01.toml.txt game-td/assets/levels/level_01.toml   # 2026-10-30T19:17:37+08:00 变体测试后恢复默认关卡
+REAL_EXIT=0
+a8199db634bada29f75edc432455c4aa *game-td/assets/levels/level_01.toml
+a8199db634bada29f75edc432455c4aa *docs/evidence/t047-m6-wave1/levels/default-level_01.toml.txt

@@ -1,0 +1,4 @@
+$ cargo check -p game-td -j 3   # 2026-10-30T19:08:16+08:00
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w1\game-td)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.94s
+REAL_EXIT=0
