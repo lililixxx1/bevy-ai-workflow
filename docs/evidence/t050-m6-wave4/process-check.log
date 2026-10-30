@@ -1,0 +1,2 @@
+# [process-check 2026-10-31] tasklist | grep -iE "game-td|rustc|cargo"
+# grep_exit=1 = 零命中（游戏 / 编译器 / cargo 全部无残留）

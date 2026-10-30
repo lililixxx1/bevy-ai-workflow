@@ -1,0 +1,9 @@
+    Checking mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\tooling\mcp-bridge)
+    Checking task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\tooling\task-runner)
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\game-td)
+    Checking docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\docs)
+    Checking hotpatch-smoke v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\tooling\hotpatch-smoke)
+    Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\game)
+    Checking claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w4\tooling\claim-lint)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.71s
+REAL_EXIT=0

@@ -1,0 +1,34 @@
+# G1 · Lead 亲跑核证与裁决档（T050 M6 波次 4 P18-21）
+
+日期 2026-10-31 凌晨；核证者 = Lead（主会话）。对象 = 树 trees/m6/w4（基线 41ec1a2）批次 T050 全量产出。
+
+## 一、Lead 独立核证（全部亲跑，非转录 worker 自报）
+
+1. **主仓零触碰**：`git status --short` = 0 行，HEAD = 41ec1a2（worker 禁直写主仓纪律保持）。
+2. **写面独立复算**：`diff -rq --strip-trailing-cr` 主仓↔树——game-td 恰 = 改 4（main/tower/economy/brp.rs）+ CREDITS.md + 增 audio.rs/pause.rs/assets/audio；docs 恰 = 新证据目录 t050-m6-wave4（44 件）零他改。与 worker 声明清单逐项一致。
+3. **指纹链**：level_01 `70282f80…37a07` == T047 冻结基线、level_02 `3edf8dff…a4f6d`/level_03 `840298ef…d76f7` == T049 注册表（三关全值 PASS 行在档）；**ENTITY_DIGEST `1d40c7b7…890b23` == T048 基线逐位一致**（p21-assert.log PASS 行亲核）。
+4. **断言与门禁**：p18 86/86（终版复跑同值）· p19 86/86 · p20 72/72 ×2 · p21 120/120，合计 **364/364**；discover.methods==37 亲核；四门禁档 REAL_EXIT=0 全亲读；process-check grep_exit=1（零残留）。
+5. **Cargo 双文件**：`--strip-trailing-cr` 逐字节 SAME——零依赖变更、版本锁未动。
+6. **`#[expect(deprecated)]` 精确计数 = 2**（tower.rs:1379 setup_tower_dock、:1528 handle_dock_slot_click，多行属性形态带 reason）——恰为 T049 P17 A' 基线，波次 4 **零新增弃用面**。注：单行字面 grep 会漏检多行属性（`#[expect(\n    deprecated,`），本档以 `^#\[expect($` 后随行核得——G1 方法论注记。
+7. **BRP 方法面前缀**：brp.rs 14 方法全 `td.` 前缀（td.events/gizmos/audio/pause 为本波新增），零 `game.*`；BRP 回环仅 127.0.0.1（既有纪律未动）。
+
+## 二、上报项裁决（U1–U6）
+
+- **U1 能力席 #10（音频预留席）激活 → 10/10**：裁 **(a) 认可并落台账**。依据：立项条款为席位 **≤10 上限**，10/10 未超；P20 属 26 部教程内（「玩法内容不越教程 26 部」），行为等价照做是立项范围本身；「音频非门槛」= 不做性能/听感验收，非「不做该部」。**波次 5 若需新开第 11 席即触发 owner 裁决条款**——台账注记带入。
+- **U2 add_systems 调用点 19 > 14**：裁 **(a) 接受**。T048 G2 S1 既定口径：能力席位 ≠ 调用点，席位按能力席表计（现 10/10 未超）。插件分文件注册（audio.rs 4 / pause.rs 3）是教程 21「一域一 plugin」的行为面，压扁反损等价；main.rs 接线点恒 12 = 结构纪律保持。
+- **U3 `docs/m6-game-selection.md` §五 td.* 面过期（1 → 14）**：裁 **(a) 收获批由 Lead 统一更新**（决策文档写面归 Lead，worker 超范围不写——正确执行）。
+- **U4 `td.spawn_tower` 直通道 vs P18 消息链双路径**：裁 **(a) 维持**。直通道「返回即实体在场」语义是 T048 以来六批断言的既定判定面；教程 18 消息化对象是**点击放置链**非 BRP 面。双通道共用 `is_placeable` + `spawn_tower_at` 核心，消息链由 `td.events emit_place` 独立验证——结构零漂移证据在档。
+- **U5 音频资产 = ffmpeg 合成占位音**：裁 **(a) 接受**。教程仓未随附音频文件（m6-recon 实况），文件名/播放模式对齐教程 Step = 行为规格对齐；自合成 = 许可最干净（无第三方权）；CREDITS.md 注记在档。换 CC0 真音留 owner 后补可选项，非门槛。
+- **U6 claim-lint 在 git archive 树的 mtime 回落陷阱**：裁 **(a) 流程口径**。归档全文件 mtime 并列使 `gate-doc-test*` 回退序取旧档（首轮 12/13 实况）。落点 = 收获批在 recheck-registry「使用说明」加一句「树内终档门禁须先产 gate-doc-test 档再跑 claim-lint」；claim-lint 选取逻辑不动（工具改动另立卡）。主仓收获链先 doctest 后 claim-lint，天然规避。
+
+## 三、偏离与知识处置
+
+- **偏离 1–6 采信**：1（直通道语义）随 U4 裁决；2（PauseState 落 pause.rs，工程无 state.rs）结构合理；3 随 U5；4（验证面记账资源三枚）沿 SpawnSchedule::spawned 既有口径；5（同心双金圈 = 教程 preview.iter() 原样行为）README §十.6 在档；6（终版复跑 --expect-discover 37 覆盖）沿 T049 终版复跑先例、README §八 披露。
+- **K1（Volume/PlaybackMode 不在 prelude，`bevy_audio-0.20.0/src/lib.rs:36-44`）**：收获批进 SKILL v0.21 §6.13（与 MouseWheel 同 bullet 增补——prelude 缺口第三例）。
+- **K2（Message 跨 2 帧清理；暂停期写消息而消费者被门控 = 消息丢弃）**：**不进错题本**（Voyager 原则：未复现不入库）；源码锚在档（world/mod.rs:3041/:3059-3065），留证据 README + 本档，m6-all 若实证踩到再立反例。
+- **K3（TowerRegistry 装载序跨进程不稳定，HashMap 迭代序）**：断言工程关键事实（P19 run2 假红根源），README 在档；收获批 AGENTS/台账提及；m6-all 判定面设计输入（断言按 key 反查 index）。
+- **席位账更正采信**：T049 README 记 37 系统系分项求和笔误，实数 36——worker 本波按实数记录并留痕，采信（历史档不改，本档为准）。
+
+## 四、结论
+
+G1 **通过**——六项核证全绿、六上报项全裁、偏离全采信。转 G2 完整轮（节点卡：七维度 + 独立复算）。

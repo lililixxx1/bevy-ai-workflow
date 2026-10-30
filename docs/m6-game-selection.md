@@ -68,6 +68,7 @@ M4 走候选案对比、M5 走 grill 八题；M6 的选品方向已在 owner 202
 
 - **前缀纪律**：game-td 自定义方法一律 `td.` 前缀（与 claim-lint `GAME_METHODS=8` 锚定的主仓 `game.*` 面零碰撞——T044 G2 独立复核既定）。
 - **初始方法** = `td.screenshot`（两段式 capture/status，已落地）；随部增补候选（`td.wave_state` / `td.tower_count` / `td.economy` 等）**按实现需要定，不预设封顶**——增补即入 m6-all 断言面。
+- **方法面实况（2026-10-31 随 T050 更新；T050 G1 U3 裁决 / G2 认可）**：现有 14 个 = screenshot / wave / game / state / spawn_tower / level / economy / combat / towers / tower_select / events / gizmos / audio / pause（discover 37 = 23 内置 + 14 `td.*`，全前缀零碰撞）；「按实现需要定」口径不变，波次 5 增补照此。**席位注记**：#10 音频预留席随 P20 激活，能力席 **10/10 已满**——波次 5 如需新开第 11 席即触发 owner 裁决条款（§三防失控条款）。
 - **验证形态**：BRP 直调（curl/脚本）+ in-process 套件；每波次交付卡附 BRP 状态断言锚证据（日志/JSON 在档）。`tooling/mcp-bridge` 桥接 `td.*` = **可选项非门槛**（如需按白名单增补流程另定——T044 verdict ③ 注）。
 - **对照抽核口径**：教程 = 行为规格（对照 = 行为等价，实现独立；教程代码不入仓——方向定案沿用）。
 

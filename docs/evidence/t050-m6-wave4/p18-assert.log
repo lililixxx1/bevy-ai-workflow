@@ -1,0 +1,95 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==34 | len=34
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover contains td.tower_select
+PASS | discover contains td.events
+PASS | discover no game.* prefix | (none)
+PASS | P18 td.events available | {"available":true,"gold":null,"gold_applied":0,"gold_last":null,"injected":0,"placed_tiles":0,"produced":0,"spawn_last":null,"spawned":0}
+PASS | P18 baseline counters all 0 (produced/injected/spawned/gold_applied) | {"available":true,"gold":null,"gold_applied":0,"gold_last":null,"injected":0,"placed_tiles":0,"produced":0,"spawn_last":null,"spawned":0}
+PASS | P18 baseline placed_tiles==0 / gold null (no level loaded) | placed=0 gold=null
+PASS | P18 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P18 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P18 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P18 selected def resolved from registry | {"ammo_refill_secs":null,"ammo_slots":null,"attack_cooldown":0.5,"attack_range":192,"base_sprite":180,"cost":100,"damage":34,"description":"Fast-firing turret w
+PASS | P18 in-game baseline placed_tiles==0 | placed=0
+PASS | P18 emit_place queued | {"cost":100,"queued":true,"tile":[2,0],"tower_id":0,"tower_key":"rapid","world_pos":[-320,-288]}
+PASS | P18 emitted payload tower_id==selected / cost==registry def.cost | {"cost":100,"queued":true,"tile":[2,0],"tower_id":0,"tower_key":"rapid","world_pos":[-320,-288]}
+PASS | P18 emit world_pos == independent computation (tile_to_world 算式) | got=[-320,-288] expect=[-320,-288]
+PASS | P18 spawn consumer consumed exactly 1 message | spawned=1
+PASS | P18 gold consumer consumed exactly 1 message | gold_applied=1
+PASS | P18 injected==1 (BRP publish counted) | injected=1
+PASS | P18 produced==0 (click producer not driven; BRP channel is the publish path) | produced=0
+PASS | P18 spawn_last payload == emitted payload (tile/tower_id/cost/world_pos) | {"cost":100,"tile":[2,0],"tower_id":0,"world_pos":[-320,-288]}
+PASS | P18 gold_last payload == emitted payload (tile/tower_id/cost/world_pos) | {"cost":100,"tile":[2,0],"tower_id":0,"world_pos":[-320,-288]}
+PASS | P18 exactly 1 Tower / 1 TowerTurret spawned by consumer
+PASS | P18 placed_tiles==1 after gold consumer | placed=1
+PASS | P18 gold deducted by consumer (cost ±2 incl. passive income) | gold=201.359375 expect=201.36
+PASS | P18 emit on path tile rejected (not placeable) | {"queued":false,"reason":"tile is not an unoccupied grass tile","tile":[0,5]}
+PASS | P18 emit on occupied tile rejected (PlacedTowers gate) | {"queued":false,"reason":"tile is not an unoccupied grass tile","tile":[2,0]}
+PASS | P18 emit out-of-map tile rejected (not placeable) | {"queued":false,"reason":"tile is not an unoccupied grass tile","tile":[99,99]}
+PASS | P18 negative tile -> -32602 | code=-32602
+PASS | P18 out-of-range tower_id -> -32602 | code=-32602
+PASS | P18 unknown op -> -32602 | code=-32602
+PASS | P18 rejected emits wrote no message (counters frozen at 1) | {"available":true,"gold":201.734375,"gold_applied":1,"gold_last":{"cost":100,"tile":[2,0],"tower_id":0,"world_pos":[-320,-288]},"injected":1,"placed_tiles":1,"produced":0,"spawn_last":{"cost":100,"tile":[2,0],"tower_id":0,"world_pos":[-320,-288]},"spawned":1}
+PASS | P18 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P18 TileType total==150 | len=150
+PASS | P18 TileType Grass==105 | grass=105
+PASS | P18 TileType Path==45 | path=45
+PASS | P18 PathTile count==45 | len=45
+PASS | P18 PathTile subset of MapTile | len=45
+PASS | P18 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P18 texture index per cell == P3 baseline spec | bad=0
+PASS | P18 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P18 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P18 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P18 GRID_DIGEST == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t050-m6-wave4/p18-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t050-m6-wave4/p18-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=82701
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=9ba6c7ebdd56d92cf4c51e4fa8db2e90 bytes=82701 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P18 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P18 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P18 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P18 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P18 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P18 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P18 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P18 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P18 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P18 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P18 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P18 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P18 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P18 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P18 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P18 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P18 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P18 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P18 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P18 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P18 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P18 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P18 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P18 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 86/86 PASS
+REAL_EXIT=0

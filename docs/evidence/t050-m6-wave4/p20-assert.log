@@ -1,0 +1,81 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==36 | len=36
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover contains td.tower_select
+PASS | discover contains td.events
+PASS | discover contains td.gizmos
+PASS | discover contains td.audio
+PASS | discover no game.* prefix | (none)
+PASS | P20 td.audio available (AudioAssets loaded at Startup) | {"audio_players_total":0,"available":true,"laser_fire":0,"last_volume":null,"music_entities":0,"music_mode":null,"music_sink":false,"music_volume":null,"playback_settings_entities":0,"projectile_audio
+PASS | P20 menu: no music / no sfx entities | {"m":0,"s":0}
+PASS | P20 counters baseline 0 | {"l":0,"r":0,"s":0}
+PASS | P20 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P20 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P20 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P20 music entity spawned on InGame enter | music=1
+PASS | P20 music PlaybackSettings: Loop / 0.3 linear | {"mode":"Loop","vol":0.30000001192092896}
+PASS | P20 music entity has AudioPlayer + PlaybackSettings (component-driven audio) | {"players":1,"settings":1}
+INFO | P20 music_sink=true sinks_supported=true (无音频设备时 sink 缺失属环境事实，结构面照常断言)
+PASS | P20 select rocket | {"available":true,"key":"rocket","len":3,"selected_index":2}
+PASS | P20 rocket launcher placed at [5,3] | {"cost":150,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":2,"tower_type":"rocket"}
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t050-m6-wave4/p20-shot.png
+INFO | P20 rocket samples: maxProjAudio=1 maxSfx=2 explosion=true
+PASS | P20 projectile carries loop audio components (entity-coupled thruster) | maxProjectileAudio=1
+PASS | P20 rocket explosion sound triggered (PlaySound consumed) | rocket_explosion counter
+PASS | P20 in-flight sfx entity observed (DESPAWN entity spawned by consumer) | maxSfx=2
+PASS | P20 explosion sfx last_volume==0.8 (payload crossed message queue) | last=0.800000011920929
+PASS | P20 select rapid | {"available":true,"key":"rapid","len":3,"selected_index":1}
+PASS | P20 rapid tower placed at [7,3] | {"cost":100,"placed":true,"pos":[0,-96],"tile":[7,3],"tower_index":1,"tower_type":"rapid"}
+PASS | P20 laser fire sound triggered
+PASS | P20 laser sfx last_volume==1.0 | last=1
+PASS | P20 sfx_spawned == laser_fire + rocket_explosion (consumer bookkeeping consistent) | {"s":5,"l":1,"r":4}
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t050-m6-wave4/p20-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=86233
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=ff409aa5a45afcfd4a8071d0b3f6e260 bytes=86233 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P20 music entity removed on exit (stop_background_music) | music=0
+PASS | P20 no sfx entities after level cleanup | sfx=0
+PASS | P20 counters persist across levels (cumulative AudioLog) | {"l":1,"r":4}
+PASS | P20 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P20 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P20 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P20 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P20 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P20 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P20 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P20 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P20 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P20 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P20 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P20 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P20 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P20 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P20 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P20 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P20 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P20 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P20 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P20 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P20 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P20 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P20 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P20 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 72/72 PASS
+REAL_EXIT=0

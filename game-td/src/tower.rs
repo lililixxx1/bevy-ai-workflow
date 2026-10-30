@@ -11,7 +11,8 @@
 //! 设计（教程 08/09/14/15/16 Walkthrough）：
 //! - 塔 = **两个实体**：`Tower` 基座（静态）+ 塔顶（独立旋转）；
 //! - `TowerPreview`：常驻的两个半透明幽灵，靠 `Visibility` 开关而非 spawn/despawn；
-//! - `PlacedTowers`：已占格 `HashSet`，O(1) 放置校验（路径 / 已占用都拒绝）；
+//! - `PlacedTowers`：已占格 `HashMap<[u32; 2], Entity>`（P19 起，教程 19 重构），
+//!   O(1) 放置校验（路径 / 已占用都拒绝）与 O(1) 格→塔顶实体查找（射程圈用）；
 //! - `TowerAtlas`：预加载的图集句柄资源（教学「Shared handles as resources」）；
 //! - P9 `attack_enemies`：单系统完成索敌 → 旋转 → 冷却到期扣血 → 就地 despawn；
 //! - P15 `launch_rockets` / `move_projectiles` / `explode_projectiles` / `refill_ammo`：
@@ -36,13 +37,27 @@
 //! BRP 面（本工程扩展层，非教程）：[`spawn_tower_entities`] 与 [`is_placeable`]
 //! 同时被点击系统与 `td.spawn_tower` handler 复用——BRP 无鼠标注入通道，测试
 //! 放置必须走确定性方法面（`td.` 前缀纪律）。
+//!
+//! P18（教程 18）：放置拆为**一个生产者 + 两个消费者**，以自定义消息
+//! [`PlaceTower`] 解耦（`#[derive(Message)]` / `MessageWriter` / `MessageReader`）：
+//! - 生产者 [`place_tower_on_click`]：只做输入校验（合法格 + 余额），写消息；
+//! - 消费者 [`spawn_tower_from_event`]：读消息 → 生成塔实体；
+//! - 消费者 [`deduct_gold_on_placement`]（`economy.rs`）：读消息 → 扣费。
+//! 0.20 锚点（漂移表 Part 18，全部摩擦级 0）：
+//! `Message` trait `bevy_ecs-0.20.0/src/message/mod.rs:100`；
+//! `MessageWriter::write` `message/message_writer.rs:74`；
+//! `MessageReader::read` `message/message_reader.rs:44`；
+//! `App::add_message` `bevy_app-0.20.0/src/app.rs:427`；
+//! `.after()` 定序 `bevy_ecs-0.20.0/src/schedule/config.rs:404`。
 
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
+use bevy::audio::Volume;
 use bevy::input::mouse::MouseWheel;
 use bevy::prelude::*;
 use serde::Deserialize;
 
+use crate::audio::{PlaySound, SoundType};
 use crate::economy::{Bounty, Gold, PlacementDenied, DENIED_FLASH_DURATION};
 use crate::enemy::{tile_to_world, Enemy, Health, PathFollower};
 use crate::map::{MapLayout, TileType};
@@ -141,10 +156,14 @@ pub struct TowerAtlas {
     pub layout: Handle<TextureAtlasLayout>,
 }
 
-/// 已占用格（教程 08 Step 1）：`HashSet` 而非瓦片组件——tilemap 实体归插件所有，
-/// 不挂自定义组件（教程 08 Step 1 注）。
+/// 已占用格（教程 19：`HashSet<[u32; 2]>` → `HashMap<[u32; 2], Entity>`）：
+/// 格坐标 → 塔顶实体。射程圈系统按格 O(1) 查实体（教程 19「Refactoring PlacedTowers」），
+/// 不必遍历全部塔按距离匹配。
+///
+/// 写入方随 P19 迁移：占格记账从经济消费者移到生成消费者（教程 19：实体由生成方
+/// 建立，格→实体关系也归它）；`td.spawn_tower` 直通道同样在该处入表。
 #[derive(Resource, Default)]
-pub struct PlacedTowers(pub HashSet<[u32; 2]>);
+pub struct PlacedTowers(pub HashMap<[u32; 2], Entity>);
 
 // ---------------------------------------------------------------------------
 // P16：数据驱动塔注册表（教程 16）
@@ -246,6 +265,64 @@ impl TowerRegistry {
 #[derive(Resource)]
 pub struct SelectedTowerType(pub usize);
 
+// ---------------------------------------------------------------------------
+// P18：自定义消息（教程 18 `PlaceTower`）——生产者 → 两个消费者的广播载荷
+// ---------------------------------------------------------------------------
+
+/// 塔放置消息（教程 18「The message type」）：载荷 = 两个消费者各自需要的最小数据。
+///
+/// `cost` 随消息走，经济消费者因此**不需要**再查注册表（教程 18「Why include cost」）。
+/// 0.20 派生面：`#[derive(Message)]`（trait `bevy_ecs-0.20.0/src/message/mod.rs:100`；
+/// 派生宏经 `bevy_ecs` prelude 导出，与教程 `use bevy::prelude::*` 形态一致）；
+/// 消息类型必须 `.add_message::<PlaceTower>()`（`bevy_app-0.20.0/src/app.rs:427`），
+/// 否则 `MessageWriter` / `MessageReader` 运行期报缺注册。
+#[derive(Message, Clone, Debug)]
+pub struct PlaceTower {
+    pub tile: [u32; 2],
+    pub world_pos: Vec2,
+    pub tower_id: usize,
+    pub cost: u32,
+}
+
+/// 消息载荷的外部可读快照（BRP `td.events` 用；`[f32; 2]` 便于 JSON 序列化）。
+#[derive(Clone, Debug)]
+pub struct PlaceTowerRecord {
+    pub tile: [u32; 2],
+    pub world_pos: [f32; 2],
+    pub tower_id: usize,
+    pub cost: u32,
+}
+
+impl From<&PlaceTower> for PlaceTowerRecord {
+    fn from(event: &PlaceTower) -> Self {
+        Self {
+            tile: event.tile,
+            world_pos: [event.world_pos.x, event.world_pos.y],
+            tower_id: event.tower_id,
+            cost: event.cost,
+        }
+    }
+}
+
+/// 消息链记账（**验证面**资源，非教程；同 `SpawnSchedule::spawned` / `AmmoState::fired`
+/// 口径——只服务 `td.events` 快照与断言，不给玩法逻辑增加语义）。
+///
+/// 字段语义：
+/// - `produced`：生产者 [`place_tower_on_click`] 写入的消息数（点击路径）；
+/// - `injected`：BRP `td.events` `emit_place` 写入的消息数（测试通道，等价于一次点击事件）；
+/// - `spawned` / `gold_applied`：两个消费者各自消费的消息数（同一消息应各 +1，
+///   差值即「某个消费者没跑到」）；
+/// - `spawn_last` / `gold_last`：各消费者最后消费的载荷快照（逐字段证明载荷穿越消息队列后无损）。
+#[derive(Resource, Default)]
+pub struct PlacementLog {
+    pub produced: u32,
+    pub injected: u32,
+    pub spawned: u32,
+    pub gold_applied: u32,
+    pub spawn_last: Option<PlaceTowerRecord>,
+    pub gold_last: Option<PlaceTowerRecord>,
+}
+
 /// 载入塔注册表（教程 16 `load_tower_registry` + 17 向量化，`Startup` 一次）：
 /// 读 TOML → raw 结构 → 把每塔的 `projectile` 字符串键解析成 `ProjectileDefinition`
 /// 克隆 → 插入 `TowerRegistry`（向量）+ 默认选中下标 0。
@@ -316,10 +393,10 @@ pub fn world_to_tile(world: Vec2, map_width: u32, map_height: u32) -> Option<[u3
     }
 }
 
-/// 放置合法性（教程 08 Step 4）：草地 + 未占用。路径 / 越界 / 已占均拒绝。
+/// 放置合法性（教程 08 Step 4 + 19）：草地 + 未占用。路径 / 越界 / 已占均拒绝。
 pub fn is_placeable(map: &MapLayout, placed: &PlacedTowers, tile: [u32; 2]) -> bool {
     let is_grass = map.get(tile[0] as i32, tile[1] as i32) == Some(TileType::Grass);
-    is_grass && !placed.0.contains(&tile)
+    is_grass && !placed.0.contains_key(&tile)
 }
 
 /// 光标下的可放置格（教程 08 Step 4 `hovered_placeable_tile`）：
@@ -357,13 +434,16 @@ pub fn setup_tower_atlas(
 
 /// 生成瞬时伤害塔（教程 16 `spawn_instant_tower`）：基座 + 炮塔
 /// （`TowerAttacker` 合并射程/冷却，`InstantShooter` 携带伤害与枪口焰索引）。
+///
+/// P19：返回**塔顶实体**——占格表（`PlacedTowers`）记录的就是它（教程 19 让两个
+/// 生成函数都返回 turret 实体）。
 fn spawn_instant_tower(
     commands: &mut Commands,
     atlas: &TowerAtlas,
     def: &TowerDefinition,
     tower_index: usize,
     pos: Vec2,
-) {
+) -> Entity {
     commands.spawn((
         Tower,
         GameEntity,
@@ -377,41 +457,43 @@ fn spawn_instant_tower(
         Transform::from_xyz(pos.x, pos.y, 2.0),
     ));
 
-    commands.spawn((
-        TowerTurret,
-        GameEntity,
-        Sprite::from_atlas_image(
-            atlas.texture.clone(),
-            TextureAtlas {
-                layout: atlas.layout.clone(),
-                index: def.top_sprite,
+    commands
+        .spawn((
+            TowerTurret,
+            GameEntity,
+            Sprite::from_atlas_image(
+                atlas.texture.clone(),
+                TextureAtlas {
+                    layout: atlas.layout.clone(),
+                    index: def.top_sprite,
+                },
+            ),
+            Transform::from_xyz(pos.x, pos.y, 2.1),
+            TowerTypeId(tower_index),
+            TowerAttacker {
+                range: def.attack_range,
+                timer: Timer::from_seconds(def.attack_cooldown, TimerMode::Repeating),
             },
-        ),
-        Transform::from_xyz(pos.x, pos.y, 2.1),
-        TowerTypeId(tower_index),
-        TowerAttacker {
-            range: def.attack_range,
-            timer: Timer::from_seconds(def.attack_cooldown, TimerMode::Repeating),
-        },
-        InstantShooter {
-            damage: def.damage.expect("instant tower must have damage"),
-            muzzle_flash_sprite: def
-                .muzzle_flash_sprite
-                .expect("instant tower must have muzzle_flash_sprite"),
-        },
-    ));
+            InstantShooter {
+                damage: def.damage.expect("instant tower must have damage"),
+                muzzle_flash_sprite: def
+                    .muzzle_flash_sprite
+                    .expect("instant tower must have muzzle_flash_sprite"),
+            },
+        ))
+        .id()
 }
 
 /// 生成火箭发射器（教程 16 `spawn_rocket_launcher`）：基座 + 炮管（`AmmoState`）+
 /// 槽位火箭子实体（槽数 = `ammo_slot_offsets.len()`，教程 16「Its length *is* the
-/// max ammo capacity」）。
+/// max ammo capacity」）。P19：返回炮管实体（占格表登记对象）。
 fn spawn_rocket_launcher(
     commands: &mut Commands,
     atlas: &TowerAtlas,
     def: &TowerDefinition,
     tower_index: usize,
     pos: Vec2,
-) {
+) -> Entity {
     let projectile = def
         .projectile
         .as_ref()
@@ -487,10 +569,27 @@ fn spawn_rocket_launcher(
             slots: slot_entities,
             fired: 0,
         });
+    turret_entity
 }
 
-/// 生成塔实体（教程 16：按 `def.damage` 有无分派塔型；原 `place_tower_on_click`
-/// 内的分派逻辑上移到这里，点击与 BRP 两条通道共用）。
+/// 按世界坐标生成塔（P18 消息消费者与 P8 `td.spawn_tower` 共用出口）。
+///
+/// P19：返回塔顶实体（`PlacedTowers` 的 tile → entity 登记值）。
+pub fn spawn_tower_at(
+    commands: &mut Commands,
+    atlas: &TowerAtlas,
+    def: &TowerDefinition,
+    tower_index: usize,
+    pos: Vec2,
+) -> Entity {
+    if def.damage.is_some() {
+        spawn_instant_tower(commands, atlas, def, tower_index, pos)
+    } else {
+        spawn_rocket_launcher(commands, atlas, def, tower_index, pos)
+    }
+}
+
+/// 网格坐标版生成（BRP `td.spawn_tower` 使用）：返回（世界坐标, 塔顶实体）。
 pub fn spawn_tower_entities(
     commands: &mut Commands,
     atlas: &TowerAtlas,
@@ -499,14 +598,10 @@ pub fn spawn_tower_entities(
     tile: [u32; 2],
     map_width: f32,
     map_height: f32,
-) -> Vec2 {
+) -> (Vec2, Entity) {
     let pos = tile_to_world(tile, map_width, map_height);
-    if def.damage.is_some() {
-        spawn_instant_tower(commands, atlas, def, tower_index, pos);
-    } else {
-        spawn_rocket_launcher(commands, atlas, def, tower_index, pos);
-    }
-    pos
+    let turret = spawn_tower_at(commands, atlas, def, tower_index, pos);
+    (pos, turret)
 }
 
 /// 生成两个常驻预览幽灵（教程 08 Step 5 + 16/17：外观取当前选中塔型）。
@@ -605,20 +700,26 @@ pub fn update_placement_preview(
     }
 }
 
-/// 左键点击放置（教程 08 Step 7 + 14 Step 7 + 16）：按选中塔型取定义 →
-/// 余额校验 → 扣 `def.cost` → 记账 → 按塔型分派生成。
+/// 左键点击放置（教程 18「Refactoring the producer」）：**只做输入校验**——
+/// 合法格 + 余额 → 写 [`PlaceTower`] 消息；生成实体与经济记账分别由
+/// [`spawn_tower_from_event`] 与 `economy::deduct_gold_on_placement` 消费。
+///
+/// 与原（P14–P17）单系统的差别：本函数不再持有 `ResMut<Gold>` / `ResMut<PlacedTowers>` /
+/// `Res<TowerAtlas>`，也不生成实体——「是否该放」与「告知世界已放」两件事。
+/// 买不起仍直接红闪（教程 18「Simplifying the producer」：拒绝反馈留在生产者）。
 pub fn place_tower_on_click(
-    mut commands: Commands,
     mouse: Res<ButtonInput<MouseButton>>,
     window: Single<&Window>,
     camera: Single<(&Camera, &GlobalTransform)>,
     map_layout: Res<MapLayout>,
-    mut placed: ResMut<PlacedTowers>,
-    mut gold: ResMut<Gold>,
-    atlas: Res<TowerAtlas>,
+    placed: Res<PlacedTowers>,
+    gold: Res<Gold>,
+    preview_q: Query<Entity, With<TowerPreview>>,
+    mut commands: Commands,
+    mut place_messages: MessageWriter<PlaceTower>,
     registry: Res<TowerRegistry>,
     selected: Res<SelectedTowerType>,
-    preview_q: Query<Entity, With<TowerPreview>>,
+    mut log: ResMut<PlacementLog>,
 ) {
     if !mouse.just_pressed(MouseButton::Left) {
         return;
@@ -633,7 +734,7 @@ pub fn place_tower_on_click(
 
     let def = registry.get(selected.0);
 
-    // 买不起：红闪 0.3s，不放置（教程 14 Step 7）。
+    // 买不起：红闪 0.3s，不放置（教程 14 Step 7；教程 18 保留在生产者）。
     if gold.0 < def.cost as f32 {
         for preview_entity in preview_q.iter() {
             commands
@@ -646,18 +747,48 @@ pub fn place_tower_on_click(
         return;
     }
 
-    // 先扣费再生成，防止一次点击双放置（教程 14 Step 7 注）。
-    gold.0 -= def.cost as f32;
-    placed.0.insert(tile);
-    spawn_tower_entities(
-        &mut commands,
-        &atlas,
-        def,
-        selected.0,
+    let pos = tile_to_world(tile, map_layout.width as f32, map_layout.height as f32);
+
+    // 教程 18：广播消息——生成与扣费在别处。
+    let event = PlaceTower {
         tile,
-        map_layout.width as f32,
-        map_layout.height as f32,
+        world_pos: pos,
+        tower_id: selected.0,
+        cost: def.cost,
+    };
+    place_messages.write(event);
+    // 验证面记账（`td.events`）：生产者写了一条消息。
+    log.produced += 1;
+}
+
+/// 生成消费者（教程 18「The spawn consumer」）：读 [`PlaceTower`] 消息 → 生成塔实体。
+///
+/// 本系统不知道金币 / 输入 / 鼠标；只回答「有人说放塔，我生成」。
+/// 架构不变量（教程 18）：每帧最多一条消息——`iter.next()` 两次断言即文档化。
+pub fn spawn_tower_from_event(
+    mut messages: MessageReader<PlaceTower>,
+    mut commands: Commands,
+    atlas: Res<TowerAtlas>,
+    registry: Res<TowerRegistry>,
+    mut placed: ResMut<PlacedTowers>,
+    mut log: ResMut<PlacementLog>,
+) {
+    let mut iter = messages.read();
+    let Some(event) = iter.next() else {
+        return;
+    };
+    assert!(
+        iter.next().is_none(),
+        "only one tower can be placed per frame; the producer should emit at most one PlaceTower message",
     );
+
+    let def = registry.get(event.tower_id);
+    // 教程 18：生成不重算世界坐标——消息已携带 `world_pos`。
+    let turret = spawn_tower_at(&mut commands, &atlas, def, event.tower_id, event.world_pos);
+    // 教程 19：占格记账迁到生成消费者（实体在此诞生，格→实体的关系归它）。
+    placed.0.insert(event.tile, turret);
+    log.spawned += 1;
+    log.spawn_last = Some(PlaceTowerRecord::from(event));
 }
 
 /// 索敌 + 旋转 + 冷却扣血 + 赏金 + 就地 despawn（教程 09 Step 4 + 16 重构）：
@@ -667,6 +798,7 @@ pub fn attack_enemies(
     time: Res<Time>,
     atlas: Res<TowerAtlas>,
     mut gold: ResMut<Gold>,
+    mut sounds: MessageWriter<PlaySound>,
     mut turrets: Query<
         (Entity, &mut Transform, &mut TowerAttacker, &InstantShooter),
         (With<TowerTurret>, Without<Enemy>),
@@ -711,6 +843,12 @@ pub fn attack_enemies(
 
         // 冷却到期：扣血、赏金入账、死亡就地回收、枪口焰。
         if attacker.timer.just_finished() {
+            // 教程 20 `One-shot laser fire`：先广播音效消息（消费者同帧播放）。
+            sounds.write(PlaySound {
+                sound: SoundType::LaserFire,
+                volume: 1.0,
+            });
+
             if let Ok((_, _, mut health, bounty)) = enemies.get_mut(target) {
                 // 教程 14 Step 8：先判活再扣血（防同帧多源伤害重复计赏金）。
                 if health.0 > 0.0 {
@@ -775,6 +913,8 @@ pub fn launch_rockets(
     time: Res<Time>,
     atlas: Res<TowerAtlas>,
     registry: Res<TowerRegistry>,
+    // 教程 20：弹体挂推进器循环音——音频资产资源注入本系统。
+    audio_assets: Res<crate::audio::AudioAssets>,
     mut turrets: Query<
         (
             &mut Transform,
@@ -866,6 +1006,10 @@ pub fn launch_rockets(
                 splash_radius: projectile_def.splash_radius.unwrap_or(0.0),
                 explosion_sprite: projectile_def.explosion_sprite,
             },
+            // 教程 20「Looping rocket thruster on the projectile」：循环音作为**组件**
+            // 直接挂弹体——弹体 despawn 即声音停止，无需停止消息或对照表。
+            AudioPlayer::new(audio_assets.rocket_launch.clone()),
+            PlaybackSettings::LOOP.with_volume(Volume::Linear(2.0)),
             GameEntity,
         ));
     }
@@ -914,6 +1058,7 @@ pub fn move_projectiles(
 pub fn explode_projectiles(
     atlas: Res<TowerAtlas>,
     mut gold: ResMut<Gold>,
+    mut sounds: MessageWriter<PlaySound>,
     projectiles: Query<(Entity, &Transform, &Projectile), (With<Exploding>, Without<Enemy>)>,
     mut enemies: Query<
         (Entity, &Transform, &mut Health, &Bounty),
@@ -923,6 +1068,12 @@ pub fn explode_projectiles(
 ) {
     for (projectile_entity, transform, projectile) in projectiles.iter() {
         let center = transform.translation.truncate();
+
+        // 教程 20 `One-shot rocket explosion`：先广播爆炸音效（与伤害/特效同帧）。
+        sounds.write(PlaySound {
+            sound: SoundType::RocketExplosion,
+            volume: 0.8,
+        });
 
         for (entity, enemy_transform, mut health, bounty) in enemies.iter_mut() {
             let distance = center.distance(enemy_transform.translation.truncate());
@@ -1018,6 +1169,149 @@ pub fn despawn_timed(
             commands.entity(entity).despawn();
         }
     }
+}
+
+// ---------------------------------------------------------------------------
+// P19：射程圈可视化（教程 19 gizmos）
+// ---------------------------------------------------------------------------
+//
+// 0.20 锚点（漂移表 Part 19，均摩擦级 0）：
+// - `Gizmos` 系统参数（`bevy_gizmos-0.20.0/src/gizmos.rs:143`）——prelude 经
+//   `bevy_internal-0.20.0/src/prelude.rs:99-100` re-export；`GizmoPlugin` 随
+//   `DefaultPlugins` 内置（`bevy_internal-0.20.0/src/default_plugins.rs:87`；
+//   `2d` 默认特性含 `bevy_gizmos_render`，`bevy-0.20.0/Cargo.toml:2706-2724`）；
+// - `circle_2d(isometry: impl Into<Isometry2d>, radius, color)`
+//   （`bevy_gizmos-0.20.0/src/circles.rs:167`）；`From<Vec2> for Isometry2d`
+//   （`bevy_math-0.20.0/src/isometry.rs:195`）——教程 `circle_2d(center Vec2, …)`
+//   同形直用。
+//
+// gizmo 是**每帧重画**的瞬时形状（教程 19「Pitfall」）：系统每帧调用 `circle_2d`，
+// 不挂实体。验证面因此记录**绘制参数**（[`RangeGizmoLog`]），`td.gizmos` 可读；
+// 参数算式由纯函数承载，`td.gizmos probe` 与绘制系统共用同一函数（防双通道漂移）。
+
+/// 预览圈颜色（教程 19：金色，alpha 0.4）。
+pub const PREVIEW_RING_RGBA: [f32; 4] = [1.0, 0.84, 0.0, 0.4];
+
+/// 悬停已放置塔的圈颜色（教程 19：白色，alpha 0.5）。
+pub const HOVER_RING_RGBA: [f32; 4] = [1.0, 1.0, 1.0, 0.5];
+
+/// 圈类型（`td.gizmos` 快照可读）。
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum RingKind {
+    /// 放置预览圈（教程 19：预览可见时每帧画）。
+    Preview,
+    /// 悬停在已放置塔所在格时画的圈（教程 19：按格 O(1) 查）。
+    Hover,
+}
+
+/// 一次 `gizmos.circle_2d` 调用的参数化数据——**行为等价面**（教程 19：
+/// 圆心 / 半径 / 颜色即行为；gizmo 瞬时，无实体可查）。
+#[derive(Clone, Copy, Debug)]
+pub struct RingParams {
+    pub center: [f32; 2],
+    pub radius: f32,
+    pub color: [f32; 4],
+    pub kind: RingKind,
+}
+
+/// 悬停圈参数（纯函数 + 注入式塔查找）：绘制系统与 `td.gizmos probe` 共用同一算式，
+/// 两条通道不会漂移（口径同 `td.spawn_tower` 复用 `is_placeable`）。
+pub fn hover_ring_params(
+    placed: &PlacedTowers,
+    tile: [u32; 2],
+    tower_lookup: impl FnOnce(Entity) -> Option<(Vec2, f32)>,
+) -> Option<RingParams> {
+    let entity = *placed.0.get(&tile)?;
+    let (center, radius) = tower_lookup(entity)?;
+    Some(RingParams {
+        center: [center.x, center.y],
+        radius,
+        color: HOVER_RING_RGBA,
+        kind: RingKind::Hover,
+    })
+}
+
+/// 预览圈参数（教程 19：半径 = 选中塔型 `attack_range`，圆心 = 预览幽灵位置）。
+pub fn preview_ring_params(center: Vec2, radius: f32) -> RingParams {
+    RingParams {
+        center: [center.x, center.y],
+        radius,
+        color: PREVIEW_RING_RGBA,
+        kind: RingKind::Preview,
+    }
+}
+
+/// 上一帧绘制记录（**验证面**资源，非教程；同 `SpawnSchedule::spawned` /
+/// `AmmoState::fired` 口径——只服务 `td.gizmos` 快照，不给玩法增加语义）。
+///
+/// `rings` 每帧覆盖（gizmo 语义 = 每帧重画）；`preview_visible` 记录本帧预览
+/// 幽灵是否可见（圈只在可见时画，教程 19）。
+#[derive(Resource, Default)]
+pub struct RangeGizmoLog {
+    pub rings: Vec<RingParams>,
+    pub preview_visible: bool,
+}
+
+/// 每帧画射程圈（教程 19 `draw_tower_ranges`）：
+/// ① 光标所在格有已放置塔 → 白色圈（圆心 = 塔位置，半径 = `TowerAttacker.range`）；
+/// ② 预览幽灵可见 → 金色圈（圆心 = 幽灵位置，半径 = 选中塔型 `attack_range`）。
+///
+/// 挂 `Update`（表现层，教程 19 注册在 InGame 的 Update 组）。
+pub fn draw_tower_ranges(
+    mut gizmos: Gizmos,
+    window: Single<&Window>,
+    camera: Single<(&Camera, &GlobalTransform)>,
+    placed: Res<PlacedTowers>,
+    towers: Query<(&Transform, &TowerAttacker)>,
+    preview: Query<(&Transform, &Visibility), With<TowerPreview>>,
+    selected: Res<SelectedTowerType>,
+    registry: Res<TowerRegistry>,
+    map_layout: Res<MapLayout>,
+    mut log: ResMut<RangeGizmoLog>,
+) {
+    let (cam, cam_transform) = *camera;
+    let cursor_world = window
+        .cursor_position()
+        .and_then(|cursor| cam.viewport_to_world_2d(cam_transform, cursor).ok());
+
+    log.rings.clear();
+    log.preview_visible = false;
+
+    // ① 悬停已放置塔：屏幕 → 世界 → 格 → tile→entity O(1) 查（教程 19）。
+    if let Some(cursor_pos) = cursor_world {
+        if let Some(tile) = world_to_tile(cursor_pos, map_layout.width, map_layout.height) {
+            if let Some(ring) = hover_ring_params(&placed, tile, |entity| {
+                towers
+                    .get(entity)
+                    .ok()
+                    .map(|(transform, attacker)| (transform.translation.truncate(), attacker.range))
+            }) {
+                draw_ring(&mut gizmos, ring);
+                log.rings.push(ring);
+            }
+        }
+    }
+
+    // ② 预览圈：只有幽灵可见才画（教程 19「only when it is visible」）。
+    let def = registry.get(selected.0);
+    for (preview_transform, visibility) in preview.iter() {
+        if *visibility != Visibility::Visible {
+            continue;
+        }
+        log.preview_visible = true;
+        let ring = preview_ring_params(preview_transform.translation.truncate(), def.attack_range);
+        draw_ring(&mut gizmos, ring);
+        log.rings.push(ring);
+    }
+}
+
+/// 单圈绘制（`td.` 参数 → `gizmos.circle_2d`；唯一接触 gizmo API 的点）。
+fn draw_ring(gizmos: &mut Gizmos, ring: RingParams) {
+    gizmos.circle_2d(
+        Vec2::new(ring.center[0], ring.center[1]),
+        ring.radius,
+        Color::srgba(ring.color[0], ring.color[1], ring.color[2], ring.color[3]),
+    );
 }
 
 // ---------------------------------------------------------------------------

@@ -62,6 +62,16 @@
 //!
 //! 测试通道 `td.tower_select`（P17）：塔选下标读写（U6 侧信道——BRP 无滚轮 / 键盘 /
 //! 鼠标点击注入，选择效果经「选中下标 → 放置塔型 → `TowerTypeId`」链验证）。
+//!
+//! 测试通道 `td.events`（P18）：自定义消息链（教程 18 `PlaceTower`）的只读快照 +
+//! 确定性发布入口。BRP 无法注入鼠标左键，点击生产者不可直达，故：
+//! - `{}` / `{"op":"snapshot"}` → 计数面（produced/injected/spawned/gold_applied）
+//!   + 两个消费者最后消费的载荷快照 + 已占格数 / 余额；
+//! - `{"op":"emit_place","tile":[x,y],"tower_id":n?}` → 按生产者同一校验
+//!   （`tower::is_placeable` + 余额门）写一条 `PlaceTower` 消息（`World::write_message`
+//!   `bevy_ecs-0.20.0/src/world/mod.rs:3041`）——两个消费者随后各自消费，
+//!   「发布 → 双消费者响应」闭环因此可被确定性断言。
+//! - 非法 tile / tower_id 越界 → -32602；不可放置 → `{"queued": false, "reason": …}`。
 
 use bevy::prelude::*;
 use bevy::remote::http::RemoteHttpPlugin;
@@ -69,6 +79,9 @@ use bevy::remote::{error_codes, BrpError, BrpResult, RemotePlugin};
 use bevy::render::view::screenshot::{save_to_disk, Screenshot, ScreenshotCaptured};
 use serde::Serialize;
 use serde_json::{json, Value};
+
+// `PlaybackMode` 不在 prelude（P20 `td.audio` 播放模式字符串化用）。
+use bevy::audio::PlaybackMode;
 
 use crate::map::MapLayout;
 use crate::tower::{self, PlacedTowers, TowerAtlas};
@@ -104,6 +117,18 @@ pub const TD_TOWERS_METHOD: &str = "td.towers";
 /// `td.tower_select` 方法名（P17 起：塔选下标读写——无键鼠注入面的确定性通道，
 /// U6 约束的「可查询侧信道」）。
 pub const TD_TOWER_SELECT_METHOD: &str = "td.tower_select";
+
+/// `td.events` 方法名（P18 起：自定义消息链快照 + 确定性发布入口）。
+pub const TD_EVENTS_METHOD: &str = "td.events";
+
+/// `td.gizmos` 方法名（P19 起：射程圈绘制参数的只读快照 + 单格探测）。
+pub const TD_GIZMOS_METHOD: &str = "td.gizmos";
+
+/// `td.audio` 方法名（P20 起：音频实体 / 播放态 / 触发计数的只读快照）。
+pub const TD_AUDIO_METHOD: &str = "td.audio";
+
+/// `td.pause` 方法名（P21 起：暂停状态读写——BRP 无键盘注入，Escape 不可直达）。
+pub const TD_PAUSE_METHOD: &str = "td.pause";
 
 pub struct BrpPlugin;
 
@@ -142,7 +167,11 @@ impl Plugin for BrpPlugin {
                 .with_method_main(TD_ECONOMY_METHOD, economy_handler)
                 .with_method_main(TD_COMBAT_METHOD, combat_handler)
                 .with_method_main(TD_TOWERS_METHOD, towers_handler)
-                .with_method_main(TD_TOWER_SELECT_METHOD, tower_select_handler),
+                .with_method_main(TD_TOWER_SELECT_METHOD, tower_select_handler)
+                .with_method_main(TD_EVENTS_METHOD, events_handler)
+                .with_method_main(TD_GIZMOS_METHOD, gizmos_handler)
+                .with_method_main(TD_AUDIO_METHOD, audio_handler)
+                .with_method_main(TD_PAUSE_METHOD, pause_handler),
         );
         app.add_plugins(RemoteHttpPlugin::default().with_address(std::net::Ipv4Addr::LOCALHOST));
         info!("[BRP] listening on 127.0.0.1:15702 (explicit loopback bind)");
@@ -150,7 +179,8 @@ impl Plugin for BrpPlugin {
             "[BRP] custom methods: {TD_SCREENSHOT_METHOD}, {TD_SPAWN_TOWER_METHOD}, \
              {TD_WAVE_METHOD}, {TD_GAME_METHOD}, {TD_STATE_METHOD}, {TD_LEVEL_METHOD}, \
              {TD_ECONOMY_METHOD}, {TD_COMBAT_METHOD}, {TD_TOWERS_METHOD}, \
-             {TD_TOWER_SELECT_METHOD}"
+             {TD_TOWER_SELECT_METHOD}, {TD_EVENTS_METHOD}, {TD_GIZMOS_METHOD}, \
+             {TD_AUDIO_METHOD}, {TD_PAUSE_METHOD}"
         );
     }
 }
@@ -401,10 +431,9 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
     }
 
     world.resource_mut::<crate::economy::Gold>().0 -= cost as f32;
-    world.resource_mut::<PlacedTowers>().0.insert(tile);
     let atlas = world.resource::<TowerAtlas>().clone();
     let mut commands = world.commands();
-    let pos = tower::spawn_tower_entities(
+    let (pos, turret) = tower::spawn_tower_entities(
         &mut commands,
         &atlas,
         &def,
@@ -416,6 +445,11 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
     drop(commands);
     // 立即应用命令队列：返回后实体对已真实入世界（断言读取不等下一帧）。
     world.flush();
+    // P19：占格表登记（tile → 塔顶实体，教程 19 HashMap 语义）。
+    world
+        .resource_mut::<PlacedTowers>()
+        .0
+        .insert(tile, turret);
 
     info!(
         "[TD] tower '{tower_key}' placed at tile {tile:?} (world {}, {})",
@@ -914,5 +948,551 @@ fn invalid_params(message: &str) -> BrpError {
         code: error_codes::INVALID_PARAMS,
         message: message.to_string(),
         data: None,
+    }
+}
+
+// ---------------------------------------------------------------------------
+// P18：td.events（自定义消息链，教程 18）
+// ---------------------------------------------------------------------------
+
+/// `td.events` 的参数解析结果。
+enum EventsOp {
+    Snapshot,
+    EmitPlace {
+        tile: [u32; 2],
+        tower_id: Option<usize>,
+    },
+}
+
+/// 解析 `td.events` 的 params（严格分支）：缺省 / `{"op":"snapshot"}` = 快照；
+/// `{"op":"emit_place","tile":[x,y],"tower_id":n?}` = 写一条 `PlaceTower` 消息。
+fn parse_events_op(params: Option<&Value>) -> Result<EventsOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(EventsOp::Snapshot);
+    };
+    if value.is_null() {
+        return Ok(EventsOp::Snapshot);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "snapshot",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "snapshot" => Ok(EventsOp::Snapshot),
+        "emit_place" => {
+            let tile = parse_tile_param(Some(value))?;
+            let tower_id = match map.get("tower_id") {
+                None | Some(Value::Null) => None,
+                Some(Value::Number(n)) => {
+                    let Some(i) = n.as_u64() else {
+                        return Err(invalid_params("tower_id 须为非负整数"));
+                    };
+                    Some(i as usize)
+                }
+                Some(other) => {
+                    return Err(invalid_params(&format!(
+                        "tower_id 须为非负整数（收到 {other}）"
+                    )));
+                }
+            };
+            Ok(EventsOp::EmitPlace { tile, tower_id })
+        }
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 snapshot / emit_place）"
+        ))),
+    }
+}
+
+/// 载荷快照 → JSON（`PlaceTowerRecord` 序列化形态；两消费者逐字段对拍用）。
+fn record_json(record: &crate::tower::PlaceTowerRecord) -> Value {
+    json!({
+        "tile": record.tile,
+        "world_pos": record.world_pos,
+        "tower_id": record.tower_id,
+        "cost": record.cost,
+    })
+}
+
+/// `td.events` handler（P18）：消息链快照 / 确定性发布（见模块文档）。
+///
+/// 为什么需要：BRP 无鼠标注入，点击生产者不可直达；`emit_place` 复用生产者的
+/// 同一校验（`is_placeable` + 余额门）写消息，两个消费者（生成 / 扣费）对同一条
+/// 消息各消费一次——计数与载荷快照即「发布 → 响应」闭环的机器可读证据。
+pub fn events_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_events_op(params.as_ref())?;
+
+    match op {
+        EventsOp::Snapshot => Ok(events_snapshot(world)),
+        EventsOp::EmitPlace { tile, tower_id } => {
+            // 先完成全部只读校验（与 td.spawn_tower 同源谓词），再写消息。
+            let (map_width, map_height, tower_index, def, gold_before) = {
+                let Some(map) = world.get_resource::<MapLayout>() else {
+                    return Ok(json!({
+                        "queued": false,
+                        "reason": "no level loaded (MapLayout missing)",
+                        "tile": tile,
+                    }));
+                };
+                let Some(registry) = world.get_resource::<crate::tower::TowerRegistry>() else {
+                    return Ok(json!({
+                        "queued": false,
+                        "reason": "tower registry missing",
+                        "tile": tile,
+                    }));
+                };
+                let tower_index = match tower_id {
+                    Some(index) => index,
+                    None => world
+                        .get_resource::<crate::tower::SelectedTowerType>()
+                        .map(|s| s.0)
+                        .unwrap_or(0),
+                };
+                let Some(def) = registry.towers.get(tower_index) else {
+                    return Err(invalid_params(&format!(
+                        "tower_id {tower_index} 越界（注册表 {} 项）",
+                        registry.towers.len()
+                    )));
+                };
+                let def = def.clone();
+                let placed = world.resource::<PlacedTowers>();
+                if !tower::is_placeable(map, placed, tile) {
+                    return Ok(json!({
+                        "queued": false,
+                        "reason": "tile is not an unoccupied grass tile",
+                        "tile": tile,
+                    }));
+                }
+                let gold = world
+                    .get_resource::<crate::economy::Gold>()
+                    .map(|g| g.0)
+                    .unwrap_or(f32::INFINITY);
+                (
+                    map.width as f32,
+                    map.height as f32,
+                    tower_index,
+                    def,
+                    gold,
+                )
+            };
+
+            if gold_before < def.cost as f32 {
+                return Ok(json!({
+                    "queued": false,
+                    "reason": "not enough gold",
+                    "tile": tile,
+                    "gold": gold_before,
+                    "cost": def.cost,
+                }));
+            }
+
+            let pos = crate::enemy::tile_to_world(tile, map_width, map_height);
+            let written = world.write_message(crate::tower::PlaceTower {
+                tile,
+                world_pos: pos,
+                tower_id: tower_index,
+                cost: def.cost,
+            });
+            if written.is_none() {
+                return Err(invalid_params(
+                    "PlaceTower 消息队列未注册（add_message 缺失）",
+                ));
+            }
+            world.resource_mut::<crate::tower::PlacementLog>().injected += 1;
+
+            info!(
+                "[TD] PlaceTower message injected at tile {tile:?} (tower {tower_index}, cost {})",
+                def.cost
+            );
+            Ok(json!({
+                "queued": true,
+                "tile": tile,
+                "tower_id": tower_index,
+                "tower_key": def.key,
+                "cost": def.cost,
+                "world_pos": [pos.x, pos.y],
+            }))
+        }
+    }
+}
+
+/// `td.events` 快照（只读；资源缺失时字段为 null，不 panic）。
+fn events_snapshot(world: &World) -> Value {
+    let log = world.get_resource::<crate::tower::PlacementLog>();
+    let placed = world
+        .get_resource::<PlacedTowers>()
+        .map(|p| p.0.len())
+        .unwrap_or(0);
+    let gold = world
+        .get_resource::<crate::economy::Gold>()
+        .map(|g| g.0);
+    match log {
+        Some(log) => json!({
+            "available": true,
+            "produced": log.produced,
+            "injected": log.injected,
+            "spawned": log.spawned,
+            "gold_applied": log.gold_applied,
+            "spawn_last": log.spawn_last.as_ref().map(record_json),
+            "gold_last": log.gold_last.as_ref().map(record_json),
+            "placed_tiles": placed,
+            "gold": gold,
+        }),
+        None => json!({
+            "available": false,
+            "produced": null,
+            "injected": null,
+            "spawned": null,
+            "gold_applied": null,
+            "spawn_last": null,
+            "gold_last": null,
+            "placed_tiles": placed,
+            "gold": gold,
+        }),
+    }
+}
+
+// ---------------------------------------------------------------------------
+// P19：td.gizmos（射程圈绘制参数，教程 19）
+// ---------------------------------------------------------------------------
+
+/// `td.gizmos` 的参数解析结果。
+enum GizmoOp {
+    Snapshot,
+    Probe { tile: [u32; 2] },
+}
+
+/// 解析 `td.gizmos` 的 params（严格分支）：缺省 / `{"op":"snapshot"}` = 上一帧
+/// 绘制记录；`{"op":"probe","tile":[x,y]}` = 单格悬停圈参数探测。
+fn parse_gizmo_op(params: Option<&Value>) -> Result<GizmoOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(GizmoOp::Snapshot);
+    };
+    if value.is_null() {
+        return Ok(GizmoOp::Snapshot);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "snapshot",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "snapshot" => Ok(GizmoOp::Snapshot),
+        "probe" => Ok(GizmoOp::Probe {
+            tile: parse_tile_param(Some(value))?,
+        }),
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 snapshot / probe）"
+        ))),
+    }
+}
+
+/// 圈参数 → JSON（`td.gizmos` 响应元素）。
+fn ring_json(ring: &crate::tower::RingParams) -> Value {
+    let kind = match ring.kind {
+        crate::tower::RingKind::Preview => "preview",
+        crate::tower::RingKind::Hover => "hover",
+    };
+    json!({
+        "center": ring.center,
+        "radius": ring.radius,
+        "color": ring.color,
+        "kind": kind,
+    })
+}
+
+/// `td.gizmos` handler（P19）：射程圈绘制参数的只读快照 / 单格探测。
+///
+/// 为什么需要：gizmo 是每帧重画的瞬时形状（无实体、无 BRP 注入光标通道），
+/// 其行为等价面 = **绘制参数**（圆心 / 半径 / 颜色）。`draw_tower_ranges` 每帧把
+/// 参数记入 [`crate::tower::RangeGizmoLog`]，`probe` 则对指定格调用绘制系统用的
+/// **同一纯函数** `tower::hover_ring_params`——两条通道不会漂移。
+pub fn gizmos_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_gizmo_op(params.as_ref())?;
+    match op {
+        GizmoOp::Snapshot => {
+            let log = world.get_resource::<crate::tower::RangeGizmoLog>();
+            let rings: Vec<Value> = log
+                .map(|l| l.rings.iter().map(ring_json).collect())
+                .unwrap_or_default();
+            Ok(json!({
+                "available": log.is_some(),
+                "preview_visible": log.map(|l| l.preview_visible),
+                "ring_count": rings.len(),
+                "rings": rings,
+            }))
+        }
+        GizmoOp::Probe { tile } => {
+            // 同一纯函数 + 同一组件口径（`Transform` + `TowerAttacker`）。
+            let mut towers = world
+                .query::<(&Transform, &crate::tower::TowerAttacker)>();
+            let placed = world.get_resource::<PlacedTowers>();
+            let ring = placed.and_then(|placed| {
+                crate::tower::hover_ring_params(placed, tile, |entity| {
+                    towers
+                        .get(world, entity)
+                        .ok()
+                        .map(|(transform, attacker)| (transform.translation.truncate(), attacker.range))
+                })
+            });
+            match ring {
+                Some(ring) => Ok(json!({
+                    "available": true,
+                    "tile": tile,
+                    "ring": ring_json(&ring),
+                })),
+                None => Ok(json!({
+                    "available": true,
+                    "tile": tile,
+                    "ring": null,
+                    "reason": "no placed tower on tile",
+                })),
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// P20：td.audio（音频实体 / 播放态 / 触发计数，教程 20）
+// ---------------------------------------------------------------------------
+
+/// `td.audio` handler（P20）：音频结构面只读快照。
+///
+/// 口径（立项定案：音频非 M6 收官门槛，本部行为等价照做）——不断言可听性、
+/// 不断言性能，只断言**可观察结构面**：
+/// - `music_entities` / `music_mode` / `music_volume`：关卡音乐实体与 `LOOP`/0.3 配置；
+/// - `music_sink`：Bevy 是否已为音乐建 `AudioSink`（无音频设备时该值为 false，环境注记）；
+/// - `sfx_entities` / `sfx_sinks`：在场一次性音效实体（`DESPAWN` 播完自回收，采样可遇不可求，
+///   故主判据是计数）；
+/// - `laser_fire` / `rocket_explosion` / `sfx_spawned` / `last_volume`：音效触发计数
+///   （`AudioLog`，消息消费端记账）；
+/// - `projectile_audio`：挂循环推进器的在飞弹体数（教程 20 实体耦合模式的直接证据）。
+pub fn audio_handler(In(_params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let available = world
+        .get_resource::<crate::audio::AudioAssets>()
+        .is_some();
+    // 先把记账值拷出（释放 World 的不可变借用，后续需建查询）。
+    let (laser_fire, rocket_explosion, sfx_spawned, last_volume) =
+        match world.get_resource::<crate::audio::AudioLog>() {
+            Some(log) => (
+                Some(log.laser_fire),
+                Some(log.rocket_explosion),
+                Some(log.sfx_spawned),
+                log.last_volume,
+            ),
+            None => (None, None, None, None),
+        };
+
+    let mut music_entities = 0u32;
+    let mut music_mode: Option<&'static str> = None;
+    let mut music_volume: Option<f32> = None;
+    let mut music_sink = false;
+    let mut playback_settings_entities = 0u32;
+    let mut sfx_entities = 0u32;
+    let mut sfx_sinks = 0u32;
+    let mut audio_players_total = 0u32;
+
+    {
+        let mut query = world.query::<(
+            &AudioPlayer,
+            Option<&PlaybackSettings>,
+            Option<&crate::audio::BackgroundMusic>,
+            Option<&AudioSink>,
+        )>();
+        for (_player, settings, music_marker, sink) in query.iter(world) {
+            audio_players_total += 1;
+            if settings.is_some() {
+                playback_settings_entities += 1;
+            }
+            match (music_marker, settings) {
+                (Some(_), Some(settings)) => {
+                    music_entities += 1;
+                    music_mode = Some(match settings.mode {
+                        PlaybackMode::Once => "Once",
+                        PlaybackMode::Loop => "Loop",
+                        PlaybackMode::Despawn => "Despawn",
+                        PlaybackMode::Remove => "Remove",
+                    });
+                    music_volume = Some(settings.volume.to_linear());
+                    music_sink |= sink.is_some();
+                }
+                (None, _) => {
+                    sfx_entities += 1;
+                    if sink.is_some() {
+                        sfx_sinks += 1;
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+
+    let projectile_audio = {
+        let mut query = world
+            .query_filtered::<Entity, (With<crate::tower::Projectile>, With<AudioPlayer>)>();
+        query.iter(world).count()
+    };
+
+    Ok(json!({
+        "available": available,
+        "audio_players_total": audio_players_total,
+        "playback_settings_entities": playback_settings_entities,
+        "music_entities": music_entities,
+        "music_mode": music_mode,
+        "music_volume": music_volume,
+        "music_sink": music_sink,
+        "sfx_entities": sfx_entities,
+        "sfx_sinks": sfx_sinks,
+        "projectile_audio": projectile_audio,
+        "laser_fire": laser_fire,
+        "rocket_explosion": rocket_explosion,
+        "sfx_spawned": sfx_spawned,
+        "last_volume": last_volume,
+        "sinks_supported": music_sink || sfx_sinks > 0,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// P21：td.pause（暂停状态读写，教程 21 PauseState）
+// ---------------------------------------------------------------------------
+
+/// `td.pause` 的参数解析结果。
+#[derive(Clone, Copy)]
+enum PauseOp {
+    Get,
+    Set(crate::pause::PauseState),
+    Toggle,
+}
+
+/// 暂停状态 → 稳定字符串（断言脚本口径，与 Debug 输出一致）。
+fn pause_state_name(state: crate::pause::PauseState) -> &'static str {
+    match state {
+        crate::pause::PauseState::Running => "Running",
+        crate::pause::PauseState::Paused => "Paused",
+    }
+}
+
+/// 解析 `td.pause` 的 params（严格分支）：缺省 / `{"op":"get"}` = 查询；
+/// `{"op":"set","state":"Running"|"Paused"}` = 请求转移；`{"op":"toggle"}` = 翻转。
+fn parse_pause_op(params: Option<&Value>) -> Result<PauseOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(PauseOp::Get);
+    };
+    if value.is_null() {
+        return Ok(PauseOp::Get);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "get",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "get" => Ok(PauseOp::Get),
+        "toggle" => Ok(PauseOp::Toggle),
+        "set" => {
+            let Some(Value::String(name)) = map.get("state") else {
+                return Err(invalid_params("set 需要 state 字符串（Running/Paused）"));
+            };
+            let target = match name.as_str() {
+                "Running" => crate::pause::PauseState::Running,
+                "Paused" => crate::pause::PauseState::Paused,
+                other => {
+                    return Err(invalid_params(&format!(
+                        "未知 state `{other}`（允许 Running/Paused）"
+                    )));
+                }
+            };
+            Ok(PauseOp::Set(target))
+        }
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 get / set / toggle）"
+        ))),
+    }
+}
+
+/// `td.pause` handler（P21）：暂停状态读写通道。
+///
+/// 为什么需要：BRP 无键盘注入，Escape 不可直达；暂停/恢复的**效果**（实体冻结 /
+/// 覆盖层 / 恢复推进）必须能确定性触发与采样（`td.` 前缀纪律）。
+/// 守卫与 `toggle_pause` 对齐：只在 `GameState::InGame` 受理（教程 21
+/// 「Only works during a level」），否则 -32602；`GameFinished` 已插入时拒绝
+/// （教程 21 竞态守卫的同义表达——结算迁移待生效的窗口内不允许暂停）。
+pub fn pause_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_pause_op(params.as_ref())?;
+    let pause_state = world
+        .get_resource::<State<crate::pause::PauseState>>()
+        .map(|s| *s.get());
+    let game_state = world
+        .get_resource::<State<GameState>>()
+        .map(|s| *s.get());
+
+    let overlay = {
+        let mut query = world
+            .query_filtered::<Entity, With<crate::pause::PauseOverlay>>();
+        query.iter(world).count()
+    };
+
+    match op {
+        PauseOp::Get => Ok(json!({
+            "available": pause_state.is_some(),
+            "state": pause_state.map(pause_state_name),
+            "game_state": game_state.map(state_name),
+            "overlay": overlay,
+        })),
+        PauseOp::Set(_) | PauseOp::Toggle => {
+            let Some(current) = pause_state else {
+                return Err(invalid_params(
+                    "暂停状态机未初始化（State<PauseState> 缺失）",
+                ));
+            };
+            if game_state != Some(GameState::InGame) {
+                return Err(invalid_params(
+                    "暂停仅在 InGame 受理（教程 21：Only works during a level）",
+                ));
+            }
+            if world
+                .get_resource::<crate::enemy::GameFinished>()
+                .is_some()
+            {
+                return Err(invalid_params(
+                    "本局已判定结束（GameFinished）——暂停窗口已关闭",
+                ));
+            }
+            let target = match op {
+                PauseOp::Set(target) => target,
+                _ => match current {
+                    crate::pause::PauseState::Running => crate::pause::PauseState::Paused,
+                    crate::pause::PauseState::Paused => crate::pause::PauseState::Running,
+                },
+            };
+            world
+                .resource_mut::<NextState<crate::pause::PauseState>>()
+                .set(target);
+            info!(
+                "[TD] pause transition queued: {} -> {}",
+                pause_state_name(current),
+                pause_state_name(target)
+            );
+            Ok(json!({
+                "queued": true,
+                "from": pause_state_name(current),
+                "to": pause_state_name(target),
+            }))
+        }
     }
 }

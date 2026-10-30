@@ -1,0 +1,28 @@
+[2m2026-10-30T15:52:17.002861Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T15:52:17.269483Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T15:52:17.675348Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T15:52:17.675374Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause
+[2m2026-10-30T15:52:17.676492Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T15:52:17.676532Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T15:52:17.677357Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T15:52:17.740554Z[0m [32m INFO[0m [2mgame_td::tower[0m[2m:[0m [TD] tower registry loaded: 3 towers (["rocket", "rapid", "big_rocket"])
+[2m2026-10-30T15:52:18.920335Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T15:52:18.937004Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T15:52:18.953350Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T15:52:19.253833Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T15:52:19.270512Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [5, 3] (world -128, -96)
+[2m2026-10-30T15:52:19.937164Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t050-m6-wave4/p20-shot.png (entity 704v0)
+[2m2026-10-30T15:52:19.986637Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T15:52:19.992240Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t050-m6-wave4/p20-shot.png
+[2m2026-10-30T15:52:20.172974Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T15:52:20.187064Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [7, 3] (world 0, -96)
+[2m2026-10-30T15:52:22.769965Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T15:52:23.403755Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T15:52:23.419976Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T15:52:23.436188Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T15:52:23.770140Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T15:52:24.069573Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T15:52:24.086281Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T15:52:24.102718Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T15:52:24.436601Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+# [取证补录 2026-10-30] GAME_EXIT=1 (= taskkill 终止；非自身退出)

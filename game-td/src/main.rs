@@ -54,10 +54,17 @@
 //!   塔选择 dock（教程 17：滚轮 / 数字键 / 槽位点击，`Interaction` 弃用别名按 A'
 //!   裁决以 `#[expect(deprecated)]` 落地）。对应测试通道 `td.economy` /
 //!   `td.combat` / `td.towers` / `td.tower_select`。
+//! - P18–P21（同批推进，逐部过门禁）：自定义消息拆分放置链（`PlaceTower` 生产者 +
+//!   两消费者，教程 18）、射程圈 gizmo（`PlacedTowers` → `HashMap<格, 塔顶实体>`，
+//!   教程 19）、音频（背景音乐 / 一次性音效消息 / 弹体循环推进器，教程 20）、
+//!   **插件化 + 暂停**（`AudioPlugin` 纯重构收拢 + 正交 `PauseState` /
+//!   `PausePlugin`，教程 21）。对应测试通道 `td.events` / `td.gizmos` /
+//!   `td.audio` / `td.pause`。
 //!
 //! 窗口契约（Lead 预置，覆盖教程默认窗口）：1280×720、Windowed、title "game-td"。
 //! BRP 常驻见 [`brp`]：`127.0.0.1:15702`（显式回环绑定）+ `td.*` 自定义方法族。
 
+mod audio;
 mod brp;
 mod economy;
 mod enemy;
@@ -65,6 +72,7 @@ mod game_over;
 mod level;
 mod level_select;
 mod map;
+mod pause;
 mod tiling;
 mod tower;
 
@@ -74,9 +82,11 @@ use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy_ecs_tilemap::prelude::*;
 
+// 教程 21 Step 1：音频六处注册收拢为插件（纯重构）。
+use audio::AudioPlugin;
 use economy::{
-    earn_passive_income, spawn_gold_hud, tick_placement_denied, update_gold_hud, Gold,
-    STARTING_GOLD,
+    deduct_gold_on_placement, earn_passive_income, spawn_gold_hud, tick_placement_denied,
+    update_gold_hud, Gold, STARTING_GOLD,
 };
 use enemy::{
     build_spawn_schedule, check_game_state, move_enemies, process_base_reachers,
@@ -89,12 +99,14 @@ use level_select::{
     SelectedLevel,
 };
 use map::{MapLayout, MapTile, PathTile, TileType};
+use pause::{PausePlugin, PauseState};
 use tiling::{build_rules, TileRules};
 use tower::{
-    attack_enemies, cycle_tower_on_scroll, despawn_timed, explode_projectiles,
+    attack_enemies, cycle_tower_on_scroll, despawn_timed, draw_tower_ranges, explode_projectiles,
     handle_dock_slot_click, launch_rockets, load_tower_registry, move_projectiles,
     place_tower_on_click, refill_ammo, select_tower_by_key, setup_tower_atlas, setup_tower_dock,
-    spawn_placement_preview, update_dock_selection, update_placement_preview, PlacedTowers,
+    spawn_placement_preview, spawn_tower_from_event, update_dock_selection,
+    update_placement_preview, PlacedTowers, PlaceTower, PlacementLog, RangeGizmoLog,
 };
 
 /// 单格像素尺寸（教程 Part 2 Step 3 行为规格：64px 格）。
@@ -159,12 +171,20 @@ fn main() -> AppExit {
         // tilemap 渲染插件（教程 Part 3 Step 2）：`TilemapPlugin` 0.20.0/src/lib.rs:62。
         .add_plugins(TilemapPlugin)
         .add_plugins(brp::BrpPlugin)
+        // 教程 21：音频插件（P20 六处注册的收拢——纯重构）与暂停插件。
+        .add_plugins(AudioPlugin)
+        .add_plugins(PausePlugin)
         // 教程 12 Step 1：注册状态枚举 + 初始值（`#[default]` = LevelSelect）+
         // `NextState` 资源；首个 update 触发 `OnEnter(LevelSelect)` 恰一次。
         .init_state::<GameState>()
         // 教程 13 Step 1/8：发现列表空表 + 选中项占位（首个发现项由 scan 写入）。
         .init_resource::<AvailableLevels>()
         .init_resource::<SelectedLevel>()
+        // 教程 18 Step「Wiring it all together」：注册消息队列 + 验证面记账资源。
+        .add_message::<PlaceTower>()
+        .init_resource::<PlacementLog>()
+        // P19：射程圈绘制记录（验证面资源；`draw_tower_ranges` 每帧覆盖写）。
+        .init_resource::<RangeGizmoLog>()
         // 教程 12 Step 7 + 13 Step 7：相机与塔图集都在 Startup 一次
         // （P13 起图集不再随菜单进出重建——教程 13 Step 7「run exactly once」）。
         // 教程 16：塔注册表 Startup 一次载入（`assets/towers.toml`）。
@@ -221,7 +241,8 @@ fn main() -> AppExit {
                 earn_passive_income,
             )
                 .chain()
-                .run_if(in_state(GameState::InGame)),
+                // 教程 21 Step 4：暂停即整组不跑（`and_eager` = 0.20 的 `.and()` 落地形态）。
+                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
         )
         // 教程 17 Step「Organizing the systems」：输入类与视觉类分两组注册
         // （纯组织性拆分，无行为变化）。
@@ -232,7 +253,7 @@ fn main() -> AppExit {
                 select_tower_by_key,
                 handle_dock_slot_click,
             )
-                .run_if(in_state(GameState::InGame)),
+                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
         )
         .add_systems(
             Update,
@@ -242,9 +263,15 @@ fn main() -> AppExit {
                 update_gold_hud,
                 tick_placement_denied,
                 place_tower_on_click,
+                // 教程 18：两个消费者显式排在生产者之后——同帧内闭环，
+                // 不依赖消息的跨帧存续（教程「.after() vs .chain()」）。
+                spawn_tower_from_event.after(place_tower_on_click),
+                deduct_gold_on_placement.after(place_tower_on_click),
                 despawn_timed,
+                // 教程 19：射程圈 gizmo（表现层，每帧重画）。
+                draw_tower_ranges,
             )
-                .run_if(in_state(GameState::InGame)),
+                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
         )
         // ---------- GameOver ----------
         .add_systems(OnEnter(GameState::GameOver), setup_game_over)

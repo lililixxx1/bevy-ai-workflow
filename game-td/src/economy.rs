@@ -19,6 +19,7 @@
 
 use bevy::prelude::*;
 
+use crate::tower::{PlaceTower, PlaceTowerRecord, PlacementLog};
 use crate::GameEntity;
 
 /// 起始金币（教程 14 Step 3）。
@@ -108,4 +109,30 @@ pub fn tick_placement_denied(
             commands.entity(entity).remove::<PlacementDenied>();
         }
     }
+}
+
+/// 经济消费者（教程 18「The bookkeeping consumer」；P19 收缩）：读 [`PlaceTower`]
+/// 消息 → 扣 `cost`。
+///
+/// 教程 18 的关键点：本系统**不需要** `TowerRegistry`——价格随消息走，
+/// 经济模块因此不 import 塔生成逻辑（解耦收益）。教程 19：占格记账移交生成消费者，
+/// 本系统只剩金币一件事。
+pub fn deduct_gold_on_placement(
+    mut messages: MessageReader<PlaceTower>,
+    mut gold: ResMut<Gold>,
+    mut log: ResMut<PlacementLog>,
+) {
+    let mut iter = messages.read();
+    let Some(event) = iter.next() else {
+        return;
+    };
+    assert!(
+        iter.next().is_none(),
+        "only one tower can be placed per frame; the producer should emit at most one PlaceTower message",
+    );
+
+    gold.0 -= event.cost as f32;
+    // 验证面记账（`td.events`）：经济消费者消费了一条消息。
+    log.gold_applied += 1;
+    log.gold_last = Some(PlaceTowerRecord::from(event));
 }

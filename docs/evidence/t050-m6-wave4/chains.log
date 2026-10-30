@@ -1,0 +1,35 @@
+# T050-W1 证据链机器汇总（命令原始输出；生成于 2026-10-31）
+# 1) SUMMARY 行（逐档）
+docs/evidence/t050-m6-wave4/p18-assert.log:SUMMARY: 86/86 PASS
+docs/evidence/t050-m6-wave4/p19-assert-run1.log:SUMMARY: 85/85 PASS
+docs/evidence/t050-m6-wave4/p19-assert-run2.log:SUMMARY: 84/88 PASS
+docs/evidence/t050-m6-wave4/p20-assert.log:SUMMARY: 72/72 PASS
+docs/evidence/t050-m6-wave4/p19-assert.log:SUMMARY: 86/86 PASS
+docs/evidence/t050-m6-wave4/p18-assert-final.log:SUMMARY: 86/86 PASS
+docs/evidence/t050-m6-wave4/p21-assert.log:SUMMARY: 120/120 PASS
+docs/evidence/t050-m6-wave4/p20-assert-final.log:SUMMARY: 72/72 PASS
+# 2) discover 方法数（终版构建日志 td 方法清单 + 断言计数检查）
+custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause
+docs/evidence/t050-m6-wave4/p18-assert-final.log:PASS | discover.methods==37 | len=37
+docs/evidence/t050-m6-wave4/p21-assert.log:PASS | discover.methods==37 | len=37
+docs/evidence/t050-m6-wave4/p18-assert.log:PASS | discover.methods==34 | len=34
+docs/evidence/t050-m6-wave4/p20-assert-final.log:PASS | discover.methods==37 | len=37
+docs/evidence/t050-m6-wave4/p19-assert.log:PASS | discover.methods==37 | len=37
+docs/evidence/t050-m6-wave4/p19-assert-run1.log:PASS | discover.methods==35 | len=35
+docs/evidence/t050-m6-wave4/p20-assert.log:PASS | discover.methods==36 | len=36
+docs/evidence/t050-m6-wave4/p19-assert-run2.log:PASS | discover.methods==36 | len=36
+# 3) GRID_DIGEST / ENTITY_DIGEST（终版构建 p21 断言档原文）
+docs/evidence/t050-m6-wave4/p21-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t050-m6-wave4/p21-assert.log:PASS | P21 GRID_DIGEST level_01 == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t050-m6-wave4/p21-assert.log:INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+docs/evidence/t050-m6-wave4/p21-assert.log:PASS | P21 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+docs/evidence/t050-m6-wave4/p21-assert.log:INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+docs/evidence/t050-m6-wave4/p21-assert.log:PASS | P21 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+docs/evidence/t050-m6-wave4/p21-assert.log:PASS | P21 ENTITY_DIGEST == T048 baseline (zero drift) | digest=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+docs/evidence/t050-m6-wave4/p21-assert.log:INFO | P21 ENTITY_DIGEST=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+# 4) 截图 md5
+173766e2285ee67f2cdb58bae4e9c26c *docs/evidence/t050-m6-wave4/p18-shot-final.png
+9ba6c7ebdd56d92cf4c51e4fa8db2e90 *docs/evidence/t050-m6-wave4/p18-shot.png
+2ed65a7cecd562c379502132552051fa *docs/evidence/t050-m6-wave4/p19-shot.png
+783a84ed5d96adad258c8d64e388f6f6 *docs/evidence/t050-m6-wave4/p20-shot.png
+b43c8c9a177339e7ee64837e30f2b2e4 *docs/evidence/t050-m6-wave4/p21-shot-pause.png

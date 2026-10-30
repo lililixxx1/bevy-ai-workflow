@@ -1,0 +1,97 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==37 | len=37
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover contains td.tower_select
+PASS | discover contains td.events
+PASS | discover contains td.gizmos
+PASS | discover no game.* prefix | (none)
+PASS | P19 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P19 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P19 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P19 registry has 3 towers / default selection consistent | {"len":3,"sel":"rapid","idx":0}
+PASS | P19 select big_rocket (by key, order-agnostic) | {"available":true,"key":"big_rocket","len":3,"selected_index":2}
+PASS | P19 big_rocket placed at [7,7] (td.spawn_tower direct path) | {"cost":200,"placed":true,"pos":[0,160],"tile":[7,7],"tower_index":2,"tower_type":"big_rocket"}
+PASS | P19 placement reports big_rocket / cost 200 | {"cost":200,"placed":true,"pos":[0,160],"tile":[7,7],"tower_index":2,"tower_type":"big_rocket"}
+PASS | P19 PlacedTowers hashmap size==1 after placement | placed=1
+PASS | P19 same tile rejected (HashMap occupancy gate) | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[7,7]}
+PASS | P19 big_rocket ring center == [0,160] (independent tile_to_world) | got=[0,160] expect=[0,160]
+PASS | P19 big_rocket ring radius == 256 (per-tower range from TowerAttacker) | radius=256 expect=256
+PASS | P19 big_rocket ring kind=='hover' | {"center":[0,160],"color":[1,1,1,0.5],"kind":"hover","radius":256}
+PASS | P19 hover ring color == white alpha 0.5 | [1,1,1,0.5]
+PASS | P19 ring center matches a Tower entity Transform | towers=[[0,160]]
+PASS | P19 select rapid | {"available":true,"key":"rapid","len":3,"selected_index":0}
+PASS | P19 rapid placed at [5,3] / cost 100 | {"cost":100,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":0,"tower_type":"rapid"}
+PASS | P19 rapid ring radius == 192 (differs from big_rocket 256) | radius=192 expect=192
+PASS | P19 rapid ring center == [-128,-96] (independent tile_to_world) | got=[-128,-96] expect=[-128,-96]
+PASS | P19 PlacedTowers hashmap size==2 | placed=2
+PASS | P19 probe on empty grass tile -> no ring | {"available":true,"reason":"no placed tower on tile","ring":null,"tile":[2,0]}
+PASS | P19 probe on path tile -> no ring | {"available":true,"reason":"no placed tower on tile","ring":null,"tile":[0,5]}
+PASS | P19 probe out-of-map tile -> no ring | {"available":true,"reason":"no placed tower on tile","ring":null,"tile":[99,99]}
+PASS | P19 malformed probe tile -> -32602 | code=-32602
+PASS | P19 unknown gizmo op -> -32602 | code=-32602
+PASS | P19 gizmo snapshot available | {"available":true,"preview_visible":false,"ring_count":0,"rings":[]}
+PASS | P19 snapshot rings array well-formed | count=0
+INFO | P19 preview ring not visible (cursor outside map): probe covers params only
+INFO | P19 snapshot: preview_visible=false ring_count=0 (每帧重画参数记录；悬停圈参数由 probe 对同一纯函数逐项覆盖)
+PASS | P19 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P19 TileType total==150 | len=150
+PASS | P19 TileType Grass==105 | grass=105
+PASS | P19 TileType Path==45 | path=45
+PASS | P19 PathTile count==45 | len=45
+PASS | P19 PathTile subset of MapTile | len=45
+PASS | P19 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P19 texture index per cell == P3 baseline spec | bad=0
+PASS | P19 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P19 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P19 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P19 GRID_DIGEST == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t050-m6-wave4/p19-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t050-m6-wave4/p19-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=83256
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=2ed65a7cecd562c379502132552051fa bytes=83256 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P19 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P19 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P19 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P19 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P19 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P19 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P19 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P19 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P19 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P19 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P19 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P19 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P19 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P19 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P19 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P19 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P19 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P19 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P19 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P19 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P19 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P19 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P19 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P19 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 86/86 PASS
+REAL_EXIT=0

@@ -1,0 +1,17 @@
+# [scope-check 2026-10-31] 写范围核对（树 vs 主仓 HEAD 41ec1a2 工作区；--strip-trailing-cr 归一 CRLF 差异）
+$ diff -rq --strip-trailing-cr bevy-ai-workflow/game-td trees/m6/w4/game-td
+Files bevy-ai-workflow/game-td/CREDITS.md and trees/m6/w4/game-td/CREDITS.md differ
+Only in trees/m6/w4/game-td/assets: audio
+Only in trees/m6/w4/game-td/src: audio.rs
+Files bevy-ai-workflow/game-td/src/brp.rs and trees/m6/w4/game-td/src/brp.rs differ
+Files bevy-ai-workflow/game-td/src/economy.rs and trees/m6/w4/game-td/src/economy.rs differ
+Files bevy-ai-workflow/game-td/src/main.rs and trees/m6/w4/game-td/src/main.rs differ
+Only in trees/m6/w4/game-td/src: pause.rs
+Files bevy-ai-workflow/game-td/src/tower.rs and trees/m6/w4/game-td/src/tower.rs differ
+
+$ diff -q --strip-trailing-cr bevy-ai-workflow/Cargo.toml trees/m6/w4/Cargo.toml
+REAL_EXIT=0
+$ diff -q --strip-trailing-cr bevy-ai-workflow/Cargo.lock trees/m6/w4/Cargo.lock
+REAL_EXIT=0
+
+# 结论：源码差异 = 声明清单（改 5 文件 + 增 audio.rs/pause.rs/assets-audio）；Cargo 双文件零差异
