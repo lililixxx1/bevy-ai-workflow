@@ -321,9 +321,17 @@
 - **做法**：模块化同时给 BRP 面组件加 `#[type_path = "game_td"]` 冻结为 crate 根形态（属性语义 `bevy_reflect_derive-0.20.0/src/derive_data.rs:211`）；derive 形态仍按 §3.4（`Reflect` + `#[reflect(Component)]` + 注册）。
 - **等价性实测锚**：T047 P4→P5 模块化重构 `GRID_DIGEST` 网格指纹**逐位零漂移**（`70282f80…37a07`，P4/P5/P6/P7 四部 × 9 档同值）+ 截图 md5 链 P4/P5/P6 逐位一致；不冻结则 `world.query` 组件名与脚本口径不符。证据 `docs/evidence/t047-m6-wave1/`。
 
+### 6.18 资产根解析链与 cargo 外启动（M6 波次 2 T048 实测，2026-10-30）
+
+- **事实**：`FileAssetReader` 资产根**三级解析**（`bevy_asset-0.20.0/src/io/file/mod.rs:25-36` `get_base_path`）：① `BEVY_ASSET_ROOT` 环境变量；② 否则 `CARGO_MANIFEST_DIR` 环境变量——**编译期烘焙进 exe 的值**（共享 target 下树内 `cargo run` 会把树路径烘进二进制，即共享 target 烘焙路径污染的根源，见 recheck 附录 D）；③ 否则回退 **exe 所在目录**——直启 `target/debug/game-td.exe` 时资产根变成 target/debug，`assets/` 解析不到 → 运行「成功」但世界空白（**非 panic 无报错的静默错图**）。
+- **做法**：cargo 外直启 exe（BRP 验证场景常见——「游戏存活期不起 cargo」互斥下的合规路径）必须显式设 `BEVY_ASSET_ROOT=<crate 资产根>`；该变量运行时读取，同时绕开烘焙路径污染。
+- **实测锚**：T048 P8 run1（缺省 → 空图）vs run2（设 `BEVY_ASSET_ROOT` → 35/35）对照在档。证据 `docs/evidence/t048-m6-wave2/`。
+
 ---
 
 ## 变更记录
+
+- **v0.19（2026-10-30）**：T048 M6 波次 2（P8-12）收官随批——新增 **§6.18 资产根解析链与 cargo 外启动**（`BEVY_ASSET_ROOT` → `CARGO_MANIFEST_DIR` 烘焙值 → exe 目录三级链 `io/file/mod.rs:25-36`；直启 exe 必设环境量，缺省 = 静默空图非报错；P8 run1/run2 对照实测；证据 `docs/evidence/t048-m6-wave2/`）。G2 完整轮通过（0 阻塞；独立复算 ENTITY_DIGEST 重算 MATCH + 波次表/时序算术自洽）。
 
 - **v0.18（2026-10-30）**：T047 M6 首波次（P4-7）收官随批——新增 **§6.17 BRP 类型路径冻结 `#[type_path]`**（`get_with_type_path` 调用点全景十处 + 默认 TypePath 随模块漂移的运行期断裂面 + 冻结做法 + P4→P5 模块化 GRID_DIGEST 零漂移实测锚；证据 `docs/evidence/t047-m6-wave1/`）。G2 完整轮通过（1 Minor = map.rs 注锚把 `:1183` 引作 query 专属查表点、措辞泛化，收获批采纳并 Lead 复验 grep 十处 ≥2）。
 

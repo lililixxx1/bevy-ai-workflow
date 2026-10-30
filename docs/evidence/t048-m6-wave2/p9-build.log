@@ -1,0 +1,4 @@
+$ CARGO_TARGET_DIR=<shared> cargo build -p game-td -j 3   # 2026-10-30T20:25:29+08:00 [P9]
+   Compiling game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w2\game-td)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 15.64s
+REAL_EXIT=0

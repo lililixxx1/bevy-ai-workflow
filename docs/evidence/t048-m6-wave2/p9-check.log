@@ -1,0 +1,4 @@
+$ CARGO_TARGET_DIR=<shared> cargo check -p game-td -j 3   # 2026-10-30T20:25:15+08:00 [P9]
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w2\game-td)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.51s
+REAL_EXIT=0

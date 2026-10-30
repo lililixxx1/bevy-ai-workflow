@@ -1,0 +1,49 @@
+# G1 · Lead 复验档（T048 M6 波次 2 批）
+
+日期 2026-10-30（深夜）；复验人 Lead；对象 = 树 `<tree>` 批次 T048（game-td Part 8-12 行为等价 + 验证面扩展）。
+
+## G1-scope 写范围核查
+
+`diff -qr --strip-trailing-cr <tree> <main-repo>`（主仓 HEAD = 49657ec）：差异恰为声明写面——
+
+- 改：game-td/src/{main,brp,enemy,level}.rs、game-td/assets/levels/level_01.toml
+- 新：game-td/src/{tower,level_select,game_over}.rs、docs/evidence/t048-m6-wave2/
+- **Cargo.toml / Cargo.lock strip-CR 后零差异 = 「无新增依赖」声明独立核证** ✓；map.rs/tiling.rs 未动 ✓；t047 证据档案原样 ✓。**范围核查通过**。
+
+## G1-a 门禁独立复跑
+
+- Lead 复跑 `cargo check --workspace -j 3`（共享 target 缓存档）：REAL_EXIT=0。
+- worker 终档：gate-check-workspace.log 0 警 + REAL_EXIT=0；gate-test-workspace.log game 20/20 + mcp-bridge 15/15 + doctest 78/0/17（210.96s）+ REAL_EXIT=0——**doctest 计数与基线一致**。
+
+## G1-b 断言链独立复验（grep 对档，非采信 worker 转述）
+
+| 档 | SUMMARY | REAL_EXIT |
+| --- | --- | --- |
+| p8-assert.log | 35/35 PASS | 0 |
+| p9-assert.log | 30/30 PASS | 0 |
+| p10-assert.log | 35/35 PASS | 0 |
+| p11-defeat-assert.log | 41/41 PASS | 0 |
+| p11-victory-assert.log | 37/37 PASS | 0 |
+| p12-assert.log | 83/83 PASS | 0 |
+
+- **GRID_DIGEST 链**：`70282f80…37a07` 七场景全档同值（P8/P9/P10/P11-defeat/P11-victory/P12/P12-重开），逐位 == T047 基线——**跨波零漂移成立**。
+- **ENTITY_DIGEST 链**：`1d40c7b7…4e890b23` P11/P12/P12-重开三场景同值，且断言内含脚本独立复算 PASS 行（got==expect）。
+- **discover 链**：25（P8/P9）→ 26（P10）→ 27（P11 双档）→ 28（P12）——与上报 24→28 增量面一致；全 `td.` 前缀。
+- 收尾 process-check.log grep_exit=1（零残留）独立核过。
+
+## Lead 裁决（U1-U9 + 三偏离）
+
+- **U1**（`td.state` 带 set 写能力）：**裁 A 接受**。BRP 无键鼠注入面；`td.*` 属本仓自研件验证面（立项定案①「td.* 方法随部增补」授权范围），set 单点写 = 判定面可复跑的必要替代；B 案（只读 + 另辟 driver）越本卡 tooling/ 禁区且毁 P12 链复跑性，否。**set 面纳入 m6-all 终局判定面设计文档**。
+- **U2**（`SpawnSchedule.spawned` 教程外记账字段）：**接受**——验证面扩展；G2 复核该字段不参与行为分支（只读记账）。
+- **U3**（计数指纹口径：塔世界坐标 + 炮塔计数 + 敌血量多重集 / elapsed∈[2.2,3.0) / 1 座无害塔 [2,0]）：**接受为本波口径**，登记 m6-all 设计输入（三要素在档可复算）。
+- **U4**（P12 仅测 defeat→GameOver，victory 分支由 P11 证明）：**接受 + 登记**——m6-all 全路径复测项。
+- **U5**（UI 文案 em dash → ASCII 连字符）：**接受**——默认内置字体无该字形（run1 豆腐块证据在档），属渲染正确性修正非语义篡改。
+- **U6**（P12 两屏无文本/节点断言，Node/Text 不在 BRP 反射面）：**接受**——既有已知约束（SKILL §6.16 StrongHandle 同族：UI 面反射缺位），截图面为准；扩反射面另立卡非本波。
+- **U7**（P12 未重组既有模块、§6.17 以既有锚维持）：**接受**——教程 Part 12 行为面本身只加 level_select/game_over；断言全绿即冻结纪律维持的证明；Part 13 式重组触发时再验。
+- **U8**（[2,0] 无害塔为断言场景输入）：**接受**——场景参数非玩法内容，不越教程 26 部边界。
+- **U9**（P9/P12 断言依赖 BRP-ready 立即执行、敌人 4.67s 生命窗）：**接受 + 并入 O1 家族**——通用口径（spawn 延迟/长路径/采样窗）归 m6-all 派工单固化。
+- **偏离三件**：① 直启 exe + `BEVY_ASSET_ROOT`（「游戏存活期不起 cargo」合规路径；**资产根回退 exe 目录 = 本卡新发现**，进收获批 SKILL v0.19）；② p8-p11 断言档对应逐部构建、不能对终版原样复跑（README「可复跑口径」注明，采信）；③ P9 断言由旋转幅阈值改几何对拍（断言设计缺陷修正，授权类，非实现变更）。
+
+## G1 结论
+
+**通过**（范围零越界、六断言档全 PASS、两层指纹链独立复验成立、门禁双绿、U1-U9 与三偏离均已裁决）。进 G2 完整轮（节点卡）。

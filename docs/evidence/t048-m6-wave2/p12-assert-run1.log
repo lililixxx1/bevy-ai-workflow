@@ -1,0 +1,92 @@
+$ node docs/evidence/t048-m6-wave2/assert-td.mjs --phase p12 --shot ../docs/evidence/t048-m6-wave2/p12-shot.png --shot-menu ../docs/evidence/t048-m6-wave2/p12-shot-menu.png --shot-over ../docs/evidence/t048-m6-wave2/p12-shot-over.png   # 2026-10-30T20:44:17+08:00
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==28 | len=28
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover no game.* prefix | (none)
+PASS | P12 initial state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P12 initial result==null and finished==false | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P12 LevelSelect: no map loaded (MapTile==0)
+PASS | P12 LevelSelect: no wave schedule (td.wave unavailable) | {"available":false}
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t048-m6-wave2/p12-shot-menu.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t048-m6-wave2/p12-shot-menu.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=31167
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=e0e0d9f430c8819c15fd5bd3aeb4baa5 bytes=31167 size=1600x900
+PASS | P12 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P12 state==InGame after transition | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P12 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P12 TileType total==150 | len=150
+PASS | P12 TileType Grass==105 | grass=105
+PASS | P12 TileType Path==45 | path=45
+PASS | P12 PathTile count==45 | len=45
+PASS | P12 PathTile subset of MapTile | len=45
+PASS | P12 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P12 texture index per cell == P3 baseline spec | bad=0
+PASS | P12 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P12 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P12 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P12 GRID_DIGEST zero drift vs T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P12 InGame: lives==5 (fresh BaseLives) | lives=5
+PASS | P12 InGame: wave schedule total==10 | total=10
+PASS | P12 tower placed after OnEnter load (PlacedTowers fresh) | {"placed":true,"pos":[-320,-288],"tile":[2,0]}
+PASS | P12 [A] elapsed in sampling window [2.2,3.0) | elapsed=2.21875
+PASS | P12 [A] entity digest == expected (independent recompute) | got=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23 expect=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+INFO | P12 ENTITY_DIGEST_A=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+PASS | screenshot queued | id=1 baseId=1 path=../docs/evidence/t048-m6-wave2/p12-shot.png
+PASS | screenshot status==captured | {"height":900,"id":1,"path":"../docs/evidence/t048-m6-wave2/p12-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=70361
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=fe7c48ab57d9fd24226d375f26dd7866 bytes=70361 size=1600x900
+PASS | P12 state==GameOver after defeat | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+PASS | P12 GameResult==Defeat | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+FAIL | P12 GameFinished flag set
+FAIL | P12 defeat: lives==0 / spawned==5 / pending==5 | {"available":false,"elapsed":null,"game_over":false,"lives":null,"pending":null,"spawned":null,"total":null}
+PASS | P12 defeat: zero enemies alive (world.query)
+PASS | screenshot queued | id=2 baseId=2 path=../docs/evidence/t048-m6-wave2/p12-shot-over.png
+PASS | screenshot status==captured | {"height":900,"id":2,"path":"../docs/evidence/t048-m6-wave2/p12-shot-over.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=54152
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=88040885509175d9db390a25ceb9f342 bytes=54152 size=1600x900
+PASS | P12 td.state set LevelSelect queued | {"from":"GameOver","queued":true,"to":"LevelSelect"}
+PASS | P12 state==LevelSelect after exit | {"available":true,"finished":false,"result":"Defeat","state":"LevelSelect"}
+PASS | P12 cleanup: MapTile==0
+PASS | P12 cleanup: PathTile==0
+PASS | P12 cleanup: Tower==0 / TowerTurret==0
+PASS | P12 cleanup: TowerPreview==0
+PASS | P12 cleanup: Enemy==0
+PASS | P12 cleanup: wave schedule removed (td.wave unavailable)
+PASS | P12 cleanup: lives removed / game_over flag reset | {"available":false,"elapsed":null,"game_over":false,"lives":null,"pending":null,"spawned":null,"total":null}
+PASS | P12 cleanup: GameResult kept for GameOver screen (Defeat survives) | {"available":true,"finished":false,"result":"Defeat","state":"LevelSelect"}
+PASS | P12 replay: state==InGame | {"available":true,"finished":false,"result":"Defeat","state":"InGame"}
+PASS | P12-replay MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P12-replay TileType total==150 | len=150
+PASS | P12-replay TileType Grass==105 | grass=105
+PASS | P12-replay TileType Path==45 | path=45
+PASS | P12-replay PathTile count==45 | len=45
+PASS | P12-replay PathTile subset of MapTile | len=45
+PASS | P12-replay TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P12-replay texture index per cell == P3 baseline spec | bad=0
+PASS | P12-replay PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P12-replay whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P12-replay tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P12 replay: GRID_DIGEST identical to first round | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P12 replay: lives==5 (fresh round) | lives=5
+PASS | P12 replay: schedule restarted (spawned<5) | spawned=1
+PASS | P12 replay: tower placement works again (PlacedTowers reset) | {"placed":true,"pos":[-320,-288],"tile":[2,0]}
+PASS | P12 replay: Tower count==1 (previous round fully cleaned) | towers=1
+SUMMARY: 79/81 PASS
+REAL_EXIT=1

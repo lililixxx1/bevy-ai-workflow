@@ -1,0 +1,48 @@
+$ node docs/evidence/t048-m6-wave2/assert-td.mjs --phase p11 --mode defeat --shot ../docs/evidence/t048-m6-wave2/p11-defeat-shot.png   # 2026-10-30T20:37:27+08:00
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==27 | len=27
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover no game.* prefix | (none)
+PASS | P11 td.game available | {"available":true,"elapsed":0.421875,"game_over":false,"lives":5,"pending":9,"spawned":1,"total":10}
+PASS | P11 initial lives==5 | lives=5
+PASS | P11 not game over at start
+PASS | P11 schedule total==10 events | total=10
+PASS | P11 harmless tower placed at [2,0] (out of range) | {"placed":true,"pos":[-320,-288],"tile":[2,0]}
+PASS | P11 Tower count==1
+PASS | P11 [A] elapsed in sampling window [2.2,3.0) | elapsed=2.234375
+PASS | P11 [A] alive healths == expected(spawned(elapsed)) | got=[100,100,100] spawned=3
+PASS | P11 [A] tower/turret counts == 1/1 | towers=1 turrets=1
+PASS | P11 [A] entity digest == expected (independent recompute) | got=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23 expect=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+INFO | P11 ENTITY_DIGEST_A=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t048-m6-wave2/p11-defeat-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t048-m6-wave2/p11-defeat-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=70395
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=828b6bb70feef0c98d1e339a2beda4ab bytes=70395 size=1600x900
+PASS | P11 defeat: game_over==true | {"available":true,"elapsed":6.796875,"game_over":true,"lives":0,"pending":5,"spawned":5,"total":10}
+PASS | P11 defeat: lives==0 | lives=0
+PASS | P11 defeat: spawned==5 (wave 1 only) | spawned=5
+PASS | P11 defeat: pending==5 (wave 2 never spawns) | pending=5
+PASS | P11 defeat: zero enemies alive (world.query)
+PASS | P11 defeat: no further spawns after game over | pending=5 spawned=5
+PASS | P11 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P11 TileType total==150 | len=150
+PASS | P11 TileType Grass==105 | grass=105
+PASS | P11 TileType Path==45 | path=45
+PASS | P11 PathTile count==45 | len=45
+PASS | P11 PathTile subset of MapTile | len=45
+PASS | P11 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P11 texture index per cell == P3 baseline spec | bad=0
+PASS | P11 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P11 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P11 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P11 GRID_DIGEST zero drift vs T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+SUMMARY: 41/41 PASS
+REAL_EXIT=0

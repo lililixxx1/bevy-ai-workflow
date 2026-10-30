@@ -1,0 +1,50 @@
+$ BEVY_ASSET_ROOT=<tree>/game-td ../target/debug/game-td.exe   # CWD=game-td/ 2026-10-30T20:38:09+08:00 [P11 victory]
+[2m2026-10-30T12:38:09.355613Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T12:38:09.611657Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T12:38:10.107685Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T12:38:10.107727Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game
+[2m2026-10-30T12:38:10.109731Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T12:38:10.109854Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T12:38:10.114138Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T12:38:10.173853Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T12:38:10.908947Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [2, 3] (world -320, -96)
+[2m2026-10-30T12:38:10.909091Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [4, 3] (world -192, -96)
+[2m2026-10-30T12:38:10.909167Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [6, 3] (world -64, -96)
+[2m2026-10-30T12:38:10.909248Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [8, 3] (world 64, -96)
+[2m2026-10-30T12:38:10.909317Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [10, 3] (world 192, -96)
+[2m2026-10-30T12:38:10.909368Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [12, 3] (world 320, -96)
+[2m2026-10-30T12:38:11.904968Z[0m [33m WARN[0m [2mbevy_ecs::error::handler[0m[2m:[0m Encountered an error in command `<bevy_ecs::system::commands::entity_command::despawn::{{closure}} as bevy_ecs::system::commands::entity_command::EntityCommand>::with_entity::{{closure}}`: Entity despawned: The entity with ID 648v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+
+[2m2026-10-30T12:38:12.624885Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t048-m6-wave2/p11-victory-shot.png (entity 684v0)
+[2m2026-10-30T12:38:12.671536Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T12:38:12.899744Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t048-m6-wave2/p11-victory-shot.png
+[2m2026-10-30T12:38:13.904973Z[0m [33m WARN[0m [2mbevy_ecs::error::handler[0m[2m:[0m Encountered an error in command `<bevy_ecs::system::commands::entity_command::despawn::{{closure}} as bevy_ecs::system::commands::entity_command::EntityCommand>::with_entity::{{closure}}`: Entity despawned: The entity with ID 693v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+
+[2m2026-10-30T12:38:14.904650Z[0m [33m WARN[0m [2mbevy_ecs::error::handler[0m[2m:[0m Encountered an error in command `<bevy_ecs::system::commands::entity_command::despawn::{{closure}} as bevy_ecs::system::commands::entity_command::EntityCommand>::with_entity::{{closure}}`: Entity despawned: The entity with ID 706v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+
+[2m2026-10-30T12:38:26.904014Z[0m [33m WARN[0m [2mbevy_ecs::error::handler[0m[2m:[0m Encountered an error in command `<bevy_ecs::system::commands::entity_command::despawn::{{closure}} as bevy_ecs::system::commands::entity_command::EntityCommand>::with_entity::{{closure}}`: Entity despawned: The entity with ID 746v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+
+[2m2026-10-30T12:38:29.904386Z[0m [33m WARN[0m [2mbevy_ecs::error::handler[0m[2m:[0m Encountered an error in command `<bevy_ecs::system::commands::entity_command::despawn::{{closure}} as bevy_ecs::system::commands::entity_command::EntityCommand>::with_entity::{{closure}}`: Entity despawned: The entity with ID 759v0 is invalid; its index now has generation 1.
+Note that interacting with a despawned entity is the most common cause of this error but there are others
+
+    If you were attempting to apply a command to this entity,
+    and want to handle this error gracefully, consider using `EntityCommands::queue_handled` or `queue_silenced`.
+
+[2m2026-10-30T12:38:29.904714Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+GAME_EXIT=1

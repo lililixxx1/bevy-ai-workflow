@@ -1,0 +1,45 @@
+$ grep -E 'GRID_DIGEST|ENTITY_DIGEST|SCREENSHOT md5|discover.methods|SUMMARY' docs/evidence/t048-m6-wave2/*-assert*.log   # 2026-10-30T20:55:19+08:00
+docs/evidence/t048-m6-wave2/p8-assert.log:PASS | discover.methods==25 | len=25
+docs/evidence/t048-m6-wave2/p8-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p8-assert.log:INFO | SCREENSHOT md5=7f0b0da3c6bf028ae2e3b1b1dcb968a1 bytes=65787 size=1600x900
+docs/evidence/t048-m6-wave2/p8-assert.log:SUMMARY: 35/35 PASS
+docs/evidence/t048-m6-wave2/p11-victory-assert.log:PASS | discover.methods==27 | len=27
+docs/evidence/t048-m6-wave2/p11-victory-assert.log:INFO | SCREENSHOT md5=40ed275d913d90053804b5464b996d15 bytes=78167 size=1600x900
+docs/evidence/t048-m6-wave2/p11-victory-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p11-victory-assert.log:SUMMARY: 37/37 PASS
+docs/evidence/t048-m6-wave2/p12-assert.log:PASS | discover.methods==28 | len=28
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | SCREENSHOT md5=63f58234e5fc9ffb09ec99e947d4ee1c bytes=31110 size=1600x900
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | P12 ENTITY_DIGEST_A=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | SCREENSHOT md5=60d9b2e97d84a6f3a8de988bcc0bcf4c bytes=69127 size=1600x900
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | SCREENSHOT md5=9197300475abe1346fa0683fc054a5f5 bytes=54397 size=1600x900
+docs/evidence/t048-m6-wave2/p12-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p12-assert.log:SUMMARY: 83/83 PASS
+docs/evidence/t048-m6-wave2/p10-assert.log:PASS | discover.methods==26 | len=26
+docs/evidence/t048-m6-wave2/p10-assert.log:INFO | SCREENSHOT md5=f4cc3ed9cc8683963852971152e698cc bytes=68719 size=1600x900
+docs/evidence/t048-m6-wave2/p10-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p10-assert.log:SUMMARY: 35/35 PASS
+docs/evidence/t048-m6-wave2/p11-defeat-assert.log:PASS | discover.methods==27 | len=27
+docs/evidence/t048-m6-wave2/p11-defeat-assert.log:INFO | P11 ENTITY_DIGEST_A=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+docs/evidence/t048-m6-wave2/p11-defeat-assert.log:INFO | SCREENSHOT md5=828b6bb70feef0c98d1e339a2beda4ab bytes=70395 size=1600x900
+docs/evidence/t048-m6-wave2/p11-defeat-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p11-defeat-assert.log:SUMMARY: 41/41 PASS
+docs/evidence/t048-m6-wave2/p9-assert.log:PASS | discover.methods==25 | len=25
+docs/evidence/t048-m6-wave2/p9-assert.log:INFO | SCREENSHOT md5=1e6c1fe3b8ebc4e5d16f07f1264354d3 bytes=70655 size=1600x900
+docs/evidence/t048-m6-wave2/p9-assert.log:INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+docs/evidence/t048-m6-wave2/p9-assert.log:SUMMARY: 30/30 PASS
+
+$ md5sum 各 phase 截图
+7f0b0da3c6bf028ae2e3b1b1dcb968a1 *docs/evidence/t048-m6-wave2/p8-shot.png
+1e6c1fe3b8ebc4e5d16f07f1264354d3 *docs/evidence/t048-m6-wave2/p9-shot.png
+f4cc3ed9cc8683963852971152e698cc *docs/evidence/t048-m6-wave2/p10-shot.png
+828b6bb70feef0c98d1e339a2beda4ab *docs/evidence/t048-m6-wave2/p11-defeat-shot.png
+40ed275d913d90053804b5464b996d15 *docs/evidence/t048-m6-wave2/p11-victory-shot.png
+60d9b2e97d84a6f3a8de988bcc0bcf4c *docs/evidence/t048-m6-wave2/p12-shot.png
+63f58234e5fc9ffb09ec99e947d4ee1c *docs/evidence/t048-m6-wave2/p12-shot-menu.png
+9197300475abe1346fa0683fc054a5f5 *docs/evidence/t048-m6-wave2/p12-shot-over.png
+b2166eb0bbafdcc6809efe3f15c61a11 *docs/evidence/t048-m6-wave2/p8-shot-run1.png
+e3e5d9363ad95c8622f986b26c49ed00 *docs/evidence/t048-m6-wave2/p9-shot-run1.png
+30c1926a9998bc5e16161fbe67b047ed *docs/evidence/t048-m6-wave2/p9-shot-run2.png
+e0e0d9f430c8819c15fd5bd3aeb4baa5 *docs/evidence/t048-m6-wave2/p12-shot-menu-run1.png
+88040885509175d9db390a25ceb9f342 *docs/evidence/t048-m6-wave2/p12-shot-over-run1.png

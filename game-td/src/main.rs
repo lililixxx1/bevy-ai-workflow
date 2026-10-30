@@ -1,9 +1,9 @@
-//! game-td —— M6 塔防（T047-W1）：外部教程 Part 4–7 的**行为**复刻。
+//! game-td —— M6 塔防（T047-W1 / T048-W1）：外部教程 Part 4–12 的**行为**复刻。
 //!
 //! 教程（JerryAZR/bevy-tower-defense，MIT）是行为规格、**非实现来源**：其代码为
 //! bevy 0.18.1 形态，本工程每个 API 均按 bevy 0.20.0 / bevy_ecs_tilemap 0.20.0
 //! 本地源码查证后重写（锚点见使用处注释；对照底稿
-//! `docs/evidence/t044-td-spike/w2/api-drift.md` Part 04 节）。
+//! `docs/evidence/t044-td-spike/w2/api-drift.md` Part 04–12 节）。
 //!
 //! 阶段：
 //! - P1：App + Camera2d + 红方块 Sprite；
@@ -19,35 +19,102 @@
 //!   `assets/levels/level_01.toml`（`[map]` + `[paths.<id>].waypoints` 宽 1 中心线），
 //!   加载时展开为宽 3 道路并补齐拐角对角格；`build_demo_map()` 退役。
 //!   **默认关卡与 P5 行为零变化**（waypoints `[[0,5],[14,5]]` ≡ 原 3 行横向道路）；
-//! - P7（本文件所在阶段）：按教程 07 加敌人寻路——`enemy.rs`（`Enemy` /
-//!   `PathFollower` / `MoveSpeed` + 位置式移动 + 终末回收）。Startup 拆为
-//!   `(load_level_data → spawn_tilemap → spawn_test_enemy).chain()`，移动挂
-//!   `FixedUpdate`；单测试敌自 waypoint[0] 出发朝 waypoint[1]（+x）。
+//! - P7：按教程 07 加敌人寻路——`enemy.rs`（`Enemy` / `PathFollower` /
+//!   `MoveSpeed` + 位置式移动 + 终末回收）；单测试敌自 waypoint[0] 出发朝
+//!   waypoint[1]（+x）；
+//! - P8：按教程 08 加塔放置——`tower.rs`（`Tower` / `TowerTurret` /
+//!   `TowerPreview` + `PlacedTowers` / `TowerAtlas`）；
+//!   光标悬停预览 + 左键放置挂 `Update`（输入响应），玩法系统留 `FixedUpdate`。
+//!   BRP 测试通道 `td.spawn_tower`（无鼠标注入面，放置需确定性入口）；
+//! - P9：按教程 09 加索敌 / 伤害 / 死亡回收——敌人 `Health(100)`、
+//!   炮塔 `AttackRange(192)` / `Damage(34)` / `AttackTimer(0.5s)`；
+//!   `attack_enemies` 挂 `FixedUpdate` 且排在移动之后、回收之前；
+//!   `despawn_timed` 清枪口焰（`Update`）；
+//! - P10：按教程 10 把单测试敌换成数据驱动波次——
+//!   `level.rs` 读 `[enemy_types.*]` / `[[waves]]`，`enemy.rs::build_spawn_schedule`
+//!   装载期展开为按时间排序的 `VecDeque<SpawnEvent>`，`spawn_wave_enemies` 每固定步
+//!   弹出到期事件（排在移动之前）；`spawn_test_enemy` 退役；
+//! - P11：按教程 11 加胜负判定——`BaseLives(5)`、`process_base_reachers`
+//!   （终点回收 + 扣命）、`GameOver` 标记资源与 `check_game_state`；
+//! - P12（本文件所在阶段）：按教程 12 重构为**状态机**（`GameState`：
+//!   LevelSelect → InGame → GameOver → LevelSelect）——关卡装载/卸载挂
+//!   `OnEnter/OnExit(InGame)`，玩法系统以 `.run_if(in_state(InGame))` 门控，
+//!   `GameEntity` 统一标记 + `cleanup_level` 一次清场，`level_select.rs` /
+//!   `game_over.rs` 两个屏内 UI 模块；`Local<bool>` 门闩换成随关卡回收的
+//!   `GameFinished` 资源（教程 12 Step 4），`GameOver` 标记退役。
+//!   BRP 测试通道 `td.state`（状态读写）以覆盖无键鼠注入的状态迁移。
 //!
 //! 窗口契约（Lead 预置，覆盖教程默认窗口）：1280×720、Windowed、title "game-td"。
-//! BRP 常驻见 [`brp`]：`127.0.0.1:15702`（显式回环绑定）+ 唯一自定义方法 `td.screenshot`。
+//! BRP 常驻见 [`brp`]：`127.0.0.1:15702`（显式回环绑定）+ `td.*` 自定义方法族。
 
 mod brp;
 mod enemy;
+mod game_over;
 mod level;
+mod level_select;
 mod map;
 mod tiling;
+mod tower;
 
+use bevy::ecs::system::entity_command::despawn;
 use bevy::prelude::*;
 // WindowMode 不在 prelude，经 bevy::window 引入（bevy_window-0.20.0/src/window.rs:1338）。
 use bevy::window::WindowMode;
 use bevy_ecs_tilemap::prelude::*;
 
-use enemy::{cleanup_finished_enemies, move_enemies, Enemy, MoveSpeed, PathFollower};
+use enemy::{
+    build_spawn_schedule, check_game_state, move_enemies, process_base_reachers,
+    spawn_wave_enemies, BaseLives, GameFinished,
+};
+use game_over::{handle_game_over_input, setup_game_over};
 use level::{build_map_from_level, load_level, LevelData};
+use level_select::{handle_level_select_input, setup_level_select};
 use map::{MapLayout, MapTile, PathTile, TileType};
 use tiling::{build_rules, TileRules};
+use tower::{
+    attack_enemies, despawn_timed, place_tower_on_click, setup_tower_atlas,
+    spawn_placement_preview, update_placement_preview, PlacedTowers,
+};
 
 /// 单格像素尺寸（教程 Part 2 Step 3 行为规格：64px 格）。
 const TILE_SIZE: f32 = 64.0;
 
 /// 默认关卡文件（教程 06 Step 6：路径相对进程 CWD = `game-td/`）。
 const DEFAULT_LEVEL_PATH: &str = "assets/levels/level_01.toml";
+
+/// 游戏状态机（教程 12 Step 1）：三态互斥，`#[default]` = 启动态。
+///
+/// derive 集是 Bevy 状态机要求（教程 12「Pitfall」：缺 Default 编译错、缺 Hash/Eq
+/// 得到深层的 trait-bound 错）。`States` 派生自 `bevy_state::prelude`
+/// （`bevy_state-0.20.0/src/lib.rs:77` 起；0.20 抽核维持）。
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, States, Default)]
+pub enum GameState {
+    #[default]
+    LevelSelect,
+    InGame,
+    GameOver,
+}
+
+/// 胜负结果（教程 12 Step 5）：`check_game_state` 写、GameOver 屏读。
+///
+/// `cleanup_level` 刻意**不**移除它——`OnEnter(GameOver)` 要读（教程 12 Step 9
+/// 「Critical ordering detail」）。
+#[derive(Resource)]
+pub enum GameResult {
+    Victory,
+    Defeat,
+}
+
+/// 玩法实体统一标记（教程 12 Step 2）：`cleanup_level` 一条查询全清。
+///
+/// 瓦片 / 敌人 / 塔 / 预览 / 枪口焰全部挂它；漏挂即在状态切换时泄漏
+/// （教程 12 Step 3「Pitfall」）。
+#[derive(Component)]
+pub struct GameEntity;
+
+/// 屏内 UI 标记（教程 12 Step 2）：菜单 / 结算屏离场时清理，不进 `GameEntity` 面。
+#[derive(Component)]
+struct ScreenUi;
 
 fn main() -> AppExit {
     App::new()
@@ -74,16 +141,71 @@ fn main() -> AppExit {
         // tilemap 渲染插件（教程 Part 3 Step 2）：`TilemapPlugin` 0.20.0/src/lib.rs:62。
         .add_plugins(TilemapPlugin)
         .add_plugins(brp::BrpPlugin)
-        // 教程 07 Step 1/7：数据 → 渲染 → 敌人的启动链（.chain() 保证次序：
-        // 后段系统读前段插入的资源）。
-        .add_systems(Startup, (load_level_data, spawn_tilemap, spawn_test_enemy).chain())
-        // 教程 07 Step 7：移动与回收挂固定步长调度（与帧率解耦）。
-        .add_systems(FixedUpdate, (move_enemies, cleanup_finished_enemies))
+        // 教程 12 Step 1：注册状态枚举 + 初始值（`#[default]` = LevelSelect）+
+        // `NextState` 资源；首个 update 触发 `OnEnter(LevelSelect)` 恰一次。
+        .init_state::<GameState>()
+        // 教程 12 Step 7：相机在 Startup 一次（跨全部屏持久，不随状态回收）。
+        .add_systems(Startup, spawn_camera)
+        // ---------- LevelSelect ----------
+        // 教程 12 Step 10：图集在进入菜单时备好（跨回合同持久，不进 cleanup_level）。
+        .add_systems(
+            OnEnter(GameState::LevelSelect),
+            (setup_level_select, setup_tower_atlas).chain(),
+        )
+        .add_systems(OnExit(GameState::LevelSelect), cleanup_screen_ui)
+        .add_systems(
+            Update,
+            handle_level_select_input.run_if(in_state(GameState::LevelSelect)),
+        )
+        // ---------- InGame ----------
+        // 教程 12 Step 7/10：数据 → 刷怪调度 → 渲染 → 预览幽灵，逐回合重装。
+        .add_systems(
+            OnEnter(GameState::InGame),
+            (
+                load_level_data,
+                setup_spawn_schedule,
+                spawn_tilemap,
+                spawn_placement_preview,
+            )
+                .chain(),
+        )
+        .add_systems(OnExit(GameState::InGame), cleanup_level)
+        // 教程 12 Step 10：玩法固定步长链仅在 InGame 运行（GameOver 时冻结）。
+        .add_systems(
+            FixedUpdate,
+            (
+                spawn_wave_enemies,
+                move_enemies,
+                attack_enemies,
+                process_base_reachers,
+                check_game_state,
+            )
+                .chain()
+                .run_if(in_state(GameState::InGame)),
+        )
+        .add_systems(
+            Update,
+            (update_placement_preview, place_tower_on_click, despawn_timed)
+                .run_if(in_state(GameState::InGame)),
+        )
+        // ---------- GameOver ----------
+        .add_systems(OnEnter(GameState::GameOver), setup_game_over)
+        .add_systems(OnExit(GameState::GameOver), cleanup_screen_ui)
+        .add_systems(
+            Update,
+            handle_game_over_input.run_if(in_state(GameState::GameOver)),
+        )
         .run()
 }
 
-/// 关卡数据装载（教程 07 Step 1 `load_level_data`）：纯数据、无渲染依赖，
-/// 把 `MapLayout` / `TileRules` / `LevelData` 三个资源先放进 ECS。
+/// 相机（教程 12 Step 7 `spawn_camera`）：Startup 一次，跨菜单 / 玩法 / 结算屏持久。
+fn spawn_camera(mut commands: Commands) {
+    commands.spawn(Camera2d);
+}
+
+/// 关卡数据装载（教程 12 Step 7）：每次进入 InGame 都重装——
+/// 含 `cleanup_level` 会移除的 `PlacedTowers` / `BaseLives`（教程 12 Step 7 注：
+/// 它们从 main.rs 移到这里，因为每回合都要重建）。
 fn load_level_data(mut commands: Commands) {
     let level = load_level(DEFAULT_LEVEL_PATH);
     let map = build_map_from_level(&level);
@@ -92,9 +214,32 @@ fn load_level_data(mut commands: Commands) {
     commands.insert_resource(map);
     commands.insert_resource(rules);
     commands.insert_resource(level);
+    // 教程 11 Step 1 + 12 Step 7：基地 5 命（`insert_resource` 而非 `init_resource`——
+    // `i32::default()` 是 0，且不同关卡可有不同起始命数）。
+    commands.insert_resource(BaseLives(5));
+    // 教程 08 Step 8 + 12 Step 7：占格集合逐回合重建。
+    commands.insert_resource(PlacedTowers::default());
 }
 
-/// P4/P5/P6/P7：按 `MapLayout` + `TileRules` 解析视觉索引并建 tilemap
+/// 构建并插入刷怪调度（教程 10 Step 6 `setup_spawn_schedule`）：
+/// 装载期一次性展开全部波次（`build_spawn_schedule`），运行期只弹队列。
+fn setup_spawn_schedule(
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
+    level: Res<LevelData>,
+) {
+    let schedule = build_spawn_schedule(&level, &asset_server, &mut texture_atlas_layouts);
+    info!(
+        "[TD] spawn schedule built: {} events ({} waves, {} enemy types)",
+        schedule.events.len(),
+        level.waves.len(),
+        level.enemy_types.len()
+    );
+    commands.insert_resource(schedule);
+}
+
+/// P4/P5/P6/P7/P12：按 `MapLayout` + `TileRules` 解析视觉索引并建 tilemap
 /// （教程 Part 4 Step 4 + 06 Step 6 + 07 Step 1 `spawn_tilemap`）。
 ///
 /// 顺序契约（教程 Part 3 Step 3–5 + 04 Step 4）：先拿父实体 → 逐格 spawn
@@ -102,17 +247,13 @@ fn load_level_data(mut commands: Commands) {
 /// 0.20 锚点同 P3（`TileBundle` `tiles/mod.rs:114-124`、`TileStorage::empty`/`set`
 /// `tiles/storage.rs:32`/`:65`、`TilemapAnchor::Center` `anchor.rs:13`）。
 ///
-/// 教程 05 Step 3 / 06 Step 6 / 07 Step 1：spawn 循环与 P4 **逐字相同**
-/// （重构 / 数据外置 / 启动拆分都不动接线）；P7 只是把数据来源从系统内
-/// `load_level` 换成资源读取。
+/// 教程 12 Step 3：tilemap 父实体与每个瓦片实体都挂 `GameEntity`（清场用）。
 fn spawn_tilemap(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
     map: Res<MapLayout>,
     rules: Res<TileRules>,
 ) {
-    commands.spawn(Camera2d);
-
     // tilesheet：1472×832 PNG = 23 列 × 13 行 × 64px（教程 Part 2 Step 1 规格）。
     let texture_handle: Handle<Image> = asset_server.load("Tilesheet/towerDefense_tilesheet.png");
 
@@ -126,7 +267,7 @@ fn spawn_tilemap(
     };
     let grid_size = tile_size.into();
 
-    let tilemap_entity = commands.spawn_empty().id();
+    let tilemap_entity = commands.spawn(GameEntity).id();
     let mut tile_storage = TileStorage::empty(map_size);
 
     for x in 0..map.width {
@@ -149,6 +290,7 @@ fn spawn_tilemap(
                     },
                     tile_type,
                     MapTile,
+                    GameEntity,
                 ))
                 .id();
 
@@ -172,62 +314,31 @@ fn spawn_tilemap(
     });
 }
 
-/// 单测试敌（教程 07 Step 3 `spawn_test_enemy`）：从 `main_road` 首航点点出，
-/// 立即朝第二航点走（`waypoint_index = 1`）。
+/// 退出 InGame 时的清场（教程 12 Step 6 `cleanup_level`）：
+/// ① 全部 `GameEntity` 实体（瓦片 / 敌人 / 塔 / 预览 / 枪口焰）；
+/// ② 全部关卡资源（`GameResult` 刻意保留，供 `OnEnter(GameOver)` 读取）。
 ///
-/// 行为规格（教程 07 Step 3）：
-/// - sprite = 同一 Kenney 图集、index 245、图集网格 64px × 23 列 × 13 行；
-/// - `z = 1.0` 压在地图（z ≈ 0）之上；
-/// - `MoveSpeed(192.0)` = 3 格/秒 × 64px/格；
-/// - 位置 / 目标用与 [`enemy::tile_to_world`] 同式的居中换算（教程 Step 3 内联式，
-///   Step 4 把同式抽成 helper 供塔复用）。
-fn spawn_test_enemy(
-    mut commands: Commands,
-    asset_server: Res<AssetServer>,
-    mut texture_atlas_layouts: ResMut<Assets<TextureAtlasLayout>>,
-    level: Res<LevelData>,
-) {
-    let texture = asset_server.load("Tilesheet/towerDefense_tilesheet.png");
-    // 0.20 锚点：`from_grid(tile_size, columns, rows, padding, offset)`
-    // `bevy_image-0.20.0/src/texture_atlas.rs:133-139`。
-    let layout = TextureAtlasLayout::from_grid(UVec2::splat(64), 23, 13, None, None);
-    let atlas_layout = texture_atlas_layouts.add(layout);
+/// `queue_silenced(despawn())`（0.20 锚：`EntityCommands::queue_silenced`
+/// `system/commands/mod.rs:1987`；`despawn()` 命令
+/// `system/commands/entity_command.rs:278`；glob 再导出 `system/mod.rs:143`）：
+/// 枪口焰子实体与父塔同挂 `GameEntity`，父实体递归 despawn 后子实体命令会失败——
+/// 静默忽略正是期望态（教程 12 Step 6「Why queue_silenced?」）。
+fn cleanup_level(mut commands: Commands, entities: Query<Entity, With<GameEntity>>) {
+    for entity in &entities {
+        commands.entity(entity).queue_silenced(despawn());
+    }
+    commands.remove_resource::<MapLayout>();
+    commands.remove_resource::<TileRules>();
+    commands.remove_resource::<LevelData>();
+    commands.remove_resource::<enemy::SpawnSchedule>();
+    commands.remove_resource::<PlacedTowers>();
+    commands.remove_resource::<BaseLives>();
+    commands.remove_resource::<GameFinished>();
+}
 
-    let waypoints = &level.paths["main_road"].waypoints;
-    let spawn_tile = waypoints[0];
-    let target_tile = waypoints[1];
-
-    let tile_size = 64.0;
-    let map_width = level.map.width as f32;
-    let map_height = level.map.height as f32;
-    let origin_x = -map_width * tile_size / 2.0 + tile_size / 2.0;
-    let origin_y = -map_height * tile_size / 2.0 + tile_size / 2.0;
-
-    let x = origin_x + spawn_tile[0] as f32 * tile_size;
-    let y = origin_y + spawn_tile[1] as f32 * tile_size;
-    let target = Vec2::new(
-        origin_x + target_tile[0] as f32 * tile_size,
-        origin_y + target_tile[1] as f32 * tile_size,
-    );
-
-    commands.spawn((
-        // 0.20 锚点：`Sprite::from_atlas_image(image, atlas)`
-        // `bevy_sprite-0.20.0/src/sprite.rs:64`；`TextureAtlas { layout, index }`
-        // `bevy_image-0.20.0/src/texture_atlas.rs:214-219`。
-        Sprite::from_atlas_image(
-            texture,
-            TextureAtlas {
-                layout: atlas_layout,
-                index: 245,
-            },
-        ),
-        Transform::from_xyz(x, y, 1.0),
-        Enemy,
-        PathFollower {
-            path_id: "main_road".to_string(),
-            waypoint_index: 1,
-            target,
-        },
-        MoveSpeed(192.0),
-    ));
+/// 屏内 UI 清场（教程 12 Step 6 `cleanup_screen_ui`）：菜单 / 结算屏各在 OnExit 调用。
+fn cleanup_screen_ui(mut commands: Commands, query: Query<Entity, With<ScreenUi>>) {
+    for entity in &query {
+        commands.entity(entity).despawn();
+    }
 }

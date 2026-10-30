@@ -1,0 +1,13 @@
+$ BEVY_ASSET_ROOT=<tree>/game-td ../target/debug/game-td.exe   # CWD=game-td/ 2026-10-30T20:33:36+08:00 [P10]
+[2m2026-10-30T12:33:36.855825Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T12:33:37.117372Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T12:33:37.655310Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T12:33:37.655358Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave
+[2m2026-10-30T12:33:37.658976Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T12:33:37.659192Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T12:33:37.663079Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T12:33:37.727258Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T12:33:42.124506Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t048-m6-wave2/p10-shot.png (entity 651v0)
+[2m2026-10-30T12:33:42.171728Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T12:33:42.369582Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t048-m6-wave2/p10-shot.png
+GAME_EXIT=1

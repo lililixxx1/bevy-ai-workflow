@@ -1,0 +1,37 @@
+$ node docs/evidence/t048-m6-wave2/assert-td.mjs --phase p9 --shot ../docs/evidence/t048-m6-wave2/p9-shot.png   # 2026-10-30T20:29:09+08:00
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==25 | len=25
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover no game.* prefix | (none)
+PASS | P9 two towers placed ([5,3],[9,3]) | {"placed":true,"pos":[-128,-96],"tile":[5,3]} {"placed":true,"pos":[128,-96],"tile":[9,3]}
+PASS | P9 Tower count==2
+PASS | P9 TowerTurret count==2
+PASS | P9 initial enemy count==1 with Health==100 | healths=[100]
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t048-m6-wave2/p9-shot.png
+INFO | P9 minHealth=32 aimHits=8 aimBestErr=0.0055 rotMaxAbsZ=0.377 lastEnemyX=-37 died=true iters=11
+PASS | P9 enemy took damage (min health <= 66 = 100-34) | minHealth=32
+PASS | P9 turret aim matches geometry (>=1 in-range sample, |err| < 0.05) | aimHits=8 bestErr=0.0055
+PASS | P9 enemy despawned mid-path by damage (lastSeenX < 300) | died=true lastEnemyX=-37
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t048-m6-wave2/p9-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=70655
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=1e6c1fe3b8ebc4e5d16f07f1264354d3 bytes=70655 size=1600x900
+PASS | P9 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P9 TileType total==150 | len=150
+PASS | P9 TileType Grass==105 | grass=105
+PASS | P9 TileType Path==45 | path=45
+PASS | P9 PathTile count==45 | len=45
+PASS | P9 PathTile subset of MapTile | len=45
+PASS | P9 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P9 texture index per cell == P3 baseline spec | bad=0
+PASS | P9 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P9 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P9 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P9 GRID_DIGEST zero drift vs T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+SUMMARY: 30/30 PASS
+REAL_EXIT=0

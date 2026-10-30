@@ -19,17 +19,19 @@ use serde::Deserialize;
 
 use crate::map::{MapLayout, TileType};
 
-/// 关卡真值（教程 06 Step 3）：与 TOML 形状同构，直接反序列化。
+/// 关卡真值（教程 06 Step 3 + 10 Step 2）：与 TOML 形状同构，直接反序列化。
 ///
 /// 作为资源常驻 ECS：后续系统（敌人 / 波次）不必从瓦片网格反推航点。
 #[derive(Debug, Deserialize, Resource)]
 pub struct LevelData {
     pub map: MapData,
     pub paths: HashMap<String, PathData>,
-    /// 波次定义预留（教程 06 Step 3）：P7 尚未消费，`#[serde(default)]` 允许缺省。
+    /// 敌型表（教程 10 Step 2）：`[enemy_types.<id>]`，缺省为空表（旧关卡向后兼容）。
     #[serde(default)]
-    #[allow(dead_code)]
-    pub waves: Vec<WaveData>,
+    pub enemy_types: HashMap<String, EnemyTypeDef>,
+    /// 波次（教程 10 Step 2）：`[[waves]]`；缺省为空（`#[serde(default)]` = 旧关卡可解析）。
+    #[serde(default)]
+    pub waves: Vec<WaveDef>,
 }
 
 /// `[map]` 段。
@@ -45,9 +47,44 @@ pub struct PathData {
     pub waypoints: Vec<[u32; 2]>,
 }
 
-/// `[[waves]]` 段（教程 06 Step 3：本阶段仅占位，Part 10 前不消费）。
+/// `[enemy_types.<id>]` 段（教程 10 Step 2）：一种敌人的外观与数值。
+#[derive(Debug, Deserialize, Clone)]
+pub struct EnemyTypeDef {
+    /// 图集索引（sprite = 245 等四个士兵变体）。
+    pub sprite: usize,
+    /// 世界单位 / 秒。
+    pub speed: f32,
+    /// 初始生命值。
+    pub health: f32,
+}
+
+/// `[[waves]]` 段（教程 10 Step 2）：一组按 `spawn_interval` 落地的敌人。
 #[derive(Debug, Deserialize)]
-pub struct WaveData {}
+pub struct WaveDef {
+    /// 相对关卡开始的秒数。
+    pub start_time: f32,
+    /// 走哪条路径（`[paths.<id>]` 的键）。
+    pub path: String,
+    /// 波内单敌间隔（秒）；缺省 1.0（教程 10 Step 2 `default_spawn_interval`）。
+    #[serde(default = "default_spawn_interval")]
+    pub spawn_interval: f32,
+    /// 有序敌人组：先组 1 打满，再组 2，依此类推。
+    pub enemies: Vec<WaveEnemyGroup>,
+}
+
+/// 缺省波内间隔（教程 10 Step 2）。
+fn default_spawn_interval() -> f32 {
+    1.0
+}
+
+/// 单个敌人组（教程 10 Step 2）：`{ type = "soldier", count = 3 }`。
+#[derive(Debug, Deserialize)]
+pub struct WaveEnemyGroup {
+    /// `type` 是 Rust 关键字，serde 侧改名（教程 10 Step 2）。
+    #[serde(rename = "type")]
+    pub enemy_type: String,
+    pub count: u32,
+}
 
 /// 读取 TOML 关卡（教程 06 Step 4 `load_level`）：缺失 / 解析失败即 panic。
 pub fn load_level(path: &str) -> LevelData {

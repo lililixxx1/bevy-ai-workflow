@@ -1,4 +1,4 @@
-# 默认关卡（T047-W1 P6）：与 P5 演示地图**行为零变化**。
+# 默认关卡（T047-W1 P6 / T048-W1 P10）：地图面与 P5 演示地图**行为零变化**。
 # 宽 1 中心线 [0,5] -> [14,5] 经加载期宽 3 展开 = 行 {4,5,6} 横向道路 45 格，
 # 与 P4/P5 的 build_demo_map() 逐格同形（教程 06 Step 2 格式）。
 [map]
@@ -9,4 +9,46 @@ height = 10
 waypoints = [
     [0, 5],
     [14, 5],
+]
+
+# 敌型（教程 10 Step 1）：四个士兵变体的图集索引 / 速度 / 生命。
+[enemy_types.soldier]
+sprite = 245
+speed = 192.0
+health = 100.0
+
+[enemy_types.runner]
+sprite = 246
+speed = 320.0
+health = 60.0
+
+[enemy_types.heavy]
+sprite = 247
+speed = 96.0
+health = 300.0
+
+[enemy_types.scout]
+sprite = 248
+speed = 160.0
+health = 80.0
+
+# 波次（教程 10 Step 1）：波 1 立即开始（3 soldier + 2 runner，1.0s/只），
+# 波 2 于 12.0s 开始（2 soldier + 2 scout + 1 heavy，1.2s/只——跨波自然交错）。
+[[waves]]
+start_time = 0.0
+path = "main_road"
+spawn_interval = 1.0
+enemies = [
+    { type = "soldier", count = 3 },
+    { type = "runner", count = 2 },
+]
+
+[[waves]]
+start_time = 12.0
+path = "main_road"
+spawn_interval = 1.2
+enemies = [
+    { type = "soldier", count = 2 },
+    { type = "scout", count = 2 },
+    { type = "heavy", count = 1 },
 ]

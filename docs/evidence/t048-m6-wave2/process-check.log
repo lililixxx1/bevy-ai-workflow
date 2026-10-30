@@ -1,0 +1,2 @@
+$ tasklist | grep -i -E 'game-td|rustc'   # 收尾终态核查 2026-10-30T20:54:26+08:00
+grep_exit=1

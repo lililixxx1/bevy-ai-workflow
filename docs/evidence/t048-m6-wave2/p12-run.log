@@ -1,0 +1,26 @@
+$ BEVY_ASSET_ROOT=<tree>/game-td ../target/debug/game-td.exe   # CWD=game-td/ 2026-10-30T20:46:11+08:00 [P12 run2]
+[2m2026-10-30T12:46:12.192540Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T12:46:12.441249Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T12:46:12.985993Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T12:46:12.986027Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state
+[2m2026-10-30T12:46:12.989022Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T12:46:12.989168Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T12:46:12.993053Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T12:46:14.579209Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t048-m6-wave2/p12-shot-menu.png (entity 495v0)
+[2m2026-10-30T12:46:14.625517Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T12:46:14.796629Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t048-m6-wave2/p12-shot-menu.png
+[2m2026-10-30T12:46:14.829018Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T12:46:14.844359Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T12:46:14.946457Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [2, 0] (world -320, -288)
+[2m2026-10-30T12:46:18.211862Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 queued -> ../docs/evidence/t048-m6-wave2/p12-shot.png (entity 664v0)
+[2m2026-10-30T12:46:18.259298Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 captured (1600x900)
+[2m2026-10-30T12:46:18.469443Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t048-m6-wave2/p12-shot.png
+[2m2026-10-30T12:46:21.625068Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-30T12:46:23.561270Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #2 queued -> ../docs/evidence/t048-m6-wave2/p12-shot-over.png (entity 759v1)
+[2m2026-10-30T12:46:23.791331Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t048-m6-wave2/p12-shot-over.png
+[2m2026-10-30T12:46:23.791757Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #2 captured (1600x900)
+[2m2026-10-30T12:46:23.801867Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T12:46:24.277890Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T12:46:24.292069Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T12:46:24.394728Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower placed at tile [2, 0] (world -320, -288)
+GAME_EXIT=1

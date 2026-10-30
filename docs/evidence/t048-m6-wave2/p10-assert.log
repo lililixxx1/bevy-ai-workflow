@@ -1,0 +1,42 @@
+$ node docs/evidence/t048-m6-wave2/assert-td.mjs --phase p10 --shot ../docs/evidence/t048-m6-wave2/p10-shot.png   # 2026-10-30T20:33:37+08:00
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==26 | len=26
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover no game.* prefix | (none)
+PASS | P10 td.wave available | {"available":true,"elapsed":0.578125,"pending":9,"spawned":1,"total":10}
+PASS | P10 schedule total==10 events (wave1 5 + wave2 5) | total=10
+PASS | P10 pending + spawned == total | pending=9 spawned=1 total=10
+PASS | P10 spawned == expectedSpawned(elapsed) at first read | elapsed=0.578125 spawned=1 expect=1
+PASS | P10 [A] spawned == expectedSpawned(elapsed) | elapsed=2.31 spawned=3 expect=3
+PASS | P10 [A] alive health multiset == expected(spawned) | got=[100,100,100] expect=[100,100,100]
+PASS | P10 [B] spawned == 5 (whole wave 1 due) | elapsed=4.23 spawned=5
+PASS | P10 [B] alive health multiset == [60,60,100,100,100] | got=[60,60,100,100,100]
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t048-m6-wave2/p10-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t048-m6-wave2/p10-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=68719
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=f4cc3ed9cc8683963852971152e698cc bytes=68719 size=1600x900
+PASS | P10 [C] spawned == 6 (wave 2 started at 12.0) | elapsed=12.36 spawned=6
+PASS | P10 [C] only wave-2 soldier alive (1 x 100hp, wave1 leaked) | got=[100]
+PASS | P10 [C] pending == total - spawned | pending=4 total=10 spawned=6
+INFO | P10 checkpoints A(t=2.31,s=3) B(t=4.23,s=5) C(t=12.36,s=6)
+PASS | P10 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P10 TileType total==150 | len=150
+PASS | P10 TileType Grass==105 | grass=105
+PASS | P10 TileType Path==45 | path=45
+PASS | P10 PathTile count==45 | len=45
+PASS | P10 PathTile subset of MapTile | len=45
+PASS | P10 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P10 texture index per cell == P3 baseline spec | bad=0
+PASS | P10 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P10 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P10 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P10 GRID_DIGEST zero drift vs T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+SUMMARY: 35/35 PASS
+REAL_EXIT=0
