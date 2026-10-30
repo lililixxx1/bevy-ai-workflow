@@ -77,6 +77,10 @@ use bevy::prelude::*;
 use bevy::remote::http::RemoteHttpPlugin;
 use bevy::remote::{error_codes, BrpError, BrpResult, RemotePlugin};
 use bevy::render::view::screenshot::{save_to_disk, Screenshot, ScreenshotCaptured};
+// P22：`World::run_system_once`（一次性运行具名 run 条件本身）——
+// trait `RunSystemOnce` 不在 prelude，须显式引入
+// （`bevy_ecs-0.20.0/src/system/system.rs:331`）。
+use bevy::ecs::system::RunSystemOnce;
 use serde::Serialize;
 use serde_json::{json, Value};
 
@@ -130,6 +134,42 @@ pub const TD_AUDIO_METHOD: &str = "td.audio";
 /// `td.pause` 方法名（P21 起：暂停状态读写——BRP 无键盘注入，Escape 不可直达）。
 pub const TD_PAUSE_METHOD: &str = "td.pause";
 
+/// `td.conditions` 方法名（P22 起：具名 run 条件 / 系统集合的可观察面）。
+///
+/// 为什么需要：P22 是**纯重构**（`run_if` → `configure_sets` + `in_set`），行为面
+/// 应与 P21 逐位一致；但「条件真的挂在集合上」需要一个非行为断言面：
+/// - `game_is_running` = **直接运行具名条件函数本身**（`World::run_system_once`
+///   `bevy_ecs-0.20.0/src/system/system.rs:331`）——不是复述其逻辑；
+/// - `ticks` = 三个集合各自成员微系统（`pause::tick_*`）的推进计数——若
+///   `configure_sets` 漏挂，计数器在 LevelSelect / 暂停中仍会推进（差异可见）。
+pub const TD_CONDITIONS_METHOD: &str = "td.conditions";
+
+/// `td.level_select` 方法名（P23 起：菜单按钮网格 / 焦点 / 交互态的可观察面）。
+///
+/// 为什么需要：BRP 无鼠标注入，而 P23 的核心是「按钮 + `Interaction` 三态」。
+/// - `snapshot` → 按钮结构面（`LevelButton` 下标 / 焦点 / `Interaction` / 背景色）；
+/// - `focus` → 写 `FocusedLevel`（键盘导航与视觉系统共享的同一状态）；
+/// - `click` → 写目标按钮 `Interaction::Pressed` 后**运行真实的
+///   `handle_level_button_click` 一次**（`run_system_once`；`Changed<Interaction>`
+///   对该新实例恒真——`function_system.rs:781` 把 `last_run` 置为「MAX 之前」）——
+///   鼠标通道的消费者逻辑全走真码路径；
+/// - `confirm` → Enter/Space 分支共用的 `apply_level_selection`。
+pub const TD_LEVEL_SELECT_METHOD: &str = "td.level_select";
+
+/// `td.input` 方法名（P24 起：逻辑动作注入 + 虚拟光标读写——教程 24 的确定性入口）。
+///
+/// 为什么需要：BRP 无键鼠 / 手柄注入通道；P24 起全部输入面收敛为
+/// `GameAction` + `VirtualCursorPos`，注入逻辑动作即等价于一次真实按键 / 点击，
+/// 下游消费者（走格 / 选塔 / 菜单导航 / 暂停 / 放置）全走真码路径。
+pub const TD_INPUT_METHOD: &str = "td.input";
+
+/// `td.gamepad` 方法名（P25 起：手柄连接状态 / 绑定表 / 摇杆判别的可观察面）。
+///
+/// 为什么需要：本机可能无手柄（行为面无法实机断言）——按立项「映射表 + 模拟路径」
+/// 落地：结构面（连接数 / 输入模块装配 / 绑定表 / 节拍参数）+ **纯函数探测**
+/// （`probe_button` / `probe_stick` 调与读取器同一函数）。
+pub const TD_GAMEPAD_METHOD: &str = "td.gamepad";
+
 pub struct BrpPlugin;
 
 impl Plugin for BrpPlugin {
@@ -154,7 +194,9 @@ impl Plugin for BrpPlugin {
             .register_type::<crate::economy::Bounty>()
             // P17：塔型下标（放置塔的塔型端到端证据）与 dock 槽位（U6 侧信道计数）。
             .register_type::<crate::tower::TowerTypeId>()
-            .register_type::<crate::tower::TowerDockSlot>();
+            .register_type::<crate::tower::TowerDockSlot>()
+            // P23：菜单按钮下标（按钮网格结构面计数；同 U6 侧信道口径）。
+            .register_type::<crate::level_select::LevelButton>();
         app.init_resource::<ScreenshotLog>();
         app.add_plugins(
             RemotePlugin::default()
@@ -171,7 +213,11 @@ impl Plugin for BrpPlugin {
                 .with_method_main(TD_EVENTS_METHOD, events_handler)
                 .with_method_main(TD_GIZMOS_METHOD, gizmos_handler)
                 .with_method_main(TD_AUDIO_METHOD, audio_handler)
-                .with_method_main(TD_PAUSE_METHOD, pause_handler),
+                .with_method_main(TD_PAUSE_METHOD, pause_handler)
+                .with_method_main(TD_CONDITIONS_METHOD, conditions_handler)
+                .with_method_main(TD_LEVEL_SELECT_METHOD, level_select_handler)
+                .with_method_main(TD_INPUT_METHOD, input_handler)
+                .with_method_main(TD_GAMEPAD_METHOD, gamepad_handler),
         );
         app.add_plugins(RemoteHttpPlugin::default().with_address(std::net::Ipv4Addr::LOCALHOST));
         info!("[BRP] listening on 127.0.0.1:15702 (explicit loopback bind)");
@@ -180,7 +226,8 @@ impl Plugin for BrpPlugin {
              {TD_WAVE_METHOD}, {TD_GAME_METHOD}, {TD_STATE_METHOD}, {TD_LEVEL_METHOD}, \
              {TD_ECONOMY_METHOD}, {TD_COMBAT_METHOD}, {TD_TOWERS_METHOD}, \
              {TD_TOWER_SELECT_METHOD}, {TD_EVENTS_METHOD}, {TD_GIZMOS_METHOD}, \
-             {TD_AUDIO_METHOD}, {TD_PAUSE_METHOD}"
+             {TD_AUDIO_METHOD}, {TD_PAUSE_METHOD}, {TD_CONDITIONS_METHOD}, \
+             {TD_LEVEL_SELECT_METHOD}, {TD_INPUT_METHOD}, {TD_GAMEPAD_METHOD}"
         );
     }
 }
@@ -1228,6 +1275,8 @@ pub fn gizmos_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpRe
             Ok(json!({
                 "available": log.is_some(),
                 "preview_visible": log.map(|l| l.preview_visible),
+                // P24：光标高亮格（`draw_cursor_highlight` 写；None = 无虚拟光标）。
+                "cursor_highlight": log.and_then(|l| l.cursor_tile),
                 "ring_count": rings.len(),
                 "rings": rings,
             }))
@@ -1492,6 +1541,535 @@ pub fn pause_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpRes
                 "queued": true,
                 "from": pause_state_name(current),
                 "to": pause_state_name(target),
+            }))
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// P22：td.conditions（具名 run 条件 / 系统集合，教程 22）
+// ---------------------------------------------------------------------------
+
+/// `td.conditions` handler（P22）：具名 run 条件与集合计数的可观察面。
+///
+/// - `{}` / `{"op":"snapshot"}` → `{game_state, pause_state, game_is_running, ticks}`；
+/// - 其它 op → -32602。
+///
+/// `game_is_running` 的真值来自**运行条件函数本身**（`run_system_once`
+/// `bevy_ecs-0.20.0/src/system/system.rs:331`；条件经 blanket `SystemCondition`
+/// 实现 `schedule/condition.rs:600`）——handler 不复述判断逻辑，避免双实现漂移。
+pub fn conditions_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    if let Some(value) = params.as_ref() {
+        if !value.is_null() {
+            let Value::Object(map) = value else {
+                return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+            };
+            match map.get("op") {
+                None | Some(Value::Null) | Some(Value::String(_)) => {}
+                Some(other) => {
+                    return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+                }
+            }
+            if let Some(op) = map.get("op").and_then(Value::as_str) {
+                if op != "snapshot" {
+                    return Err(invalid_params(&format!(
+                        "未知 op `{op}`（允许 snapshot）"
+                    )));
+                }
+            }
+        }
+    }
+
+    let game_state = world
+        .get_resource::<State<GameState>>()
+        .map(|s| *s.get())
+        .map(state_name);
+    let pause_state = world
+        .get_resource::<State<crate::pause::PauseState>>()
+        .map(|s| *s.get())
+        .map(pause_state_name);
+    // 具名条件即普通系统：`run_system_once` 返回 `Result<bool, RunSystemError>`。
+    let game_is_running = match world.run_system_once(crate::pause::game_is_running) {
+        Ok(value) => Some(value),
+        Err(_) => None,
+    };
+    let ticks = world.get_resource::<crate::pause::SetTickLog>();
+    Ok(json!({
+        "game_state": game_state,
+        "pause_state": pause_state,
+        "game_is_running": game_is_running,
+        "ticks": {
+            "simulation": ticks.map(|t| t.simulation),
+            "interaction": ticks.map(|t| t.interaction),
+            "tower_dock": ticks.map(|t| t.tower_dock),
+        },
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// P23：td.level_select（菜单按钮网格 / 焦点 / 交互态，教程 23）
+// ---------------------------------------------------------------------------
+
+/// `td.level_select` 的参数解析结果。
+enum LevelSelectOp {
+    /// 只读快照（按钮结构面 + 焦点 + 交互态 + 背景色）。
+    Snapshot,
+    /// 写焦点下标（键盘导航系统共享的同一状态）。
+    Focus(usize),
+    /// 走 Enter/Space 分支共用的选中逻辑。
+    Confirm,
+    /// 写 `Interaction::Pressed` 并运行真实的点击消费者一次。
+    Click(usize),
+}
+
+/// 解析 `td.level_select` 的 params（严格分支）：缺省 / `{"op":"snapshot"}` = 快照；
+/// `{"op":"focus","index":n}` / `{"op":"click","index":n}` / `{"op":"confirm"}`。
+fn parse_level_select_op(params: Option<&Value>) -> Result<LevelSelectOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(LevelSelectOp::Snapshot);
+    };
+    if value.is_null() {
+        return Ok(LevelSelectOp::Snapshot);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "snapshot",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    let index_of = |map: &serde_json::Map<String, Value>| -> Result<usize, BrpError> {
+        match map.get("index") {
+            Some(Value::Number(n)) => match n.as_u64() {
+                Some(i) => Ok(i as usize),
+                None => Err(invalid_params("index 须为非负整数")),
+            },
+            _ => Err(invalid_params("该 op 需要 index（非负整数）")),
+        }
+    };
+    match op {
+        "snapshot" => Ok(LevelSelectOp::Snapshot),
+        "confirm" => Ok(LevelSelectOp::Confirm),
+        "focus" => Ok(LevelSelectOp::Focus(index_of(map)?)),
+        "click" => Ok(LevelSelectOp::Click(index_of(map)?)),
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 snapshot / focus / click / confirm）"
+        ))),
+    }
+}
+
+/// `Interaction` 三态 → 稳定字符串（断言脚本口径）。
+#[expect(
+    deprecated,
+    reason = "Interaction 为 0.20 弃用别名；快照口径沿 P17 A' 通道以 expect 属性落地"
+)]
+fn interaction_name(interaction: &bevy::ui::Interaction) -> &'static str {
+    match interaction {
+        bevy::ui::Interaction::Pressed => "Pressed",
+        bevy::ui::Interaction::Hovered => "Hovered",
+        bevy::ui::Interaction::None => "None",
+    }
+}
+
+/// `td.level_select` handler（P23）：菜单按钮网格的可观察面与三通道确定性入口。
+///
+/// 守卫：`focus` / `click` / `confirm` 只在 `GameState::LevelSelect` 受理（菜单语义；
+/// 与 `navigate_level_select` 的 `.run_if(in_state(LevelSelect))` 对齐），否则 -32602。
+/// `click` 通过 `run_system_once` 运行**真实消费者系统**——`Changed<Interaction>` 在
+/// 新系统实例上恒真（`bevy_ecs-0.20.0/src/system/function_system.rs:781`），
+/// 故「写 Pressed → 消费者响应」闭环可被确定性断言。
+#[expect(
+    deprecated,
+    reason = "Interaction 为 0.20 弃用别名；教程 23 原步消费者按 A' 通道以 expect 属性落地"
+)]
+pub fn level_select_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_level_select_op(params.as_ref())?;
+    let game_state = world
+        .get_resource::<State<GameState>>()
+        .map(|s| *s.get());
+
+    if !matches!(op, LevelSelectOp::Snapshot) && game_state != Some(GameState::LevelSelect) {
+        return Err(invalid_params(
+            "菜单操作仅在 LevelSelect 受理（教程 23 屏幕语义）",
+        ));
+    }
+
+    // 三个写通道的共同前置：发现列表 / 选中项 / 焦点资源。
+    let len = world
+        .get_resource::<crate::level_select::AvailableLevels>()
+        .map(|l| l.0.len())
+        .unwrap_or(0);
+
+    match op {
+        LevelSelectOp::Snapshot => {}
+        LevelSelectOp::Focus(index) => {
+            if index >= len {
+                return Err(invalid_params(&format!("focus index {index} 越界（{len} 关）")));
+            }
+            world.resource_mut::<crate::level_select::FocusedLevel>().0 = index;
+        }
+        LevelSelectOp::Confirm => {
+            let focused = world.resource::<crate::level_select::FocusedLevel>().0;
+            // 多资源同写：`resource_scope` 临时移除 R 并交给闭包 `Mut<R>`，其余 World
+            // 仍可用（`bevy_ecs-0.20.0/src/world/mod.rs:2876`）。
+            let levels_snapshot = crate::level_select::AvailableLevels(
+                world
+                    .resource::<crate::level_select::AvailableLevels>()
+                    .0
+                    .clone(),
+            );
+            let chosen = world.resource_scope::<crate::level_select::SelectedLevel, _>(
+                |world, mut selected| {
+                    world.resource_scope::<NextState<GameState>, _>(|_, mut next_state| {
+                        crate::level_select::apply_level_selection(
+                            focused,
+                            &levels_snapshot,
+                            &mut selected,
+                            &mut next_state,
+                        )
+                    })
+                },
+            );
+            info!("[TD] level_select confirm -> {chosen:?}");
+        }
+        LevelSelectOp::Click(index) => {
+            if index >= len {
+                return Err(invalid_params(&format!("click index {index} 越界（{len} 关）")));
+            }
+            // ① 输入源替代：目标按钮 Pressed、其余按钮清回 None（避免旧按下态干扰）。
+            let mut found = false;
+            {
+                let mut query = world.query_filtered::<
+                    (&crate::level_select::LevelButton, &mut bevy::ui::Interaction),
+                    With<crate::level_select::LevelButton>,
+                >();
+                for (btn, mut interaction) in query.iter_mut(world) {
+                    if btn.0 == index {
+                        *interaction = bevy::ui::Interaction::Pressed;
+                        found = true;
+                    } else if *interaction != bevy::ui::Interaction::None {
+                        *interaction = bevy::ui::Interaction::None;
+                    }
+                }
+            }
+            if !found {
+                return Err(invalid_params(&format!(
+                    "click index {index} 找不到对应按钮实体（UI 未生成？）"
+                )));
+            }
+            // ② 运行真实消费者（选中 + 请求 InGame）。
+            if world
+                .run_system_once(crate::level_select::handle_level_button_click)
+                .is_err()
+            {
+                return Err(invalid_params("点击消费者运行失败（系统参数校验未过）"));
+            }
+            info!("[TD] level_select click -> button {index}");
+        }
+    }
+
+    // ---- 快照（三条写通道后同样返回，便于一次调用即读结果）----
+    let focused_index = world
+        .get_resource::<crate::level_select::FocusedLevel>()
+        .map(|f| f.0);
+    let selected = world
+        .get_resource::<crate::level_select::SelectedLevel>()
+        .map(|s| s.0.clone());
+    let mut buttons: Vec<Value> = Vec::new();
+    {
+        let mut query = world.query_filtered::<
+            (
+                &crate::level_select::LevelButton,
+                &bevy::ui::Interaction,
+                &BackgroundColor,
+            ),
+            With<crate::level_select::LevelButton>,
+        >();
+        for (btn, interaction, bg) in query.iter(world) {
+            let color = bg.0.to_srgba();
+            buttons.push(json!({
+                "index": btn.0,
+                "interaction": interaction_name(interaction),
+                "focused": Some(btn.0) == focused_index,
+                "color": [color.red, color.green, color.blue, color.alpha],
+            }));
+        }
+    }
+    buttons.sort_by_key(|b| b["index"].as_u64().unwrap_or(u64::MAX));
+    Ok(json!({
+        "available": game_state == Some(GameState::LevelSelect),
+        "game_state": game_state.map(state_name),
+        "levels": world
+            .get_resource::<crate::level_select::AvailableLevels>()
+            .map(|l| l.0.clone())
+            .unwrap_or_default(),
+        "focused": focused_index,
+        "selected": selected,
+        "buttons": buttons,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// P24：td.input（逻辑动作注入 + 虚拟光标，教程 24）
+// ---------------------------------------------------------------------------
+
+/// `td.input` 的参数解析结果。
+enum InputOp {
+    /// 读虚拟光标（缺省）。
+    Cursor,
+    /// 写虚拟光标（格坐标，需关卡已加载）。
+    SetCursor([u32; 2]),
+    /// 写一条 `GameAction` 消息（物理输入的统一出口）。
+    Emit(crate::input::GameAction),
+}
+
+/// 解析 `td.input` 的 params（严格分支）：缺省 / `{"op":"cursor"}` = 读光标；
+/// `{"op":"set_cursor","tile":[x,y]}` = 写光标；`{"op":"emit","action":"Confirm"}`
+/// （`SelectTower`/`SelectLevel` 需 `index`）= 注入一条逻辑动作。
+fn parse_input_op(params: Option<&Value>) -> Result<InputOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(InputOp::Cursor);
+    };
+    if value.is_null() {
+        return Ok(InputOp::Cursor);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "cursor",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "cursor" => Ok(InputOp::Cursor),
+        "set_cursor" => Ok(InputOp::SetCursor(parse_tile_param(Some(value))?)),
+        "emit" => {
+            let Some(Value::String(name)) = map.get("action") else {
+                return Err(invalid_params("emit 需要 action 字符串"));
+            };
+            let index = match map.get("index") {
+                None | Some(Value::Null) => None,
+                Some(Value::Number(n)) => {
+                    let Some(i) = n.as_u64() else {
+                        return Err(invalid_params("index 须为非负整数"));
+                    };
+                    Some(i as usize)
+                }
+                Some(other) => {
+                    return Err(invalid_params(&format!(
+                        "index 须为非负整数（收到 {other}）"
+                    )));
+                }
+            };
+            match crate::input::action_from_spec(name, index) {
+                Some(action) => Ok(InputOp::Emit(action)),
+                None => Err(invalid_params(&format!(
+                    "未知 action `{name}`（或缺少 index）"
+                ))),
+            }
+        }
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 cursor / set_cursor / emit）"
+        ))),
+    }
+}
+
+/// `td.input` handler（P24）：逻辑动作注入 + 虚拟光标读写。
+///
+/// 为什么需要：BRP 无键鼠 / 手柄注入通道，而 P24/P25 的全部行为面都经
+/// `GameAction` / `VirtualCursorPos` 汇合——注入逻辑动作即等价于「按下键盘 / 点击 /
+/// 推手柄」，且消费者全走真码路径（`nudge_virtual_cursor` / `select_tower_by_key` /
+/// `navigate_level_select` / `toggle_pause` / `place_tower_on_click`）。
+pub fn input_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_input_op(params.as_ref())?;
+
+    // 响应体同时给「动作面」与「光标面」：一次调用即可确认注入结果。
+    let mut emitted: Option<String> = None;
+    match op {
+        InputOp::Cursor => {}
+        InputOp::SetCursor(tile) => {
+            let Some(map) = world.get_resource::<MapLayout>() else {
+                return Err(invalid_params("set_cursor 需要已加载关卡（MapLayout 缺失）"));
+            };
+            if tile[0] >= map.width || tile[1] >= map.height {
+                return Err(invalid_params(&format!(
+                    "tile {:?} 越界（地图 {}x{}）",
+                    tile, map.width, map.height
+                )));
+            }
+            let width = map.width;
+            let height = map.height;
+            if let Some(mut cursor) = world.get_resource_mut::<crate::tower::VirtualCursorPos>() {
+                cursor.0 = Some(tile);
+            } else {
+                world.insert_resource(crate::tower::VirtualCursorPos(Some(tile)));
+            }
+            info!("[TD] input set_cursor -> {:?} (map {width}x{height})", tile);
+        }
+        InputOp::Emit(action) => {
+            let name = crate::input::action_name(&action);
+            if world.write_message(action).is_none() {
+                return Err(invalid_params(
+                    "GameAction 消息队列未注册（InputPlugin 未装配？）",
+                ));
+            }
+            info!("[TD] input emit -> {name}");
+            emitted = Some(name);
+        }
+    }
+
+    let cursor = world
+        .get_resource::<crate::tower::VirtualCursorPos>()
+        .and_then(|c| c.0);
+    let placeable = match (
+        cursor,
+        world.get_resource::<MapLayout>(),
+        world.get_resource::<crate::tower::PlacedTowers>(),
+    ) {
+        (Some(tile), Some(map), Some(placed)) => {
+            Some(crate::tower::tile_is_placeable(map, placed, tile).is_some())
+        }
+        _ => None,
+    };
+    Ok(json!({
+        "cursor": cursor,
+        "cursor_available": world.get_resource::<crate::tower::VirtualCursorPos>().is_some(),
+        "placeable": placeable,
+        "emitted": emitted,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// P25：td.gamepad（手柄连接 / 绑定表 / 摇杆判别的可观察面，教程 25）
+// ---------------------------------------------------------------------------
+
+/// `td.gamepad` 的参数解析结果。
+enum GamepadOp {
+    /// 连接状态 + 绑定表 + 摇杆节拍参数。
+    Snapshot,
+    /// 单键映射探测（调用 `input::map_gamepad_button` 同一函数）。
+    ProbeButton(bevy::input::gamepad::GamepadButton),
+    /// 摇杆向量探测（调用 `input::stick_to_action` 同一函数）。
+    ProbeStick(Vec2),
+}
+
+/// 解析 `td.gamepad` 的 params（严格分支）：缺省 / `{"op":"snapshot"}`；
+/// `{"op":"probe_button","button":"DPadUp"}`；
+/// `{"op":"probe_stick","x":0.5,"y":0.0}`。
+fn parse_gamepad_op(params: Option<&Value>) -> Result<GamepadOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(GamepadOp::Snapshot);
+    };
+    if value.is_null() {
+        return Ok(GamepadOp::Snapshot);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "snapshot",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "snapshot" => Ok(GamepadOp::Snapshot),
+        "probe_button" => {
+            let Some(Value::String(name)) = map.get("button") else {
+                return Err(invalid_params("probe_button 需要 button 字符串"));
+            };
+            match crate::input::gamepad_button_from_name(name) {
+                Some(button) => Ok(GamepadOp::ProbeButton(button)),
+                None => Err(invalid_params(&format!(
+                    "未知 button `{name}`（允许标准 19 键变体名）"
+                ))),
+            }
+        }
+        "probe_stick" => {
+            let read = |key: &str| -> Result<f32, BrpError> {
+                match map.get(key) {
+                    Some(Value::Number(n)) => n
+                        .as_f64()
+                        .map(|v| v as f32)
+                        .ok_or_else(|| invalid_params(&format!("{key} 须为有限数"))),
+                    _ => Err(invalid_params(&format!("probe_stick 需要 {key} 数值"))),
+                }
+            };
+            let x = read("x")?;
+            let y = read("y")?;
+            if !x.is_finite() || !y.is_finite() {
+                return Err(invalid_params("x / y 须为有限数"));
+            }
+            Ok(GamepadOp::ProbeStick(Vec2::new(x, y)))
+        }
+        other => Err(invalid_params(&format!(
+            "未知 op `{other}`（允许 snapshot / probe_button / probe_stick）"
+        ))),
+    }
+}
+
+/// `td.gamepad` handler（P25）：手柄输入的结构面与纯函数探测面。
+///
+/// 环境限制（本机无手柄）：**行为面**无法用实机断言——按立项「映射表 + 模拟路径
+/// 断言替代」落地：
+/// - `gamepads` = 已连接手柄实体数（`Query<&Gamepad>`；无硬件时为 0）；
+/// - `gamepad_input_module` = bevy_input 的 `gamepad` 特性是否装配
+///   （`Messages<GamepadEvent>` 资源存在 = `InputPlugin` 在 `#[cfg(feature = "gamepad")]`
+///   下注册过该消息，`bevy_input-0.20.0/src/lib.rs:143-144`）；
+/// - `bindings` = [`crate::input::GAMEPAD_BINDINGS`] 表（按钮 → 动作）；
+/// - `probe_button` / `probe_stick` = 调用与读取器**同一纯函数**（`map_gamepad_button` /
+///   `stick_to_action`）——映射与死区 / 主导轴判别可被硬件无关地断言；
+/// - `stick` = 节拍参数（死区 0.3 / 重复 150ms，教程 25 Step 3 原文值）。
+pub fn gamepad_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    use bevy::input::gamepad::Gamepad;
+
+    let op = parse_gamepad_op(params.as_ref())?;
+
+    match op {
+        GamepadOp::ProbeButton(button) => Ok(json!({
+            "button": crate::input::gamepad_button_name(button),
+            "action": crate::input::map_gamepad_button(button)
+                .map(|a| crate::input::action_name(&a)),
+        })),
+        GamepadOp::ProbeStick(stick) => Ok(json!({
+            "stick": [stick.x, stick.y],
+            "action": crate::input::stick_to_action(stick)
+                .map(|a| crate::input::action_name(&a)),
+        })),
+        GamepadOp::Snapshot => {
+            let gamepads = {
+                let mut query = world.query_filtered::<Entity, With<Gamepad>>();
+                query.iter(world).count()
+            };
+            // `gamepad` 特性装配的证据 = `GamepadEvent` 消息队列资源存在
+            // （`add_message` 在 `#[cfg(feature = "gamepad")]` 块内，bevy_input-0.20.0/src/lib.rs:143）。
+            let gamepad_input_module =
+                world.contains_resource::<bevy::ecs::message::Messages<bevy::input::gamepad::GamepadEvent>>();
+            let bindings: Vec<Value> = crate::input::GAMEPAD_BINDINGS
+                .iter()
+                .map(|(button, action)| {
+                    json!({
+                        "button": crate::input::gamepad_button_name(*button),
+                        "action": crate::input::action_name(action),
+                    })
+                })
+                .collect();
+            Ok(json!({
+                "available": true,
+                "gamepads": gamepads,
+                "gamepad_input_module": gamepad_input_module,
+                "stick": {
+                    "dead_zone": crate::input::STICK_DEAD_ZONE,
+                    "repeat_secs": crate::input::STICK_REPEAT_SECS,
+                },
+                "bindings": bindings,
             }))
         }
     }

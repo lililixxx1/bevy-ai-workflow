@@ -69,6 +69,7 @@ mod brp;
 mod economy;
 mod enemy;
 mod game_over;
+mod input;
 mod level;
 mod level_select;
 mod map;
@@ -95,18 +96,24 @@ use enemy::{
 use game_over::{handle_game_over_input, setup_game_over};
 use level::{build_map_from_level, load_level, LevelData};
 use level_select::{
-    handle_level_select_input, scan_available_levels, setup_level_select, AvailableLevels,
-    SelectedLevel,
+    handle_level_button_click, navigate_level_select, scan_available_levels, setup_level_select,
+    update_level_select_visuals, AvailableLevels, FocusedLevel, SelectedLevel,
 };
 use map::{MapLayout, MapTile, PathTile, TileType};
-use pause::{PausePlugin, PauseState};
+// 教程 22：具名 run 条件 + 具名系统集合（此文件不再直接引用 `PauseState`——
+// 条件函数在 `pause.rs` 内自行读取它，教程 22 Step 3 注）。
+use pause::{
+    game_is_running, tick_interaction, tick_simulation, tick_tower_dock, GameplaySet, PausePlugin,
+    SetTickLog,
+};
 use tiling::{build_rules, TileRules};
 use tower::{
-    attack_enemies, cycle_tower_on_scroll, despawn_timed, draw_tower_ranges, explode_projectiles,
+    attack_enemies, despawn_timed, draw_cursor_highlight, draw_tower_ranges, explode_projectiles,
     handle_dock_slot_click, launch_rockets, load_tower_registry, move_projectiles,
-    place_tower_on_click, refill_ammo, select_tower_by_key, setup_tower_atlas, setup_tower_dock,
-    spawn_placement_preview, spawn_tower_from_event, update_dock_selection,
-    update_placement_preview, PlacedTowers, PlaceTower, PlacementLog, RangeGizmoLog,
+    nudge_virtual_cursor, place_tower_on_click, refill_ammo, select_tower_by_key,
+    setup_tower_atlas, setup_tower_dock, spawn_placement_preview, spawn_tower_from_event,
+    update_dock_selection, update_placement_preview, PlacedTowers, PlaceTower, PlacementLog,
+    RangeGizmoLog, VirtualCursorPos,
 };
 
 /// 单格像素尺寸（教程 Part 2 Step 3 行为规格：64px 格）。
@@ -174,17 +181,31 @@ fn main() -> AppExit {
         // 教程 21：音频插件（P20 六处注册的收拢——纯重构）与暂停插件。
         .add_plugins(AudioPlugin)
         .add_plugins(PausePlugin)
+        // 教程 24/25：输入抽象层（物理输入 → `GameAction` + `VirtualCursorPos`）。
+        .add_plugins(input::InputPlugin)
         // 教程 12 Step 1：注册状态枚举 + 初始值（`#[default]` = LevelSelect）+
         // `NextState` 资源；首个 update 触发 `OnEnter(LevelSelect)` 恰一次。
         .init_state::<GameState>()
         // 教程 13 Step 1/8：发现列表空表 + 选中项占位（首个发现项由 scan 写入）。
         .init_resource::<AvailableLevels>()
         .init_resource::<SelectedLevel>()
+        // P23（教程 23 Step 3）：菜单焦点下标（每次进入菜单由 scan 重置到 0）。
+        .init_resource::<FocusedLevel>()
         // 教程 18 Step「Wiring it all together」：注册消息队列 + 验证面记账资源。
         .add_message::<PlaceTower>()
         .init_resource::<PlacementLog>()
         // P19：射程圈绘制记录（验证面资源；`draw_tower_ranges` 每帧覆盖写）。
         .init_resource::<RangeGizmoLog>()
+        // P22：集合驱动计数（验证面资源；三条 `.in_set(...)` 微系统各自递增）。
+        .init_resource::<SetTickLog>()
+        // 教程 22 Step 3 `configure_sets`：条件在**一处**声明，集合内所有系统继承
+        // （`bevy_app-0.20.0/src/app.rs:402` / `schedule/config.rs:543`）。
+        // 元组形态 = 两个集合同挂一个条件（教程 22 Step 3 注）。
+        .configure_sets(FixedUpdate, GameplaySet::Simulation.run_if(game_is_running))
+        .configure_sets(
+            Update,
+            (GameplaySet::Interaction, GameplaySet::TowerDock).run_if(game_is_running),
+        )
         // 教程 12 Step 7 + 13 Step 7：相机与塔图集都在 Startup 一次
         // （P13 起图集不再随菜单进出重建——教程 13 Step 7「run exactly once」）。
         // 教程 16：塔注册表 Startup 一次载入（`assets/towers.toml`）。
@@ -199,9 +220,16 @@ fn main() -> AppExit {
             (scan_available_levels, setup_level_select).chain(),
         )
         .add_systems(OnExit(GameState::LevelSelect), cleanup_screen_ui)
+        // 教程 23 Step 7：三系统同组并行（互不依赖）；P24 起本组改读 `GameAction`
+        // 消息（物理键鼠收敛到 `input.rs`，本组只消费逻辑动作）。
         .add_systems(
             Update,
-            handle_level_select_input.run_if(in_state(GameState::LevelSelect)),
+            (
+                navigate_level_select,
+                update_level_select_visuals,
+                handle_level_button_click,
+            )
+                .run_if(in_state(GameState::LevelSelect)),
         )
         // ---------- InGame ----------
         // 教程 12 Step 7/10：数据 → 刷怪调度 → 渲染 → 预览幽灵，逐回合重装。
@@ -221,6 +249,8 @@ fn main() -> AppExit {
         )
         .add_systems(OnExit(GameState::InGame), cleanup_level)
         // 教程 12 Step 10：玩法固定步长链仅在 InGame 运行（GameOver 时冻结）。
+        // P22（教程 22 Step 4）：`.run_if(...)` → `.in_set(GameplaySet::Simulation)`，
+        // 条件由上面的 `configure_sets` 一次挂上（`.chain()` 保留链内定序）。
         .add_systems(
             FixedUpdate,
             (
@@ -239,25 +269,30 @@ fn main() -> AppExit {
                 check_game_state,
                 // 教程 14 Step 10：收入挂固定步（随模拟时间缩放）。
                 earn_passive_income,
+                // P22：集合成员资格计数（验证面微系统，链尾不改变任何玩法定序）。
+                tick_simulation,
             )
                 .chain()
-                // 教程 21 Step 4：暂停即整组不跑（`and_eager` = 0.20 的 `.and()` 落地形态）。
-                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
+                .in_set(GameplaySet::Simulation),
         )
         // 教程 17 Step「Organizing the systems」：输入类与视觉类分两组注册
-        // （纯组织性拆分，无行为变化）。
+        // （纯组织性拆分，无行为变化）。P22：两组分别归属 `TowerDock` / `Interaction`。
         .add_systems(
             Update,
             (
-                cycle_tower_on_scroll,
+                // P24：滚轮 / 数字键 / 槽位点击全部经 `GameAction`（本组只消费动作）。
                 select_tower_by_key,
                 handle_dock_slot_click,
+                // P22：集合成员资格计数（验证面微系统）。
+                tick_tower_dock,
             )
-                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
+                .in_set(GameplaySet::TowerDock),
         )
         .add_systems(
             Update,
             (
+                // P24：方向动作走格（教程 24 Step 7；Interaction 集合内、暂停时不动）。
+                nudge_virtual_cursor,
                 update_placement_preview,
                 update_dock_selection,
                 update_gold_hud,
@@ -270,8 +305,12 @@ fn main() -> AppExit {
                 despawn_timed,
                 // 教程 19：射程圈 gizmo（表现层，每帧重画）。
                 draw_tower_ranges,
+                // 教程 24 Step 8：光标格高亮（表现层，与射程圈分开）。
+                draw_cursor_highlight,
+                // P22：集合成员资格计数（验证面微系统）。
+                tick_interaction,
             )
-                .run_if(in_state(GameState::InGame).and_eager(in_state(PauseState::Running))),
+                .in_set(GameplaySet::Interaction),
         )
         // ---------- GameOver ----------
         .add_systems(OnEnter(GameState::GameOver), setup_game_over)
@@ -420,6 +459,9 @@ fn cleanup_level(mut commands: Commands, entities: Query<Entity, With<GameEntity
     commands.remove_resource::<LevelData>();
     commands.remove_resource::<enemy::SpawnSchedule>();
     commands.remove_resource::<PlacedTowers>();
+    // P24：虚拟光标是关卡作用域资源（进关由 `spawn_placement_preview` 播种），
+    // 离场回收——避免菜单期残留上一局的格坐标。
+    commands.remove_resource::<VirtualCursorPos>();
     commands.remove_resource::<BaseLives>();
     // 教程 14 Step 5：每关干净起点（`load_level_data` 也会覆盖，显式移除表明意图）。
     commands.remove_resource::<Gold>();

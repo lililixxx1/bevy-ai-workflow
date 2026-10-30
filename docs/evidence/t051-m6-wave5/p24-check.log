@@ -1,0 +1,4 @@
+# [取证补录 2026-10-31] P24 构建态当轮 cargo check 仅控制台执行（未落档）；本档为终版树（含 P25）复跑记录，
+# 与 p25-check.log 同源。P24 构建态的 release build 与断言档为当轮原始记录（p24-build.log / p24-assert*.log）。
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+REAL_EXIT=0

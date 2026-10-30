@@ -2,7 +2,7 @@
 
 > T043 执行批交付（2026-10-29；立项卡见 `docs/pre-window-plan.md` §二 T043 / §三 B2）：把「重核什么、怎么核、上版是什么、期望是什么」固化为机器可查的窗口回归工具。逐条目行号级重核**执行**归本窗口空闲档或下一版本窗口，不随本清单交付（卡内执行注）。
 
-- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.18 = 18 节（SKILL v0.21 现行结构）。
+- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.18 = 18 节（SKILL v0.22 现行结构）。
 - **表体自校**：文末 doctest 解析三表行首计数并断言 == 51 / 21 / 18，另校验「验证方式」列分型词表——计数漂移或分型值非法即 doctest 门禁红。
 
 ## 分型定义（验证方式四型）
@@ -127,6 +127,7 @@
 2. 漂移处置：行号漂移 → 重锚条目行号并过门禁；语义漂移（API 形态变化）→ 按错题纪律修订条目（最小复现 + 修复验证），版本窗口内完成；SKILL 面漂移 → 按其「已核实事实速查」纪律重锚并升版变更记录。
 3. 计数联动：新增/移除条目须同步 claim-lint expect 与本表三处计数——doctest 自校即红即改（本文件自校 fence 与 `tooling/claim-lint` 双红为联动完成的判定）。
 4. **树内门禁序列注（T050 实证，G1 U6 裁决）**：git archive 导出树全文件 mtime 并列，claim-lint `gate-doc-test*` 回退选取会取到旧档（12/13 假红留痕）——树内跑 claim-lint 前必先产出当树 gate-doc-test 档；主仓收获链先 doctest 后 claim-lint 天然规避。
+5. **跨部断言复跑口径 + 失败轮留档（T051 实证，G1 U4 / G2 M2）**：① `PlacementLog` 等断言读取面为**进程级累计**——含既有相位（如 p21）的复跑必须**新进程首跑**，跨跑残留会致假失败（T051 `p24-cross-p21.log` 119/120 留痕）；② 取证失败轮（REAL_EXIT≠0）**另名留档、禁止被绿档重跑覆盖**（T051 p25-build 轮教训——原始 101 行失档，仅 README/G1 文字记录）。
 
 ## 自校（doctest）
 

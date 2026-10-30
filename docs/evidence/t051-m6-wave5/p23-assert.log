@@ -1,0 +1,58 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==39 | len=39
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover contains td.tower_select
+PASS | discover contains td.events
+PASS | discover contains td.gizmos
+PASS | discover contains td.audio
+PASS | discover contains td.pause
+PASS | discover contains td.conditions
+PASS | discover contains td.level_select
+PASS | discover no game.* prefix | (none)
+PASS | P23 level_select snapshot available in LevelSelect | "LevelSelect"
+PASS | P23 menu exposes 3 levels (discovery list unchanged) | ["assets/levels/level_01.toml","assets/levels/level_02.toml","assets/levels/level_03.toml"]
+PASS | P23 one button per level, indices [0,1,2] | [0,1,2]
+PASS | P23 entry focus reset to 0 (tutorial Step 3) | focused=0
+PASS | P23 exactly one button flagged focused | [true,false,false]
+INFO | P23 button interactions=None,None,None
+PASS | P23 button colors == focus/interaction rule (independent recomputation) | [[0.10000000149011612,0.30000001192092896,0.5,1],[0.15000000596046448,0.15000000596046448,0.15000000596046448,1],[0.15000000596046448,0.15000000596046448,0.15000000596046448,1]]
+PASS | P23 focus op writes FocusedLevel (1) | focused=1
+PASS | P23 focused button highlighted blue, others follow interaction rule | [{"i":0,"c":[0.15000000596046448,0.15000000596046448,0.15000000596046448,1],"f":false},{"i":1,"c":[0.10000000149011612,0.30000001192092896,0.5,1],"f":true},{"i":2,"c":[0.15000000596046448,0.15000000596046448,0.15000000596046448,1],"f":false}]
+PASS | P23 focus op moves to index 2 | focused=2
+PASS | P23 focus highlight moved to button 2 | [[0.15000000596046448,0.15000000596046448,0.15000000596046448,1],[0.15000000596046448,0.15000000596046448,0.15000000596046448,1],[0.10000000149011612,0.30000001192092896,0.5,1]]
+PASS | P23 focus index out of range -> -32602 | code=-32602
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t051-m6-wave5/p23-shot.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t051-m6-wave5/p23-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=33789
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=7681953c9e42b0598bdb7e6f6f34e4a4 bytes=33789 size=1600x900
+PASS | P23 click op runs real consumer (focus set to 2) | focused=2
+PASS | P23 button click -> GameState InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P23 button click selects level_03 (index 2) and enters it | "assets/levels/level_03.toml"
+PASS | P23 click-entered map matches level_03 TOML expansion | MapTile=150 expect=150
+PASS | P23 menu buttons cleaned up after leaving LevelSelect | buttons=0 available=false
+PASS | P23 confirm outside LevelSelect -> -32602 | code=-32602
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P23 confirm op selects focused level_02 | "assets/levels/level_02.toml"
+PASS | P23 confirm -> GameState InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P23 confirm entered level_02 | "assets/levels/level_02.toml"
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P23 legacy level selection channel intact (td.level select) | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P23 legacy keyboard-menu path still enters InGame | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P23 legacy path state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P23 td.level_select unknown op -> -32602 | code=-32602
+PASS | P23 click without index -> -32602 | code=-32602
+PASS | P23 back in menu: focus reset to 0 / 3 buttons | {"f":0,"n":3}
+SUMMARY: 54/54 PASS
+REAL_EXIT=0

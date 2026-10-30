@@ -9,6 +9,7 @@
 
 use bevy::prelude::*;
 
+use crate::input::GameAction;
 use crate::{GameResult, GameState, ScreenUi};
 
 /// 生成结算屏（教程 12 Step 9 `setup_game_over`）：胜负文案 + 返回提示。
@@ -54,12 +55,17 @@ pub fn setup_game_over(mut commands: Commands, result: Res<GameResult>) {
         });
 }
 
-/// 结算屏按键（教程 12 Step 9 `handle_game_over_input`）：空格 → 回 LevelSelect。
+/// 结算屏确认（教程 12 Step 9 `handle_game_over_input` + 教程 24 Step 6）：
+/// `Confirm`（Space / Enter / 手柄 South）或 `Cancel`（Escape / East / Start）
+/// → 回 LevelSelect。P24 起只消费 `GameAction`（`ButtonInput<KeyCode>` 直读移除）。
 pub fn handle_game_over_input(
-    keys: Res<ButtonInput<KeyCode>>,
+    mut actions: MessageReader<GameAction>,
     mut next_state: ResMut<NextState<GameState>>,
 ) {
-    if keys.just_pressed(KeyCode::Space) {
-        next_state.set(GameState::LevelSelect);
+    for action in actions.read() {
+        if matches!(action, GameAction::Confirm | GameAction::Cancel) {
+            next_state.set(GameState::LevelSelect);
+            return;
+        }
     }
 }

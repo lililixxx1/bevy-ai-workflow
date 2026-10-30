@@ -1,0 +1,48 @@
+# T051-W1 machine summary (generated 2026-10-30T17:50:01Z)
+
+## per-phase SUMMARY / REAL_EXIT
+p22-assert.log             SUMMARY: 50/51 PASS | REAL_EXIT=1
+p22-assert-run2.log        SUMMARY: 51/51 PASS | REAL_EXIT=0
+p22-regress-p21.log        SUMMARY: 120/120 PASS | REAL_EXIT=0
+p23-assert.log             SUMMARY: 54/54 PASS | REAL_EXIT=0
+p23-cross-p22.log          SUMMARY: 51/51 PASS | REAL_EXIT=0
+p23-cross-p21.log          SUMMARY: 120/120 PASS | REAL_EXIT=0
+p24-assert.log             SUMMARY: 91/92 PASS | REAL_EXIT=1
+p24-assert-run2.log        SUMMARY: 93/93 PASS | REAL_EXIT=0
+p24-cross-p23.log          SUMMARY: 54/54 PASS | REAL_EXIT=0
+p24-cross-p22.log          SUMMARY: 51/51 PASS | REAL_EXIT=0
+p24-cross-p21.log          SUMMARY: 119/120 PASS | REAL_EXIT=1
+p24-cross-p21b.log         SUMMARY: 120/120 PASS | REAL_EXIT=0
+p25-check.log               | REAL_EXIT=0
+p25-build.log               | REAL_EXIT=0
+p25-assert-p21.log         SUMMARY: 120/120 PASS | REAL_EXIT=0
+p25-assert-p22.log         SUMMARY: 51/51 PASS | REAL_EXIT=0
+p25-assert-p23.log         SUMMARY: 54/54 PASS | REAL_EXIT=0
+p25-assert-p24.log         SUMMARY: 93/93 PASS | REAL_EXIT=0
+p25-assert.log             SUMMARY: 153/153 PASS | REAL_EXIT=0
+
+## discover custom methods (from p25 run log)
+td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause, td.conditions, td.level_select, td.input, td.gamepad
+
+## digest lines (final p25 phase)
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+INFO | P25 ENTITY_DIGEST=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+
+## screenshot md5
+p22-regress-shot-pause.png     11ff7ab931703f02b38bb07312b72b3b 87535
+p22-shot.png                   1ea73585ae16c59a60646f323ed04774 85096
+p23-cross-p22-shot.png         c6fa82735bfc603f5502101c1f7c7d39 84347
+p23-cross-shot-pause.png       cb954ea07143c6473827c90c5a3f3066 86489
+p23-shot.png                   7681953c9e42b0598bdb7e6f6f34e4a4 33789
+p24-cross-p21b-shot-pause.png  a57aee1ac128f4c511cceba5965eb747 86480
+p24-cross-p22-shot.png         ffc504150b8e99d0d5568540e993b68e 84350
+p24-cross-p23-shot.png         7681953c9e42b0598bdb7e6f6f34e4a4 33789
+p24-cross-shot-pause.png       bb186134c4cd1d0fbcefe9dcd7f7b156 86576
+p24-shot.png                   fbccfcfd731822790741c80f836e6ded 97834
+p25-regress-p22-shot.png       3868f7f1dc0052ddf44c9692a0a6f5d8 84376
+p25-regress-p23-shot.png       7681953c9e42b0598bdb7e6f6f34e4a4 33789
+p25-regress-p24-shot.png       fbccfcfd731822790741c80f836e6ded 97834
+p25-regress-shot-pause.png     70f9197ebbc1e85c18af088817573b1e 86499
+p25-shot.png                   a57aee1ac128f4c511cceba5965eb747 86480

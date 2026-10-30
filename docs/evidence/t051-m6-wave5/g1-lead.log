@@ -1,0 +1,30 @@
+# G1 · Lead 亲跑核证与裁决档（T051 M6 波次 5 P22-25——26 部执行末波）
+
+日期 2026-10-31 凌晨；核证者 = Lead（主会话）。对象 = 树 trees/m6/w5（基线 10ab08c）批次 T051 全量产出。
+
+## 一、Lead 独立核证（全部亲跑，非转录 worker 自报）
+
+1. **主仓零触碰**：`git status --short` = 0 行，HEAD = 10ab08c。
+2. **写面独立复算**：`diff -rq --strip-trailing-cr` 主仓↔树——恰 = 改 6（main/pause/level_select/tower/game_over/brp.rs）+ 增 input.rs，全在 game-td/src；docs 恰 = 新证据目录 t051-m6-wave5（55 件）；Cargo.toml/Cargo.lock SAME。与声明一致，无越权写面。
+3. **收官段指纹链**：三关 GRID_DIGEST 全值 PASS 行亲核（level_01 `70282f80…37a07` == T047 基线；level_02 `3edf8dff…a4f6d` / level_03 `840298ef…d76f7` == T049 注册表）+ **ENTITY_DIGEST `1d40c7b7…890b23` == T048 基线逐位一致**（p25-assert.log PASS 行）——P4→P25 跨六波不断链。
+4. **断言与门禁**：p22 51/51 · p23 54/54 · p24 93/93 · p25 153/153（合计新增 351）+ **收官段全量回归 471/471**（p21 120 + p22 51 + p23 54 + p24 93 + p25 153，五相位同进程序列，REAL_EXIT 全 0 亲读）；check 0 警、workspace test 含 doctest 78/0/17〔211.59s〕、**claim-lint 13/13**（树内先产 `gate-doc-test-t051.log` 再跑——U6 跑序纪律落实）、进程零残留（GREP_EXIT=1）。
+5. **方法面**：discover = 23 内置 + **18 `td.*`**（chains.log 清单亲核：+td.conditions/level_select/input/gamepad），`brp.rs` 字面 grep `game.*` = 0。
+6. **`#[expect(deprecated)]` 精确核数 = 7**（多行形态 `^#\[expect($` 后随行亲数）：tower.rs:1453/:1610（P17 基线 2）+ level_select.rs:157/:337/:362（P23 新 3）+ brp.rs:1665/:1684（P23 快照/点击通道 2）——**全 A' 通道带 reason 教程原步注记**，零换新 API 重写。
+7. **席位**：worker 自报未新开第 11 席、10/10 维持；调用点变化待 G2 亲数复核。
+
+## 二、上报项裁决（U1–U5）
+
+- **U1 §五 方法面清单**：**worker 表述更正**——`docs/m6-game-selection.md` §五 已在 **T050 收获批更新至 14 个**（树内 :71「方法面实况（2026-10-31 随 T050 更新）…14 个」亲核在档），并非「停在 T046 时期」；本波真待办 = **14→18 刷新**。裁 (a) 收获批由 Lead 统一更新（方法清单 + discover 37→41）。
+- **U2 席位口径不一致**：派工单「#2 调度席 / #3 输入席」系 **Lead 写单措辞含混**（非 §四 表名——表内 #2 = tilemap、#3 = 敌人）；worker 按**实质约束**（复用既有席、未新开第 11 席）执行 = 正确。裁决：席位一律以 §四 表名为准，本单瑕疵记档于本 G1 档；本卡席位结论 = **未新开席、10/10 维持**。
+- **U3 K1–K8 入库分级**：**K1**（`Button` = `pub(crate) DeprecatedButton` 别名不可构造，E0603 失败轮在档 = 复现 + `Interaction::None`+`FocusPolicy::Block` 等价落位过验证，`bevy_ui-0.20.0/src/widget/button.rs:24-30`、`focus.rs:147-158`）与 **K2**（`run_system_once` 对 `Changed<T>` 恒真，`function_system.rs:781`——断言工程关键陷阱）→ **SKILL v0.22**（K1 → §6.14 A' 口径节增补；K2 同批收录并注明断言面适用）；K3–K8 证据 README §九 在档 + 台账提及，不入 SKILL；**PIT-B 不新增**（K1 虽够反例格，其家在 §6.14 A' 口径节；收官前保持 claim-lint/registry 计数稳定，避免级联）。
+- **U4 复验清单建议**：采信——「含 p21 相位的复跑必须**新进程首跑**（`PlacementLog` 等为进程级累计，K5）」→ 收获批入 recheck-registry 使用说明⑤（与 ④ mtime 陷阱并列）。
+- **U5 无手柄环境**：采信注记（`gamepads=0`；映射表 9 绑定 + 8 摇杆向量 + 零影响回归 = 立项「映射表 + 模拟路径」口径内落地；音频/手柄均非收官门槛）。
+
+## 三、偏离裁决
+
+- **偏离 1（纪律违规，如实记）**：P24 跨部回归游戏进程存活期发起编译 3 次（2 check + 1 build，后者 REAL_EXIT=101 os error 5）——**违反 cargo 段全局互斥条款**（2026-10-30 10:44 冻结事故整改附录 A/E）。处置：不返工整卡（失败构建在链接前被阻塞、无半产物；终版断言全在后续新进程；已立即 taskkill + 重跑绿——失败轮与新进程绿档对照在册）；**台账 T051 行显式记「纪律偏离 1 次」**；根因 = 跨部回归编排疏忽。此为冻结整改条款首次实际违反——**再犯升级处置**（整卡返工），本档为界。
+- 偏离 2–8 采信：2（Button 等价落位）随 U3-K1；3（条件与集合落 pause.rs）沿 P21 先例；4（FocusedLevel init_resource 归零）行为等价且防早帧缺读；5（click 断言 = 写 Interaction::Pressed + run_system_once 走真实消费者）同 P17 屏幕命中测试边界既定；6/7（滚动合并入 select_tower_by_key、stick_to_action 纯函数抽离）重构必要；8（验证面记账扩展）沿 SpawnSchedule 既有口径。
+
+## 四、结论
+
+G1 **通过**——七项核证全绿、五上报项全裁（含两项记录更正/责任归属）、八偏离全裁（1 纪律违规如实记档不返工）。转 G2 完整轮（节点卡：七维度 + 独立复算，重点 = 席位亲数、A' 七站逐站核、收官段 471 全量链、P24 经济算术独立复算）。

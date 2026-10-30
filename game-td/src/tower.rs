@@ -53,13 +53,13 @@
 use std::collections::HashMap;
 
 use bevy::audio::Volume;
-use bevy::input::mouse::MouseWheel;
 use bevy::prelude::*;
 use serde::Deserialize;
 
 use crate::audio::{PlaySound, SoundType};
 use crate::economy::{Bounty, Gold, PlacementDenied, DENIED_FLASH_DURATION};
 use crate::enemy::{tile_to_world, Enemy, Health, PathFollower};
+use crate::input::GameAction;
 use crate::map::{MapLayout, TileType};
 use crate::GameEntity;
 
@@ -164,6 +164,15 @@ pub struct TowerAtlas {
 /// 建立，格→实体关系也归它）；`td.spawn_tower` 直通道同样在该处入表。
 #[derive(Resource, Default)]
 pub struct PlacedTowers(pub HashMap<[u32; 2], Entity>);
+
+/// 虚拟光标（教程 24 Step 1 `VirtualCursorPos`）：鼠标 / 键盘 / 手柄共享的**格**坐标。
+///
+/// `read_mouse_hover` 每帧写（鼠标移动时）；`nudge_virtual_cursor` 按方向动作走格；
+/// 玩法系统（预览 / 放置 / 射程圈 / 光标高亮）只读它——不再直接查窗口光标。
+/// 教程放在 `tower.rs`（它存的是「格」这一游戏空间概念，且 `nudge_virtual_cursor`
+/// 同文件），本工程照此落位。
+#[derive(Resource, Default)]
+pub struct VirtualCursorPos(pub Option<[u32; 2]>);
 
 // ---------------------------------------------------------------------------
 // P16：数据驱动塔注册表（教程 16）
@@ -399,21 +408,15 @@ pub fn is_placeable(map: &MapLayout, placed: &PlacedTowers, tile: [u32; 2]) -> b
     is_grass && !placed.0.contains_key(&tile)
 }
 
-/// 光标下的可放置格（教程 08 Step 4 `hovered_placeable_tile`）：
-/// 光标屏幕坐标 → 世界坐标 → 网格坐标 → 合法性，一条 `and_then` 链。
-fn hovered_placeable_tile(
-    window: &Window,
-    camera: &Camera,
-    camera_transform: &GlobalTransform,
-    map_layout: &MapLayout,
+/// 虚拟光标格的放置合法性（教程 24 Step 6 `tile_is_placeable` helper）：
+/// 合法 → `Some(tile)`，否则 `None`。取代原 `hovered_placeable_tile`
+/// （那个函数把「取光标」与「判合法」焊在一起，输入抽象后拆开）。
+pub fn tile_is_placeable(
+    map: &MapLayout,
     placed: &PlacedTowers,
+    tile: [u32; 2],
 ) -> Option<[u32; 2]> {
-    let tile = window
-        .cursor_position()
-        .and_then(|cursor| camera.viewport_to_world_2d(camera_transform, cursor).ok())
-        .and_then(|world| world_to_tile(world, map_layout.width, map_layout.height))?;
-
-    is_placeable(map_layout, placed, tile).then_some(tile)
+    is_placeable(map, placed, tile).then_some(tile)
 }
 
 /// 预加载塔图集（教程 08 Step 2 `setup_tower_atlas`）。
@@ -605,12 +608,23 @@ pub fn spawn_tower_entities(
 }
 
 /// 生成两个常驻预览幽灵（教程 08 Step 5 + 16/17：外观取当前选中塔型）。
+///
+/// 教程 24 Step 1：本系统顺带把 [`VirtualCursorPos`] 播种到**地图中心**
+/// （`[width/2, height/2]`）——预览开局即定位（不必先动鼠标），
+/// 也让方向键从中心起走格。
 pub fn spawn_placement_preview(
     mut commands: Commands,
     atlas: Res<TowerAtlas>,
     registry: Res<TowerRegistry>,
     selected: Res<SelectedTowerType>,
+    map_layout: Res<MapLayout>,
 ) {
+    // 教程 24 Step 1：虚拟光标初值 = 地图中心格。
+    commands.insert_resource(VirtualCursorPos(Some([
+        map_layout.width / 2,
+        map_layout.height / 2,
+    ])));
+
     let def = registry.get(selected.0);
     let tinted = |index: usize| Sprite {
         color: Color::srgba(1.0, 1.0, 1.0, 0.5),
@@ -639,11 +653,13 @@ pub fn spawn_placement_preview(
     ));
 }
 
-/// 每帧按悬停更新预览（教程 08 Step 6 + 14 Step 6）：
+/// 每帧按虚拟光标更新预览（教程 08 Step 6 + 14 Step 6 + 24 Step 6）：
 /// 合法格移动并显示，否则隐藏；显示时按「红闪 > 买得起 > 买不起」三态着色。
+///
+/// P24（教程 24 Step 6 重构表）：输入源 `Window + Camera` → `Res<VirtualCursorPos>`；
+/// 判定谓词 `hovered_placeable_tile` → [`tile_is_placeable`]。
 pub fn update_placement_preview(
-    window: Single<&Window>,
-    camera: Single<(&Camera, &GlobalTransform)>,
+    cursor: Res<VirtualCursorPos>,
     map_layout: Res<MapLayout>,
     placed: Res<PlacedTowers>,
     gold: Res<Gold>,
@@ -659,9 +675,9 @@ pub fn update_placement_preview(
         With<TowerPreview>,
     >,
 ) {
-    let (cam, cam_transform) = *camera;
-
-    let Some(tile) = hovered_placeable_tile(&window, cam, cam_transform, &map_layout, &placed)
+    let Some(tile) = cursor
+        .0
+        .and_then(|tile| tile_is_placeable(&map_layout, &placed, tile))
     else {
         for (_, mut vis, ..) in preview_q.iter_mut() {
             *vis = Visibility::Hidden;
@@ -700,17 +716,20 @@ pub fn update_placement_preview(
     }
 }
 
-/// 左键点击放置（教程 18「Refactoring the producer」）：**只做输入校验**——
-/// 合法格 + 余额 → 写 [`PlaceTower`] 消息；生成实体与经济记账分别由
-/// [`spawn_tower_from_event`] 与 `economy::deduct_gold_on_placement` 消费。
+/// 确认动作放置（教程 18「Refactoring the producer」+ 教程 24 Step 6）：
+/// **只做输入校验**——虚拟光标格合法 + 余额 → 写 [`PlaceTower`] 消息；生成实体与
+/// 经济记账分别由 [`spawn_tower_from_event`] 与 `economy::deduct_gold_on_placement` 消费。
 ///
-/// 与原（P14–P17）单系统的差别：本函数不再持有 `ResMut<Gold>` / `ResMut<PlacedTowers>` /
+/// P24 重构（教程 24 Step 6 表）：输入源 `MouseButton + Window + Camera` →
+/// `MessageReader<GameAction>::Confirm` + `Res<VirtualCursorPos>`；函数名沿教程保留
+/// （`place_tower_on_click`——「点击」只表示「一次确认动作」，来源可为左键 / Enter /
+/// Space / 手柄 South）。
+/// 与原（P14–P17）的差别：本函数不持有 `ResMut<Gold>` / `ResMut<PlacedTowers>` /
 /// `Res<TowerAtlas>`，也不生成实体——「是否该放」与「告知世界已放」两件事。
 /// 买不起仍直接红闪（教程 18「Simplifying the producer」：拒绝反馈留在生产者）。
 pub fn place_tower_on_click(
-    mouse: Res<ButtonInput<MouseButton>>,
-    window: Single<&Window>,
-    camera: Single<(&Camera, &GlobalTransform)>,
+    mut actions: MessageReader<GameAction>,
+    cursor: Res<VirtualCursorPos>,
     map_layout: Res<MapLayout>,
     placed: Res<PlacedTowers>,
     gold: Res<Gold>,
@@ -721,13 +740,21 @@ pub fn place_tower_on_click(
     selected: Res<SelectedTowerType>,
     mut log: ResMut<PlacementLog>,
 ) {
-    if !mouse.just_pressed(MouseButton::Left) {
+    // 本帧任意一条 Confirm 即视为一次放置请求（多来源同帧时只放一次——消息
+    // 架构不变量是「每帧最多一条 PlaceTower」）。
+    let mut confirmed = false;
+    for action in actions.read() {
+        if *action == GameAction::Confirm {
+            confirmed = true;
+        }
+    }
+    if !confirmed {
         return;
     }
 
-    let (cam, cam_transform) = *camera;
-
-    let Some(tile) = hovered_placeable_tile(&window, cam, cam_transform, &map_layout, &placed)
+    let Some(tile) = cursor
+        .0
+        .and_then(|tile| tile_is_placeable(&map_layout, &placed, tile))
     else {
         return;
     };
@@ -1245,50 +1272,44 @@ pub fn preview_ring_params(center: Vec2, radius: f32) -> RingParams {
 /// `AmmoState::fired` 口径——只服务 `td.gizmos` 快照，不给玩法增加语义）。
 ///
 /// `rings` 每帧覆盖（gizmo 语义 = 每帧重画）；`preview_visible` 记录本帧预览
-/// 幽灵是否可见（圈只在可见时画，教程 19）。
+/// 幽灵是否可见（圈只在可见时画，教程 19）；`cursor_tile` 记录光标高亮格
+/// （P24 `draw_cursor_highlight` 写；`None` = 无虚拟光标）。
 #[derive(Resource, Default)]
 pub struct RangeGizmoLog {
     pub rings: Vec<RingParams>,
     pub preview_visible: bool,
+    pub cursor_tile: Option<[u32; 2]>,
 }
 
-/// 每帧画射程圈（教程 19 `draw_tower_ranges`）：
-/// ① 光标所在格有已放置塔 → 白色圈（圆心 = 塔位置，半径 = `TowerAttacker.range`）；
+/// 每帧画射程圈（教程 19 `draw_tower_ranges` + 教程 24 Step 6）：
+/// ① 虚拟光标所在格有已放置塔 → 白色圈（圆心 = 塔位置，半径 = `TowerAttacker.range`）；
 /// ② 预览幽灵可见 → 金色圈（圆心 = 幽灵位置，半径 = 选中塔型 `attack_range`）。
 ///
+/// P24：输入源 `Window + Camera` → `Res<VirtualCursorPos>`（教程 24 Step 6 表）。
 /// 挂 `Update`（表现层，教程 19 注册在 InGame 的 Update 组）。
 pub fn draw_tower_ranges(
     mut gizmos: Gizmos,
-    window: Single<&Window>,
-    camera: Single<(&Camera, &GlobalTransform)>,
+    cursor: Res<VirtualCursorPos>,
     placed: Res<PlacedTowers>,
     towers: Query<(&Transform, &TowerAttacker)>,
     preview: Query<(&Transform, &Visibility), With<TowerPreview>>,
     selected: Res<SelectedTowerType>,
     registry: Res<TowerRegistry>,
-    map_layout: Res<MapLayout>,
     mut log: ResMut<RangeGizmoLog>,
 ) {
-    let (cam, cam_transform) = *camera;
-    let cursor_world = window
-        .cursor_position()
-        .and_then(|cursor| cam.viewport_to_world_2d(cam_transform, cursor).ok());
-
     log.rings.clear();
     log.preview_visible = false;
 
-    // ① 悬停已放置塔：屏幕 → 世界 → 格 → tile→entity O(1) 查（教程 19）。
-    if let Some(cursor_pos) = cursor_world {
-        if let Some(tile) = world_to_tile(cursor_pos, map_layout.width, map_layout.height) {
-            if let Some(ring) = hover_ring_params(&placed, tile, |entity| {
-                towers
-                    .get(entity)
-                    .ok()
-                    .map(|(transform, attacker)| (transform.translation.truncate(), attacker.range))
-            }) {
-                draw_ring(&mut gizmos, ring);
-                log.rings.push(ring);
-            }
+    // ① 虚拟光标格有已放置塔 → 白圈（教程 19：tile→entity O(1) 查）。
+    if let Some(tile) = cursor.0 {
+        if let Some(ring) = hover_ring_params(&placed, tile, |entity| {
+            towers
+                .get(entity)
+                .ok()
+                .map(|(transform, attacker)| (transform.translation.truncate(), attacker.range))
+        }) {
+            draw_ring(&mut gizmos, ring);
+            log.rings.push(ring);
         }
     }
 
@@ -1311,6 +1332,65 @@ fn draw_ring(gizmos: &mut Gizmos, ring: RingParams) {
         Vec2::new(ring.center[0], ring.center[1]),
         ring.radius,
         Color::srgba(ring.color[0], ring.color[1], ring.color[2], ring.color[3]),
+    );
+}
+
+// ---------------------------------------------------------------------------
+// P24：虚拟光标（教程 24 Step 7/8）
+// ---------------------------------------------------------------------------
+
+/// 单格像素尺寸（教程 Part 2 Step 3：64px；`world_to_tile` 同源算式）。
+const CURSOR_TILE_SIZE: f32 = 64.0;
+
+/// 方向动作走一格虚拟光标（教程 24 Step 7 `nudge_virtual_cursor`）。
+///
+/// 语义：`Up` = `y + 1`（世界 y 轴向上，与 `world_to_tile` 的
+/// `ty = (world.y - origin_y) / tile` 一致）、`Down` = `y - 1`、`Left` = `x - 1`、
+/// `Right` = `x + 1`；越界即 clamp（**不**环绕）。格合法性不在此判定——下游
+/// `update_placement_preview` / `place_tower_on_click` 用 `tile_is_placeable` 判。
+///
+/// 挂 `GameplaySet::Interaction`（`main.rs`）——随 `game_is_running` 门控，暂停时不动。
+pub fn nudge_virtual_cursor(
+    mut actions: MessageReader<GameAction>,
+    map_layout: Res<MapLayout>,
+    mut cursor: ResMut<VirtualCursorPos>,
+) {
+    let max_x = map_layout.width.saturating_sub(1);
+    let max_y = map_layout.height.saturating_sub(1);
+    for action in actions.read() {
+        // 未播种（理论不会发生：进关即播种）→ 忽略方向动作。
+        let Some([x, y]) = cursor.0 else { continue };
+        let next = match action {
+            GameAction::Up => [x, (y + 1).min(max_y)],
+            GameAction::Down => [x, y.saturating_sub(1)],
+            GameAction::Left => [x.saturating_sub(1), y],
+            GameAction::Right => [(x + 1).min(max_x), y],
+            _ => continue,
+        };
+        cursor.0 = Some(next);
+    }
+}
+
+/// 光标格高亮（教程 24 Step 8 `draw_cursor_highlight`）：
+/// 在虚拟光标格画半透明白色方框（与射程圈分开——光标高亮与塔射程是两件事）。
+///
+/// 记账：`RangeGizmoLog.cursor_tile` 记录本帧光标格（`td.gizmos snapshot` 可读）。
+pub fn draw_cursor_highlight(
+    mut gizmos: Gizmos,
+    cursor: Res<VirtualCursorPos>,
+    map_layout: Res<MapLayout>,
+    mut log: ResMut<RangeGizmoLog>,
+) {
+    log.cursor_tile = cursor.0;
+    let Some(tile) = cursor.0 else { return };
+    let center = tile_to_world(tile, map_layout.width as f32, map_layout.height as f32);
+    // `rect_2d(impl Into<Isometry2d>, size, color)`：
+    // `bevy_gizmos-0.20.0/src/gizmos.rs:898`；`From<Vec2> for Isometry2d`
+    // （`bevy_math-0.20.0/src/isometry.rs:195`）——教程的「半透明白方框」同形直用。
+    gizmos.rect_2d(
+        center,
+        Vec2::splat(CURSOR_TILE_SIZE),
+        Color::srgba(1.0, 1.0, 1.0, 0.35),
     );
 }
 
@@ -1361,14 +1441,8 @@ const DOCK_BORDER_DEFAULT: Color = Color::srgba(0.3, 0.3, 0.3, 1.0);
 /// 选中边框色（教程 17 `DOCK_BORDER_SELECTED`：金色）。
 const DOCK_BORDER_SELECTED: Color = Color::srgba(1.0, 0.84, 0.0, 1.0);
 
-/// 数字键位表（教程 17：`Digit1..Digit5` → 下标 0..4）。
-const DOCK_KEYS: [KeyCode; 5] = [
-    KeyCode::Digit1,
-    KeyCode::Digit2,
-    KeyCode::Digit3,
-    KeyCode::Digit4,
-    KeyCode::Digit5,
-];
+// P24：原 `DOCK_KEYS`（`Digit1..Digit5` 键位表）迁入 `input.rs::DOCK_DIGITS`
+// （教程 24：物理输入只在一个文件翻译——「Physical-input code lives in one file」）。
 
 /// 生成塔选 dock（教程 17 `setup_tower_dock`）：底部居中的一行槽位，
 /// 每槽 = 键号徽标 + 预览图 + 名称 + 造价；槽位挂 `Interaction` 以跟踪悬停/按下。
@@ -1484,10 +1558,20 @@ pub fn update_dock_selection(
     }
 }
 
-/// 滚轮切换（教程 17 `cycle_tower_on_scroll`）：每帧只消费首条 `MouseWheel`；
-/// 向下（`y < 0`）下一个、向上（`y > 0`）上一个；两端 clamp 不回绕。
-pub fn cycle_tower_on_scroll(
-    mut scroll: MessageReader<MouseWheel>,
+/// 数字键 / 滚轮 / 手柄扳机 → 选中塔型（教程 17 原两系统合并 + 教程 24 Step 6）。
+///
+/// P24：`ButtonInput<KeyCode>` 与 `MouseWheel` 直读**全部删除**——本系统只消费
+/// `GameAction`：
+/// - `SelectTower(i)`（数字键，`input::read_keyboard_for_actions` 按 `InGame` 上下文发）
+///   → 直选下标（越界忽略）；
+/// - `NextTower` / `PrevTower`（滚轮 / 扳机，`input::read_mouse_wheel` +
+///   `input::read_gamepad` 发）→ 相邻切换，两端 clamp 不回绕（= 原
+///   `cycle_tower_on_scroll` 行为）。
+///
+/// 教程 24 Step 6 表把 `cycle_tower_on_scroll` 标为「deleted」——其逻辑并入本系统
+/// （滚轮翻译在 `read_mouse_wheel`，clamp 语义在此保留）。
+pub fn select_tower_by_key(
+    mut actions: MessageReader<GameAction>,
     registry: Res<TowerRegistry>,
     mut selected: ResMut<SelectedTowerType>,
 ) {
@@ -1495,26 +1579,24 @@ pub fn cycle_tower_on_scroll(
     if len == 0 {
         return;
     }
-    let Some(ev) = scroll.read().next() else {
-        return;
-    };
-
-    if ev.y < 0.0 && selected.0 + 1 < len {
-        selected.0 += 1;
-    } else if ev.y > 0.0 && selected.0 > 0 {
-        selected.0 -= 1;
-    }
-}
-
-/// 数字键直选（教程 17 `select_tower_by_key`）：`1`–`5` → 下标 0–4，越界忽略。
-pub fn select_tower_by_key(
-    keys: Res<ButtonInput<KeyCode>>,
-    registry: Res<TowerRegistry>,
-    mut selected: ResMut<SelectedTowerType>,
-) {
-    for (i, keycode) in DOCK_KEYS.iter().enumerate() {
-        if i < registry.towers.len() && keys.just_pressed(*keycode) {
-            selected.0 = i;
+    for action in actions.read() {
+        match action {
+            GameAction::SelectTower(i) => {
+                if *i < len {
+                    selected.0 = *i;
+                }
+            }
+            GameAction::NextTower => {
+                if selected.0 + 1 < len {
+                    selected.0 += 1;
+                }
+            }
+            GameAction::PrevTower => {
+                if selected.0 > 0 {
+                    selected.0 -= 1;
+                }
+            }
+            _ => {}
         }
     }
 }

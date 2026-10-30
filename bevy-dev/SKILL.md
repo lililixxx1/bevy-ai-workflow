@@ -234,7 +234,7 @@
 - `Commands` 入队命令 = `queue`（`commands/mod.rs:641`），`add` 不存在——PIT-B-007。
 - 可变组合迭代 = `while let Some([mut a, b]) = it.fetch_next()`（官方示例 `query.rs:796-806`，`fetch_next` `:802`）；for/IntoIterator 仅对只读数据成立——PIT-B-008。
 - `App::add_systems` 首参只收 `ScheduleLabel`（`bevy_app app.rs:321-323`）；系统入集用 `.in_set(Set)`（`schedule/config.rs:322/:493`）+ `configure_sets`——PIT-B-009。
-- query 迭代序不保证（`query.rs:654` 等 8 处文档：654/685/723/762/792/824/1154/1183）；确定性按业务键定位（`Wanderer::index` 先例）——PIT-B-010。`Changed/Added` 首帧全量命中（含 Query 首跑前变更，`query/filter.rs:886-896`）——PIT-B-011。跨系统冲突不 panic、任意序（歧义仅可选项，`schedule/schedule.rs:48-49`），定序须 `.chain()`——PIT-B-012。同系统冲突 Query 编译放行、首帧 panic B0001（`query/state.rs:210-218`），正解 `ParamSet`/`Without`——PIT-B-013。
+- query 迭代序不保证（`query.rs:654` 等 8 处文档：654/685/723/762/792/824/1154/1183）；确定性按业务键定位（`Wanderer::index` 先例）——PIT-B-010。`Changed/Added` 首帧全量命中（含 Query 首跑前变更，`query/filter.rs:886-896`）——PIT-B-011。**`run_system_once` 下 `Changed<T>` 恒真**（one-shot 运行把 last_run 置 `change_tick().relative_to(Tick::MAX)`，`bevy_ecs-0.20.0/src/system/function_system.rs:781`）——BRP 断言通道经它驱动系统时任何 `Changed` 过滤都全量命中，断言必须检查**下游效应**防假绿（T051 P23 实测：写 `Interaction::Pressed` 后断言焦点/状态/地图）。跨系统冲突不 panic、任意序（歧义仅可选项，`schedule/schedule.rs:48-49`），定序须 `.chain()`——PIT-B-012。同系统冲突 Query 编译放行、首帧 panic B0001（`query/state.rs:210-218`），正解 `ParamSet`/`Without`——PIT-B-013。
 - 无坑确认（记忆写对，探针实测编译通过；**0.20 修订**：`iter_many` 语义已变，见本节首条）：`Res<T>::is_changed()` 存在；`run_if` 接受捕获环境闭包（`move || -> bool`）。
 - 探查证据：`docs/evidence/m3-assets/batch-c/`（r1 失败原文 / r2 正解（含 attempt1 两轮留痕）/ 9 个运行时探针日志（含 1 失败轮）+ 探针源码快照 + errata 勘误页）。
 
@@ -288,7 +288,7 @@
 - **相机配置伴生组件化**：`Hdr`（单元组件，替代 Camera.hdr 字段）、`RenderTarget`（组件，变体 Window(WindowRef)/Image(ImageRenderTarget 包装)/TextureView/None{size}，替代 Camera.target 字段）、`Msaa`（per-Camera 组件，**默认相机自动插入 Msaa(Sample4)**，运行时实测）、`Exposure::INDOOR` 等关联常量、`bevy::camera::visibility::RenderLayers`——PIT-B-033/042/044 邻条。
 - **环境光**：`AmbientLight` = 相机组件（require Camera，覆盖 GlobalAmbientLight）；全局默认资源 `GlobalAmbientLight{color,brightness,affects_lightmapped_meshes}`——PIT-B-035。
 - **颜色**：`Color` 常量仅 WHITE/BLACK/NONE；具名色 `bevy::color::palettes::css::*`（Srgba）经 `Color::from(..)`/`.into()`；`StandardMaterial.emissive` 是 `LinearRgba`（强度直接高数值 cd/m²），`Color` 无 `*f32`——PIT-B-034/036。
-- **UI 重构**：`Style` 结构体不存在（字段并入 `Node`）+ `px()/percent()` 单位函数 + `Val` 变体 Auto/Px/Percent/Vw/Vh/VMin/VMax（Undefined 移除）；`TextStyle`→`TextFont{font_size: FontSize}`+`TextColor`；`UiImage`→`ImageNode`；多段文本=子实体 `TextSpan`；`TextAlignment`→`Justify`+`TextLayout::justify`；`BorderColor` 每边字段；`Interaction`/`Button` 仍在 prelude 但 **`#[deprecated]` + `#[doc(hidden)]`，官方注 0.20 后移除——勿新用**（bevy_ui-0.20.0/src/lib.rs:64-69 复核 2026-10-29，与上条 0.20 变更 bullet 一致；旧「无坑」作废）——PIT-B-037/038/039/050。
+- **UI 重构**：`Style` 结构体不存在（字段并入 `Node`）+ `px()/percent()` 单位函数 + `Val` 变体 Auto/Px/Percent/Vw/Vh/VMin/VMax（Undefined 移除）；`TextStyle`→`TextFont{font_size: FontSize}`+`TextColor`；`UiImage`→`ImageNode`；多段文本=子实体 `TextSpan`；`TextAlignment`→`Justify`+`TextLayout::justify`；`BorderColor` 每边字段；`Interaction`/`Button` 仍在 prelude 但 **`#[deprecated]` + `#[doc(hidden)]`，官方注 0.20 后移除——勿新用**（bevy_ui-0.20.0/src/lib.rs:64-69 复核 2026-10-29，与上条 0.20 变更 bullet 一致；旧「无坑」作废）——PIT-B-037/038/039/050。**`Button` 不可构造（T051 P23 实测，A' 通道边界）**：prelude 的 `Button` = `pub(crate) DeprecatedButton` 的公开别名（`bevy_ui-0.20.0/src/widget/button.rs:22-30`）——用户代码经别名构造即 E0603 私有性穿透；**等价落位** = 插入 `Interaction::None` + `FocusPolicy::Block`（focus 系统的 NodeQuery 只读 `Interaction`，`focus.rs:145-157`；`Button` 组件不被任何逻辑依赖）。源码亲核口径——原始 E0603 失败行被绿档覆盖，不入 PIT-B（T051 G1 U3 裁决）。
 - **窗口**：`Window.cursor` 字段→独立 `CursorOptions` 组件；`title/resolution/present_mode/mode` 仍是公有字段；`WindowMode/MonitorSelection/PrimaryWindow` 不在 prelude——PIT-B-040/041。
 - **prelude 缺口（渲染域）**：`Bloom`（bevy::post_process::bloom，require Hdr）、`Exposure/Hdr/RenderTarget`（bevy::camera）、`Skybox`（bevy::light，image: Option + rotation: Quat）、`Wireframe`（bevy::pbr::wireframe，单元组件+WireframeColor 分离）、`Tonemapping/DebandDither`（bevy::core_pipeline::tonemapping）、`FocusPolicy`（bevy::ui）——PIT-B-042/045。
 - **光照/数学签名**：`shadow_maps_enabled`（非 shadows_enabled）；`Dir3::new -> Result<Dir3, InvalidDirectionError>`（new_unchecked/new_and_length 同族）——PIT-B-043/047。
@@ -330,6 +330,8 @@
 ---
 
 ## 变更记录
+
+- **v0.22（2026-10-31）**：T051 M6 波次 5（P22-25）收官随批——①§6.14 增补 **`Button` 不可构造**（`pub(crate) DeprecatedButton` 别名 E0603 + `Interaction::None`/`FocusPolicy::Block` 等价落位，`button.rs:22-30`/`focus.rs:145-157`——T051 P23 实测，源码亲核口径，不入 PIT-B）；②§6.10 增补 **`run_system_once` 下 `Changed<T>` 恒真**（`function_system.rs:781`——BRP 断言通道须断言下游效应防假绿，T051 `td.conditions`/`td.level_select` 实践）；G2 完整轮通过（独立复算 6 组：摇杆 8 向量/预览中心/P24 经济残差/discover 41/expect 七站/add_systems 22）。
 
 - **v0.21（2026-10-31）**：T050 M6 波次 4（P18-21）收官随批——①§6.13 prelude 缺口第三例：**`Volume`/`PlaybackMode` 不在 bevy_audio prelude**（`bevy_audio-0.20.0/src/lib.rs:42`/`:44-46`；`Volume`=enum `volume.rs:36`、`PlaybackMode`=enum `audio.rs:12`；`use bevy::audio::{…}` 显式导入，T050 P20 落地——源码亲核口径，非 E0 实证轮）；②随批在档：`and_eager` = 0.20 对教程 21 `.and()` 的文档明示等价（`bevy_ecs-0.20.0/src/schedule/condition.rs:191`，暂停门控用法）；G2 完整轮通过（独立复算 = 暂停冻结算术 + td.audio 结构面对表 + 纪律计数亲数）。
 
