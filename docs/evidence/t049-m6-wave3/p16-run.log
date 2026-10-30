@@ -1,0 +1,53 @@
+[2m2026-10-30T14:06:13.867380Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T14:06:14.149067Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T14:06:14.724337Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T14:06:14.724830Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers
+[2m2026-10-30T14:06:14.728219Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T14:06:14.728375Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T14:06:14.732651Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T14:06:14.803746Z[0m [32m INFO[0m [2mgame_td::tower[0m[2m:[0m [TD] tower registry loaded: 2 towers (["rapid", "rocket"])
+[2m2026-10-30T14:06:18.550174Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T14:06:18.566036Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:18.581638Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:20.067975Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [2, 0] (world -320, -288)
+[2m2026-10-30T14:06:20.868427Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [4, 0] (world -192, -288)
+[2m2026-10-30T14:06:20.933826Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:21.232880Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T14:06:21.249551Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:21.263697Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:21.550716Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [5, 3] (world -128, -96)
+[2m2026-10-30T14:06:22.550720Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t049-m6-wave3/p16-shot.png (entity 602v1)
+[2m2026-10-30T14:06:22.841369Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t049-m6-wave3/p16-shot.png
+[2m2026-10-30T14:06:22.841794Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T14:06:28.683321Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:28.983345Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T14:06:28.998700Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:29.013051Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:29.349797Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:29.649260Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T14:06:29.665332Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:29.679432Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:30.016588Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:45.649470Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T14:06:45.664816Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:45.678728Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:47.148874Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [2, 0] (world -320, -288)
+[2m2026-10-30T14:06:47.965836Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [4, 0] (world -192, -288)
+[2m2026-10-30T14:06:48.031681Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:48.330816Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T14:06:48.347768Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:48.361605Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:48.649003Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [5, 3] (world -128, -96)
+[2m2026-10-30T14:06:49.649040Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 queued -> ../docs/evidence/t049-m6-wave3/p16-shot.png (entity 523v5)
+[2m2026-10-30T14:06:49.943219Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t049-m6-wave3/p16-shot.png
+[2m2026-10-30T14:06:49.943625Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 captured (1600x900)
+[2m2026-10-30T14:06:55.798060Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:56.097915Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T14:06:56.113912Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:56.128260Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:56.464718Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T14:06:56.780658Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T14:06:56.797553Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T14:06:56.811458Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T14:06:57.148053Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+# [取证补录 2026-10-30] GAME_EXIT=1（进程由 taskkill //F 终止，非自身退出；上方为 game 原始 stdout/stderr）

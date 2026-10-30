@@ -1,0 +1,3 @@
+成功: 已终止进程 "game-td.exe"，其 PID 为 13084。
+taskkill_exit=0
+grep_exit=1

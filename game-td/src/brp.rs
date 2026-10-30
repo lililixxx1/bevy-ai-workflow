@@ -48,6 +48,20 @@
 //! - 放置成功 → `{"placed": true, "tile": [x,y], "pos": [wx, wy]}`；
 //! - 不可放置（路径 / 已占用 / 越界 / 未加载关卡）→ `{"placed": false, "reason": …}`；
 //! - tile 形态非法 → -32602（不静默回落）。
+//!
+//! 测试通道 `td.level`（P13）：BRP 面没有键盘注入，关卡选择必须能确定性触发。
+//! - `{}` / `{"op":"list"}` → `{"available", "levels": [...], "selected"}`；
+//! - `{"op":"select","index":n}` / `{"op":"select","path":"..."}` → 写 `SelectedLevel`；
+//! - 非法 index / path → -32602。
+//!
+//! 测试通道 `td.economy`（P14）：金币 / 常量面只读快照（经济无键鼠注入面，
+//! 读数必须能从外部确定性取得）。
+//!
+//! 测试通道 `td.towers`（P16）：数据驱动塔注册表的只读快照（键 / 数值 / 弹体定义）
+//! ——「塔定义真的来自 TOML」的可验证面。
+//!
+//! 测试通道 `td.tower_select`（P17）：塔选下标读写（U6 侧信道——BRP 无滚轮 / 键盘 /
+//! 鼠标点击注入，选择效果经「选中下标 → 放置塔型 → `TowerTypeId`」链验证）。
 
 use bevy::prelude::*;
 use bevy::remote::http::RemoteHttpPlugin;
@@ -75,6 +89,22 @@ pub const TD_GAME_METHOD: &str = "td.game";
 /// `td.state` 方法名（P12 起：状态机读写——无键鼠注入通道，状态迁移需确定性入口）。
 pub const TD_STATE_METHOD: &str = "td.state";
 
+/// `td.level` 方法名（P13 起：关卡发现列表读取 / 选中项切换）。
+pub const TD_LEVEL_METHOD: &str = "td.level";
+
+/// `td.economy` 方法名（P14 起：金币 / 常量面只读快照）。
+pub const TD_ECONOMY_METHOD: &str = "td.economy";
+
+/// `td.combat` 方法名（P15 起：弹道 / 弹药 / 战斗常量的只读快照）。
+pub const TD_COMBAT_METHOD: &str = "td.combat";
+
+/// `td.towers` 方法名（P16 起：数据驱动塔注册表只读快照）。
+pub const TD_TOWERS_METHOD: &str = "td.towers";
+
+/// `td.tower_select` 方法名（P17 起：塔选下标读写——无键鼠注入面的确定性通道，
+/// U6 约束的「可查询侧信道」）。
+pub const TD_TOWER_SELECT_METHOD: &str = "td.tower_select";
+
 pub struct BrpPlugin;
 
 impl Plugin for BrpPlugin {
@@ -93,7 +123,13 @@ impl Plugin for BrpPlugin {
             .register_type::<crate::tower::TowerTurret>()
             .register_type::<crate::tower::TowerPreview>()
             // P9：Health——断言伤害结算与死亡回收（教程 09 Step 1）。
-            .register_type::<crate::enemy::Health>();
+            .register_type::<crate::enemy::Health>()
+            // P14：经济面三件——HUD 标记计数与赏金组件读值（教程 14 Step 2/3）。
+            .register_type::<crate::economy::GoldHud>()
+            .register_type::<crate::economy::Bounty>()
+            // P17：塔型下标（放置塔的塔型端到端证据）与 dock 槽位（U6 侧信道计数）。
+            .register_type::<crate::tower::TowerTypeId>()
+            .register_type::<crate::tower::TowerDockSlot>();
         app.init_resource::<ScreenshotLog>();
         app.add_plugins(
             RemotePlugin::default()
@@ -101,13 +137,20 @@ impl Plugin for BrpPlugin {
                 .with_method_main(TD_SPAWN_TOWER_METHOD, spawn_tower_handler)
                 .with_method_main(TD_WAVE_METHOD, wave_handler)
                 .with_method_main(TD_GAME_METHOD, game_handler)
-                .with_method_main(TD_STATE_METHOD, state_handler),
+                .with_method_main(TD_STATE_METHOD, state_handler)
+                .with_method_main(TD_LEVEL_METHOD, level_handler)
+                .with_method_main(TD_ECONOMY_METHOD, economy_handler)
+                .with_method_main(TD_COMBAT_METHOD, combat_handler)
+                .with_method_main(TD_TOWERS_METHOD, towers_handler)
+                .with_method_main(TD_TOWER_SELECT_METHOD, tower_select_handler),
         );
         app.add_plugins(RemoteHttpPlugin::default().with_address(std::net::Ipv4Addr::LOCALHOST));
         info!("[BRP] listening on 127.0.0.1:15702 (explicit loopback bind)");
         info!(
             "[BRP] custom methods: {TD_SCREENSHOT_METHOD}, {TD_SPAWN_TOWER_METHOD}, \
-             {TD_WAVE_METHOD}, {TD_GAME_METHOD}, {TD_STATE_METHOD}"
+             {TD_WAVE_METHOD}, {TD_GAME_METHOD}, {TD_STATE_METHOD}, {TD_LEVEL_METHOD}, \
+             {TD_ECONOMY_METHOD}, {TD_COMBAT_METHOD}, {TD_TOWERS_METHOD}, \
+             {TD_TOWER_SELECT_METHOD}"
         );
     }
 }
@@ -302,7 +345,7 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
     let tile = parse_tile_param(params.as_ref())?;
 
     // 关卡未加载（P12 起 LevelSelect 态）→ 结构性拒绝而非 panic。
-    let (placeable, map_width, map_height) = {
+    let (placeable, map_width, map_height, gold_before, tower_index, tower_key, def) = {
         let Some(map) = world.get_resource::<MapLayout>() else {
             return Ok(json!({
                 "placed": false,
@@ -310,11 +353,30 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
                 "tile": tile,
             }));
         };
+        let Some(registry) = world.get_resource::<crate::tower::TowerRegistry>() else {
+            return Ok(json!({
+                "placed": false,
+                "reason": "tower registry missing",
+                "tile": tile,
+            }));
+        };
+        let selected = world.resource::<crate::tower::SelectedTowerType>();
+        let tower_index = selected.0;
+        let def = registry.get(tower_index).clone();
+        let tower_key = def.key.clone();
         let placed = world.resource::<PlacedTowers>();
+        let gold = world
+            .get_resource::<crate::economy::Gold>()
+            .map(|g| g.0)
+            .unwrap_or(f32::INFINITY);
         (
             tower::is_placeable(map, placed, tile),
             map.width as f32,
             map.height as f32,
+            gold,
+            tower_index,
+            tower_key,
+            def,
         )
     };
 
@@ -326,22 +388,69 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
         }));
     }
 
+    // 教程 14 Step 7 + 16：买不起即拒绝（价格来自注册表 `def.cost`）。
+    let cost = def.cost;
+    if gold_before < cost as f32 {
+        return Ok(json!({
+            "placed": false,
+            "reason": "not enough gold",
+            "tile": tile,
+            "gold": gold_before,
+            "cost": cost,
+        }));
+    }
+
+    world.resource_mut::<crate::economy::Gold>().0 -= cost as f32;
     world.resource_mut::<PlacedTowers>().0.insert(tile);
     let atlas = world.resource::<TowerAtlas>().clone();
     let mut commands = world.commands();
-    let pos = tower::spawn_tower_entities(&mut commands, &atlas, tile, map_width, map_height);
+    let pos = tower::spawn_tower_entities(
+        &mut commands,
+        &atlas,
+        &def,
+        tower_index,
+        tile,
+        map_width,
+        map_height,
+    );
     drop(commands);
     // 立即应用命令队列：返回后实体对已真实入世界（断言读取不等下一帧）。
     world.flush();
 
     info!(
-        "[TD] tower placed at tile {tile:?} (world {}, {})",
+        "[TD] tower '{tower_key}' placed at tile {tile:?} (world {}, {})",
         pos.x, pos.y
     );
     Ok(json!({
         "placed": true,
         "tile": tile,
         "pos": [pos.x, pos.y],
+        "cost": cost,
+        "tower_type": tower_key,
+        "tower_index": tower_index,
+    }))
+}
+
+/// `td.economy` handler（P14 起）：金币与常量面的只读快照。
+///
+/// 响应：`{"available", "gold", "starting_gold", "passive_rate", "tower_cost"}`；
+/// 资源缺失（非 InGame 态）→ `available=false` + 各值 null。
+/// `tower_cost` 在 P16 数据驱动化后读注册表选中项（价格不再有硬编码常量）。
+pub fn economy_handler(In(_params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let gold = world.get_resource::<crate::economy::Gold>().map(|g| g.0);
+    let tower_cost = world
+        .get_resource::<crate::tower::TowerRegistry>()
+        .and_then(|registry| {
+            world
+                .get_resource::<crate::tower::SelectedTowerType>()
+                .map(|selected| registry.get(selected.0).cost)
+        });
+    Ok(json!({
+        "available": gold.is_some(),
+        "gold": gold,
+        "starting_gold": crate::economy::STARTING_GOLD,
+        "passive_rate": crate::economy::PASSIVE_INCOME_RATE,
+        "tower_cost": tower_cost,
     }))
 }
 
@@ -499,6 +608,304 @@ pub fn state_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpRes
             }))
         }
     }
+}
+
+/// `td.level` 的参数解析结果。
+enum LevelOp {
+    List,
+    SelectIndex(usize),
+    SelectPath(String),
+}
+
+/// 解析 `td.level` 的 params（严格分支）：缺省 / `{"op":"list"}` = 列表；
+/// `{"op":"select","index":n}` / `{"op":"select","path":"..."}` = 切换选中关卡。
+fn parse_level_op(params: Option<&Value>) -> Result<LevelOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(LevelOp::List);
+    };
+    if value.is_null() {
+        return Ok(LevelOp::List);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "list",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "list" => Ok(LevelOp::List),
+        "select" => {
+            let index = map.get("index");
+            let path = map.get("path");
+            match (index, path) {
+                (Some(Value::Number(n)), None) => {
+                    let Some(i) = n.as_u64() else {
+                        return Err(invalid_params("index 须为非负整数"));
+                    };
+                    Ok(LevelOp::SelectIndex(i as usize))
+                }
+                (None, Some(Value::String(s))) => Ok(LevelOp::SelectPath(s.clone())),
+                (Some(_), Some(_)) => Err(invalid_params(
+                    "index 与 path 只能给一个（二者同给歧义）",
+                )),
+                _ => Err(invalid_params(
+                    "select 需要 index（非负整数）或 path（字符串）",
+                )),
+            }
+        }
+        other => Err(invalid_params(&format!("未知 op `{other}`（允许 list / select）"))),
+    }
+}
+
+/// `td.level` handler（P13）：关卡发现列表读取 / 选中项切换。
+///
+/// - `{}` / `{"op":"list"}` → `{"available", "levels", "selected"}`；
+/// - `{"op":"select",…}` → 写 `SelectedLevel`，返回 `{"selected", "index"}`。
+///
+/// 为什么需要：BRP 面无键盘注入，而 P13 起关卡由菜单按键选择——证据脚本
+/// 必须能确定性地切换关卡（`td.` 前缀纪律，见 M6 选品 §五）。
+pub fn level_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_level_op(params.as_ref())?;
+    let levels: Vec<String> = world
+        .get_resource::<crate::level_select::AvailableLevels>()
+        .map(|l| l.0.clone())
+        .unwrap_or_default();
+    let selected = world
+        .get_resource::<crate::level_select::SelectedLevel>()
+        .map(|s| s.0.clone());
+
+    match op {
+        LevelOp::List => Ok(json!({
+            "available": !levels.is_empty(),
+            "levels": levels,
+            "selected": selected,
+        })),
+        LevelOp::SelectIndex(index) => {
+            let Some(path) = levels.get(index).cloned() else {
+                return Err(invalid_params(&format!(
+                    "index {index} 越界（发现 {} 个关卡）",
+                    levels.len()
+                )));
+            };
+            set_selected_level(world, &path)?;
+            Ok(json!({ "selected": path, "index": index }))
+        }
+        LevelOp::SelectPath(path) => {
+            let Some(index) = levels.iter().position(|p| *p == path) else {
+                return Err(invalid_params(&format!(
+                    "关卡 `{path}` 不在发现列表（{:?}）",
+                    levels
+                )));
+            };
+            set_selected_level(world, &path)?;
+            Ok(json!({ "selected": path, "index": index }))
+        }
+    }
+}
+
+/// 写入 `SelectedLevel`（P13）：资源由 `init_resource` 保证存在。
+fn set_selected_level(world: &mut World, path: &str) -> Result<(), BrpError> {
+    let mut selected = world.resource_mut::<crate::level_select::SelectedLevel>();
+    selected.0 = path.to_string();
+    info!("[TD] selected level -> {path}");
+    Ok(())
+}
+
+/// `td.combat` handler（P15 起；P16 换读 `AmmoState`）：弹道 / 弹药 / 战斗常量面的只读快照。
+///
+/// 响应：`{"available", "launchers", "projectiles", "exploding", "ammo_filled",
+/// "ammo_capacity", "fired", "rocket_damage", "splash_radius", "rocket_speed"}`；
+/// 计数为 0 也返回（资源缺失不 panic）。弹药「填充数 + 飞行中」与 `fired` 一起
+/// 支撑「发射 → 减弹 → 补弹」链的采样断言。P16 起火箭数值来自注册表 `rocket`
+/// 条目（数据驱动，不再有 Rust 常量）。
+pub fn combat_handler(In(_params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let mut launchers = 0usize;
+    let mut ammo_filled = 0usize;
+    let mut ammo_capacity = 0usize;
+    let mut fired = 0u64;
+    let mut query = world.query::<&crate::tower::AmmoState>();
+    for ammo in query.iter(world) {
+        launchers += 1;
+        ammo_filled += ammo.slots.iter().filter(|slot| slot.is_some()).count();
+        ammo_capacity += ammo.slots.len();
+        fired += ammo.fired as u64;
+    }
+
+    let projectiles = world.query::<&crate::tower::Projectile>().iter(world).count();
+    let exploding = world.query::<&crate::tower::Exploding>().iter(world).count();
+
+    let rocket = world
+        .get_resource::<crate::tower::TowerRegistry>()
+        .and_then(|registry| registry.towers.iter().find(|def| def.key == "rocket"))
+        .and_then(|def| def.projectile.as_ref())
+        .map(|p| {
+            json!({
+                "damage": p.damage,
+                "speed": p.speed,
+                "splash_radius": p.splash_radius,
+            })
+        });
+
+    Ok(json!({
+        "available": true,
+        "launchers": launchers,
+        "projectiles": projectiles,
+        "exploding": exploding,
+        "ammo_filled": ammo_filled,
+        "ammo_capacity": ammo_capacity,
+        "fired": fired,
+        "rocket_damage": rocket.as_ref().map(|r| r["damage"].clone()),
+        "splash_radius": rocket.as_ref().map(|r| r["splash_radius"].clone()),
+        "rocket_speed": rocket.as_ref().map(|r| r["speed"].clone()),
+    }))
+}
+
+/// `td.towers` handler（P16 起；P17 改向量序）：数据驱动塔注册表的只读快照。
+///
+/// 响应：`{"available", "selected_index", "selected", "towers": [...]}`，每塔一项含
+/// `index` / 键 / 名称 / 数值 / 外观索引 / 弹体定义（`projectile` 为 null 表示瞬时塔）。
+/// P17 起注册表是 `Vec`：输出序 = 向量序（= 选择 UI 槽位序 = 数字键下标；
+/// 装载序来自 TOML 键的 HashMap 迭代，教程 17 明确「order is arbitrary, but
+/// stable for the rest of the session」——断言按 key 反查 index，不假设顺序）。
+pub fn towers_handler(In(_params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let Some(registry) = world.get_resource::<crate::tower::TowerRegistry>() else {
+        return Ok(json!({ "available": false, "selected": null, "selected_index": null, "towers": [] }));
+    };
+    let selected_index = world
+        .get_resource::<crate::tower::SelectedTowerType>()
+        .map(|s| s.0);
+    let selected = selected_index.map(|i| registry.get(i).key.clone());
+
+    let towers: Vec<Value> = registry
+        .towers
+        .iter()
+        .enumerate()
+        .map(|(index, def)| {
+            json!({
+                "index": index,
+                "key": def.key,
+                "name": def.name,
+                "description": def.description,
+                "base_sprite": def.base_sprite,
+                "top_sprite": def.top_sprite,
+                "preview_top_sprite": def.preview_top_sprite,
+                "cost": def.cost,
+                "attack_range": def.attack_range,
+                "attack_cooldown": def.attack_cooldown,
+                "damage": def.damage,
+                "muzzle_flash_sprite": def.muzzle_flash_sprite,
+                "projectile": def.projectile.as_ref().map(|p| json!({
+                    "damage": p.damage,
+                    "speed": p.speed,
+                    "sprite": p.sprite,
+                    "explosion_sprite": p.explosion_sprite,
+                    "splash_radius": p.splash_radius,
+                })),
+                "ammo_slots": def.ammo_slot_offsets.as_ref().map(|o| o.len()),
+                "ammo_refill_secs": def.ammo_refill_secs,
+            })
+        })
+        .collect();
+
+    Ok(json!({
+        "available": true,
+        "selected_index": selected_index,
+        "selected": selected,
+        "towers": towers,
+    }))
+}
+
+/// `td.tower_select` 的参数解析结果。
+enum TowerSelectOp {
+    Get,
+    SetIndex(usize),
+    SetKey(String),
+}
+
+/// 解析 `td.tower_select` 的 params（严格分支）：缺省 / `{"op":"get"}` = 查询；
+/// `{"op":"set","index":n}` / `{"op":"set","key":"rocket"}` = 切换选中塔型。
+fn parse_tower_select_op(params: Option<&Value>) -> Result<TowerSelectOp, BrpError> {
+    let Some(value) = params else {
+        return Ok(TowerSelectOp::Get);
+    };
+    if value.is_null() {
+        return Ok(TowerSelectOp::Get);
+    }
+    let Value::Object(map) = value else {
+        return Err(invalid_params(&format!("params 须为对象（收到 {value}）")));
+    };
+    let op = match map.get("op") {
+        None | Some(Value::Null) => "get",
+        Some(Value::String(s)) => s.as_str(),
+        Some(other) => {
+            return Err(invalid_params(&format!("op 须为字符串（收到 {other}）")));
+        }
+    };
+    match op {
+        "get" => Ok(TowerSelectOp::Get),
+        "set" => match (map.get("index"), map.get("key")) {
+            (Some(Value::Number(n)), None) => {
+                let Some(i) = n.as_u64() else {
+                    return Err(invalid_params("index 须为非负整数"));
+                };
+                Ok(TowerSelectOp::SetIndex(i as usize))
+            }
+            (None, Some(Value::String(s))) => Ok(TowerSelectOp::SetKey(s.clone())),
+            (Some(_), Some(_)) => Err(invalid_params("index 与 key 只能给一个（二者同给歧义）")),
+            _ => Err(invalid_params("set 需要 index（非负整数）或 key（字符串）")),
+        },
+        other => Err(invalid_params(&format!("未知 op `{other}`（允许 get / set）"))),
+    }
+}
+
+/// `td.tower_select` handler（P17）：塔选下标读写（U6 侧信道）。
+///
+/// - `{}` / `{"op":"get"}` → `{"selected_index", "key", "len"}`；
+/// - `{"op":"set",…}` → 写 `SelectedTowerType`，返回同形快照。
+///
+/// 为什么需要：BRP 面无键鼠注入，而 P17 的选择由滚轮 / 数字键 / 槽位点击驱动
+/// ——证据脚本必须能确定性地切换选中塔型并读取结果；UI 视觉态另由截图留证。
+pub fn tower_select_handler(In(params): In<Option<Value>>, world: &mut World) -> BrpResult {
+    let op = parse_tower_select_op(params.as_ref())?;
+    let Some(registry) = world.get_resource::<crate::tower::TowerRegistry>() else {
+        return Ok(json!({ "available": false, "selected_index": null, "key": null, "len": 0 }));
+    };
+    let len = registry.towers.len();
+
+    match op {
+        TowerSelectOp::Get => {}
+        TowerSelectOp::SetIndex(index) => {
+            if index >= len {
+                return Err(invalid_params(&format!(
+                    "index {index} 越界（注册表 {} 项）",
+                    len
+                )));
+            }
+            world.resource_mut::<crate::tower::SelectedTowerType>().0 = index;
+        }
+        TowerSelectOp::SetKey(key) => {
+            let Some(index) = registry.index_of_key(&key) else {
+                return Err(invalid_params(&format!("塔型 `{key}` 不在注册表")));
+            };
+            world.resource_mut::<crate::tower::SelectedTowerType>().0 = index;
+        }
+    }
+
+    let selected_index = world.resource::<crate::tower::SelectedTowerType>().0;
+    let key = world
+        .get_resource::<crate::tower::TowerRegistry>()
+        .map(|r| r.get(selected_index).key.clone());
+    info!("[TD] tower selected -> index {selected_index} ({key:?})");
+    Ok(json!({
+        "available": true,
+        "selected_index": selected_index,
+        "key": key,
+        "len": len,
+    }))
 }
 
 /// 本模块族共用的参数错误（JSON-RPC INVALID_PARAMS -32602）。

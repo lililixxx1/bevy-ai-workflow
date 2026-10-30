@@ -42,12 +42,24 @@
 //!   `GameEntity` 统一标记 + `cleanup_level` 一次清场，`level_select.rs` /
 //!   `game_over.rs` 两个屏内 UI 模块；`Local<bool>` 门闩换成随关卡回收的
 //!   `GameFinished` 资源（教程 12 Step 4），`GameOver` 标记退役。
-//!   BRP 测试通道 `td.state`（状态读写）以覆盖无键鼠注入的状态迁移。
+//!   BRP 测试通道 `td.state`（状态读写）以覆盖无键鼠注入的状态迁移；
+//! - P13（本文件所在阶段）：按教程 13 加**多关卡**——`assets/levels/level_01..03.toml`
+//!   自动发现（`AvailableLevels` / `SelectedLevel` 资源 + `scan_available_levels`），
+//!   菜单动态列表 + `1..9` 键映射，`load_level_data` 改读选中路径；
+//!   `setup_tower_atlas` 移到 `Startup`（教程 13 Step 7：只装一次）。
+//!   BRP 测试通道 `td.level`（关卡列表读取 / 选中项切换）以覆盖无键盘注入的关卡选择；
+//! - P14–P17（同批推进，逐部过门禁）：经济（`economy.rs`：金币 / 被动收入 / 赏金 /
+//!   建造价 / HUD）、火箭发射器与弹道链（`tower.rs`：弹药 / 追踪弹 / 溅射）、
+//!   **数据驱动塔注册表**（`assets/towers.toml` + `TowerRegistry`，教程 16）、
+//!   塔选择 dock（教程 17：滚轮 / 数字键 / 槽位点击，`Interaction` 弃用别名按 A'
+//!   裁决以 `#[expect(deprecated)]` 落地）。对应测试通道 `td.economy` /
+//!   `td.combat` / `td.towers` / `td.tower_select`。
 //!
 //! 窗口契约（Lead 预置，覆盖教程默认窗口）：1280×720、Windowed、title "game-td"。
 //! BRP 常驻见 [`brp`]：`127.0.0.1:15702`（显式回环绑定）+ `td.*` 自定义方法族。
 
 mod brp;
+mod economy;
 mod enemy;
 mod game_over;
 mod level;
@@ -62,25 +74,31 @@ use bevy::prelude::*;
 use bevy::window::WindowMode;
 use bevy_ecs_tilemap::prelude::*;
 
+use economy::{
+    earn_passive_income, spawn_gold_hud, tick_placement_denied, update_gold_hud, Gold,
+    STARTING_GOLD,
+};
 use enemy::{
     build_spawn_schedule, check_game_state, move_enemies, process_base_reachers,
     spawn_wave_enemies, BaseLives, GameFinished,
 };
 use game_over::{handle_game_over_input, setup_game_over};
 use level::{build_map_from_level, load_level, LevelData};
-use level_select::{handle_level_select_input, setup_level_select};
+use level_select::{
+    handle_level_select_input, scan_available_levels, setup_level_select, AvailableLevels,
+    SelectedLevel,
+};
 use map::{MapLayout, MapTile, PathTile, TileType};
 use tiling::{build_rules, TileRules};
 use tower::{
-    attack_enemies, despawn_timed, place_tower_on_click, setup_tower_atlas,
-    spawn_placement_preview, update_placement_preview, PlacedTowers,
+    attack_enemies, cycle_tower_on_scroll, despawn_timed, explode_projectiles,
+    handle_dock_slot_click, launch_rockets, load_tower_registry, move_projectiles,
+    place_tower_on_click, refill_ammo, select_tower_by_key, setup_tower_atlas, setup_tower_dock,
+    spawn_placement_preview, update_dock_selection, update_placement_preview, PlacedTowers,
 };
 
 /// 单格像素尺寸（教程 Part 2 Step 3 行为规格：64px 格）。
 const TILE_SIZE: f32 = 64.0;
-
-/// 默认关卡文件（教程 06 Step 6：路径相对进程 CWD = `game-td/`）。
-const DEFAULT_LEVEL_PATH: &str = "assets/levels/level_01.toml";
 
 /// 游戏状态机（教程 12 Step 1）：三态互斥，`#[default]` = 启动态。
 ///
@@ -144,13 +162,21 @@ fn main() -> AppExit {
         // 教程 12 Step 1：注册状态枚举 + 初始值（`#[default]` = LevelSelect）+
         // `NextState` 资源；首个 update 触发 `OnEnter(LevelSelect)` 恰一次。
         .init_state::<GameState>()
-        // 教程 12 Step 7：相机在 Startup 一次（跨全部屏持久，不随状态回收）。
-        .add_systems(Startup, spawn_camera)
+        // 教程 13 Step 1/8：发现列表空表 + 选中项占位（首个发现项由 scan 写入）。
+        .init_resource::<AvailableLevels>()
+        .init_resource::<SelectedLevel>()
+        // 教程 12 Step 7 + 13 Step 7：相机与塔图集都在 Startup 一次
+        // （P13 起图集不再随菜单进出重建——教程 13 Step 7「run exactly once」）。
+        // 教程 16：塔注册表 Startup 一次载入（`assets/towers.toml`）。
+        .add_systems(
+            Startup,
+            (spawn_camera, setup_tower_atlas, load_tower_registry).chain(),
+        )
         // ---------- LevelSelect ----------
-        // 教程 12 Step 10：图集在进入菜单时备好（跨回合同持久，不进 cleanup_level）。
+        // 教程 13 Step 8：先扫描关卡、再按发现列表建 UI（顺序倒置 UI 读到空表）。
         .add_systems(
             OnEnter(GameState::LevelSelect),
-            (setup_level_select, setup_tower_atlas).chain(),
+            (scan_available_levels, setup_level_select).chain(),
         )
         .add_systems(OnExit(GameState::LevelSelect), cleanup_screen_ui)
         .add_systems(
@@ -166,6 +192,10 @@ fn main() -> AppExit {
                 setup_spawn_schedule,
                 spawn_tilemap,
                 spawn_placement_preview,
+                // 教程 14 Step 10：HUD 链尾——读 `load_level_data` 插入的 `Gold`。
+                spawn_gold_hud,
+                // 教程 17：塔选 dock（底部槽位；读注册表 + 重置选中下标）。
+                setup_tower_dock,
             )
                 .chain(),
         )
@@ -176,16 +206,44 @@ fn main() -> AppExit {
             (
                 spawn_wave_enemies,
                 move_enemies,
+                // 教程 15 Step 10：`attack_enemies` 保留——场上无 `InstantShooter`
+                // 实体时是 no-op（P16 数据驱动后即时射击判别器 = `InstantShooter`；
+                // 火箭系走弹道链不挂它）。
                 attack_enemies,
+                // 弹道链（教程 15 Step 10 定序）：补弹 → 发射 → 飞行 → 命中结算。
+                refill_ammo,
+                launch_rockets,
+                move_projectiles,
+                explode_projectiles,
                 process_base_reachers,
                 check_game_state,
+                // 教程 14 Step 10：收入挂固定步（随模拟时间缩放）。
+                earn_passive_income,
             )
                 .chain()
                 .run_if(in_state(GameState::InGame)),
         )
+        // 教程 17 Step「Organizing the systems」：输入类与视觉类分两组注册
+        // （纯组织性拆分，无行为变化）。
         .add_systems(
             Update,
-            (update_placement_preview, place_tower_on_click, despawn_timed)
+            (
+                cycle_tower_on_scroll,
+                select_tower_by_key,
+                handle_dock_slot_click,
+            )
+                .run_if(in_state(GameState::InGame)),
+        )
+        .add_systems(
+            Update,
+            (
+                update_placement_preview,
+                update_dock_selection,
+                update_gold_hud,
+                tick_placement_denied,
+                place_tower_on_click,
+                despawn_timed,
+            )
                 .run_if(in_state(GameState::InGame)),
         )
         // ---------- GameOver ----------
@@ -203,11 +261,12 @@ fn spawn_camera(mut commands: Commands) {
     commands.spawn(Camera2d);
 }
 
-/// 关卡数据装载（教程 12 Step 7）：每次进入 InGame 都重装——
-/// 含 `cleanup_level` 会移除的 `PlacedTowers` / `BaseLives`（教程 12 Step 7 注：
-/// 它们从 main.rs 移到这里，因为每回合都要重建）。
-fn load_level_data(mut commands: Commands) {
-    let level = load_level(DEFAULT_LEVEL_PATH);
+/// 关卡数据装载（教程 12 Step 7 + 13 Step 2）：每次进入 InGame 都重装——
+/// 关卡路径读 `SelectedLevel`（教程 13：由 `scan_available_levels` / 菜单输入 /
+/// `td.level` 写入），含 `cleanup_level` 会移除的 `PlacedTowers` / `BaseLives`
+/// （教程 12 Step 7 注：它们从 main.rs 移到这里，因为每回合都要重建）。
+fn load_level_data(mut commands: Commands, selected: Res<SelectedLevel>) {
+    let level = load_level(&selected.0);
     let map = build_map_from_level(&level);
     let rules = build_rules();
 
@@ -217,6 +276,8 @@ fn load_level_data(mut commands: Commands) {
     // 教程 11 Step 1 + 12 Step 7：基地 5 命（`insert_resource` 而非 `init_resource`——
     // `i32::default()` 是 0，且不同关卡可有不同起始命数）。
     commands.insert_resource(BaseLives(5));
+    // 教程 14 Step 4：每关开局 300 金（`insert_resource` 覆盖 = 干净起点）。
+    commands.insert_resource(Gold(STARTING_GOLD));
     // 教程 08 Step 8 + 12 Step 7：占格集合逐回合重建。
     commands.insert_resource(PlacedTowers::default());
 }
@@ -333,6 +394,8 @@ fn cleanup_level(mut commands: Commands, entities: Query<Entity, With<GameEntity
     commands.remove_resource::<enemy::SpawnSchedule>();
     commands.remove_resource::<PlacedTowers>();
     commands.remove_resource::<BaseLives>();
+    // 教程 14 Step 5：每关干净起点（`load_level_data` 也会覆盖，显式移除表明意图）。
+    commands.remove_resource::<Gold>();
     commands.remove_resource::<GameFinished>();
 }
 

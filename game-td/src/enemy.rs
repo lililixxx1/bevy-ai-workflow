@@ -59,6 +59,8 @@ pub struct SpawnEvent {
     pub speed: f32,
     /// 初始生命。
     pub health: f32,
+    /// 击杀赏金（教程 14 Step 2：从敌型定义流入实体）。
+    pub bounty: u32,
     /// 路径 id（`[paths.<id>]` 键）。
     pub path: String,
 }
@@ -104,6 +106,7 @@ pub fn build_spawn_schedule(
                     sprite: def.sprite,
                     speed: def.speed,
                     health: def.health,
+                    bounty: def.bounty,
                     path: wave.path.clone(),
                 });
                 time += wave.spawn_interval;
@@ -179,6 +182,8 @@ pub fn spawn_wave_enemies(
             },
             MoveSpeed(event.speed),
             Health(event.health),
+            // 教程 14 Step 2：赏金随实体走（TOML → 定义 → 事件 → 组件）。
+            crate::economy::Bounty(event.bounty),
             // 教程 12 Step 3：玩法实体统一挂 GameEntity（cleanup_level 清场用）。
             GameEntity,
         ));

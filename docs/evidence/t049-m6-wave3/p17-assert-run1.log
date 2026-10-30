@@ -1,0 +1,9 @@
+file:///C:/Users/Administrator/Desktop/ccc/trees/m6/w3/docs/evidence/t049-m6-wave3/assert-td.mjs:1731
+    JSON.stringify(typeIds) === JSON.stringify([rapid.index, big.index].sort((a, b) => a - b)),
+                                                ^
+
+ReferenceError: rapid is not defined
+    at file:///C:/Users/Administrator/Desktop/ccc/trees/m6/w3/docs/evidence/t049-m6-wave3/assert-td.mjs:1731:49
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v24.12.0

@@ -266,7 +266,7 @@
 - **事件读取全面 Message 化**：`EventReader` 类型已删除；`AssetEvent<A>` 是 `#[derive(Message)]`，读取 = `MessageReader<AssetEvent<T>>`——PIT-B-026（0.20 抽核维持）。
 - **Handle 形态**：enum `Handle::Strong(Arc<StrongHandle>)` / `Handle::Uuid(Uuid, PhantomData)`——无 `clone_weak`；「不持活」语义位 = Uuid 变体——PIT-B-027。
 - **Time 缩放**：`set_relative_speed`——旧 `set_scale` 不存在；负值/非有限 panic（0.20 抽核：迁移指南无相关条目，签名维持）。
-- **prelude 缺口与签名**：`AccumulatedMouseMotion` 不在 prelude（bevy_input prelude 为 Axis/ButtonInput+gamepad/keyboard/按钮/触摸项，`lib.rs:47-66`），完整路径 `bevy::input::mouse::`（`mouse.rs:218`，字段 `delta: Vec2`）；`load_folder(&'static)`（`server/mod.rs:1115`，`&str` 借用实测须 'static，返回 `Handle<LoadedFolder>`）——PIT-B-030。
+- **prelude 缺口与签名**：`AccumulatedMouseMotion` 不在 prelude（bevy_input prelude 为 Axis/ButtonInput+gamepad/keyboard/按钮/触摸项，`lib.rs:47-66`），完整路径 `bevy::input::mouse::`（`mouse.rs:264`〔v0.20 重锚，原 :218 系 0.19.1 锚〕，字段 `delta: Vec2`）；`MouseWheel` 同为 `bevy::input::mouse::` prelude 缺口（`mouse.rs:214`，`MessageReader<MouseWheel>` 用法——E0425 实证 T049〔`p17-check.log`〕，漂移表 Part 17 未载的新事实）；`load_folder(&'static)`（`server/mod.rs:1115`，`&str` 借用实测须 'static，返回 `Handle<LoadedFolder>`）——PIT-B-030。
 - r1 轮无错项（该组记忆形态一次写对，未产生编译错误）：`Time pause/unpause/delta`、`Time<Real>::delta_secs_f64`、`ButtonInput::just_pressed`、`server.load::<Image>()` turbofish、`Assets::contains`、`Timer::new + TimerMode::Repeating`。
 - 探查边界（如实记）：场景序列化（旧 `DynamicScene::serialize` 随类型移除，新 Template 体系未展开）；本域 PAT 记 0（repo 无已验证任务素材，不硬凑）。
 - 探查证据：`docs/evidence/m3-assets/batch-f/`（r1 失败 10 错原文 / r2 正解 check / 修正轮三笔失败复现式补录 `probe-r2-attempt1.log`（AssetId struct variant E0164、bsn 逗号 unexpected token、Clone+Default bound E0277×2）/ 运行时 r1/r2/r3c / r1 与 final 双源码快照）。
@@ -330,6 +330,8 @@
 ---
 
 ## 变更记录
+
+- **v0.20（2026-10-30）**：T049 M6 波次 3（P13-17）收官随批——①§6.13 prelude 缺口增补 **`MouseWheel`**（`bevy::input::mouse::`〔`mouse.rs:214`〕；E0425 实证在 T049 `p17-check.log`，漂移表 Part 17 未载的新事实——G1 裁 U1〔a〕）；②同 bullet `AccumulatedMouseMotion` 行号 **0.20.0 重锚 `:218`→`:264`**（收获批对本地 registry 实测发现漂移，§6.10-6.14 行号级重核归 T043 待重核清单的既知口径内实例）；③ G2 完整轮通过（独立复算 = 展开器三关双盲实跑 + towers.toml 对教程常量表 + 经济算术 + check 复跑）。
 
 - **v0.19（2026-10-30）**：T048 M6 波次 2（P8-12）收官随批——新增 **§6.18 资产根解析链与 cargo 外启动**（`BEVY_ASSET_ROOT` → `CARGO_MANIFEST_DIR` 烘焙值 → exe 目录三级链 `io/file/mod.rs:25-36`；直启 exe 必设环境量，缺省 = 静默空图非报错；P8 run1/run2 对照实测；证据 `docs/evidence/t048-m6-wave2/`）。G2 完整轮通过（0 阻塞；独立复算 ENTITY_DIGEST 重算 MATCH + 波次表/时序算术自洽）。
 

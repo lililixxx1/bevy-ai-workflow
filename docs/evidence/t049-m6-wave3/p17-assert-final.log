@@ -1,0 +1,114 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==33 | len=33
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover contains td.tower_select
+PASS | discover no game.* prefix | (none)
+PASS | P17 registry has 3 towers (big_rocket from TOML only) | len=3
+PASS | P17 registry keys == [big_rocket, rapid, rocket] | keys=["big_rocket","rapid","rocket"]
+PASS | P17 big_rocket: cost 200 / range 256 / cooldown 1.5 | {"c":200,"r":256,"cd":1.5}
+PASS | P17 big_rocket: 1 ammo slot / 4.0s refill | {"n":1,"s":4}
+PASS | P17 big_rocket projectile: damage 150 / speed 400 / sprite 252 / splash 100 | {"damage":150,"explosion_sprite":21,"speed":400,"splash_radius":100,"sprite":252}
+PASS | P17 tower_select get: len==3 / selected_index==0 | {"available":true,"key":"rapid","len":3,"selected_index":0}
+PASS | P17 default selected key == registry[0].key | got=rapid
+PASS | P17 select by key 'big_rocket' | {"available":true,"key":"big_rocket","len":3,"selected_index":1}
+PASS | P17 select by index 0 | {"available":true,"key":"rapid","len":3,"selected_index":0}
+PASS | P17 unknown key -> -32602 | code=-32602
+PASS | P17 out-of-range index -> -32602 | code=-32602
+PASS | P17 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P17 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P17 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P17 dock slot count == registry length (3) | slots=3
+PASS | P17 dock root exists (GoldHud side: 1 HUD)
+PASS | P17 setup_tower_dock resets selection to index 0 | {"available":true,"key":"rapid","len":3,"selected_index":0}
+PASS | P17 select big_rocket in-game | {"available":true,"key":"big_rocket","len":3,"selected_index":1}
+PASS | P17 place big_rocket at [5,3] | {"cost":200,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":1,"tower_type":"big_rocket"}
+PASS | P17 placement tower_type==big_rocket / cost==200 / index==big.index | {"cost":200,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":1,"tower_type":"big_rocket"}
+PASS | P17 big_rocket cost deducted (200, ±2) | gold=102.390625 expect=102.39
+INFO | P17 big_rocket fired=1 capacity=1 kill=true
+PASS | P17 big_rocket ammo_capacity==1 (data-driven slot count) | capacity=1
+PASS | P17 big_rocket fired >=1 | fired=1
+PASS | P17 big_rocket kill before path end
+PASS | P17 placed TowerTypeId == [big.index] | got=[1] big.index=1
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t049-m6-wave3/p17-shot-dock.png
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t049-m6-wave3/p17-shot-dock.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=85651
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=c65a70a6cd5e58211c7d6efec4af9a0c bytes=85651 size=1600x900
+PASS | screenshot queued | id=1 baseId=1 path=../docs/evidence/t049-m6-wave3/p17-shot.png
+PASS | screenshot status==captured | {"height":900,"id":1,"path":"../docs/evidence/t049-m6-wave3/p17-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=85866
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=39ff6741294257258db0a02e38f95655 bytes=85866 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P17-rapid td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P17-rapid td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P17-rapid state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P17 select rapid in fresh round | {"available":true,"key":"rapid","len":3,"selected_index":0}
+PASS | P17 place rapid at [5,3] | {"cost":100,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":0,"tower_type":"rapid"}
+PASS | P17 rapid tower_type==rapid / cost==100 | {"cost":100,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_index":0,"tower_type":"rapid"}
+PASS | P17 placed TowerTypeId == [rapid.index] | got=[0] rapid.index=0
+PASS | P17 rapid tower deals 34 (health 66 observed)
+PASS | P17 second rapid placed (100) | {"cost":100,"placed":true,"pos":[0,-96],"tile":[7,3],"tower_index":0,"tower_type":"rapid"}
+PASS | P17 big_rocket denied when gold < 200 | {"cost":200,"gold":104.21875,"placed":false,"reason":"not enough gold","tile":[11,3]}
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P17-clean td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P17-clean td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P17-clean state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P17-clean MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P17-clean TileType total==150 | len=150
+PASS | P17-clean TileType Grass==105 | grass=105
+PASS | P17-clean TileType Path==45 | path=45
+PASS | P17-clean PathTile count==45 | len=45
+PASS | P17-clean PathTile subset of MapTile | len=45
+PASS | P17-clean TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P17-clean texture index per cell == P3 baseline spec | bad=0
+PASS | P17-clean PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P17-clean whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P17-clean tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P17 GRID_DIGEST == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P17 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P17 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P17 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P17 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P17 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P17 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P17 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P17 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P17 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P17 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P17 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P17 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P17 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P17 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P17 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P17 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P17 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P17 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P17 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P17 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P17 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P17 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P17 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P17 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 104/104 PASS

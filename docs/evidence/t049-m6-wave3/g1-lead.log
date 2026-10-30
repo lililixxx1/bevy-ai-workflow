@@ -1,0 +1,46 @@
+# G1 · Lead 复验档（T049 M6 波次 3 批）
+
+日期 2026-10-30（深夜·三）；复验人 Lead；对象 = 树 `<tree>` 批次 T049（game-td Part 13-17 行为等价 + 验证面扩展）。
+
+## G1-scope 写范围核查
+
+`diff -qr --strip-trailing-cr <tree> <main-repo>`（主仓 HEAD = a218526）：差异恰为声明写面——
+
+- 改 7：game-td/src/{main,brp,enemy,level,level_select,tower}.rs、assets/levels/level_01.toml
+- 新 5：game-td/src/economy.rs、assets/levels/{level_02,level_03}.toml、assets/towers.toml、docs/evidence/t049-m6-wave3/
+- map.rs/tiling.rs/game_over.rs/Cargo 双文件零触碰 = **「无新增依赖」独立核证** ✓。**范围核查通过**。
+
+## G1-a 门禁独立复跑
+
+- Lead 复跑 `cargo check --workspace -j 3`（共享 target 缓存档 0.63s）：REAL_EXIT=0。
+- worker 终档：gate-check 0 警 + REAL_EXIT=0；gate-test game 20/20 + mcp-bridge 15/15 + doctest 78/0/17（219.56s）+ REAL_EXIT=0——doctest 计数与基线一致。
+
+## G1-b 断言链独立复验（grep 对档）
+
+| 档 | PASS 行数 | SUMMARY | EXIT（README §一 表） |
+| --- | --- | --- | --- |
+| p13-assert.log | 87 | 87/87 PASS | 0 |
+| p14-assert.log | 75 | 75/75 PASS | 0 |
+| p15-assert.log | 77 | 77/77 PASS | 0 |
+| p16-assert.log | 96 | 96/96 PASS | 0 |
+| p17-assert.log | 104 | 104/104 PASS | 0 |
+| p17-assert-final.log | 104 | 104/104 PASS（终版构建复跑） | 0 |
+
+- **分关卡指纹注册表**：level_01 `70282f80…37a07` == T047 冻结基线（PASS 行在档）；level_02 `3edf8dff…4f6d`、level_03 `840298ef…76f7` P13 run1 登记、P14→P17 强断言零漂移。
+- **独立展开器双盲对拍**：45/105 EVENTS=10、60/90 EVENTS=12、72/78 EVENTS=15（README + 断言档）。
+- **塔/敌实体指纹**：P16 实测 `1d40c7b7…890b23` 与 T048 P11/P12 逐位一致（回归段）。
+- **U1 证据原文核证**：`p17-check.log` E0425 `cannot find type MouseWheel in this scope`（:1187 MessageReader<MouseWheel>）在档。
+- **退码口径**：README §一 表 + 档尾 `# [取证补录 …]` 行（§六 披露，失败轮如实 101——p14-check/p17-check 为真实编译失败轮）。
+
+## Lead 裁决（U1-U4 + 偏离）
+
+- **U1**（`MouseWheel` 不在 0.20 prelude，E0425 实证；漂移表 Part 17 未载）：**裁 (a)**——接受显式导入 `use bevy::input::mouse::MouseWheel`；收获批 SKILL v0.20 §6.13 增补 prelude 缺口一条（与既有 AccumulatedMouseMotion 缺口同族）。
+- **U2**（教程 16 删除 Tower/TowerTurret 标记组件 vs 指纹链延续——本侧保留为零尺寸验证面标记，玩法判别按 InstantShooter/AmmoState）：**裁 (a) 接受**。依据 = 立项总纲「教程 = 行为规格非实现来源」：零尺寸标记组件无行为语义，P16 实测与 T048 P11/P12 指纹逐位一致即行为等价证明；(b) 严格照删将断跨波链（P11-P17）并使 T048 对照失效，否。
+- **U3**（溅射多目标无自然场景——三关敌间距 96-256px > 溅射半径 60/100px；已断言逐敌精确伤害 50/150 + 半径数据对表）：**裁 (a) 接受局限**；聚怪变体场景登记 m6-all 可选项（与 O3 变体关卡同族，需要时升格）。
+- **U4**（滚轮/数字键/槽位点击/悬停三态无 BRP 注入通道；以「选中下标→放置塔型→TowerTypeId」端到端 + 截图覆盖）：**裁 (a) 接受**——U6 同族；`td.input` 注入通道登记 m6-all 设计决策（终局判定面若需驱动 UI 再议）。
+- **偏离**（逐条核过，采信）：教程 13 state.rs/gameplay.rs 模块拆分未照搬（模块边界属实现自由）；`TowerDefinition.key` 显式保留（td.towers 与按键选择需稳定标识）；预览换肤 `z < 2.05` 等价判别（无排序 panic 面）；p13-p15 断言档绑定逐部构建不可对终版复跑（p16 回归段 + p17 终版复跑覆盖，README §八 披露）；level_01 CRLF / level_02-03 LF 混排（收获批统一归一 LF）。
+- **取证补录机制**：**接受**——补录行带日期与出处标记、失败轮如实 101、README §六 全披露，非伪档。
+
+## G1 结论
+
+**通过**（范围零越界、六断言档全 PASS、三关卡指纹注册表 + 跨波实体指纹链独立复验成立、门禁双绿、U1-U4 与偏离均已裁决）。进 G2 完整轮（节点卡）。

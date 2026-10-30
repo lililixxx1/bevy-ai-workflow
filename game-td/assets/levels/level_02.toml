@@ -1,0 +1,60 @@
+# 关卡 2（T049-W1 P13；教程 13 Step 9 行为规格）：
+# 镜像原 L 形——敌人从右侧进入，向左走，再向下。
+# waypoints [[13,9],[13,5],[2,5],[2,1]] 为宽 1 中心线，加载期展开为宽 3 道路
+# （垂直段 = 中心列 ±1 列，水平段 = 中心行 ±1 行 + 拐点外侧对角补齐）。
+[map]
+width = 15
+height = 10
+
+[paths.main_road]
+waypoints = [
+    [13, 9],
+    [13, 5],
+    [2, 5],
+    [2, 1],
+]
+
+# 敌型（教程 13 Step 9：与 level_01 同四型）。
+[enemy_types.soldier]
+sprite = 245
+speed = 192.0
+health = 100.0
+bounty = 25
+
+[enemy_types.runner]
+sprite = 246
+speed = 320.0
+health = 60.0
+bounty = 25
+
+[enemy_types.heavy]
+sprite = 247
+speed = 96.0
+health = 300.0
+bounty = 25
+
+[enemy_types.scout]
+sprite = 248
+speed = 160.0
+health = 80.0
+bounty = 25
+
+# 波次（教程 13 Step 9）：波 1 = runner×4 + scout×3，间隔 0.8s；
+# 波 2 = soldier×3 + heavy×2，10.0s 起，间隔 1.0s。共 12 只。
+[[waves]]
+start_time = 0.0
+path = "main_road"
+spawn_interval = 0.8
+enemies = [
+    { type = "runner", count = 4 },
+    { type = "scout", count = 3 },
+]
+
+[[waves]]
+start_time = 10.0
+path = "main_road"
+spawn_interval = 1.0
+enemies = [
+    { type = "soldier", count = 3 },
+    { type = "heavy", count = 2 },
+]

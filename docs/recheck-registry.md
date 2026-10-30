@@ -2,7 +2,7 @@
 
 > T043 执行批交付（2026-10-29；立项卡见 `docs/pre-window-plan.md` §二 T043 / §三 B2）：把「重核什么、怎么核、上版是什么、期望是什么」固化为机器可查的窗口回归工具。逐条目行号级重核**执行**归本窗口空闲档或下一版本窗口，不随本清单交付（卡内执行注）。
 
-- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.18 = 18 节（SKILL v0.19 现行结构）。
+- **计数真值锚**：PIT-B 51 / PAT-B 21 = claim-lint expect 的**字面量镜像**（`tooling/claim-lint/src/main.rs` `expect::PIT_B` / `expect::PAT_B`；同步口径 = 随批联动，不引入 docs→claim-lint crate 依赖——立项卡判定基准）；SKILL §6.1–6.18 = 18 节（SKILL v0.20 现行结构）。
 - **表体自校**：文末 doctest 解析三表行首计数并断言 == 51 / 21 / 18，另校验「验证方式」列分型词表——计数漂移或分型值非法即 doctest 门禁红。
 
 ## 分型定义（验证方式四型）

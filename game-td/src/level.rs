@@ -56,6 +56,10 @@ pub struct EnemyTypeDef {
     pub speed: f32,
     /// 初始生命值。
     pub health: f32,
+    /// 击杀赏金（教程 14 Step 1）：`#[serde(default)]` = 旧关卡不带该字段时归零
+    /// （教程 14 Step 1 注：向后兼容但静默漏配危险——本工程三关已全量补 `bounty = 25`）。
+    #[serde(default)]
+    pub bounty: u32,
 }
 
 /// `[[waves]]` 段（教程 10 Step 2）：一组按 `spawn_interval` 落地的敌人。

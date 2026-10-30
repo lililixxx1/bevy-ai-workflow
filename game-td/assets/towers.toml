@@ -1,0 +1,59 @@
+# 塔注册表（T049-W1 P16；教程 16 Step「The TOML file」行为规格）。
+# 数据驱动边界：塔的数值与外观全在这里，代码只决定“怎么运作”。
+# `[towers.<key>]` 的 key 即运行期注册表键（P17 选择 UI 按此列表出槽位）；
+# `projectile = "<id>"` 指向 `[projectiles.<id>]`，装载期解析为运行期定义克隆。
+# `ammo_slot_offsets` 的长度 = 最大弹量（教程 16：无需独立 max_ammo 字段）。
+
+[towers.rapid]
+name = "Rapid Turret"
+description = "Fast-firing turret with moderate damage."
+base_sprite = 180
+top_sprite = 203
+preview_top_sprite = 203
+cost = 100
+attack_range = 192.0
+attack_cooldown = 0.5
+damage = 34.0
+muzzle_flash_sprite = 295
+
+[towers.rocket]
+name = "Rocket Launcher"
+description = "Slow-firing launcher with homing rockets and splash damage."
+base_sprite = 182
+top_sprite = 228
+preview_top_sprite = 228
+cost = 150
+attack_range = 192.0
+attack_cooldown = 0.3
+projectile = "rocket"
+ammo_slot_offsets = [[0.0, 8.0], [-12.0, 8.0], [12.0, 8.0]]
+ammo_refill_secs = 2.0
+
+[projectiles.rocket]
+damage = 50.0
+speed = 600.0
+sprite = 251
+explosion_sprite = 21
+splash_radius = 60.0
+
+# P17（教程 17 Step「Data-driven proof」）：第三座塔**纯数据**追加——无新 Rust 文件、
+# 无新系统、无新 match 分支；复用“有 projectile 无 damage”的火箭路径。
+[towers.big_rocket]
+name = "Big Rocket"
+description = "Slow, devastating rocket with long reload."
+base_sprite = 183
+top_sprite = 229
+preview_top_sprite = 206
+cost = 200
+attack_range = 256.0
+attack_cooldown = 1.5
+projectile = "big_rocket"
+ammo_slot_offsets = [[0.0, 8.0]]
+ammo_refill_secs = 4.0
+
+[projectiles.big_rocket]
+damage = 150.0
+speed = 400.0
+sprite = 252
+explosion_sprite = 21
+splash_radius = 100.0

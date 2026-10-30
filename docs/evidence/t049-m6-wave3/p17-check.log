@@ -1,0 +1,80 @@
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w3\game-td)
+error[E0425]: cannot find type `MouseWheel` in this scope
+    --> game-td\src\tower.rs:1187:31
+     |
+1187 |     mut scroll: MessageReader<MouseWheel>,
+     |                               ^^^^^^^^^^ not found in this scope
+     |
+help: you might be missing a type parameter
+     |
+1186 | pub fn cycle_tower_on_scroll<MouseWheel>(
+     |                             ++++++++++++
+
+error[E0609]: no field `key` on type `TowerDefinition`
+   --> game-td\src\brp.rs:363:29
+    |
+363 |         let tower_key = def.key.clone();
+    |                             ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0609]: no field `key` on type `&&TowerDefinition`
+   --> game-td\src\brp.rs:740:68
+    |
+740 |         .and_then(|registry| registry.towers.iter().find(|def| def.key == "rocket"))
+    |                                                                    ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0609]: no field `key` on type `&TowerDefinition`
+   --> game-td\src\brp.rs:778:59
+    |
+778 |     let selected = selected_index.map(|i| registry.get(i).key.clone());
+    |                                                           ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0609]: no field `key` on type `&TowerDefinition`
+   --> game-td\src\brp.rs:787:28
+    |
+787 |                 "key": def.key,
+    |                            ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0609]: no field `key` on type `&TowerDefinition`
+   --> game-td\src\brp.rs:898:40
+    |
+898 |         .map(|r| r.get(selected_index).key.clone());
+    |                                        ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0609]: no field `key` on type `&TowerDefinition`
+   --> game-td\src\tower.rs:231:47
+    |
+231 |         self.towers.iter().position(|def| def.key == key)
+    |                                               ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+error[E0560]: struct `TowerDefinition` has no field named `key`
+   --> game-td\src\tower.rs:264:13
+    |
+264 |             key: id,
+    |             ^^^ `TowerDefinition` does not have this field
+    |
+    = note: all struct fields are already assigned
+
+error[E0609]: no field `key` on type `&TowerDefinition`
+   --> game-td\src\tower.rs:285:38
+    |
+285 |         towers.iter().map(|def| &def.key).collect::<Vec<_>>()
+    |                                      ^^^ unknown field
+    |
+    = note: available fields are: `name`, `description`, `base_sprite`, `top_sprite`, `preview_top_sprite` ... and 8 others
+
+Some errors have detailed explanations: E0425, E0560, E0609.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `game-td` (bin "game-td") due to 9 previous errors
+# [取证补录 2026-10-30] REAL_EXIT=101（命令执行时控制台实测值；上方为原始输出）

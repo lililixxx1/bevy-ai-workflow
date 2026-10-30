@@ -1,0 +1,87 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==31 | len=31
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover no game.* prefix | (none)
+PASS | P15 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P15 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P15 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P15 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P15 TileType total==150 | len=150
+PASS | P15 TileType Grass==105 | grass=105
+PASS | P15 TileType Path==45 | path=45
+PASS | P15 PathTile count==45 | len=45
+PASS | P15 PathTile subset of MapTile | len=45
+PASS | P15 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P15 texture index per cell == P3 baseline spec | bad=0
+PASS | P15 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P15 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P15 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P15 GRID_DIGEST == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P15 TOWER_COST==150 (rocket launcher price) | cost=150
+PASS | P15 rocket launcher placed at [5,3] | {"cost":150,"placed":true,"pos":[-128,-96],"tile":[5,3]}
+PASS | P15 placement reports cost==150 | cost=150
+PASS | P15 Tower base count==1
+PASS | P15 TowerTurret (top) count==1
+PASS | P15 td.combat launchers==1 | {"ammo_capacity":3,"ammo_filled":3,"available":true,"exploding":0,"fired":0,"launchers":1,"projectiles":0,"rocket_damage":50,"rocket_speed":600,"splash_radius":60}
+PASS | P15 ammo_capacity==3 | cap=3
+PASS | P15 initial ammo_filled==3 | filled=3
+PASS | P15 initial fired==0 / projectiles==0 | {"ammo_capacity":3,"ammo_filled":3,"available":true,"exploding":0,"fired":0,"launchers":1,"projectiles":0,"rocket_damage":50,"rocket_speed":600,"splash_radius":60}
+PASS | P15 ROCKET_DAMAGE==50 | damage=50
+PASS | P15 SPLASH_RADIUS==60 | splash=60
+PASS | P15 ROCKET_SPEED==600 | speed=600
+PASS | screenshot queued | id=0 baseId=0 path=../docs/evidence/t049-m6-wave3/p15-shot.png
+INFO | P15 samples: t=0.52 fired=0 ammo=3 proj=0 enemies=1 | t=0.64 fired=0 ammo=3 proj=0 enemies=1 | t=0.78 fired=0 ammo=3 proj=0 enemies=1 | t=0.91 fired=0 ammo=3 proj=0 enemies=1 | t=1.05 fired=1 ammo=2 proj=1 enemies=2 | t=1.41 fired=1 ammo=2 proj=1 enemies=2 | t=1.55 fired=2 ammo=1 proj=1 enemies=1 | t=1.66 fired=2 ammo=1 proj=0 enemies=1 | t=1.80 fired=2 ammo=1 proj=0 enemies=1 | t=1.92 fired=2 ammo=1 proj=0 enemies=1 | t=2.05 fired=3 ammo=0 proj=1 enemies=2 | t=2.17 fired=3 ammo=0 proj=1 enemies=2 ...
+INFO | P15 observed maxProjectiles=1 minAmmo=0 maxFired=5 refill=true killBeforeLeak=true gameOver=false exactDamageHealths=50,10
+PASS | P15 projectile observed in flight | max=1
+PASS | P15 launcher fired all 3 ammo slots | fired=5
+PASS | P15 ammo depleted (ammo_filled <= 1 observed) | minAmmo=0
+PASS | P15 ammo refill observed (fired unchanged, ammo +1)
+PASS | P15 impact damage == 50 exactly (health 50 / 10 / 250 observed) | set=50,10
+PASS | P15 kill by rocket before path end (count drop, elapsed<4.6)
+PASS | screenshot status==captured | {"height":900,"id":0,"path":"../docs/evidence/t049-m6-wave3/p15-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=76216
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=e55cbf2c1044df2dff14c2c8299f15a9 bytes=76216 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P15 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P15 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P15 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P15 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P15 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P15 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P15 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P15 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P15 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P15 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P15 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P15 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P15 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P15 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P15 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P15 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P15 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P15 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P15 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P15 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P15 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P15 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P15 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P15 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 77/77 PASS

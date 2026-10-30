@@ -1,0 +1,106 @@
+PASS | discover.version==0.20.0 | version=0.20.0
+PASS | discover.methods==32 | len=32
+PASS | discover contains td.screenshot
+PASS | discover contains td.spawn_tower
+PASS | discover contains td.wave
+PASS | discover contains td.game
+PASS | discover contains td.state
+PASS | discover contains td.level
+PASS | discover contains td.economy
+PASS | discover contains td.combat
+PASS | discover contains td.towers
+PASS | discover no game.* prefix | (none)
+PASS | P16 td.towers available | {"available":true,"selected":"rocket","towers":[{"ammo_refill_secs":null,"ammo_slots":null,"attack_cooldown":0.5,"attack_range":192,"base_sprite":180,"cost":100,"damage":34,"description":"Fast-firing 
+PASS | P16 registry has exactly 2 towers | len=2
+PASS | P16 registry keys == [rapid, rocket] (sorted) | keys=["rapid","rocket"]
+PASS | P16 default selected=='rocket' | selected=rocket
+PASS | P16 rapid: cost==100 | cost=100
+PASS | P16 rapid: range==192 / cooldown==0.5 / damage==34 | {"r":192,"c":0.5,"d":34}
+PASS | P16 rapid: muzzle_flash_sprite==295 / no projectile | {"m":295,"p":null}
+PASS | P16 rocket: cost==150 / range==192 / cooldown==0.3 | {"c":150,"r":192,"cd":0.30000001192092896}
+PASS | P16 rocket: ammo_slots==3 / refill==2.0 | {"n":3,"s":2}
+PASS | P16 rocket projectile: damage 50 / speed 600 / sprite 251 / explosion 21 / splash 60 | {"damage":50,"explosion_sprite":21,"speed":600,"splash_radius":60,"sprite":251}
+PASS | P16 td.combat rocket numbers sourced from registry | {"ammo_capacity":0,"ammo_filled":0,"available":true,"exploding":0,"fired":0,"launchers":0,"projectiles":0,"rocket_damage":50,"rocket_speed":600,"splash_radius":60}
+PASS | P16 td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P16 td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P16 state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P16 MapTile count==150 | len=150
+INFO | TileType histogram = Grass:105 Path:45
+PASS | P16 TileType total==150 | len=150
+PASS | P16 TileType Grass==105 | grass=105
+PASS | P16 TileType Path==45 | path=45
+PASS | P16 PathTile count==45 | len=45
+PASS | P16 PathTile subset of MapTile | len=45
+PASS | P16 TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P16 texture index per cell == P3 baseline spec | bad=0
+PASS | P16 PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | P16 whole-map distinct indices >2 | distinct=79,80,81,102,103,104,125,126,127,129
+PASS | P16 tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+INFO | GRID_DIGEST=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P16 [A] GRID_DIGEST == T047 baseline | digest=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | P16 [A] economy costs from registry (150) | cost=150
+PASS | P16 [A] starting gold==300 | starting=300
+PASS | P16 [A] passive income == 3.0/s (±20%) | delta=3.094 dt=1.031
+PASS | P16 [A] alive enemies Bounty==25 | bounties=[25,25]
+PASS | P16 [A] harmless rocket tower placed at [2,0] | {"cost":150,"placed":true,"pos":[-320,-288],"tile":[2,0],"tower_type":"rocket"}
+PASS | P16 [A] placement reports cost 150 / tower_type rocket | {"cost":150,"placed":true,"pos":[-320,-288],"tile":[2,0],"tower_type":"rocket"}
+PASS | P16 [A] gold deducted 150 | gold=154.5 expect=154.50
+PASS | P16 [A] Tower/TowerTurret counts == 1/1
+PASS | P16 [A] elapsed in sampling window [2.2,3.0) | elapsed=2.21875
+PASS | P16 [A] tower/enemy entity digest == expected (P11-P12 口径) | got=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23 expect=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+INFO | P16 ENTITY_DIGEST=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+PASS | P16 [A] second tower placed while affordable | {"cost":150,"placed":true,"pos":[-192,-288],"tile":[4,0],"tower_type":"rocket"}
+PASS | P16 [A] third placement denied (gold < cost) | {"cost":150,"gold":6.9375,"placed":false,"reason":"not enough gold","tile":[6,0]}
+PASS | P16 [A] Tower count==2 after denial
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P16-rocket td.level select index=0 | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | P16-rocket td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P16-rocket state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P16 [B] fresh round gold ~= 300 | gold=300.84375
+PASS | P16 [B] rocket launcher placed | {"cost":150,"placed":true,"pos":[-128,-96],"tile":[5,3],"tower_type":"rocket"}
+PASS | screenshot queued | id=1 baseId=1 path=../docs/evidence/t049-m6-wave3/p16-shot.png
+INFO | P16 [B] projectile=true minAmmo=0 maxFired=5 refill=true killBeforeLeak=true exactDamageHealths=50,10
+PASS | P16 [B] projectile observed in flight
+PASS | P16 [B] launcher fired >=3 | fired=5
+PASS | P16 [B] ammo depleted (<=1) | minAmmo=0
+PASS | P16 [B] refill observed
+PASS | P16 [B] impact damage == 50 exactly | set=50,10
+PASS | P16 [B] kill by rocket before path end
+PASS | screenshot status==captured | {"height":900,"id":1,"path":"../docs/evidence/t049-m6-wave3/p16-shot.png","status":"captured","width":1600}
+PASS | screenshot file non-empty | bytes=76111
+PASS | PNG magic | magic=89504e470d0a1a0a
+PASS | PNG IHDR == log entry size | IHDR=1600x900 log=1600x900
+PASS | PNG 1600x900 (logical 1280x720 x DPI 1.25) | 1600x900
+INFO | SCREENSHOT md5=f07dc76764eb6a39119e8a7a38376b23 bytes=76111 size=1600x900
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P16 [level_02] td.level select index=1 | {"index":1,"selected":"assets/levels/level_02.toml"}
+PASS | P16 [level_02] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P16 [level_02] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P16 [level_02] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:90 Path:60
+PASS | P16 [level_02] TileType Grass==90 | grass=90 expect=90
+PASS | P16 [level_02] TileType Path==60 | path=60 expect=60
+PASS | P16 [level_02] PathTile count==60 | len=60 expect=60
+PASS | P16 [level_02] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P16 [level_02] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P16 [level_02] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,102,103,104,106,125,126,127
+PASS | P16 [level_02] whole-map distinct indices >2 | distinct=79,80,81,82,102,103,104,106,125,126,127,129
+INFO | GRID_DIGEST[level_02]=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | P16 [level_02] GRID_DIGEST zero drift (level_02) | digest=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d expect=3edf8dffc55b743933c8c4b8484f50855b8e7d193495d5f4c2536f96ea8a4f6d
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | P16 [level_03] td.level select index=2 | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | P16 [level_03] td.state set InGame queued | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | P16 [level_03] state==InGame | {"available":true,"finished":false,"result":null,"state":"InGame"}
+PASS | P16 [level_03] MapTile count==150 | len=150
+INFO | TileType histogram = Grass:78 Path:72
+PASS | P16 [level_03] TileType Grass==78 | grass=78 expect=78
+PASS | P16 [level_03] TileType Path==72 | path=72 expect=72
+PASS | P16 [level_03] PathTile count==72 | len=72 expect=72
+PASS | P16 [level_03] TilePos covers 15x10 grid exactly once | bad=0 covered=150/150
+PASS | P16 [level_03] per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | P16 [level_03] PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | P16 [level_03] whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+INFO | GRID_DIGEST[level_03]=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | P16 [level_03] GRID_DIGEST zero drift (level_03) | digest=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | leaveToMenu: state==LevelSelect | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+SUMMARY: 96/96 PASS
