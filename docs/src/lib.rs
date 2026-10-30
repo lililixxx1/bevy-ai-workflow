@@ -56,6 +56,10 @@ pub mod pre_window_plan {}
 #[doc = include_str!("../m5-game-selection.md")]
 pub mod m5_game_selection {}
 
+/// 《M6 选品备忘录》——塔防教程试金石（立项获准 + grill 四题定案 2026-10-30）：验证面扩展层、四件套收官判定、三重封顶与 td.* 方法面（纯决策文档不含 API 示例——沿 m4/m5 先例，零 doctest 增量）。
+#[doc = include_str!("../m6-game-selection.md")]
+pub mod m6_game_selection {}
+
 /// 《Bevy 特定层错题本》——反例经 compile_fail 围栏由 doctest 机器断言（M3 起纳入门禁，围栏约定见其文件头）。
 #[doc = include_str!("../../bevy-dev/pitfalls.md")]
 pub mod bevy_dev_pitfalls {}
