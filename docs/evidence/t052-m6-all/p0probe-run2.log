@@ -1,0 +1,18 @@
+INFO | === phase p0probe @ 2026-10-30T19:54:03.986Z ===
+PASS | p0probe baseline: state LevelSelect / result null (no GameResult yet) | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | p0probe baseline: process alive
+PASS | p0probe td.state set GameOver accepted (documented op, queued) | {"from":"LevelSelect","queued":true,"to":"GameOver"}
+PASS | p0probe process survives GameOver transition without GameResult (件三红线) | {"available":true,"finished":false,"result":null,"state":"GameOver"}
+PASS | p0probe state transition landed: td.state get == GameOver | {"available":true,"finished":false,"result":null,"state":"GameOver"}
+PASS | p0probe GameResult stays absent (result==null, no synthesized result) | {"available":true,"finished":false,"result":null,"state":"GameOver"}
+PASS | p0probe GameFinished stays absent (finished==false) | {"available":true,"finished":false,"result":null,"state":"GameOver"}
+PASS | p0probe no panic in game log | bytes=2003
+PASS | p0probe game log records the skip marker (fail-survivable, not fail-silent) | marker=true
+
+INFO | LEVEL level_01: pathPx=896 events=10 rapidPlan=[[2,3],[7,3],[12,3],[2,7],[7,7],[12,7]] harmless={"tile":[2,0],"dist":256} victoryBy<=29.1s defeatAt>=6.80s
+INFO | LEVEL level_02: pathPx=1216 events=12 rapidPlan=[[4,3],[11,7],[8,3],[14,3],[0,4],[5,7]] harmless={"tile":[7,0],"dist":256} victoryBy<=29.7s defeatAt>=10.80s
+INFO | LEVEL level_03: pathPx=1472 events=15 rapidPlan=[[4,5],[9,5],[14,2],[5,9],[1,1],[8,1]] harmless={"tile":[14,9],"dist":326.33724886993826} victoryBy<=31.7s defeatAt>=11.27s
+SUMMARY: phase=p0probe PASS=9 FAIL=0 SKIP=0 TOTAL=9
+M6ALL_JUDGEMENT=PASS
+REAL_EXIT=0
+REAL_EXIT=0

@@ -1,0 +1,4 @@
+# T052 门禁 5（终态复核）：游戏进程收尾零残留
+# 复核时点 = 全部判定轮（run1/run2/run3 + p0probe）收尾之后
+# tasklist | grep -iE 'game-td|game.exe|rustc|cargo'
+GREP_EXIT=1

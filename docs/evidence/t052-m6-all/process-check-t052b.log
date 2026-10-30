@@ -1,0 +1,3 @@
+# T052 返工轮门禁 5（b 档）：游戏进程收尾零残留（run4 / p0probe-run2 / 四闸之后）
+# tasklist | grep -iE 'game-td|game.exe|rustc|cargo'
+GREP_EXIT=1

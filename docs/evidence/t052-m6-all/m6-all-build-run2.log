@@ -1,0 +1,5 @@
+# T052 返工轮构建：cargo build --release -p game-td -j 3（U1 修复后重建；CARGO_TARGET_DIR=<main-repo>/target）
+# cwd=<tree>
+   Compiling game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game-td)
+    Finished `release` profile [optimized] target(s) in 32.82s
+REAL_EXIT=0

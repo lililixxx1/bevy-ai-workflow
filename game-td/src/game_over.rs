@@ -3,7 +3,12 @@
 //! `GameResult` 由 `check_game_state` 在 FixedUpdate 链末尾写入；命令在链的 sync
 //! point 落地 → `OnExit(InGame)` 的 `cleanup_level` 刻意不删它 → `OnEnter(GameOver)`
 //! 读得到（教程 12 Step 9「Critical ordering detail」）。若清理链删掉 `GameResult`，
-//! 本屏 `Res<GameResult>` 会 panic——这条依赖是显式契约，不是巧合。
+//! 结算屏就无文案可显示——这条依赖是显式契约，不是巧合。
+//!
+//! **T052 U1 起**：BRP 带外转移（`td.state set GameOver`）下 `GameResult` 可能缺席
+//! （正路之外的第二条入境路径），故本屏参数改 `Option<Res<GameResult>>`——`None` 时
+//! 不 spawn 结算屏、留一行 `[TD]` info 标记（fail-survivable 且非 fail-silent）；
+//! 正路顺序契约（上段）不变。
 //!
 //! 0.20 锚点同 `level_select.rs`（Node / Val / Text / TextFont / TextColor）。
 
@@ -16,7 +21,15 @@ use crate::{GameResult, GameState, ScreenUi};
 ///
 /// 教程文案含 em dash；默认内置字体无该字形（渲染成豆腐块，见首轮
 /// p12-shot-over.png 留档），此处用 ASCII 连字符——UI 文案不在行为规格断言面内。
-pub fn setup_game_over(mut commands: Commands, result: Res<GameResult>) {
+///
+/// T052 U1：`result` 为 `Option`——BRP 带外转移（`td.state set GameOver`）可绕过
+/// `check_game_state` 的写入顺序，此时 `GameResult` 缺席；缺席即空屏（不 spawn）+
+/// info 标记，避免测试通道击穿进程（M5 红线）。正路（游戏内胜负）恒为 `Some`。
+pub fn setup_game_over(mut commands: Commands, result: Option<Res<GameResult>>) {
+    let Some(result) = result else {
+        info!("[TD] setup_game_over skipped: no GameResult (out-of-band state transition)");
+        return;
+    };
     let message = match *result {
         GameResult::Defeat => "Game Over - the base was destroyed!",
         GameResult::Victory => "Victory - all enemies defeated!",

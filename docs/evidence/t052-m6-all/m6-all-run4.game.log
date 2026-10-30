@@ -1,0 +1,117 @@
+[2m2026-10-30T19:50:13.167516Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-30T19:50:13.411975Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-30T19:50:13.842115Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-30T19:50:13.842145Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause, td.conditions, td.level_select, td.input, td.gamepad
+[2m2026-10-30T19:50:13.843333Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-30T19:50:13.843366Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-30T19:50:13.844284Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-30T19:50:13.901006Z[0m [32m INFO[0m [2mgame_td::tower[0m[2m:[0m [TD] tower registry loaded: 3 towers (["rocket", "rapid", "big_rocket"])
+[2m2026-10-30T19:50:30.063410Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] input emit -> Right
+[2m2026-10-30T19:50:30.113347Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] input emit -> Left
+[2m2026-10-30T19:50:30.346718Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T19:50:30.363314Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:50:30.379963Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:50:30.830352Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:50:30.846959Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [2, 3] (world -320, -96)
+[2m2026-10-30T19:50:30.864115Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [7, 3] (world 0, -96)
+[2m2026-10-30T19:50:30.881524Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [12, 3] (world 320, -96)
+[2m2026-10-30T19:50:32.848745Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 queued -> ../docs/evidence/t052-m6-all/m6-all-shot-l1-level_01-.png (entity 739v0)
+[2m2026-10-30T19:50:32.896010Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #0 captured (1600x900)
+[2m2026-10-30T19:50:32.901517Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t052-m6-all/m6-all-shot-l1-level_01-.png
+[2m2026-10-30T19:50:38.879850Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T19:50:38.896845Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [3, 3] (world -256, -96)
+[2m2026-10-30T19:50:38.913585Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:50:47.162499Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [2, 7] (world -320, 160)
+[2m2026-10-30T19:50:49.278564Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+[2m2026-10-30T19:50:49.662203Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 queued -> ../docs/evidence/t052-m6-all/m6-all-shot-victory.png (entity 759v2)
+[2m2026-10-30T19:50:49.711573Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #1 captured (1600x900)
+[2m2026-10-30T19:50:49.716162Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t052-m6-all/m6-all-shot-victory.png
+[2m2026-10-30T19:50:50.079002Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:50:50.428783Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T19:50:50.445514Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:50:50.461617Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:50:57.244540Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-30T19:50:57.861647Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:50:58.211757Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T19:50:58.228362Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:50:58.244675Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:50:58.578468Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T19:50:58.595181Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [2, 0] (world -320, -288)
+[2m2026-10-30T19:51:00.545475Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T19:51:00.895047Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T19:51:00.912196Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:51:00.927768Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:51:01.378325Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:51:01.395376Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [4, 3] (world -192, -96)
+[2m2026-10-30T19:51:01.411775Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [11, 7] (world 256, 160)
+[2m2026-10-30T19:51:01.428452Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [8, 3] (world 64, -96)
+[2m2026-10-30T19:51:03.378162Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #2 queued -> ../docs/evidence/t052-m6-all/m6-all-shot-l2-level_02-.png (entity 510v2)
+[2m2026-10-30T19:51:03.433657Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t052-m6-all/m6-all-shot-l2-level_02-.png
+[2m2026-10-30T19:51:03.434366Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #2 captured (1600x900)
+[2m2026-10-30T19:51:04.461793Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [14, 3] (world 448, -96)
+[2m2026-10-30T19:51:09.394992Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [0, 4] (world -448, -32)
+[2m2026-10-30T19:51:17.660662Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [5, 7] (world -128, 160)
+[2m2026-10-30T19:51:19.426485Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+[2m2026-10-30T19:51:19.943863Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:51:20.293682Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T19:51:20.310687Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:51:20.326554Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:51:31.125846Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-30T19:51:31.626316Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:51:31.976354Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T19:51:31.993078Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:51:32.009419Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:51:32.343257Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T19:51:32.359902Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [7, 0] (world 0, -288)
+[2m2026-10-30T19:51:34.276486Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T19:51:34.626213Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T19:51:34.642793Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:51:34.658996Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:51:35.126188Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:51:35.143072Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [4, 5] (world -192, 32)
+[2m2026-10-30T19:51:35.159580Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [9, 5] (world 128, 32)
+[2m2026-10-30T19:51:35.176392Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [14, 2] (world 448, -160)
+[2m2026-10-30T19:51:37.259607Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #3 queued -> ../docs/evidence/t052-m6-all/m6-all-shot-l3-level_03-.png (entity 643v7)
+[2m2026-10-30T19:51:37.315271Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t052-m6-all/m6-all-shot-l3-level_03-.png
+[2m2026-10-30T19:51:37.315955Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #3 captured (1600x900)
+[2m2026-10-30T19:51:43.209360Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T19:51:43.226144Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [5, 5] (world -128, 32)
+[2m2026-10-30T19:51:43.242859Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:51:44.326049Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [5, 9] (world -128, 288)
+[2m2026-10-30T19:51:49.358960Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [1, 1] (world -384, -224)
+[2m2026-10-30T19:51:53.641068Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+[2m2026-10-30T19:51:54.208441Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:51:54.558323Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T19:51:54.574790Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:51:54.591203Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:52:05.857879Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-30T19:52:06.457532Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:52:06.807581Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_03.toml
+[2m2026-10-30T19:52:06.824178Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:52:06.840441Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 15 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:52:07.191091Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 0 (Some("rocket"))
+[2m2026-10-30T19:52:07.207792Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rocket' placed at tile [14, 9] (world 448, 288)
+[2m2026-10-30T19:52:09.108323Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T19:52:09.457356Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_01.toml
+[2m2026-10-30T19:52:09.473982Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:52:09.490293Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:52:09.941121Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower selected -> index 1 (Some("rapid"))
+[2m2026-10-30T19:52:09.957631Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [2, 3] (world -320, -96)
+[2m2026-10-30T19:52:09.974386Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [7, 3] (world 0, -96)
+[2m2026-10-30T19:52:09.991014Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [12, 3] (world 320, -96)
+[2m2026-10-30T19:52:11.941320Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #4 queued -> ../docs/evidence/t052-m6-all/m6-all-shot-chain-v-level_01-.png (entity 547v13)
+[2m2026-10-30T19:52:11.995978Z[0m [32m INFO[0m [2mbevy_render::view::window::screenshot[0m[2m:[0m Screenshot saved to ../docs/evidence/t052-m6-all/m6-all-shot-chain-v-level_01-.png
+[2m2026-10-30T19:52:11.996669Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] screenshot #4 captured (1600x900)
+[2m2026-10-30T19:52:14.124007Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [2, 7] (world -320, 160)
+[2m2026-10-30T19:52:23.573261Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] tower 'rapid' placed at tile [7, 7] (world 0, 160)
+[2m2026-10-30T19:52:28.455616Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+[2m2026-10-30T19:52:29.089411Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect
+[2m2026-10-30T19:52:29.522792Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T19:52:29.539475Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:52:29.555559Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:52:30.073098Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: InGame -> LevelSelect
+[2m2026-10-30T19:52:30.406126Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] selected level -> assets/levels/level_02.toml
+[2m2026-10-30T19:52:30.422911Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: LevelSelect -> InGame
+[2m2026-10-30T19:52:30.439220Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 12 events (2 waves, 4 enemy types)
+[2m2026-10-30T19:52:41.238125Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-30T19:52:41.855211Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [TD] state transition queued: GameOver -> LevelSelect

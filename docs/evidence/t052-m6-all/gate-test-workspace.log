@@ -1,0 +1,201 @@
+# T052 门禁 2：cargo test --workspace -j 3 -- --test-threads=3（CARGO_TARGET_DIR=<main-repo>/target 复用）
+# cwd=<tree>
+   Compiling mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\mcp-bridge)
+   Compiling task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\task-runner)
+   Compiling docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\docs)
+   Compiling game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game-td)
+   Compiling game v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game)
+   Compiling hotpatch-smoke v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\hotpatch-smoke)
+   Compiling claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\claim-lint)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 34.05s
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\claim_lint-8910f178cf797c61.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\docs-527d3d80776a44d8.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\game-581a4f857b8ee8d9.exe)
+
+running 20 tests
+test battle::tests::attack_kill_and_annihilate_victory ... ok
+test battle::tests::attack_distance_once_per_turn_and_empty_target ... ok
+test battle::tests::end_turn_resets_flags_advances_turn_and_rng ... ok
+test battle::tests::greedy_ai_closes_distance_and_prefers_killable ... ok
+test battle::tests::move_rules_and_flags ... ok
+test battle::tests::player_annihilation_loses ... ok
+test bench::tests::warmup_constant_is_calibrated ... ok
+test camera::tests::orbit_distance_is_constant ... ok
+test cli::tests::defaults_match_baseline_caliber ... ok
+test rng::tests::from_state_resumes_exact_sequence ... ok
+test battle::tests::reach_goal_wins_on_move ... ok
+test rng::tests::next_f32_in_unit_interval ... ok
+test rng::tests::same_seed_same_sequence ... ok
+test rng::tests::splitmix64_reference_vectors ... ok
+test sim::tests::analytic_motion_is_deterministic_per_seed_and_time ... ok
+test sim::tests::max_speed_only_scales_speed_draw_order_untouched ... ok
+test sim::tests::same_seed_and_count_same_initial_state ... ok
+test sim::tests::simconfig_deserializes_legacy_json_with_default_max_speed ... ok
+test sim::tests::pause_requested_event_flips_paused ... ok
+test battle::tests::end_turn_deterministic_across_spawn_order ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\game_td-eb0809779e01167c.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\hotpatch_smoke-5c4df2c60291b00b.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-32e11fa3baee9c8c.exe)
+
+running 15 tests
+test tests::brp_addr_accepts_only_loopback_literals ... ok
+test tests::initialize_echoes_protocol_version_and_declares_tools ... ok
+test tests::jsonrpc_error_body_is_passed_through_with_iserror_true ... ok
+test tests::chunked_response_is_decoded ... ok
+test tests::malformed_line_returns_parse_error_with_null_id ... ok
+test tests::non_object_arguments_are_rejected_without_forwarding ... ok
+test tests::notifications_get_no_response_and_unknown_method_is_32601 ... ok
+test tests::non_json_response_is_bridge_error ... ok
+test tests::params_three_states_are_omitted_and_objects_forwarded_verbatim ... ok
+test tests::ping_returns_empty_result_object ... ok
+test tests::stdio_loop_handles_multiple_lines_and_skips_notifications ... ok
+test tests::tools_list_is_exactly_the_twelve_allowlisted_names_in_order ... ok
+test tests::success_response_is_forwarded_byte_for_byte ... ok
+test tests::whitelist_rejection_does_not_reach_brp ... ok
+test tests::connection_refused_is_bridge_error ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.05s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\mcp_bridge-9ab87fbf6cc09c43.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\main.rs (C:/Users/Administrator/Desktop/ccc/bevy-ai-workflow/target\debug\deps\task_runner-1460c8fba1a11b85.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests docs
+
+running 95 tests
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1006) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1088) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1154) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1028) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1165) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1223) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1270) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1106) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1338) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1238) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 137) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1390) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1286) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1450) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1350) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1504) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1403) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 153) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1550) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1460) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1597) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1516) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1663) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1562) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1716) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1611) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1675) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1765) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1816) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1728) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1881) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 190) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1780) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1834) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1948) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1999) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1904) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2057) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 1963) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2100) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2014) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2156) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2069) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 218) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2216) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2119) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2268) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2172) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2317) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2231) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2366) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2284) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2432) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2333) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2482) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2386) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 250) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2524) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2447) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2581) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2495) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2632) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2543) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2678) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2593) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2721) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2644) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2770) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2691) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 310) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 361) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 376) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 410) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2735) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 475) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 456) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 564) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 584) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 612) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 655) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 705) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 726) ... ignored
+test docs\src\lib.rs - bevy_dev_pitfalls (line 522) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 760) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 821) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 2782) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 885) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 781) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 944) - compile fail ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 837) ... ok
+test docs\src\lib.rs - doc_conventions (line 29) ... ok
+test docs\src\lib.rs - doc_conventions (line 40) - compile ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 904) ... ok
+test docs\src\lib.rs - recheck_registry (line 204) ... ok
+test docs\src\lib.rs - bevy_dev_pitfalls (line 960) ... ok
+
+test result: ok. 78 passed; 0 failed; 17 ignored; 0 measured; 0 filtered out; finished in 211.99s
+
+   Doc-tests mcp_bridge
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+REAL_EXIT=0

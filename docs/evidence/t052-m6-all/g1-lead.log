@@ -1,0 +1,26 @@
+# G1 · Lead 亲跑核证与裁决档（T052 M6 m6-all 收官卡——四件套终局判定）
+
+日期 2026-10-31 凌晨；核证者 = Lead（主会话）。对象 = 树 trees/m6/w6（基线 d6d7609）批次 T052 全量产出（含 U1 返工轮）。
+
+## 一、Lead 独立核证（全部亲跑，非转录 worker 自报）
+
+1. **主仓零触碰**：`git status --short` = 0 行，HEAD = d6d7609。
+2. **写面独立复算**：`diff -rq --strip-trailing-cr` 主仓↔树——恰 = 新证据目录 `docs/evidence/t052-m6-all/` + `game/src/rpc/suites/ts06.rs`（登记项⑤ 注锚）+ `game-td/src/game_over.rs`（U1 修复）；Cargo 三文件 SAME（零依赖变更）；`game-td/` 其余零差异。
+3. **件一判定面终轮**：`m6-all-run4.log` 亲读——SUMMARY `PASS=483 FAIL=0 SKIP=2 TOTAL=485` + `M6ALL_JUDGEMENT=PASS` + REAL_EXIT=0；`discover.methods==41` 在档；三关 digest 零漂移 + 零漏四轮 + 经济体 12 采样点。
+4. **件三 P0 修复亲核**：修复 diff 逐行读（恰 2 处代码 + 注释 2 段）——`Option<Res<GameResult>>` + `None → info!("[TD] setup_game_over skipped: no GameResult (out-of-band state transition)") + return`（正路 Some 路径逐字未动）；`p0probe-run2.log` 9/9（进程存活 + state==GameOver + result==null + 无 panic + skip 标记），skip 标记原始行 `p0probe-run2.game.log:10` 亲读；首轮负控 `p0probe-run1.log`（1 FAIL）+ panic 栈原档保留——红→绿对照链完整。
+5. **登记项⑤ ts06 注锚亲核源码**：`bevy_ecs-0.20.0/src/world/mod.rs` 实读——`:934` = `pub fn get_entity<F: WorldEntityFetch>(` 签名行、`:937` = `-> Result<F::Ref<'_>, EntityNotSpawnedError>`，收紧注记属实（原 `:951` 确落在下一函数 `get_entity_mut` 文档块内，0.19→0.20 漂移残留）。
+6. **门禁 b 档**：check 0 警（warning 计数 0）+ workspace test REAL_EXIT=0（game 20 + mcp-bridge 15）+ `gate-doc-test-t052b.log` 78/0/17（先产档）+ `gate-claim-lint-t052b.log` 13/13（doctest-gate 选中 b 档亲读）+ `process-check-t052b.log` GREP_EXIT=1 零残留；a 档首轮档一律未动（另名纪律）。
+7. **席位**：`add_systems` 调用点亲数 = main 12 + audio 4 + pause 3 + input 3 = **22**（与 T051 终态一致；本卡零新系统，U1 修复仅签名变更）——未新开席，10/10 维持。
+8. **件二/件四抽核**：`w2-final-check.md` 26 部 × 每部一行在档，分类总账 136+7+2+1+2=148 恒等式成立（§三「146+2」口径歧义由本档补全分母，非改判——采信）；`discipline-check.md` 台账 8/8 + taskset 17/17 + 返工数对原文（返工 4→5 已含本卡 G1 P0 返工轮，如实）。
+
+## 二、裁决
+
+- **U1（返工轮复核）**：修复 = 裁 (a) 精确落地（Bevy panic 信息亲荐的 Option 形态）；正路契约注释保留 + 带外路径 fail-survivable 且非 fail-silent；**件三转 PASS，四件套 4/4**。
+- **截图覆盖瑕疵（worker 提请复核）**：**裁——双处披露已足，不补跑**。理由：① md5 链完整（run3 四张在局档 md5 存于其日志，逐位可比）；② 等价性主证据是 digest/断言链，截图为辅助档；③ 现在重跑产生的是新进程新 timer 态，非「复原」（无意义）。处置：run4 已加 `-run4` 后缀防再犯；教训随收获批并入 registry 使用说明⑤② 适用面（**产物档（截图/日志）同禁同名覆盖**）。
+- **偏离面**：① p0probe 探针超清单（采信——恰为红线范围，命中即本卡价值）；② p0probe 与 all 分进程（采信——探针推进状态机到无结算屏 GameOver，混跑干扰后续相位，工程判断正确）；③ 单进程复用相位（采信——判定面不依赖绝对 entity id 与进程级累计，无 K5 风险，README §十-1 已论证）；④ 一致采样重采 ≤3 次全档披露（采信——不放宽恒等式阈值，采样机制应对 BRP 读非原子性）；⑤ 死参数清理超单（`scanGameLog.expectPanic` 同族——采信，低风险已重跑）；⑥ l1 dev 调试轮未成档（如实注记，采信——控制台轮非判定面）；⑦ 截图未按轮命名（已裁，见上）。
+- **U2/U3**：已按前裁落字为定案口径（判定面主用写状态 + run_system_once + 每类动作 ≥1 条 emit 冒烟；溅射聚怪 SKIP 维持非门槛）。
+- **U4**：`m6-game-selection.md` §五 补句（m6-all 判定面 = 纯脚本侧组合既有 18 方法、零新增 td.*）+ §三 148 行分母补全——**收获批 Lead 落字**。
+
+## 三、结论
+
+G1 **通过**——八项亲核全绿、返工轮复核成立、四件套 4/4（件一 483/0/2 PASS + 件二 26 部对照 + 件三 P0 修复实证红→绿 + 件四 纪律核对）。转 G2 完整轮（收官节点卡：七维度 + 独立复算，重点 = 判定面恒真谓词、U1 修复正路行为等价、件二分类对底稿原文抽查、148 行分类独立复算、经济体恒等式抽算、席位亲数）。

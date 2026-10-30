@@ -1,0 +1,59 @@
+INFO | === l3[level_03] VICTORY run @ 2026-10-30T19:11:42.356Z (pathPx=1472, events=15, lastSpawn=13.400000000000002, victoryBy<=31.7s) ===
+PASS | l3[level_03] td.level select index=2 -> assets/levels/level_03.toml | {"index":2,"selected":"assets/levels/level_03.toml"}
+PASS | l3[level_03] td.state set InGame queued (LevelSelect -> InGame) | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | l3[level_03] state==InGame after transition | {"available":true,"finished":false,"result":"Defeat","state":"InGame"}
+PASS | l3[level_03] map MapTile count==150 | len=150
+PASS | l3[level_03] map TileType Grass==78 / Path==72 | grass=78 path=72
+PASS | l3[level_03] map PathTile count==72 | len=72
+PASS | l3[level_03] map TilePos covers 15x10 exactly once | bad=0 covered=150/150
+PASS | l3[level_03] map per-cell TileType == independent TOML expansion |  cells=150/150
+PASS | l3[level_03] map PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127
+PASS | l3[level_03] map whole-map distinct indices >2 | distinct=79,80,81,82,83,102,103,104,105,106,125,126,127,129
+PASS | l3[level_03] GRID_DIGEST == registry[level_03] | got=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7 expect=840298ef16970017e1916a573a5333759bea8782a959509d365c12fc9dcd76f7
+PASS | l3[level_03] opening: lives==5 | lives=5
+PASS | l3[level_03] opening: wave schedule total==15 | total=15
+PASS | l3[level_03] opening: spawned<=1 (wave1 starts at t=0.0) | spawned=1
+PASS | l3[level_03] opening: economy constants 300 / 3.0 | starting=300 passive=3
+PASS | l3[level_03] opening: gold == 300 + 3.0*elapsed (passive only, no spend yet) | gold=301.21875 elapsed=0.390625
+PASS | l3[level_03] opening: spawned == independent event table @elapsed=0.44 | spawned=1 expect=1
+PASS | l3[level_03] opening: pending+spawned==total | {"p":14,"s":1,"t":15}
+PASS | l3[level_03] registry keys == towers.toml keys | ["big_rocket","rapid","rocket"]
+PASS | l3[level_03] rapid: cost/range/cooldown == toml | got={"c":100,"r":192,"cd":0.5} want={"c":100,"r":192,"cd":0.5}
+PASS | l3[level_03] rapid: instant tower (no projectile) damage == toml | projectile=null damage=34 want=34
+PASS | l3[level_03] rocket: cost/range/cooldown == toml | got={"c":150,"r":192,"cd":0.30000001192092896} want={"c":150,"r":192,"cd":0.3}
+PASS | l3[level_03] rocket: projectile == projectiles.rocket | got={"damage":50,"explosion_sprite":21,"speed":600,"splash_radius":60,"sprite":251} want={"damage":50,"speed":600,"sprite":251,"explosion_sprite":21,"splash_radius":60}
+PASS | l3[level_03] rocket: ammo_slots == toml slot count | got=3 want=3
+PASS | l3[level_03] rocket: ammo_refill_secs == toml | got=2 want=2
+PASS | l3[level_03] big_rocket: cost/range/cooldown == toml | got={"c":200,"r":256,"cd":1.5} want={"c":200,"r":256,"cd":1.5}
+PASS | l3[level_03] big_rocket: projectile == projectiles.big_rocket | got={"damage":150,"explosion_sprite":21,"speed":400,"splash_radius":100,"sprite":252} want={"damage":150,"speed":400,"sprite":252,"explosion_sprite":21,"splash_radius":100}
+PASS | l3[level_03] big_rocket: ammo_slots == toml slot count | got=1 want=1
+PASS | l3[level_03] big_rocket: ammo_refill_secs == toml | got=4 want=4
+PASS | l3[level_03] select tower rapid | {"available":true,"key":"rapid","len":3,"selected_index":1}
+PASS | l3[level_03] place rapid @[4,5] | {"cost":100,"placed":true,"pos":[-192,32],"tile":[4,5],"tower_index":1,"tower_type":"rapid"}
+PASS | l3[level_03] place rapid @[4,5] world pos == OFFSET + tile*TILE | pos=[-192,32]
+PASS | l3[level_03] place rapid @[9,5] | {"cost":100,"placed":true,"pos":[128,32],"tile":[9,5],"tower_index":1,"tower_type":"rapid"}
+PASS | l3[level_03] place rapid @[9,5] world pos == OFFSET + tile*TILE | pos=[128,32]
+PASS | l3[level_03] place rapid @[14,2] | {"cost":100,"placed":true,"pos":[448,-160],"tile":[14,2],"tower_index":1,"tower_type":"rapid"}
+PASS | l3[level_03] place rapid @[14,2] world pos == OFFSET + tile*TILE | pos=[448,-160]
+PASS | l3[level_03] negative: occupied tile rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[4,5]}
+PASS | l3[level_03] negative: path tile [8,4] rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[8,4]}
+PASS | l3[level_03] negative: out-of-bounds tile rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[15,5]}
+PASS | l3[level_03] negative: insufficient balance rejected (gold<cost) | {"cost":100,"gold":1.78125,"placed":false,"reason":"not enough gold","tile":[5,9]} goldBefore=1.734375
+PASS | l3[level_03] entities: Tower==3 / TowerTurret==3 | towers=3
+PASS | l3[level_03] cp1 spawned == independent event table @elapsed=2.30 | spawned=4 expect=4
+PASS | l3[level_03] cp1 pending == total - spawned | pending=11 total=15 spawned=4
+PASS | l3[level_03] cp1 economy ledger: gold == 300 + 3.0*t + 25*kills - Σcost | gold=7.171875 predicted=6.8906 diff=0.2813 (spawned=4 alive=4 lives=5 kills=0 spent=300)
+PASS | l3[level_03] cp1 towers on field == placed count (3) | towers=3
+INFO | l3[level_03] screenshot skipped (no --shot)
+PASS | l3[level_03] cp2 spawned == independent event table @elapsed=8.13 | spawned=9 expect=9
+PASS | l3[level_03] cp2 pending == total - spawned | pending=6 total=15 spawned=9
+PASS | l3[level_03] cp2 economy ledger: gold == 300 + 3.0*t + 25*kills - Σcost | gold=149.703125 predicted=149.3750 diff=0.3281 (spawned=9 alive=4 lives=5 kills=5 spent=300)
+PASS | l3[level_03] cp2 towers on field == placed count (3) | towers=3
+FAIL | m6-all driver completed without exception (process alive) | Error: td.spawn_tower -> {"code":-32602,"message":"tile 须为 [x, y] 数组"}
+
+INFO | LEVEL level_01: pathPx=896 events=10 rapidPlan=[[2,3],[7,3],[12,3],[2,7],[7,7],[12,7]] harmless={"tile":[2,0],"dist":256} victoryBy<=29.1s defeatAt>=6.80s
+INFO | LEVEL level_02: pathPx=1216 events=12 rapidPlan=[[4,3],[11,7],[8,3],[14,3],[0,4],[5,7]] harmless={"tile":[7,0],"dist":256} victoryBy<=29.7s defeatAt>=10.80s
+INFO | LEVEL level_03: pathPx=1472 events=15 rapidPlan=[[4,5],[9,5],[14,2],[5,9],[1,1],[8,1]] harmless={"tile":[14,9],"dist":326.33724886993826} victoryBy<=31.7s defeatAt>=11.27s
+SUMMARY: phase=l3 PASS=49 FAIL=1 SKIP=0 TOTAL=50
+M6ALL_JUDGEMENT=FAIL
+REAL_EXIT=1

@@ -1,0 +1,11 @@
+# T052 门禁 1：cargo check --workspace -j 3（CARGO_TARGET_DIR=<main-repo>/target 复用）
+# cwd=<tree>
+    Checking mcp-bridge v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\mcp-bridge)
+    Checking task-runner v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\task-runner)
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game-td)
+    Checking docs v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\docs)
+    Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game)
+    Checking hotpatch-smoke v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\hotpatch-smoke)
+    Checking claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\tooling\claim-lint)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.13s
+REAL_EXIT=0

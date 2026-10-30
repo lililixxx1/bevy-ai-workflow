@@ -1,0 +1,5 @@
+# T052 返工轮门禁 1（b 档）：cargo check --workspace -j 3（U1 修复后）
+# cwd=<tree>；CARGO_TARGET_DIR=<main-repo>/target 复用
+    Checking game-td v0.1.0 (C:\Users\Administrator\Desktop\ccc\trees\m6\w6\game-td)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.53s
+REAL_EXIT=0

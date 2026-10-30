@@ -1,0 +1,9 @@
+# T052 写面自检（终态重跑）：树 vs 主仓 HEAD d6d7609（--strip-trailing-cr；排除 .git / target）
+# diff -rq --strip-trailing-cr --exclude=.git --exclude=target <tree> <main-repo>
+# 说明：主仓侧 .zcode / .zcodeignore / team-prompt 为仓外进程产物（archive 导出树不含），非本卡写面
+Only in bevy-ai-workflow: .zcode
+Only in bevy-ai-workflow: .zcodeignore
+Only in trees/m6/w6/docs/evidence: t052-m6-all
+Files trees/m6/w6/game/src/rpc/suites/ts06.rs and bevy-ai-workflow/game/src/rpc/suites/ts06.rs differ
+Only in bevy-ai-workflow: team-prompt
+DIFF_EXIT=1

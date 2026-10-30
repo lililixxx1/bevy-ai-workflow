@@ -477,6 +477,8 @@ pub fn spawn_tower_handler(In(params): In<Option<Value>>, world: &mut World) -> 
         }));
     }
 
+    // Gold 直连必达：此处已过上方 MapLayout 早退门，而 MapLayout⟺Gold⟺PlacedTowers
+    // 同生共死（装载链同插 / cleanup_level 同删）——生命周期不变式注记（T052 G2 M1 采纳）。
     world.resource_mut::<crate::economy::Gold>().0 -= cost as f32;
     let atlas = world.resource::<TowerAtlas>().clone();
     let mut commands = world.commands();

@@ -14,7 +14,10 @@
 //!
 //! 依据: `World::despawn(entity) -> bool`——实体不存在时 warn + false
 //! （bevy_ecs-0.20.0/src/world/mod.rs:1576-1583）；`World::get_entity`
-//! （world/mod.rs:951，`Result` 形态，Err 即不存在）（核实 2026-09-27）。
+//! （bevy_ecs-0.20.0/src/world/mod.rs:934 函数签名，`:937` 返回
+//! `Result<_, EntityNotSpawnedError>`，Err 即不存在）（0.20 实核 2026-10-31：原注锚
+//! `world/mod.rs:951` 落在**下一函数** `get_entity_mut` 的文档块内，系 0.19→0.20
+//! 行号漂移残留——本行收紧到签名行）。
 
 use bevy::prelude::*;
 

@@ -1,0 +1,121 @@
+INFO | === l1[level_01] VICTORY run @ 2026-10-30T19:06:58.402Z (pathPx=896, events=10, lastSpawn=16.799999999999997, victoryBy<=29.1s) ===
+PASS | l1[level_01] td.level select index=0 -> assets/levels/level_01.toml | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | l1[level_01] td.state set InGame queued (LevelSelect -> InGame) | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | l1[level_01] state==InGame after transition | {"available":true,"finished":false,"result":"Defeat","state":"InGame"}
+PASS | l1[level_01] map MapTile count==150 | len=150
+PASS | l1[level_01] map TileType Grass==105 / Path==45 | grass=105 path=45
+PASS | l1[level_01] map PathTile count==45 | len=45
+PASS | l1[level_01] map TilePos covers 15x10 exactly once | bad=0 covered=150/150
+PASS | l1[level_01] map texture index per cell == P3 baseline spec | bad=0
+PASS | l1[level_01] map PathTile distinct indices >=2 (auto-tiling active) | distinct=79,80,81,102,103,104,125,126,127
+PASS | l1[level_01] map tile index set == P3 index set | got=79,80,81,102,103,104,125,126,127,129
+PASS | l1[level_01] GRID_DIGEST == registry[level_01] | got=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07 expect=70282f80f5c61a46d5a775c5fbe8c020133bd05885d73c490dbb611962737a07
+PASS | l1[level_01] opening: lives==5 | lives=5
+PASS | l1[level_01] opening: wave schedule total==10 | total=10
+PASS | l1[level_01] opening: spawned<=1 (wave1 starts at t=0.0) | spawned=1
+PASS | l1[level_01] opening: economy constants 300 / 3.0 | starting=300 passive=3
+PASS | l1[level_01] opening: gold == 300 + 3.0*elapsed (passive only, no spend yet) | gold=301.3125 elapsed=0.421875
+PASS | l1[level_01] opening: spawned == independent event table @elapsed=0.45 | spawned=1 expect=1
+PASS | l1[level_01] opening: pending+spawned==total | {"p":9,"s":1,"t":10}
+PASS | l1[level_01] registry keys == towers.toml keys | ["big_rocket","rapid","rocket"]
+PASS | l1[level_01] rapid: cost/range/cooldown == toml | got={"c":100,"r":192,"cd":0.5} want={"c":100,"r":192,"cd":0.5}
+PASS | l1[level_01] rapid: instant tower (no projectile) damage == toml | projectile=null damage=34 want=34
+PASS | l1[level_01] rocket: cost/range/cooldown == toml | got={"c":150,"r":192,"cd":0.30000001192092896} want={"c":150,"r":192,"cd":0.3}
+PASS | l1[level_01] rocket: projectile == projectiles.rocket | got={"damage":50,"explosion_sprite":21,"speed":600,"splash_radius":60,"sprite":251} want={"damage":50,"speed":600,"sprite":251,"explosion_sprite":21,"splash_radius":60}
+PASS | l1[level_01] rocket: ammo_slots == toml slot count | got=3 want=3
+PASS | l1[level_01] rocket: ammo_refill_secs == toml | got=2 want=2
+PASS | l1[level_01] big_rocket: cost/range/cooldown == toml | got={"c":200,"r":256,"cd":1.5} want={"c":200,"r":256,"cd":1.5}
+PASS | l1[level_01] big_rocket: projectile == projectiles.big_rocket | got={"damage":150,"explosion_sprite":21,"speed":400,"splash_radius":100,"sprite":252} want={"damage":150,"speed":400,"sprite":252,"explosion_sprite":21,"splash_radius":100}
+PASS | l1[level_01] big_rocket: ammo_slots == toml slot count | got=1 want=1
+PASS | l1[level_01] big_rocket: ammo_refill_secs == toml | got=4 want=4
+PASS | l1[level_01] select tower rapid | {"available":true,"key":"rapid","len":3,"selected_index":1}
+PASS | l1[level_01] place rapid @[2,3] | {"cost":100,"placed":true,"pos":[-320,-96],"tile":[2,3],"tower_index":1,"tower_type":"rapid"}
+PASS | l1[level_01] place rapid @[2,3] world pos == OFFSET + tile*TILE | pos=[-320,-96]
+PASS | l1[level_01] place rapid @[7,3] | {"cost":100,"placed":true,"pos":[0,-96],"tile":[7,3],"tower_index":1,"tower_type":"rapid"}
+PASS | l1[level_01] place rapid @[7,3] world pos == OFFSET + tile*TILE | pos=[0,-96]
+PASS | l1[level_01] place rapid @[12,3] | {"cost":100,"placed":true,"pos":[320,-96],"tile":[12,3],"tower_index":1,"tower_type":"rapid"}
+PASS | l1[level_01] place rapid @[12,3] world pos == OFFSET + tile*TILE | pos=[320,-96]
+PASS | l1[level_01] negative: occupied tile rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[2,3]}
+PASS | l1[level_01] negative: path tile [7,5] rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[7,5]}
+PASS | l1[level_01] negative: out-of-bounds tile rejected | {"placed":false,"reason":"tile is not an unoccupied grass tile","tile":[15,5]}
+PASS | l1[level_01] negative: insufficient balance rejected (gold<cost) | {"cost":100,"gold":1.875,"placed":false,"reason":"not enough gold","tile":[2,7]} goldBefore=1.78125
+PASS | l1[level_01] entities: Tower==3 / TowerTurret==3 | towers=3
+PASS | l1[level_01] cp1 spawned == independent event table @elapsed=2.30 | spawned=3 expect=3
+PASS | l1[level_01] cp1 pending == total - spawned | pending=7 total=10 spawned=3
+PASS | l1[level_01] cp1 economy ledger: gold == 300 + 3.0*t + 25*kills - Σcost | gold=7.171875 predicted=6.8906 diff=0.2813 (spawned=3 alive=3 lives=5 kills=0 spent=300)
+PASS | l1[level_01] cp1 towers on field == placed count (3) | towers=3
+INFO | l1[level_01] screenshot skipped (no --shot)
+INFO | l1[level_01] opportunistic rapid #4 @[2,7] -> placed (cost=100)
+PASS | l1[level_01] cp2 spawned == independent event table @elapsed=10.23 | spawned=5 expect=5
+PASS | l1[level_01] cp2 pending == total - spawned | pending=5 total=10 spawned=5
+PASS | l1[level_01] cp2 economy ledger: gold == 300 + 3.0*t + 25*kills - Σcost | gold=55.9375 predicted=55.7031 diff=0.2344 (spawned=5 alive=0 lives=5 kills=5 spent=400)
+PASS | l1[level_01] cp2 towers on field == placed count (4) | towers=4
+INFO | l1[level_01] opportunistic rapid #5 @[7,7] -> placed (cost=100)
+PASS | l1[level_01] cp3 spawned == independent event table @elapsed=17.39 | spawned=10 expect=10
+PASS | l1[level_01] cp3 pending == total - spawned | pending=0 total=10 spawned=10
+PASS | l1[level_01] cp3 economy ledger: gold == 300 + 3.0*t + 25*kills - Σcost | gold=77.40625 predicted=77.1719 diff=0.2344 (spawned=10 alive=1 lives=5 kills=9 spent=500)
+PASS | l1[level_01] cp3 towers on field == placed count (5) | towers=5
+PASS | l1[level_01] reached GameOver | {"available":true,"finished":false,"result":"Victory","state":"GameOver"}
+PASS | l1[level_01] result == Victory | {"available":true,"finished":false,"result":"Victory","state":"GameOver"}
+PASS | l1[level_01] VICTORY with zero leaks (lives stayed 5) | minLives=5
+PASS | l1[level_01] victory elapsed in [lastSpawn=16.799999999999997, upper=29.1] | elapsed=18.921875 spawned=10/10
+PASS | l1[level_01] all 10 events consumed (pending==0) | {"available":true,"elapsed":18.921875,"game_over":false,"lives":5,"pending":0,"spawned":10,"total":10}
+PASS | l1[level_01] combat: rapid is hitscan (launchers==0 / ammo_capacity==0 / projectiles==0) | launchers=0 ammoCap=0 projectiles=0
+INFO | l1[level_01] combat snapshot: {"launchers":0,"ammoCap":0,"fired":0,"projectiles":0,"rocket":0,"rocket_damage":50,"splash_radius":60}
+PASS | l1[level_01] cleanup: state GameOver / result Victory | {"available":true,"finished":false,"result":"Victory","state":"GameOver"}
+PASS | l1[level_01] cleanup: GameFinished removed (finished==false, fresh-round gate) | {"available":true,"finished":false,"result":"Victory","state":"GameOver"}
+PASS | l1[level_01] cleanup: MapTile==0 / PathTile==0 | map=0
+PASS | l1[level_01] cleanup: Enemy==0 / Tower==0 / TowerTurret==0
+PASS | l1[level_01] cleanup: wave schedule removed
+PASS | l1[level_01] cleanup: lives removed / game_over flag false | {"available":false,"elapsed":null,"game_over":false,"lives":null,"pending":null,"spawned":null,"total":null}
+PASS | l1[level_01] cleanup: GameResult kept for game-over screen | Victory
+PASS | l1 td.state set LevelSelect queued (from=GameOver) | {"from":"GameOver","queued":true,"to":"LevelSelect"}
+PASS | l1 state==LevelSelect after transition | {"available":true,"finished":false,"result":"Victory","state":"LevelSelect"}
+INFO | === l1[level_01] DEFEAT run @ 2026-10-30T19:07:18.411Z (5th leak >= 6.80s) ===
+PASS | l1[level_01] td.level select index=0 -> assets/levels/level_01.toml | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | l1[level_01] td.state set InGame queued (LevelSelect -> InGame) | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | l1[level_01] state==InGame after transition | {"available":true,"finished":false,"result":"Victory","state":"InGame"}
+PASS | l1[level_01] MapTile count==150 (no tower defence) | map=150
+PASS | l1[level_01] opening lives==5 | lives=5
+PASS | l1[level_01] cp1 spawned == independent event table @elapsed=2.31 | spawned=3 expect=3
+PASS | l1[level_01] cp1 alive health multiset == full-hp prefix (no damage, no tower) | got=[100,100,100] expect=[100,100,100]
+PASS | l1[level_01] cp1 Bounty component == TOML bounty 25 for every enemy | bad=0 n=3
+PASS | l1[level_01] cp1 passive-only: gold == 300 + 3.0*elapsed (no kills / no spend) | gold=307.078125 elapsed=2.3125 predicted=306.938
+PASS | l1[level_01] cp1 Tower==0 (defeat run is defensive-free)
+PASS | l1[level_01] cp1 combat surface: launchers==0 / fired==0 / projectiles==0 | {"ammo_capacity":0,"ammo_filled":0,"available":true,"exploding":0,"fired":0,"launchers":0,"projectiles":0,"rocket_damage":50,"rocket_speed":600,"splash_radius":60}
+PASS | l1[level_01] reached GameOver | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+PASS | l1[level_01] result == Defeat | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+PASS | l1[level_01] defeat driven by leaks: lives decremented 5->1 (>=4 leaks before GameOver) | minLives=1 leaksObserved=4
+PASS | l1[level_01] defeat elapsed >= 5th-leak time (6.80s) | elapsed=6.6875
+PASS | l1[level_01] defeat spawned == event table @elapsed (no schedule desync) | spawned=5 expect=5
+PASS | l1[level_01] zero damage / zero kills observed | damageSeen=false
+PASS | l1[level_01] cleanup: state GameOver / result Defeat | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+PASS | l1[level_01] cleanup: GameFinished removed (finished==false, fresh-round gate) | {"available":true,"finished":false,"result":"Defeat","state":"GameOver"}
+PASS | l1[level_01] cleanup: MapTile==0 / PathTile==0 | map=0
+PASS | l1[level_01] cleanup: Enemy==0 / Tower==0 / TowerTurret==0
+PASS | l1[level_01] cleanup: wave schedule removed
+PASS | l1[level_01] cleanup: lives removed / game_over flag false | {"available":false,"elapsed":null,"game_over":false,"lives":null,"pending":null,"spawned":null,"total":null}
+PASS | l1[level_01] cleanup: GameResult kept for game-over screen | Defeat
+PASS | l1 td.state set LevelSelect queued (from=GameOver) | {"from":"GameOver","queued":true,"to":"LevelSelect"}
+PASS | l1 state==LevelSelect after transition | {"available":true,"finished":false,"result":"Defeat","state":"LevelSelect"}
+INFO | === l1[level_01] ENTITY_DIGEST run @ 2026-10-30T19:07:26.100Z (harmless tile [2,0] dist=256) ===
+PASS | l1[level_01] td.level select index=0 -> assets/levels/level_01.toml | {"index":0,"selected":"assets/levels/level_01.toml"}
+PASS | l1[level_01] td.state set InGame queued (LevelSelect -> InGame) | {"from":"LevelSelect","queued":true,"to":"InGame"}
+PASS | l1[level_01] state==InGame after transition | {"available":true,"finished":false,"result":"Defeat","state":"InGame"}
+PASS | l1[level_01] harmless tile [2,0] is out of every tower range (dist=256 > 192) | dist=256
+PASS | l1[level_01] select tower rocket | {"available":true,"key":"rocket","len":3,"selected_index":0}
+PASS | l1[level_01] harmless rocket placed @[2,0] | {"cost":150,"placed":true,"pos":[-320,-288],"tile":[2,0],"tower_index":0,"tower_type":"rocket"}
+PASS | l1[level_01] elapsed in sampling window [2.2,3) | elapsed=2.25
+PASS | l1[level_01] alive healths == full-hp prefix (harmless tower, spawned=3) | got=[100,100,100] expect=[100,100,100]
+PASS | l1[level_01] tower/turret counts == 1/1 | 1/1
+PASS | l1[level_01] ENTITY_DIGEST == independent recompute | got=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23 expect=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+PASS | l1[level_01] ENTITY_DIGEST == T048 frozen baseline (zero drift) | got=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23 expect=1d40c7b7d50b86d130f9382d99d66531874fe31142ed393e8a36ce3b4e890b23
+PASS | l1[level_01] td.state set LevelSelect queued (from=InGame) | {"from":"InGame","queued":true,"to":"LevelSelect"}
+PASS | l1[level_01] state==LevelSelect after transition | {"available":true,"finished":false,"result":"Defeat","state":"LevelSelect"}
+
+INFO | LEVEL level_01: pathPx=896 events=10 rapidPlan=[[2,3],[7,3],[12,3],[2,7],[7,7],[12,7]] harmless={"tile":[2,0],"dist":256} victoryBy<=29.1s defeatAt>=6.80s
+INFO | LEVEL level_02: pathPx=1216 events=12 rapidPlan=[[4,3],[11,7],[8,3],[14,3],[0,4],[5,7]] harmless={"tile":[7,0],"dist":256} victoryBy<=29.7s defeatAt>=10.80s
+INFO | LEVEL level_03: pathPx=1472 events=15 rapidPlan=[[4,5],[9,5],[14,2],[5,9],[1,1],[8,1]] harmless={"tile":[14,9],"dist":326.33724886993826} victoryBy<=31.7s defeatAt>=11.27s
+SUMMARY: phase=l1 PASS=107 FAIL=0 SKIP=0 TOTAL=107
+M6ALL_JUDGEMENT=PASS
+REAL_EXIT=0

@@ -1,0 +1,14 @@
+INFO | === phase p0probe @ 2026-10-30T19:24:25.203Z ===
+PASS | p0probe baseline: state LevelSelect / result null (no GameResult yet) | {"available":true,"finished":false,"result":null,"state":"LevelSelect"}
+PASS | p0probe baseline: process alive
+PASS | p0probe td.state set GameOver accepted (documented op, queued) | {"from":"LevelSelect","queued":true,"to":"GameOver"}
+FAIL | p0probe process survives GameOver transition without GameResult (件三红线) | BRP unreachable after transition: TypeError: fetch failed
+PASS | p0probe game log contains the expected panic trace | thread 'Compute Task Pool (2)' (14832) panicked at C:\Users\Administrator\.cargo\registry\src\rsproxy.cn-e3de039b2554c837\bevy_ecs-0.20.0\src\error\handler.rs:128:1: || Encountered an error in system `game_td::game_over::setup_game_over`: Parameter `Res<GameResult>` failed validation: Resource does not exist
+
+INFO | LEVEL level_01: pathPx=896 events=10 rapidPlan=[[2,3],[7,3],[12,3],[2,7],[7,7],[12,7]] harmless={"tile":[2,0],"dist":256} victoryBy<=29.1s defeatAt>=6.80s
+INFO | LEVEL level_02: pathPx=1216 events=12 rapidPlan=[[4,3],[11,7],[8,3],[14,3],[0,4],[5,7]] harmless={"tile":[7,0],"dist":256} victoryBy<=29.7s defeatAt>=10.80s
+INFO | LEVEL level_03: pathPx=1472 events=15 rapidPlan=[[4,5],[9,5],[14,2],[5,9],[1,1],[8,1]] harmless={"tile":[14,9],"dist":326.33724886993826} victoryBy<=31.7s defeatAt>=11.27s
+SUMMARY: phase=p0probe PASS=4 FAIL=1 SKIP=0 TOTAL=5
+M6ALL_JUDGEMENT=FAIL
+REAL_EXIT=1
+REAL_EXIT=1

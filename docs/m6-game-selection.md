@@ -29,11 +29,12 @@ M4 走候选案对比、M5 走 grill 八题；M6 的选品方向已在 owner 202
 
 ### 可玩性定义（意向文档 §4 M6 行验收② 的展开，grill 定案② 四件套）
 
-- **26 部行为等价对照全绿**：对照底稿 = W2 漂移表（148 行：136 同形/7 形态/2 路线/1 语义）+ 教程行为规格；对照口径 = **行为等价、实现独立**（教程非实现来源——T044 既定执行注记沿用）。P26 DynamicScene 裁弃（0.20 概念已丢，L1-2 裁决）；P17/P23 UI 部走 `#[expect(deprecated)]` 通道（A' 裁决）。
+- **26 部行为等价对照全绿**：对照底稿 = W2 漂移表（148 行：136 同形 / 7 改名 / 2 重写 / 1 无对应 + 2 显式「纯重构无新 API」行〔P05/P16〕——分母 136+7+2+1+2=148，T052 `w2-final-check.md` §一 补全；前口径「146+2」同此）+ 教程行为规格；对照口径 = **行为等价、实现独立**（教程非实现来源——T044 既定执行注记沿用）。P26 DynamicScene 裁弃（0.20 概念已丢，L1-2 裁决）；P17/P23 UI 部走 `#[expect(deprecated)]` 通道（A' 裁决）。
 - **m6-all BRP 判定面全绿**：终局判定面（沿 M5 m5-all 形态）——波次/经济/塔/敌人核心状态断言 + 判定 pass/fail 清单，agent 只作驱动、不作判定。
 - **无 P0 崩溃**：全程进程无 panic；`td.*` 方法与游戏代码错误路径不击穿进程（M5 红线延续）。
 - **台账/taskset 纪律无断档**：逐任务记录（本仓台账），taskset 新增任务全绿。
 - **性能非门槛、音频非门槛**（grill 定案② 附带；沿 M5 音频先例直承）——tilemap 单 draw call 收益已随 spike 实证留档，不另设帧率验收档。
+- **收官实况（2026-10-31，T052）**：四件套 4/4——①26 部对照终局表全绿（逐部一行，分类账恒等式成立）；②m6-all 判定面 **483/0/2 PASS**（`M6ALL_JUDGEMENT=PASS`，三关 + victory/defeat 双模式 + 指纹链零漂移 + 经济体恒等式 12 采样点）；③无 P0（**负控命中 1 例**：BRP 带外 `td.state set GameOver` 击穿 `Res<GameResult>` 必达假设 → `Option<Res<GameResult>>` 化修复，p0probe 红→绿对照在档、正路 Some 路径逐字未动）；④台账 8/8 + taskset 17/17。证据 `docs/evidence/t052-m6-all/`（G1 g1-lead.log + G2 review-t052.md 0C/0I/3M 全文归档）。
 
 ### 体量上限（grill 定案③）
 
@@ -68,13 +69,13 @@ M4 走候选案对比、M5 走 grill 八题；M6 的选品方向已在 owner 202
 
 - **前缀纪律**：game-td 自定义方法一律 `td.` 前缀（与 claim-lint `GAME_METHODS=8` 锚定的主仓 `game.*` 面零碰撞——T044 G2 独立复核既定）。
 - **初始方法** = `td.screenshot`（两段式 capture/status，已落地）；随部增补候选（`td.wave_state` / `td.tower_count` / `td.economy` 等）**按实现需要定，不预设封顶**——增补即入 m6-all 断言面。
-- **方法面实况（2026-10-31 随 T051 更新；T051 G1 U1 / G2 认可）**：现有 18 个 = screenshot / wave / game / state / spawn_tower / level / economy / combat / towers / tower_select / events / gizmos / audio / pause / conditions / level_select / input / gamepad（discover 41 = 23 内置 + 18 `td.*`，全前缀零碰撞）——P22-25 落地后 **26 部执行面完**（25 部执行 + P26 裁弃），后续仅随 m6-all 收官判定面按需增补。**席位注记**：#10 音频预留席随 P20 激活，能力席 **10/10 已满**；T051 未新开第 11 席（22 调用点/58 系统，P22-25 复用既有调度/UI/输入翻译席；调用点≠席位，T048 S1 口径）。
+- **方法面实况（2026-10-31 随 T051 更新；T051 G1 U1 / G2 认可）**：现有 18 个 = screenshot / wave / game / state / spawn_tower / level / economy / combat / towers / tower_select / events / gizmos / audio / pause / conditions / level_select / input / gamepad（discover 41 = 23 内置 + 18 `td.*`，全前缀零碰撞）——P22-25 落地后 **26 部执行面完**（25 部执行 + P26 裁弃），**m6-all 收官判定面（T052）= 纯脚本侧组合既有 18 方法、零新增 `td.*`**（G1 U4 定案口径），discover 终值 41。**席位注记**：#10 音频预留席随 P20 激活，能力席 **10/10 已满**；T051 未新开第 11 席（22 调用点/58 系统，P22-25 复用既有调度/UI/输入翻译席；调用点≠席位，T048 S1 口径）。
 - **验证形态**：BRP 直调（curl/脚本）+ in-process 套件；每波次交付卡附 BRP 状态断言锚证据（日志/JSON 在档）。`tooling/mcp-bridge` 桥接 `td.*` = **可选项非门槛**（如需按白名单增补流程另定——T044 verdict ③ 注）。
 - **对照抽核口径**：教程 = 行为规格（对照 = 行为等价，实现独立；教程代码不入仓——方向定案沿用）。
 
 ## 六、与其他档的关系
 
-- **T044 spike**：P1-3 已入 `game-td/`（M6 波次勿重做）；W2 漂移表 = 26 部对照底稿（`docs/evidence/t044-td-spike/w2/`）；`trees/m6-recon/`（教程 27 件 + tilesheet + License + tilemap 0.20.0 源码解包）**保留至 M6 收官**，执行期持续使用。
+- **T044 spike**：P1-3 已入 `game-td/`（M6 波次勿重做）；W2 漂移表 = 26 部对照底稿（`docs/evidence/t044-td-spike/w2/`）；`trees/m6-recon/`（教程 27 件 + tilesheet + License + tilemap 0.20.0 源码解包）保留至 M6 收官，**已随 T052 收获批清理（2026-10-31；许可覆盖 = `game-td/CREDITS.md`：教程 MIT + Kenney CC0 随附 License.txt + 合成音频注记）**。
 - **T045 清扫卡**（game/src 余 25 处 0.19 注锚）：随 M6 首波次并行（定案④）。
 - **26 部执行形态**：按波次派工（外推 ≈7 波次卡），复用三层协议（TEAM_PROMPT）与隔离树纪律；W2 漂移表随卡下发。
 - **升级窗口**：下一大版本窗口开启时冻结规则不变（先迁移后恢复）。
