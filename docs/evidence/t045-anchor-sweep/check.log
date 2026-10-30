@@ -1,0 +1,4 @@
+$ CARGO_TARGET_DIR=<shared-target> cargo check --workspace -j 3
+    Checking game v0.1.0 (<TREE>\game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.08s
+REAL_EXIT=0

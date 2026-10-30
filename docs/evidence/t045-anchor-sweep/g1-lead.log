@@ -1,0 +1,48 @@
+# G1 · Lead 复验档（T045-W1R2 批）
+
+日期 2026-10-30（晚）；复验人 Lead；对象 = 树 `<TREE>` 批次 T045-W1R2（game/src 0.19→0.20 注锚清扫收尾）。
+
+## G1-a 清扫面独立复跑
+
+```
+$ grep -rn "0\.19\.1" game/src | wc -l
+0
+```
+
+零命中（与 worker 汇报一致）。
+
+## G1-b 门禁一 check 独立复跑（缓存命中档）
+
+```
+$ CARGO_TARGET_DIR=<shared-target> cargo check --workspace -j 3
+REAL_EXIT=0
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.58s
+```
+
+warning 行计数 = 0。注：全缓存命中不重发 `Checking`/告警段；「0 警」的可观察档 = check.log（worker 于 `cargo clean -p game` 后重跑所得，见 §U1 裁决）。
+
+## G1-c test.log 完整性抽核
+
+末段原始输出（末测试二进制空段 + 判定行原样）：
+
+```
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+REAL_EXIT=0
+```
+
+doctest 段 78 passed / 17 ignored 与 game 20/20、mcp-bridge 15/15 由 README §2 逐段机器求和（113 passed / 0 failed / 17 ignored）佐证。
+
+## G1-d README 结构与可公开态
+
+五个小节齐：§1 清扫面统计（复验）/ §2 门禁判定 / §3 SOURCE-DEVIATION-NOTE（零登记）/ §4 补位事实留痕 / §5 档内保真与可公开态。
+三档绝对路径扫描（README.md / check.log / test.log，模式 `[A-Za-z]:[\/]`）命中均 0。
+
+## Lead 裁决（worker 上报项）
+
+- **U1**（worker 范围外环境动作 `cargo clean -p game`）：**接受，归档为已披露执行偏离**。动机 = 门禁一「0 警」可观察性（全缓存命中时 cargo 不重发告警，无法观察「0 警」）；作用域仅 game 包构建产物（751 files / 5.8GiB），bevy 依赖缓存留存（rmeta 315 / rlib 162）、未触发 `Compiling bevy-`；已 README §2 披露。不构成返工；台账行将如实记偏离。
+- **U2**（test.log 运行于 clean 之前，档-缓存后置不一致）：**裁 A（采信现有档）**。理由：本卡 game/src 零改动（全树源码 mtime 停在 10:42 前实例改动时点），clean 仅删构建产物、不改源码态；测试结果 = 源码态的函数，档真实且可复现。按附录 A 冻结整改后从俭原则，免除 ~5 分钟复跑与 doctest 段内存峰值。
+
+## G1 结论
+
+**通过**（全项绿；两项上报已裁决如上）。

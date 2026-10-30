@@ -8,7 +8,7 @@
 //! - #4（再触发一次 `paused == false`）→ [`second_trigger_resumes`]。
 //! 偶数次触发后 paused 回初始值，世界无净副作用。
 //!
-//! 依据: `World::trigger` 同步运行 observer（bevy_ecs-0.19.1/src/observer/
+//! 依据: `World::trigger` 同步运行 observer（bevy_ecs-0.20.0/src/observer/
 //! mod.rs:63；game/src/sim.rs 单测 `pause_requested_event_flips_paused` 同形态
 //! 已验证）（核实 2026-09-27）。BRP `world.trigger_event` 反射构造通路第一阶段
 //! 已证（证据 ts-10-brp.md），本套件复测判定语义（翻转语义本身）。

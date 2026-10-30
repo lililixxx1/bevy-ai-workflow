@@ -22,8 +22,8 @@
 //! 原子无副作用，但驱动侧若在本套件前 launch 过关卡即假红；回归驱动须把
 //! 套件排在持久世界变更之前（或每套件独立进程，run-all 口径）。
 //!
-//! 依据: `World::resource_mut::<R>() -> Mut<R>`（bevy_ecs-0.19.1/src/world/
-//! mod.rs:2287）；相机轨道 `orbit_camera` 每帧以 rig 当前值写 Transform
+//! 依据: `World::resource_mut::<R>() -> Mut<R>`（bevy_ecs-0.20.0/src/world/
+//! mod.rs:2330）；相机轨道 `orbit_camera` 每帧以 rig 当前值写 Transform
 //! （game/src/camera.rs）（核实 2026-09-27）。
 
 use bevy::prelude::*;

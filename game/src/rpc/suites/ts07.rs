@@ -17,7 +17,7 @@
 //! elapsed 的一致性），世界无净副作用。
 //!
 //! 依据: `World::get_mut::<T>(entity) -> Option<Mut<T>>`
-//! （bevy_ecs-0.19.1/src/world/mod.rs:1387）；`wanderer_translation` 为口径
+//! （bevy_ecs-0.20.0/src/world/mod.rs:1365）；`wanderer_translation` 为口径
 //! 单点定义（game/src/sim.rs，move_swarm 与本套件共用同一函数）（核实 2026-09-27）。
 
 use bevy::prelude::*;

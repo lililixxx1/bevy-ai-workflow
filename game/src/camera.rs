@@ -46,7 +46,7 @@ impl Plugin for OrbitCameraPlugin {
     }
 }
 
-/// 依据: 相机形态 `bevy-0.19.1/examples/remote/server.rs:62-65`（Camera3d + Transform
+/// 依据: 相机形态 `bevy-0.20.0/examples/remote/server.rs:62-65`（Camera3d + Transform
 /// + looking_at，核实 2026-09-26）。
 fn spawn_camera(mut commands: Commands) {
     commands.spawn((

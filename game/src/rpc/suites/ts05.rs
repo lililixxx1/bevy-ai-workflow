@@ -13,8 +13,8 @@
 //!   （套件「无净副作用」约定）。
 //!
 //! 依据: `World::spawn` 返回 EntityWorldMut（game/src/rpc/screenshot.rs 同形态
-//! 已验证）；`EntityWorldMut::id()`（bevy_ecs-0.19.1/src/world/entity_access/
-//! world_mut.rs:181）；`World::get::<T>(entity)`（world/mod.rs:1366）；
+//! 已验证）；`EntityWorldMut::id()`（bevy_ecs-0.20.0/src/world/entity_access/
+//! world_mut.rs:182）；`World::get::<T>(entity)`（world/mod.rs:1366）；
 //! `World::despawn -> bool`（world/mod.rs:1598）（核实 2026-09-27）。
 
 use bevy::prelude::*;

@@ -1,0 +1,5 @@
+$ cargo check --workspace -j 3
+    Checking claim-lint v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\tooling\claim-lint)
+    Checking game v0.1.0 (C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\game)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.97s
+REAL_EXIT=0

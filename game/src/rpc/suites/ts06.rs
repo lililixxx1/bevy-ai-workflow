@@ -13,7 +13,7 @@
 //!   进程内等价物即 despawn 的 bool 假值 + warn 日志）。
 //!
 //! 依据: `World::despawn(entity) -> bool`——实体不存在时 warn + false
-//! （bevy_ecs-0.19.1/src/world/mod.rs:1598-1605）；`World::get_entity`
+//! （bevy_ecs-0.20.0/src/world/mod.rs:1576-1583）；`World::get_entity`
 //! （world/mod.rs:951，`Result` 形态，Err 即不存在）（核实 2026-09-27）。
 
 use bevy::prelude::*;

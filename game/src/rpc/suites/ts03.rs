@@ -9,10 +9,10 @@
 //!   entity_count/seed 与 SimConfig 自洽；version 字面 `"0.1.0"` 由工具端
 //!   `--expect-version 0.1.0` 绑定（进程内只断言 == `env!("CARGO_PKG_VERSION")`）。
 //!
-//! 依据: `AppTypeRegistry` 为 Resource（bevy_ecs-0.19.1/src/reflect/mod.rs:36）；
-//! `TypeRegistry::get(TypeId)`（bevy_reflect-0.19.1/src/type_registry.rs:423）；
+//! 依据: `AppTypeRegistry` 为 Resource（bevy_ecs-0.20.0/src/reflect/mod.rs:36）；
+//! `TypeRegistry::get(TypeId)`（bevy_reflect-0.20.0/src/type_registry.rs:448）；
 //! `TypeRegistration::data::<T>()`（type_registry.rs:677）；`ReflectResource`
-//! （bevy_ecs-0.19.1/src/reflect/resource.rs:31）（核实 2026-09-27）。
+//! （bevy_ecs-0.20.0/src/reflect/resource.rs:31）（核实 2026-09-27）。
 
 use std::any::TypeId;
 

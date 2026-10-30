@@ -77,7 +77,7 @@ pub struct SimStats {
 /// 模拟元信息（Startup 一次性填充，之后只读——不引入运行时可变状态）。
 ///
 /// TS-03：BRP 可见 Resource，供工具端在任意时刻核对当前 demo 的版本与启动口径。
-/// 依据: derive 形态对齐官方 BRP 示例 Resource（`bevy-0.19.1/examples/remote/
+/// 依据: derive 形态对齐官方 BRP 示例 Resource（`bevy-0.20.0/examples/remote/
 /// server.rs:68-70`，`Resource + Reflect + Serialize + Deserialize` +
 /// `#[reflect(Resource, Serialize, Deserialize)]`；核实 2026-09-26）。
 #[derive(Resource, Reflect, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -122,10 +122,10 @@ pub struct Velocity {
 /// `no_auto_register`：退出 `reflect_auto_register` 自动注册——任务约束「注册必须
 /// 显式（register_type），不依赖 reflect_auto_register 自动链」的落点，显式
 /// `register_type::<Tagged>()` 是本类型唯一的注册通路。
-/// 依据: 属性语义 `bevy_reflect_derive-0.19.1/src/lib.rs:329-335`（opt-out of the
+/// 依据: 属性语义 `bevy_reflect_derive-0.20.0/src/lib.rs:344-350`（opt-out of the
 /// automatic reflect type registration）；标注后不发 inventory::submit
-/// `bevy_reflect_derive-0.19.1/src/impls/common.rs:174-177`；行为 doctest
-/// `bevy_reflect-0.19.1/src/lib.rs:4044-4057`（register_derived_types 后
+/// `bevy_reflect_derive-0.20.0/src/impls/common.rs:174-177`；行为 doctest
+/// `bevy_reflect-0.20.0/src/lib.rs:4137-4150`（register_derived_types 后
 /// registry 不含该类型）；多个 `#[reflect(...)]` 参数可混排（同一属性列表逐项
 /// 解析，container_attributes.rs:196-268）（核实 2026-09-26）。
 #[derive(Component, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -143,13 +143,13 @@ pub struct Tagged {
 /// `DynamicStruct::default()`（0 字段）走 `from_reflect`，本类型 0 字段无外部
 /// 数据依赖，构造无条件成功，无需 `#[reflect(Default)]` 兜底。
 /// 依据: `BrpTriggerEventParams { event, value: Option<Value> }`
-/// `bevy_remote-0.19.1/src/builtin_methods.rs:327-333`；handler 逐层校验
+/// `bevy_remote-0.20.0/src/builtin_methods.rs:327-333`；handler 逐层校验
 /// （未注册类型报 `Unknown event type`、缺 `ReflectEvent` 数据报 `is not
 /// reflectable`）并反射构造后 `ReflectEvent::trigger`
 /// `builtin_methods.rs:1481-1516`；`#[reflect(Event)]` 即注册 `ReflectEvent`
 /// 数据（默认 trigger fn = `from_reflect_with_fallback::<E>` 后 `world.trigger`）
-/// `bevy_ecs-0.19.1/src/reflect/event.rs:125-137`；`#[derive(Reflect)]` 自动注册
-/// `ReflectFromReflect` `bevy_reflect_derive-0.19.1/src/registration.rs:32`
+/// `bevy_ecs-0.20.0/src/reflect/event.rs:125-137`；`#[derive(Reflect)]` 自动注册
+/// `ReflectFromReflect` `bevy_reflect_derive-0.20.0/src/registration.rs:32-34`
 /// （核实 2026-09-26）。
 #[derive(Event, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[reflect(Event, Serialize, Deserialize)]
@@ -199,9 +199,9 @@ fn init_metadata(mut metadata: ResMut<SimMetadata>, config: Res<SimConfig>) {
 
 /// Startup：按配置生成实体群 + 地面 + 光照。
 ///
-/// 依据: spawn_batch 签名 `bevy_ecs-0.19.1/src/system/commands/mod.rs:587-593`；
-/// Mesh3d/MeshMaterial3d/材质形态 `bevy-0.19.1/examples/remote/server.rs:32-44`；
-/// DirectionalLight 默认无阴影 `bevy_light-0.19.1/src/directional_light.rs:147-160`
+/// 依据: spawn_batch 签名 `bevy_ecs-0.20.0/src/system/commands/mod.rs:457-463`；
+/// Mesh3d/MeshMaterial3d/材质形态 `bevy-0.20.0/examples/remote/server.rs:32-44`；
+/// DirectionalLight 默认无阴影 `bevy_light-0.20.0/src/directional_light.rs:147-160`
 /// （核实 2026-09-26）。
 fn spawn_swarm(
     mut commands: Commands,
@@ -260,7 +260,7 @@ fn spawn_swarm(
 /// Commands 会在两系统间自动 flush——`auto_insert_apply_deferred` 构建通道默认
 /// 开启，对「上游含 Deferred 参数（Commands 即是）且存在排序依赖」的边自动插入
 /// ApplyDeferred。
-/// 依据: bevy_ecs-0.19.1/src/schedule/auto_insert_apply_deferred.rs:13-17（文档）
+/// 依据: bevy_ecs-0.20.0/src/schedule/auto_insert_apply_deferred.rs:13-17（文档）
 /// 与 schedule.rs:1629（`auto_insert_apply_deferred: true` 默认）（核实 2026-09-26）。
 fn tag_first_ten(mut commands: Commands, query: Query<(Entity, &Wanderer)>) {
     let mut tagged = 0u32;
@@ -281,9 +281,9 @@ fn tag_first_ten(mut commands: Commands, query: Query<(Entity, &Wanderer)>) {
 /// `world.trigger_event` 的 HTTP 响应返回前已生效——BRP 端下一次
 /// `world.get_resources` 必然读到新值。
 /// 依据: observer 系统参数形态 `On<E>` + `ResMut` 并用
-/// `bevy-0.19.1/examples/ecs/observers.rs:142`（`on_add_mine`）；
-/// `App::add_observer` `bevy_app-0.19.1/src/app.rs:1474`；
-/// `World::trigger` 同步运行 observer `bevy_ecs-0.19.1/src/observer/mod.rs:63`
+/// `bevy-0.20.0/examples/ecs/observers.rs:142`（`on_add_mine`）；
+/// `App::add_observer` `bevy_app-0.20.0/src/app.rs:1459`；
+/// `World::trigger` 同步运行 observer `bevy_ecs-0.20.0/src/observer/mod.rs:63`
 /// （核实 2026-09-26）。
 fn on_pause_requested(_: On<PauseRequested>, mut config: ResMut<SimConfig>) {
     config.paused = !config.paused;

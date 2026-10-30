@@ -46,7 +46,7 @@ pub struct Unit {
 /// 当前关卡状态（`game.launch_level` 成功后由 handler 写入；BRP 可读——
 /// 未加载关卡时资源实例**不存在**：`world.get_resources` 返回 -23501
 /// （RESOURCE_ERROR；类型已注册而实例未插入即此路，
-/// `bevy_remote-0.19.1/src/builtin_methods.rs:617-637`），**并非 null**——
+/// `bevy_remote-0.20.0/src/builtin_methods.rs:617-637`），**并非 null**——
 /// 「null」口径仅是 `run_tests` 报文内可选字段的约定，两条通路语义不同。
 /// 工具端读取按「缺失/报错」处理，不自造默认值（2026-09-28 审核活体探针实测）。
 #[derive(Resource, Reflect, Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]

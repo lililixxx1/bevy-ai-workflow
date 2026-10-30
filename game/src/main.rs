@@ -25,7 +25,7 @@ mod sim;
 
 use bevy::prelude::*;
 // PresentMode/WindowMode 不在 prelude，经 bevy::window 引入
-//（依据: bevy-0.19.1/examples/window/window_settings.rs:8；bevy_window-0.19.1
+//（依据: bevy-0.20.0/examples/window/window_settings.rs:8；bevy_window-0.20.0
 // src/lib.rs:33 `pub use window::*`，核实 2026-09-26）。
 use bevy::window::{PresentMode, WindowMode};
 

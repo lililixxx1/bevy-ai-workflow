@@ -3,7 +3,7 @@
 //! 与 `assets-methodology/taskset/ts-09-type-schema.md` 验收清单的对应：
 //! - #1（`list_components` 含 `game::sim::Tagged`）→ [`tagged_reflect_visible`]：
 //!   BRP `list_components` 的数据源是类型注册表中带 `ReflectComponent` 数据的
-//!   类型（bevy_remote-0.19.1/src/builtin_methods.rs:1377-1400 同构判定），
+//!   类型（bevy_remote-0.20.0/src/builtin_methods.rs:1377-1400 同构判定），
 //!   进程内直查同一注册表等价；
 //! - #2（`registry.schema` 含字段 `tag`（string 类型））→
 //!   [`tagged_schema_has_tag_field`]：经 `TypeInfo` 的 `StructInfo` 直查字段表
@@ -14,7 +14,7 @@
 //!   属源码级干预，非运行时断言面）。
 //!
 //! 依据: `TypeRegistration::type_info() -> &'static TypeInfo`
-//! （bevy_reflect-0.19.1/src/type_registry.rs:635）；`TypeInfo::Struct` 变体与
+//! （bevy_reflect-0.20.0/src/type_registry.rs:660）；`TypeInfo::Struct` 变体与
 //! `StructInfo::field(name) -> Option<&NamedField>`（structs.rs:165）；
 //! `NamedField::type_info() -> Option<&'static TypeInfo>`（fields.rs:58）；
 //! `TypeInfo::is::<T>()`（type_info.rs:295）（核实 2026-09-27）。

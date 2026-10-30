@@ -15,7 +15,7 @@
 //!   规则面组件 = `GridPos`/`Unit`/`ActionFlags`，表现挂在棋子上）。
 //!
 //! API 依据：Mesh3d/MeshMaterial3d/材质形态与 `sim.rs` 同源
-//!（`bevy-0.19.1/examples/remote/server.rs:32-44`，仓库 T003 起已验证）；
+//!（`bevy-0.20.0/examples/remote/server.rs:32-44`，仓库 T003 起已验证）；
 //! 资源 change-detection `Res::is_changed`（`Res` 实现 `DetectChanges`，
 //! SKILL.md §6.10 域）。表现实体无反射注册需求（BRP 不消费）。
 

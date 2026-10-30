@@ -19,7 +19,7 @@
 //! 独占执行——handler 内可安全直改世界（无调度上下文，SKILL.md §3.3 认可的
 //! `&mut World` 场景）。
 //! 依据: `with_method_main(name: impl Into<String>, handler: impl IntoSystem<
-//! In<Option<Value>>, BrpResult, M>)` `bevy_remote-0.19.1/src/lib.rs:591-599`；
+//! In<Option<Value>>, BrpResult, M>)` `bevy_remote-0.20.0/src/lib.rs:591-599`；
 //! 独占执行 `world.run_system_with(id, message.params)` `lib.rs:1501`；内置
 //! handler 同形态（`&mut World`）`builtin_methods.rs:1058-1061`；`BrpError` 公开
 //! 字段 `lib.rs:1304-1312`；`error_codes::INVALID_PARAMS` `lib.rs:1387` 起
