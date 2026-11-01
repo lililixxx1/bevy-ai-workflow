@@ -1,0 +1,15 @@
+[2m2026-10-31T00:35:37.134667Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-31T00:35:37.403521Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-31T00:35:37.789506Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-31T00:35:37.789533Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause, td.conditions, td.level_select, td.input, td.gamepad
+[2m2026-10-31T00:35:37.790694Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-31T00:35:37.790732Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-31T00:35:37.791588Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+[2m2026-10-31T00:35:37.857971Z[0m [32m INFO[0m [2mgame_td::tower[0m[2m:[0m [TD] tower registry loaded: 3 towers (["rocket", "rapid", "big_rocket"])
+[2m2026-10-31T00:38:34.596346Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-31T00:38:41.378871Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Game Over — the base has been destroyed!
+[2m2026-10-31T00:38:46.511825Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-31T00:39:08.093658Z[0m [32m INFO[0m [2mgame_td::enemy[0m[2m:[0m Victory — all enemies defeated!
+[2m2026-10-31T00:39:12.726765Z[0m [32m INFO[0m [2mgame_td[0m[2m:[0m [TD] spawn schedule built: 10 events (2 waves, 4 enemy types)
+[2m2026-10-31T00:39:15.235692Z[0m [32m INFO[0m [2mbevy_window::system[0m[2m:[0m No windows are open, exiting
+[2m2026-10-31T00:39:15.235740Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Closing window 67v0

@@ -1,0 +1,16 @@
+[2m2026-10-31T00:34:43.773256Z[0m [32m INFO[0m [2mbevy_diagnostic::system_information_diagnostics_plugin::internal[0m[2m:[0m SystemInfo { os: "Windows 10 IoT Enterprise LTSC 2021", kernel: "19044", cpu: "12th Gen Intel(R) Core(TM) i5-12490F", core_count: "6", memory: "31.8 GiB" }
+[2m2026-10-31T00:34:44.025889Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 3050", vendor: 4318, device: 9602, device_type: DiscreteGpu, device_pci_bus_id: "0000:01:00.0", driver: "NVIDIA", driver_info: "537.58", backend: Vulkan, subgroup_min_size: 32, subgroup_max_size: 32, transient_saves_memory: Some(false), limit_bucket: None }
+[2m2026-10-31T00:34:44.468055Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] listening on 127.0.0.1:15702 (explicit loopback bind)
+[2m2026-10-31T00:34:44.468080Z[0m [32m INFO[0m [2mgame_td::brp[0m[2m:[0m [BRP] custom methods: td.screenshot, td.spawn_tower, td.wave, td.game, td.state, td.level, td.economy, td.combat, td.towers, td.tower_select, td.events, td.gizmos, td.audio, td.pause, td.conditions, td.level_select, td.input, td.gamepad
+[2m2026-10-31T00:34:44.469039Z[0m [32m INFO[0m [2mbevy_pbr::cluster[0m[2m:[0m GPU clustering is supported on this device.
+[2m2026-10-31T00:34:44.469075Z[0m [32m INFO[0m [2mbevy_render::batching::gpu_preprocessing[0m[2m:[0m GPU preprocessing is fully supported on this device.
+[2m2026-10-31T00:34:44.469932Z[0m [32m INFO[0m [2mbevy_winit::system[0m[2m:[0m Creating new window game-td (67v0)
+
+thread 'Compute Task Pool (2)' (23540) panicked at game-td\src\tower.rs:341:33:
+Failed to read assets/towers.toml: 系统找不到指定的路径。 (os error 3)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+[2m2026-10-31T00:34:44.541562Z[0m [31mERROR[0m [2mbevy_asset::server[0m[2m:[0m Path not found: C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\target\release\assets\audio/rocket_launch.ogg
+[2m2026-10-31T00:34:44.541569Z[0m [31mERROR[0m [2mbevy_asset::server[0m[2m:[0m Path not found: C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\target\release\assets\audio/background_music.ogg
+[2m2026-10-31T00:34:44.541594Z[0m [31mERROR[0m [2mbevy_asset::server[0m[2m:[0m Path not found: C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\target\release\assets\audio/laser_fire.ogg
+[2m2026-10-31T00:34:44.541611Z[0m [31mERROR[0m [2mbevy_asset::server[0m[2m:[0m Path not found: C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\target\release\assets\Tilesheet/towerDefense_tilesheet.png
+[2m2026-10-31T00:34:44.541616Z[0m [31mERROR[0m [2mbevy_asset::server[0m[2m:[0m Path not found: C:\Users\Administrator\Desktop\ccc\bevy-ai-workflow\target\release\assets\audio/rocket_explosion.ogg

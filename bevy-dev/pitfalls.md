@@ -7,7 +7,7 @@
 - **doctest 门禁（M3 起，2026-09-27）**：本文件经 `docs/src/lib.rs` include_str! 纳入 `cargo test --doc -p docs`。围栏约定（对其后全部条目生效）：`rust,compile_fail`=反例（机器断言编译必败）；`rust,ignore`=非编译载体反例（附理由）或非 self-contained 修复片段（附理由 + 完整代码出处）；`rust`/`rust,no_run`=self-contained 修复正例（长运行标 no_run 附理由）。升级窗口换版本后反例如能编译，doctest 立即红——条目自动过期检测。
 - **非代码载体反例（2026-09-28 增补）**：wire 协议请求 / 运行时行为观察类坑无编译面可断言，以 `text` 围栏收录原始请求与报错原文并锚定证据文件（先例 PIT-B-051；口径出处 = 意向文档 §5.2「分型口径细化注记」2026-09-28）。
 - 批次探查条目（M3 §3.1）的证据面：探针 crate 在仓库外不入 workspace，其「修复过编译」以探针 check 日志（归档 `docs/evidence/m3-assets/batch-*/`）为证据面，不要求 `cargo check --workspace`。
-- 当前：51 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/；同日 Block H 净室重跑净新发现 051 证据 docs/evidence/m3-cleanroom/）。
+- 当前：52 条（2026-09-26 起；2026-09-27 M3 批次一 005–013 证据 batch-c/；批次二 014–020 证据 batch-d/；批次三 021–025 证据 batch-e/；批次四 026–030 证据 batch-f/；2026-09-28 批次五 031–050 证据 docs/evidence/m3-assets/batch-g/；同日 Block H 净室重跑净新发现 051 证据 docs/evidence/m3-cleanroom/；2026-10-31 T053 分发面双击直启坑 052 证据 docs/evidence/t053-dist-launch/）。
 
 ---
 
@@ -2759,3 +2759,35 @@ Encountered a panic in system `bevy_remote::process_remote_requests`
 - 复现：坏实体 mutate → 进程崩溃三重留档（请求原文 / curl 52 + 0 字节响应 / demo-run.log panic 栈，进程 101 + 死后拒连 exit 7）；
 - 守卫序列运行验证：对先验证存在的实体 mutate 成功（200 result:null）+ 读回 `linear == [3,0,0]` 注入驻留（净室档 14-*/17-*/18-*）；
 - 源码对照行由裁判 sed 亲验（judge-t004.md §二）；净新性声明：该语义不在任何注入资产（SKILL §6.1/6.2/6.4/6.9、PIT-B-004、台账 T004 行）中，原任务是否曾触发不可考（净室禁读原证据）。
+
+### PIT-B-052：std::fs 裸读资产用 cwd 相对路径，绕过 bevy_asset 根解析链——双击直启 exe（cwd=exe 目录）即 panic 101
+
+- 日期：2026-10-31
+- 适用版本：bevy 0.20.0（bevy_asset 根解析链见 SKILL §6.18；触发点 = game-td/src/tower.rs:340-341）
+- 分型：错题（运行时行为；反例载体为 panic 栈与资产缺失日志，非编译面——无 compile_fail 反例，用 `text` 围栏，先例 PIT-B-051）
+- 通用性分级：bevy-specific（「双解析链分裂」面为 bevy 特定：bevy_asset 三级链与裸读各走各路；分级注记——「文件读取不得依赖 cwd」这半条换引擎仍成立，若未来他引擎复发应以方法论形态另记）
+- 标签：`分发` `双击直启` `cwd` `std::fs` `bevy_asset` `根解析` `assets随附` `panic-101` `towers.toml`
+
+**现象**（2026-10-31；HEAD `3ccb530` release 构建，资源管理器双击工况 = cwd 为 exe 目录；档 `docs/evidence/t053-dist-launch/direct-launch-no-assets.log`）：
+
+```text
+（启动链正常：AdapterInfo → BRP listening on 127.0.0.1:15702 → Creating new window game-td (67v0)）
+thread 'Compute Task Pool (2)' (23540) panicked at game-td\src\tower.rs:341:33:
+Failed to read assets/towers.toml: 系统找不到指定的路径。 (os error 3)
+（进程退出码 101；窗口一闪即灭）
+ERROR bevy_asset::server: Path not found: ...\target\release\assets\audio/rocket_launch.ogg
+ERROR bevy_asset::server: Path not found: ...\target\release\assets\Tilesheet/towerDefense_tilesheet.png
+（其余音频/图集同型，共 5 条）
+```
+
+**根因**：仓内数据文件读取走**两套互不相通的解析链**：① `tower.rs` 的 `std::fs::read_to_string(TOWERS_FILE)`（`TOWERS_FILE = "assets/towers.toml"`，tower.rs:70）纯 **cwd 相对**，不经 bevy_asset 任何根解析，失败即 `unwrap_or_else(panic!)` 硬崩；② bevy_asset 走 SKILL §6.18 三级链（`BEVY_ASSET_ROOT` → `CARGO_MANIFEST_DIR` 烘焙值 → exe 目录回退），本工况未设环境变量、实测落 **exe 目录回退**终段（烘焙值为何未按链序命中未深究，以实测为准）。开发期 `cargo run` 两链皆绿（cwd = manifest 目录使 ① 命中；烘焙值使 ② 命中），**掩盖了分发面分裂**；双击直启时 cwd = exe 目录，两链同时落空且 ① 直接 panic——「能跑的开发工况 ≠ 分发工况」，全部门禁（check/test/doctest/claim-lint/m6-all 483 断言）都不覆盖「换一个 cwd 启动」这一维。
+
+**修复**（分发面零代码方案，已过编译与运行验证）：
+
+1. **发行包纪律：`assets/` 目录必须与 exe 同级随附**——双链同时命中（cwd 相对读 + exe 目录回退），实测 tower registry 3 塔载入 + 进关波次调度 + BRP 应答 + 关窗干净退出（exit 0），档 `docs/evidence/t053-dist-launch/relaunch-with-assets.log`；
+2. （备选，**未实施不宣称验证**）代码面消除双链分裂：towers.toml 改走 bevy_asset 资产通道（如 `Asset<Toml>` 注册自定义 loader），或启动时按 `BEVY_ASSET_ROOT`/exe 目录拼绝对路径后读；若实施须另立卡过编译 + 运行验证。
+
+**验证证据**（`docs/evidence/t053-dist-launch/`，README §一-§三）：
+- 复现：双击工况完整日志至 tower.rs:341 panic，exit 101（标注版本 bevy 0.20.0 / HEAD 3ccb530）；
+- 修复运行验证：assets 随附后 `tower registry loaded: 3 towers` + BRP `td.game` 应答（选关态）+ `spawn schedule built: 10 events (2 waves, 4 enemy types)` + 干净退出 exit 0；编译面 = 3ccb530 构建本身 REAL_EXIT=0（零代码方案无新编译物）；
+- 同源先证：SKILL §6.18（T048 P8 空图案）覆盖 bevy_asset 侧缺省直启坑，本条补齐 std::fs 裸读侧与双链分裂面。
